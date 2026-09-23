@@ -1,0 +1,65 @@
+<svg viewBox="0 0 800 555" width="800" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    text { font-family: 'PingFang SC', 'Microsoft YaHei', 'Noto Sans CJK SC', system-ui, sans-serif; fill: #1e293b; letter-spacing: 0; }
+    .title { font-size: 16px; font-weight: 600; }
+    .actor { font-size: 12px; font-weight: 600; text-anchor: middle; }
+    .case { font-size: 11px; text-anchor: middle; }
+    .note { font-size: 10px; fill: #64748b; }
+    .link { fill: none; stroke: #94a3b8; stroke-width: 1.1; }
+  </style>
+  <rect width="800" height="555" fill="#ffffff"/>
+  <text class="title" x="400" y="30" text-anchor="middle">统一权限管理系统用例总图</text>
+
+  <rect x="210" y="55" width="440" height="470" rx="10" fill="#f8fafc" stroke="#94a3b8" stroke-dasharray="6,4"/>
+  <text class="note" x="225" y="73">统一权限管理系统</text>
+
+  <!-- Links -->
+  <path class="link" d="M180,150 C220,150 220,111 249,111"/>
+  <path class="link" d="M180,150 C220,150 220,189 249,189"/>
+  <path class="link" d="M180,150 C220,150 220,267 249,267"/>
+  <path class="link" d="M180,150 C205,150 205,423 249,423"/>
+  <path class="link" d="M180,150 C205,150 215,345 249,345"/>
+  <path class="link" d="M180,150 C260,150 310,189 449,189"/>
+  <path class="link" d="M180,150 C300,150 330,267 449,267"/>
+  <path class="link" d="M180,150 C310,150 350,345 449,345"/>
+
+  <path class="link" d="M180,375 C220,375 220,345 249,345"/>
+  <path class="link" d="M180,375 C270,375 350,189 449,189"/>
+  <path class="link" d="M180,375 C300,375 350,267 449,267"/>
+  <path class="link" d="M180,375 C300,375 350,345 449,345"/>
+  <path class="link" d="M180,375 C220,375 220,423 249,423"/>
+
+  <path class="link" d="M680,230 C650,230 640,111 611,111"/>
+  <path class="link" d="M680,230 C650,230 640,345 611,345"/>
+
+  <!-- Actor boxes -->
+  <rect x="20" y="123" width="160" height="54" rx="6" fill="#dbeafe" stroke="#3b82f6"/>
+  <text class="actor" x="100" y="154">最高管理员</text>
+  <rect x="20" y="348" width="160" height="54" rx="6" fill="#dbeafe" stroke="#3b82f6"/>
+  <text class="actor" x="100" y="379">部门管理员</text>
+  <rect x="680" y="203" width="100" height="54" rx="6" fill="#d1fae5" stroke="#22c55e"/>
+  <text class="actor" x="730" y="234">外部系统</text>
+
+  <!-- Use cases -->
+  <ellipse cx="330" cy="111" rx="81" ry="26" fill="#dbeafe" stroke="#3b82f6"/>
+  <text class="case" x="330" y="115">组织和员工管理</text>
+  <ellipse cx="330" cy="189" rx="81" ry="26" fill="#dbeafe" stroke="#3b82f6"/>
+  <text class="case" x="330" y="193">管理员管理</text>
+  <ellipse cx="330" cy="267" rx="81" ry="26" fill="#dbeafe" stroke="#3b82f6"/>
+  <text class="case" x="330" y="271">外部系统与绑定</text>
+  <ellipse cx="330" cy="345" rx="81" ry="26" fill="#f3e8ff" stroke="#a855f7"/>
+  <text class="case" x="330" y="349">员工资料维护</text>
+  <ellipse cx="330" cy="423" rx="81" ry="26" fill="#f3e8ff" stroke="#a855f7"/>
+  <text class="case" x="330" y="427">查询与审计</text>
+
+  <ellipse cx="530" cy="111" rx="81" ry="26" fill="#d1fae5" stroke="#22c55e"/>
+  <text class="case" x="530" y="115">权限目录同步</text>
+  <ellipse cx="530" cy="189" rx="81" ry="26" fill="#fef3c7" stroke="#f59e0b"/>
+  <text class="case" x="530" y="193">外部角色管理</text>
+  <ellipse cx="530" cy="267" rx="81" ry="26" fill="#fef3c7" stroke="#f59e0b"/>
+  <text class="case" x="530" y="271">员工角色授权</text>
+  <ellipse cx="530" cy="345" rx="81" ry="26" fill="#fce7f3" stroke="#ec4899"/>
+  <text class="case" x="530" y="349">账号与授权同步</text>
+
+  <text class="note" x="400" y="504" text-anchor="middle">普通员工不登录平台，仅作为员工管理和角色授权的业务对象。</text>
+</svg>

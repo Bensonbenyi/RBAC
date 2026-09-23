@@ -1,0 +1,88 @@
+<svg viewBox="0 0 800 555" width="800" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="2" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L8,4 L0,8 L2,4 z" fill="#64748b"/></marker>
+  </defs>
+  <style>
+    text { font-family: 'PingFang SC', 'Microsoft YaHei', 'Noto Sans CJK SC', system-ui, sans-serif; fill: #1e293b; letter-spacing: 0; }
+    .title { font-size: 16px; font-weight: 600; }
+    .box { stroke-width: 1.2; rx: 6; }
+    .name { font-size: 12px; font-weight: 600; text-anchor: middle; }
+    .note { font-size: 10px; fill: #64748b; text-anchor: middle; }
+    .line { fill: none; stroke: #64748b; stroke-width: 1.2; }
+    .card { font-size: 10px; fill: #64748b; }
+  </style>
+  <rect width="800" height="555" fill="#ffffff"/>
+
+  <text class="title" x="400" y="32" text-anchor="middle">统一权限管理系统领域模型</text>
+
+  <!-- Connectors -->
+  <path class="line" d="M120,116 L120,128" marker-end="url(#arrow)"/>
+  <path class="line" d="M120,211 L120,223" marker-end="url(#arrow)"/>
+  <path class="line" d="M120,306 L120,318" marker-end="url(#arrow)"/>
+  <path class="line" d="M215,172 C250,172 260,92 299,92" marker-end="url(#arrow)"/>
+  <path class="line" d="M400,116 L400,153" marker-end="url(#arrow)"/>
+  <path class="line" d="M495,92 C545,92 545,187 579,187" marker-end="url(#arrow)"/>
+  <path class="line" d="M495,197 L579,197" marker-end="url(#arrow)"/>
+  <path class="line" d="M400,236 L400,248" marker-end="url(#arrow)"/>
+  <path class="line" d="M215,267 C260,267 260,292 299,292" marker-end="url(#arrow)"/>
+  <path class="line" d="M400,331 L400,343" marker-end="url(#arrow)"/>
+  <path class="line" d="M495,387 C540,387 540,412 579,412" marker-end="url(#arrow)"/>
+  <path class="line" d="M215,380 C300,462 520,462 579,426" marker-end="url(#arrow)"/>
+
+  <!-- Cardinality labels -->
+  <text class="card" x="128" y="126">1</text><text class="card" x="128" y="136">*</text>
+  <text class="card" x="128" y="221">1</text><text class="card" x="128" y="231">*</text>
+  <text class="card" x="128" y="316">1</text><text class="card" x="128" y="326">0..1</text>
+  <text class="card" x="246" y="139">0..1 对 0..1</text>
+  <text class="card" x="408" y="136">1</text><text class="card" x="408" y="158">*</text>
+  <text class="card" x="532" y="82">提供</text>
+  <text class="card" x="526" y="187">包含 *</text>
+  <text class="card" x="408" y="246">1</text><text class="card" x="408" y="256">*</text>
+  <text class="card" x="246" y="257">员工当前角色</text>
+  <text class="card" x="408" y="341">触发</text>
+  <text class="card" x="526" y="377">产生</text>
+  <text class="card" x="390" y="457">登录与管理操作</text>
+
+  <!-- Boxes -->
+  <rect class="box" x="30" y="69" width="180" height="42" fill="#dbeafe" stroke="#3b82f6"/>
+  <text class="name" x="120" y="94">公司</text>
+
+  <rect class="box" x="30" y="139" width="180" height="67" fill="#dbeafe" stroke="#3b82f6"/>
+  <text class="name" x="120" y="168">部门</text>
+  <text class="note" x="120" y="188">末级管理单元</text>
+
+  <rect class="box" x="30" y="234" width="180" height="67" fill="#dbeafe" stroke="#3b82f6"/>
+  <text class="name" x="120" y="263">员工</text>
+  <text class="note" x="120" y="283">唯一用户名、唯一手机号</text>
+
+  <rect class="box" x="30" y="329" width="180" height="67" fill="#f3e8ff" stroke="#a855f7"/>
+  <text class="name" x="120" y="358">管理员身份</text>
+  <text class="note" x="120" y="378">最高管理员或部门管理员</text>
+
+  <rect class="box" x="310" y="69" width="180" height="42" fill="#d1fae5" stroke="#22c55e"/>
+  <text class="name" x="400" y="94">外部系统</text>
+
+  <rect class="box" x="310" y="164" width="180" height="67" fill="#fef3c7" stroke="#f59e0b"/>
+  <text class="name" x="400" y="193">外部角色</text>
+  <text class="note" x="400" y="213">属于一个外部系统</text>
+
+  <rect class="box" x="310" y="259" width="180" height="67" fill="#fef3c7" stroke="#f59e0b"/>
+  <text class="name" x="400" y="288">员工角色分配</text>
+  <text class="note" x="400" y="308">每名员工最多一个角色</text>
+
+  <rect class="box" x="310" y="354" width="180" height="67" fill="#fce7f3" stroke="#ec4899"/>
+  <text class="name" x="400" y="383">同步任务</text>
+  <text class="note" x="400" y="403">开户、换角、撤权、资料更新</text>
+
+  <rect class="box" x="590" y="154" width="180" height="67" fill="#d1fae5" stroke="#22c55e"/>
+  <text class="name" x="680" y="183">权限项</text>
+  <text class="note" x="680" y="203">功能点 + 操作动作</text>
+
+  <rect class="box" x="590" y="379" width="180" height="67" fill="#f3e8ff" stroke="#a855f7"/>
+  <text class="name" x="680" y="408">审计记录</text>
+  <text class="note" x="680" y="428">操作者、对象、变化、结果</text>
+
+  <rect x="30" y="475" width="740" height="55" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-dasharray="6,4"/>
+  <text class="note" x="400" y="498">平台角色与外部角色分开管理。平台角色固定，外部角色由管理员按权限目录配置。</text>
+  <text class="note" x="400" y="516">图中概念和关系用于需求分析，不表示数据库表结构。</text>
+</svg>

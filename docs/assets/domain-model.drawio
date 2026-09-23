@@ -1,0 +1,32 @@
+<mxfile host="app.diagrams.net" modified="2026-09-23T00:00:00.000Z" agent="Codex" version="24.7.17">
+  <diagram id="domain-model" name="Page-1">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/><mxCell id="1" parent="0"/>
+        <mxCell id="title" value="统一权限管理系统领域模型" style="text;html=1;align=center;verticalAlign=middle;fontFamily=PingFang SC;fontSize=16;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="250" y="20" width="300" height="30" as="geometry"/></mxCell>
+        <mxCell id="company" value="公司" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#3b82f6;fontFamily=PingFang SC;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="30" y="70" width="180" height="42" as="geometry"/></mxCell>
+        <mxCell id="department" value="部门&#xa;末级管理单元" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#3b82f6;fontFamily=PingFang SC;" vertex="1" parent="1"><mxGeometry x="30" y="140" width="180" height="66" as="geometry"/></mxCell>
+        <mxCell id="employee" value="员工&#xa;唯一用户名、唯一手机号" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#3b82f6;fontFamily=PingFang SC;" vertex="1" parent="1"><mxGeometry x="30" y="235" width="180" height="66" as="geometry"/></mxCell>
+        <mxCell id="admin" value="管理员身份&#xa;最高管理员或部门管理员" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e8ff;strokeColor=#a855f7;fontFamily=PingFang SC;" vertex="1" parent="1"><mxGeometry x="30" y="330" width="180" height="66" as="geometry"/></mxCell>
+        <mxCell id="system" value="外部系统" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d1fae5;strokeColor=#22c55e;fontFamily=PingFang SC;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="310" y="70" width="180" height="42" as="geometry"/></mxCell>
+        <mxCell id="role" value="外部角色&#xa;属于一个外部系统" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#f59e0b;fontFamily=PingFang SC;" vertex="1" parent="1"><mxGeometry x="310" y="165" width="180" height="66" as="geometry"/></mxCell>
+        <mxCell id="assignment" value="员工角色分配&#xa;每名员工最多一个角色" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#f59e0b;fontFamily=PingFang SC;" vertex="1" parent="1"><mxGeometry x="310" y="260" width="180" height="66" as="geometry"/></mxCell>
+        <mxCell id="sync" value="同步任务&#xa;开户、换角、撤权、资料更新" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fce7f3;strokeColor=#ec4899;fontFamily=PingFang SC;" vertex="1" parent="1"><mxGeometry x="310" y="355" width="180" height="66" as="geometry"/></mxCell>
+        <mxCell id="permission" value="权限项&#xa;功能点 + 操作动作" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d1fae5;strokeColor=#22c55e;fontFamily=PingFang SC;" vertex="1" parent="1"><mxGeometry x="590" y="155" width="180" height="66" as="geometry"/></mxCell>
+        <mxCell id="audit" value="审计记录&#xa;操作者、对象、变化、结果" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e8ff;strokeColor=#a855f7;fontFamily=PingFang SC;" vertex="1" parent="1"><mxGeometry x="590" y="380" width="180" height="66" as="geometry"/></mxCell>
+        <mxCell id="e1" value="包含" style="curved=1;endArrow=block;html=1;fontFamily=PingFang SC;" edge="1" parent="1" source="company" target="department"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e2" value="归属" style="curved=1;endArrow=block;html=1;fontFamily=PingFang SC;" edge="1" parent="1" source="department" target="employee"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e3" value="任命" style="curved=1;endArrow=block;html=1;fontFamily=PingFang SC;" edge="1" parent="1" source="employee" target="admin"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e4" value="0..1 对 0..1" style="curved=1;endArrow=block;html=1;fontFamily=PingFang SC;" edge="1" parent="1" source="department" target="system"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e5" value="拥有" style="curved=1;endArrow=block;html=1;fontFamily=PingFang SC;" edge="1" parent="1" source="system" target="role"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e6" value="提供" style="curved=1;endArrow=block;html=1;fontFamily=PingFang SC;" edge="1" parent="1" source="system" target="permission"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e7" value="包含" style="curved=1;endArrow=block;html=1;fontFamily=PingFang SC;" edge="1" parent="1" source="role" target="permission"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e8" value="角色" style="curved=1;endArrow=block;html=1;fontFamily=PingFang SC;" edge="1" parent="1" source="role" target="assignment"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e9" value="员工" style="curved=1;endArrow=block;html=1;fontFamily=PingFang SC;" edge="1" parent="1" source="employee" target="assignment"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e10" value="触发" style="curved=1;endArrow=block;html=1;fontFamily=PingFang SC;" edge="1" parent="1" source="assignment" target="sync"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e11" value="产生" style="curved=1;endArrow=block;html=1;fontFamily=PingFang SC;" edge="1" parent="1" source="sync" target="audit"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e12" value="登录与管理操作" style="curved=1;endArrow=block;html=1;fontFamily=PingFang SC;" edge="1" parent="1" source="admin" target="audit"><mxGeometry relative="1" as="geometry"/></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

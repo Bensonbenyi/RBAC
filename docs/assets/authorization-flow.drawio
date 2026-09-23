@@ -1,0 +1,41 @@
+<mxfile host="app.diagrams.net" modified="2026-09-23T00:00:00.000Z" agent="Codex" version="24.7.17">
+  <diagram id="authorization-flow" name="Page-1">
+    <mxGraphModel dx="1200" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/><mxCell id="1" parent="0"/>
+        <mxCell id="title" value="角色配置、开户授权和撤权流程" style="text;html=1;align=center;fontFamily=PingFang SC;fontSize=16;fontStyle=1;" vertex="1" parent="1"><mxGeometry x="240" y="20" width="320" height="30" as="geometry"/></mxCell>
+        <mxCell id="lane1" value="管理员" style="swimlane;html=1;horizontal=1;startSize=36;fillColor=#f8fafc;strokeColor=#94a3b8;fontFamily=PingFang SC;" vertex="1" parent="1"><mxGeometry x="20" y="55" width="170" height="570" as="geometry"/></mxCell>
+        <mxCell id="lane2" value="统一权限管理系统" style="swimlane;html=1;horizontal=1;startSize=36;fillColor=#ffffff;strokeColor=#94a3b8;fontFamily=PingFang SC;" vertex="1" parent="1"><mxGeometry x="190" y="55" width="230" height="570" as="geometry"/></mxCell>
+        <mxCell id="lane3" value="外部业务系统" style="swimlane;html=1;horizontal=1;startSize=36;fillColor=#f8fafc;strokeColor=#94a3b8;fontFamily=PingFang SC;" vertex="1" parent="1"><mxGeometry x="420" y="55" width="200" height="570" as="geometry"/></mxCell>
+        <mxCell id="lane4" value="审计记录" style="swimlane;html=1;horizontal=1;startSize=36;fillColor=#ffffff;strokeColor=#94a3b8;fontFamily=PingFang SC;" vertex="1" parent="1"><mxGeometry x="620" y="55" width="160" height="570" as="geometry"/></mxCell>
+        <mxCell id="a1" value="配置角色及权限" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#3b82f6;fontFamily=PingFang SC;" vertex="1" parent="1"><mxGeometry x="36" y="95" width="138" height="56" as="geometry"/></mxCell>
+        <mxCell id="p1" value="校验并保存角色" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#f59e0b;fontFamily=PingFang SC;" vertex="1" parent="1"><mxGeometry x="225" y="95" width="160" height="56" as="geometry"/></mxCell>
+        <mxCell id="au1" value="记录角色变更" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e8ff;strokeColor=#a855f7;fontFamily=PingFang SC;" vertex="1" parent="1"><mxGeometry x="629" y="140" width="142" height="56" as="geometry"/></mxCell>
+        <mxCell id="a2" value="选择员工和角色" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#3b82f6;fontFamily=PingFang SC;" vertex="1" parent="1"><mxGeometry x="36" y="186" width="138" height="56" as="geometry"/></mxCell>
+        <mxCell id="p2" value="检查范围和当前角色" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#f59e0b;fontFamily=PingFang SC;" vertex="1" parent="1"><mxGeometry x="225" y="186" width="160" height="56" as="geometry"/></mxCell>
+        <mxCell id="x1" value="开户或更新角色" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d1fae5;strokeColor=#22c55e;fontFamily=PingFang SC;" vertex="1" parent="1"><mxGeometry x="439" y="229" width="162" height="56" as="geometry"/></mxCell>
+        <mxCell id="x2" value="返回成功或失败" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d1fae5;strokeColor=#22c55e;fontFamily=PingFang SC;" vertex="1" parent="1"><mxGeometry x="439" y="320" width="162" height="56" as="geometry"/></mxCell>
+        <mxCell id="p3" value="更新同步状态" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#f59e0b;fontFamily=PingFang SC;" vertex="1" parent="1"><mxGeometry x="225" y="320" width="160" height="56" as="geometry"/></mxCell>
+        <mxCell id="a3" value="查看逐人结果" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dbeafe;strokeColor=#3b82f6;fontFamily=PingFang SC;" vertex="1" parent="1"><mxGeometry x="36" y="320" width="138" height="56" as="geometry"/></mxCell>
+        <mxCell id="a4" value="选择员工撤权" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fce7f3;strokeColor=#ec4899;fontFamily=PingFang SC;" vertex="1" parent="1"><mxGeometry x="36" y="421" width="138" height="56" as="geometry"/></mxCell>
+        <mxCell id="p4" value="建立撤权任务" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fce7f3;strokeColor=#ec4899;fontFamily=PingFang SC;" vertex="1" parent="1"><mxGeometry x="225" y="421" width="160" height="56" as="geometry"/></mxCell>
+        <mxCell id="x3" value="移除权限并停用账号" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fce7f3;strokeColor=#ec4899;fontFamily=PingFang SC;" vertex="1" parent="1"><mxGeometry x="439" y="421" width="162" height="56" as="geometry"/></mxCell>
+        <mxCell id="p5" value="更新最终状态" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fef3c7;strokeColor=#f59e0b;fontFamily=PingFang SC;" vertex="1" parent="1"><mxGeometry x="225" y="512" width="160" height="56" as="geometry"/></mxCell>
+        <mxCell id="au" value="记录授权全链路" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f3e8ff;strokeColor=#a855f7;fontFamily=PingFang SC;" vertex="1" parent="1"><mxGeometry x="629" y="533" width="142" height="56" as="geometry"/></mxCell>
+        <mxCell id="e1" style="curved=1;endArrow=block;html=1;" edge="1" parent="1" source="a1" target="p1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e1a" style="curved=1;endArrow=block;html=1;" edge="1" parent="1" source="p1" target="au1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e2" style="curved=1;endArrow=block;html=1;" edge="1" parent="1" source="p1" target="a2"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e3" style="curved=1;endArrow=block;html=1;" edge="1" parent="1" source="a2" target="p2"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e4" style="curved=1;endArrow=block;html=1;" edge="1" parent="1" source="p2" target="x1"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e5" style="curved=1;endArrow=block;html=1;" edge="1" parent="1" source="x1" target="x2"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e6" style="curved=1;endArrow=block;html=1;" edge="1" parent="1" source="x2" target="p3"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e7" style="curved=1;endArrow=block;html=1;" edge="1" parent="1" source="p3" target="a3"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e8" style="curved=1;endArrow=block;html=1;" edge="1" parent="1" source="a3" target="a4"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e9" style="curved=1;endArrow=block;html=1;" edge="1" parent="1" source="a4" target="p4"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e10" style="curved=1;endArrow=block;html=1;" edge="1" parent="1" source="p4" target="x3"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e11" style="curved=1;endArrow=block;html=1;" edge="1" parent="1" source="x3" target="p5"><mxGeometry relative="1" as="geometry"/></mxCell>
+        <mxCell id="e12" style="curved=1;endArrow=block;html=1;" edge="1" parent="1" source="p5" target="au"><mxGeometry relative="1" as="geometry"/></mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

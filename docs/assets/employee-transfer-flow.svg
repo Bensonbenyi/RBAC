@@ -1,0 +1,60 @@
+<svg viewBox="0 0 760 440" width="760" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="2" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L8,4 L0,8 L2,4 z" fill="#64748b"/></marker>
+  </defs>
+  <style>
+    text { font-family: 'PingFang SC', 'Microsoft YaHei', 'Noto Sans CJK SC', system-ui, sans-serif; fill: #1e293b; letter-spacing: 0; }
+    .title { font-size: 16px; font-weight: 600; }
+    .lane { font-size: 11px; font-weight: 600; text-anchor: middle; }
+    .step { font-size: 10px; text-anchor: middle; }
+    .note { font-size: 9px; fill: #64748b; text-anchor: middle; }
+    .flow { fill: none; stroke: #64748b; stroke-width: 1.1; marker-end: url(#arrow); }
+  </style>
+  <rect width="760" height="440" fill="#ffffff"/>
+  <text class="title" x="380" y="30" text-anchor="middle">员工跨部门手工调动流程</text>
+
+  <rect x="20" y="55" width="180" height="350" fill="#f8fafc" stroke="#94a3b8"/>
+  <rect x="200" y="55" width="180" height="350" fill="#ffffff" stroke="#94a3b8"/>
+  <rect x="380" y="55" width="180" height="350" fill="#f8fafc" stroke="#94a3b8"/>
+  <rect x="560" y="55" width="180" height="350" fill="#ffffff" stroke="#94a3b8"/>
+  <rect x="20" y="55" width="720" height="36" fill="#e2e8f0" stroke="#94a3b8"/>
+  <line x1="200" y1="55" x2="200" y2="405" stroke="#94a3b8"/>
+  <line x1="380" y1="55" x2="380" y2="405" stroke="#94a3b8"/>
+  <line x1="560" y1="55" x2="560" y2="405" stroke="#94a3b8"/>
+  <text class="lane" x="110" y="78">原部门管理员</text>
+  <text class="lane" x="290" y="78">统一权限管理系统</text>
+  <text class="lane" x="470" y="78">最高管理员</text>
+  <text class="lane" x="650" y="78">新部门管理员</text>
+
+  <path class="flow" d="M179,133 L204,133"/>
+  <path class="flow" d="M290,166 L290,185"/>
+  <path class="flow" d="M370,224 L384,224"/>
+  <path class="flow" d="M470,257 C470,285 350,278 350,292"/>
+  <path class="flow" d="M430,331 C455,366 545,366 564,331"/>
+
+  <rect x="36" y="105" width="138" height="56" rx="6" fill="#fce7f3" stroke="#ec4899"/>
+  <text class="step" x="105" y="129">撤销员工原角色</text>
+  <text class="note" x="105" y="147">等待外部撤权成功</text>
+
+  <rect x="215" y="105" width="150" height="56" rx="6" fill="#fef3c7" stroke="#f59e0b"/>
+  <text class="step" x="290" y="129">同步撤权并停用账号</text>
+  <text class="note" x="290" y="147">成功后角色失效</text>
+
+  <rect x="215" y="196" width="150" height="56" rx="6" fill="#d1fae5" stroke="#22c55e"/>
+  <text class="step" x="290" y="220">确认员工无有效角色</text>
+  <text class="note" x="290" y="238">允许修改所属部门</text>
+
+  <rect x="395" y="196" width="150" height="56" rx="6" fill="#dbeafe" stroke="#3b82f6"/>
+  <text class="step" x="470" y="220">修改员工所属部门</text>
+  <text class="note" x="470" y="238">不继承旧角色</text>
+
+  <rect x="275" y="303" width="150" height="56" rx="6" fill="#fef3c7" stroke="#f59e0b"/>
+  <text class="step" x="350" y="327">员工进入新部门待授权</text>
+  <text class="note" x="350" y="345">当前无外部有效权限</text>
+
+  <rect x="575" y="303" width="150" height="56" rx="6" fill="#dbeafe" stroke="#3b82f6"/>
+  <text class="step" x="650" y="327">选择新系统角色授权</text>
+  <text class="note" x="650" y="345">重新开户并授权</text>
+
+  <text class="note" x="380" y="425">任一步失败时暂停后续步骤，由相应管理员处理后继续。</text>
+</svg>

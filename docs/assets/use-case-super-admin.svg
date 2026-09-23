@@ -1,0 +1,38 @@
+<svg viewBox="0 0 700 430" width="700" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    text { font-family: 'PingFang SC', 'Microsoft YaHei', 'Noto Sans CJK SC', system-ui, sans-serif; fill: #1e293b; letter-spacing: 0; }
+    .title { font-size: 16px; font-weight: 600; }
+    .actor { font-size: 12px; font-weight: 600; text-anchor: middle; }
+    .case { font-size: 11px; text-anchor: middle; }
+    .note { font-size: 10px; fill: #64748b; }
+    .link { fill: none; stroke: #94a3b8; stroke-width: 1.1; }
+  </style>
+  <rect width="700" height="430" fill="#ffffff"/>
+  <text class="title" x="350" y="30" text-anchor="middle">最高管理员用例图</text>
+  <rect x="190" y="55" width="480" height="350" rx="10" fill="#f8fafc" stroke="#94a3b8" stroke-dasharray="6,4"/>
+  <text class="note" x="205" y="74">全部管理范围</text>
+
+  <path class="link" d="M160,220 C205,220 210,110 249,110"/>
+  <path class="link" d="M160,220 C205,220 210,200 249,200"/>
+  <path class="link" d="M160,220 C205,220 210,290 249,290"/>
+  <path class="link" d="M160,220 C270,220 390,110 469,110"/>
+  <path class="link" d="M160,220 C280,220 390,200 469,200"/>
+  <path class="link" d="M160,220 C270,220 390,290 469,290"/>
+
+  <rect x="20" y="193" width="140" height="54" rx="6" fill="#dbeafe" stroke="#3b82f6"/>
+  <text class="actor" x="90" y="224">最高管理员</text>
+
+  <ellipse cx="330" cy="110" rx="81" ry="26" fill="#dbeafe" stroke="#3b82f6"/>
+  <text class="case" x="330" y="114">组织和员工管理</text>
+  <ellipse cx="330" cy="200" rx="81" ry="26" fill="#dbeafe" stroke="#3b82f6"/>
+  <text class="case" x="330" y="204">任命管理员</text>
+  <ellipse cx="330" cy="290" rx="81" ry="26" fill="#dbeafe" stroke="#3b82f6"/>
+  <text class="case" x="330" y="294">系统登记与绑定</text>
+  <ellipse cx="550" cy="110" rx="81" ry="26" fill="#fef3c7" stroke="#f59e0b"/>
+  <text class="case" x="550" y="114">角色与授权管理</text>
+  <ellipse cx="550" cy="200" rx="81" ry="26" fill="#fce7f3" stroke="#ec4899"/>
+  <text class="case" x="550" y="204">全局同步任务</text>
+  <ellipse cx="550" cy="290" rx="81" ry="26" fill="#f3e8ff" stroke="#a855f7"/>
+  <text class="case" x="550" y="294">全局审计与导出</text>
+  <text class="note" x="430" y="375" text-anchor="middle">可代替任一部门管理员处理角色和员工授权。</text>
+</svg>
