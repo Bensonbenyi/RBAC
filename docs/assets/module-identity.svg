@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 306" width="780" role="img" aria-labelledby="title desc">
+  <title id="title">M1 身份认证与会话内部职责</title>
+  <desc id="desc">登录与验证用例查询组织员工资料和系统接入约束，维护进程内统一会话与一次性登录结果，并同步记录审计。箭头表示概念运行调用与状态访问。</desc>
+  <defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="2" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L8,4 L0,8 L2,4 z" fill="#64748b"/></marker></defs>
+  <style>
+    text { font-family: 'PingFang SC', 'Microsoft YaHei', 'Noto Sans CJK SC', system-ui, sans-serif; fill:#1e293b; text-anchor:middle; }
+    .title { font-size:16px; font-weight:600; } .body { font-size:12px; } .note { font-size:10px; fill:#64748b; }
+    .flow { fill:none; stroke:#64748b; stroke-width:1.2; marker-end:url(#arrow); }
+  </style>
+  <rect width="780" height="306" fill="#fff"/>
+  <text class="title" x="390" y="32">M1 身份认证与会话内部职责</text>
+  <!-- Top boxes: x=25/265/545, widths=210/250/210; gap=30. -->
+  <path class="flow" d="M240,108 L254,108"/>
+  <path class="flow" d="M520,108 L534,108"/>
+  <path class="flow" d="M290,149 C290,160 135,152 135,163"/>
+  <path class="flow" d="M390,149 L390,163"/>
+  <path class="flow" d="M490,149 C490,160 645,152 645,163"/>
+  <rect x="25" y="72" width="210" height="72" rx="6" fill="#dbeafe" stroke="#3b82f6"/>
+  <text class="body" x="130" y="99">登录、结果验证与退出</text>
+  <text class="note" x="130" y="117">员工与管理员入口</text>
+  <rect x="265" y="72" width="250" height="72" rx="6" fill="#fef3c7" stroke="#f59e0b"/>
+  <text class="body" x="390" y="99">登录与验证用例</text>
+  <text class="note" x="390" y="117">协调匹配、签发、兑换及失效</text>
+  <rect x="545" y="72" width="210" height="72" rx="6" fill="#d1fae5" stroke="#22c55e"/>
+  <text class="body" x="650" y="99">M6 同步审计</text>
+  <text class="note" x="650" y="117">成功、失败与退出</text>
+  <!-- Lower boxes: x=25/280/535, width=220, gap=35. -->
+  <rect x="25" y="174" width="220" height="72" rx="6" fill="#dbeafe" stroke="#3b82f6"/>
+  <text class="body" x="135" y="198">凭据匹配与员工状态</text>
+  <text class="note" x="135" y="216">通过 M2 读取员工资料</text>
+  <text class="note" x="135" y="234">身份有效后才建立会话</text>
+  <rect x="280" y="174" width="220" height="72" rx="6" fill="#dbeafe" stroke="#3b82f6"/>
+  <text class="body" x="390" y="198">接入约束</text>
+  <text class="note" x="390" y="216">通过 M3 核验系统与返回目标</text>
+  <text class="note" x="390" y="234">限制登录结果的接收系统</text>
+  <rect x="535" y="174" width="220" height="72" rx="6" fill="#d1fae5" stroke="#22c55e"/>
+  <text class="body" x="645" y="198">统一会话与一次性登录结果</text>
+  <text class="note" x="645" y="216">进程内状态，固定到期</text>
+  <text class="note" x="645" y="234">单次兑换、退出及停用失效</text>
+  <text class="note" x="390" y="281">箭头：概念运行调用与状态访问。职责框不规定源码依赖或具体类。</text>
+</svg>

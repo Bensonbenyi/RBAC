@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 780 306" width="780" role="img" aria-labelledby="title desc">
+  <title id="title">M3 系统接入内部职责</title>
+  <desc id="desc">接入用例负责登记系统、识别可信调用来源、核验认可返回目标及部门可用系统，保存接入配置并同步审计。</desc>
+  <defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="2" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L8,4 L0,8 L2,4 z" fill="#64748b"/></marker></defs>
+  <style>
+    text { font-family:'PingFang SC','Microsoft YaHei','Noto Sans CJK SC',system-ui,sans-serif; fill:#1e293b; text-anchor:middle; }
+    .title { font-size:16px; font-weight:600; } .body { font-size:12px; } .note { font-size:10px; fill:#64748b; }
+    .flow { fill:none; stroke:#64748b; stroke-width:1.2; marker-end:url(#arrow); }
+  </style>
+  <rect width="780" height="306" fill="#fff"/>
+  <text class="title" x="390" y="32">M3 系统接入内部职责</text>
+  <path class="flow" d="M250,108 L269,108"/>
+  <path class="flow" d="M505,108 L524,108"/>
+  <path class="flow" d="M305,149 C305,160 135,152 135,163"/>
+  <path class="flow" d="M390,149 L390,163"/>
+  <path class="flow" d="M475,149 C475,160 645,152 645,163"/>
+  <rect x="25" y="72" width="220" height="72" rx="6" fill="#dbeafe" stroke="#3b82f6"/>
+  <text class="body" x="135" y="99">系统登记及接入请求</text>
+  <text class="note" x="135" y="117">最高管理员／已登记系统</text>
+  <rect x="280" y="72" width="220" height="72" rx="6" fill="#fef3c7" stroke="#f59e0b"/>
+  <text class="body" x="390" y="99">系统接入用例</text>
+  <text class="note" x="390" y="117">维护与查询统一接入事实</text>
+  <rect x="535" y="72" width="220" height="72" rx="6" fill="#d1fae5" stroke="#22c55e"/>
+  <text class="body" x="645" y="99">M6 同步审计</text>
+  <text class="note" x="645" y="117">系统与部门范围变更</text>
+  <rect x="25" y="174" width="220" height="72" rx="6" fill="#fef3c7" stroke="#f59e0b"/>
+  <text class="body" x="135" y="198">可信系统识别</text>
+  <text class="note" x="135" y="216">核验系统状态与认可返回目标</text>
+  <text class="note" x="135" y="234">隐藏外部标识及接入差异</text>
+  <rect x="280" y="174" width="220" height="72" rx="6" fill="#fef3c7" stroke="#f59e0b"/>
+  <text class="body" x="390" y="198">部门可用系统规则</text>
+  <text class="note" x="390" y="216">支持多对多可用关系</text>
+  <text class="note" x="390" y="234">管理变更使用 M2 范围校验</text>
+  <rect x="535" y="174" width="220" height="72" rx="6" fill="#d1fae5" stroke="#22c55e"/>
+  <text class="body" x="645" y="198">接入配置保存</text>
+  <text class="note" x="645" y="216">本模块 JPA Repository</text>
+  <text class="note" x="645" y="234">系统、返回目标及部门关系</text>
+  <text class="note" x="390" y="281">箭头：概念运行调用与状态访问。职责框不规定源码依赖或具体类。</text>
+</svg>

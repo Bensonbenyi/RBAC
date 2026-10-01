@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 840 324" width="840" role="img" aria-labelledby="title desc">
+  <title id="title">设计依据与验证证据的对应</title>
+  <desc id="desc">需求及不变量对应DFD处理、对象职责和模块边界，再定位实际代码与验证证据。验证与实现事实反向校准分析和边界，过程允许反复迭代，代码待实现、性能待实测。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="2" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L8,4 L0,8 L2,4 z" fill="#64748b"/></marker>
+    <marker id="feedback" markerWidth="8" markerHeight="8" refX="2" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L8,4 L0,8 L2,4 z" fill="#a855f7"/></marker>
+  </defs>
+  <style>
+    text { font-family:'PingFang SC','Microsoft YaHei','Noto Sans CJK SC',system-ui,sans-serif; fill:#1e293b; text-anchor:middle; }
+    .title { font-size:16px; font-weight:600; } .body { font-size:12px; } .note { font-size:10px; fill:#64748b; }
+    .flow { fill:none; stroke:#64748b; stroke-width:1.2; marker-end:url(#arrow); }
+    .feedback { fill:none; stroke:#a855f7; stroke-width:1.2; stroke-dasharray:5,4; marker-end:url(#feedback); }
+  </style>
+  <rect width="840" height="324" fill="#fff"/>
+  <text class="title" x="420" y="32">设计依据与验证证据的对应</text>
+  <text class="note" x="420" y="52">分析对应可反复校准；当前代码待实现，结果待实测。</text>
+  <!-- Three columns: x=25/300/575, width=240; row gap=30. -->
+  <path class="flow" d="M270,108 L289,108"/>
+  <path class="flow" d="M545,108 L564,108"/>
+  <path class="flow" d="M695,149 L695,163"/>
+  <path class="flow" d="M570,210 L551,210"/>
+  <path class="flow" d="M295,210 L276,210"/>
+  <rect x="25" y="72" width="240" height="72" rx="6" fill="#dbeafe" stroke="#3b82f6"/>
+  <text class="body" x="145" y="99">需求与不变量</text>
+  <text class="note" x="145" y="117">行为、单角色、隔离及 3 秒边界</text>
+  <rect x="300" y="72" width="240" height="72" rx="6" fill="#fef3c7" stroke="#f59e0b"/>
+  <text class="body" x="420" y="99">DFD 处理</text>
+  <text class="note" x="420" y="117">信息输入、转换、来源及输出</text>
+  <rect x="575" y="72" width="240" height="72" rx="6" fill="#fef3c7" stroke="#f59e0b"/>
+  <text class="body" x="695" y="99">对象职责</text>
+  <text class="note" x="695" y="117">状态、不变量、生命周期及协作</text>
+  <rect x="575" y="174" width="240" height="72" rx="6" fill="#f3e8ff" stroke="#a855f7"/>
+  <text class="body" x="695" y="201">模块边界</text>
+  <text class="note" x="695" y="219">信息归属、隐藏细节及依赖方向</text>
+  <rect x="300" y="174" width="240" height="72" rx="6" fill="#f8fafc" stroke="#94a3b8"/>
+  <text class="body" x="420" y="201">代码位置：待实现</text>
+  <text class="note" x="420" y="219">填写实际入口、规则与数据访问</text>
+  <rect x="25" y="174" width="240" height="72" rx="6" fill="#f8fafc" stroke="#94a3b8"/>
+  <text class="body" x="145" y="201">验证证据：待实测</text>
+  <text class="note" x="145" y="219">场景结果、性能及依赖检查</text>
+  <!-- Feedback stays outside the first-column boxes; another feedback rechecks DFD. -->
+  <path class="feedback" d="M20,210 C5,210 5,108 14,108"/>
+  <path class="feedback" d="M420,169 L420,155"/>
+  <text class="note" x="420" y="281">实线：分析对应；虚线：实现与验证反馈，用于修正需求和分解。</text>
+  <text class="note" x="420" y="299">图中顺序帮助追溯决策，反复评价对象职责、模块内聚与接口质量。</text>
+</svg>

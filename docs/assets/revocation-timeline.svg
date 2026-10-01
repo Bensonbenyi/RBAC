@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 378" width="900" role="img" aria-labelledby="title desc">
+  <title id="title">撤权与快照到期时间线</title>
+  <desc id="desc">示例中零秒开始读取旧事实形成快照，零点五秒撤权提交，旧快照绝对截止点为三秒；撤权提交后三秒即三点五秒起任何新鉴权都必须拒绝。命中不能续期，填充耗时和多层读取共用三秒预算，主动失效可提前。</desc>
+  <defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="2" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L8,4 L0,8 L2,4 z" fill="#64748b"/></marker></defs>
+  <style>
+    text { font-family:'PingFang SC','Microsoft YaHei','Noto Sans CJK SC',system-ui,sans-serif; fill:#1e293b; text-anchor:middle; }
+    .title { font-size:16px; font-weight:600; } .body { font-size:12px; } .note { font-size:10px; fill:#64748b; }
+  </style>
+  <rect width="900" height="378" fill="#fff"/>
+  <text class="title" x="450" y="32">撤权与快照到期时间线</text>
+  <text class="note" x="450" y="52">示意样例，非实测数据。撤权先提交，旧快照随后到期。</text>
+  <!-- Timeline: t0=60 (0s), t1=170 (.5s), expiry=720 (3s), deadline=830 (3.5s). -->
+  <rect x="60" y="130" width="110" height="20" rx="3" fill="#dbeafe"/>
+  <rect x="170" y="130" width="550" height="20" rx="3" fill="#fef3c7"/>
+  <rect x="720" y="130" width="110" height="20" rx="3" fill="#d1fae5"/>
+  <path d="M25,140 L869,140" fill="none" stroke="#64748b" stroke-width="1.2" marker-end="url(#arrow)"/>
+  <line x1="60" y1="121" x2="60" y2="158" stroke="#3b82f6" stroke-width="1.2"/>
+  <line x1="170" y1="121" x2="170" y2="158" stroke="#f59e0b" stroke-width="1.2"/>
+  <line x1="720" y1="121" x2="720" y2="158" stroke="#ec4899" stroke-width="1.2"/>
+  <line x1="830" y1="121" x2="830" y2="158" stroke="#22c55e" stroke-width="1.2"/>
+  <circle cx="60" cy="140" r="4" fill="#3b82f6"/>
+  <circle cx="170" cy="140" r="4" fill="#f59e0b"/>
+  <circle cx="720" cy="140" r="4" fill="#ec4899"/>
+  <circle cx="830" cy="140" r="4" fill="#22c55e"/>
+  <text class="body" x="60" y="78">t0 = 0.0 秒</text>
+  <text class="note" x="60" y="96">读取旧事实</text>
+  <text class="note" x="60" y="114">形成快照</text>
+  <text class="body" x="170" y="78">t1 = 0.5 秒</text>
+  <text class="note" x="170" y="96">撤权提交</text>
+  <text class="body" x="720" y="78">t0 + 3 = 3.0 秒</text>
+  <text class="note" x="720" y="96">旧快照到期</text>
+  <text class="body" x="830" y="78">t1 + 3 = 3.5 秒</text>
+  <text class="note" x="830" y="96">最迟拒绝边界</text>
+  <text class="note" x="445" y="180">撤权后旧快照可能命中；示例陈旧窗口为 2.5 秒</text>
+  <text class="note" x="450" y="203">3.0 秒起旧快照不能再用；3.5 秒起任何新鉴权必须反映撤权。</text>
+  <!-- Notes: x=25/318/611, width=263, gaps=30. -->
+  <rect x="25" y="233" width="263" height="72" rx="6" fill="#dbeafe" stroke="#3b82f6"/>
+  <text class="body" x="156" y="257">命中不得续期</text>
+  <text class="note" x="156" y="275">绝对期限由最早事实读取确定</text>
+  <text class="note" x="156" y="293">重复鉴权不能延长旧允许状态</text>
+  <rect x="318" y="233" width="263" height="72" rx="6" fill="#fef3c7" stroke="#f59e0b"/>
+  <text class="body" x="449" y="257">填充耗时占 3 秒预算</text>
+  <text class="note" x="449" y="275">多层缓存不得分别叠加期限</text>
+  <text class="note" x="449" y="293">过期事实不能包装成新快照</text>
+  <rect x="611" y="233" width="263" height="72" rx="6" fill="#d1fae5" stroke="#22c55e"/>
+  <text class="body" x="742" y="257">主动失效可提前</text>
+  <text class="note" x="742" y="275">撤权提交后主动清理快照</text>
+  <text class="note" x="742" y="293">绝对期限仍提供最终上限</text>
+  <text class="note" x="450" y="335">时间点用于解释期限关系；验收从撤权提交完成到后续新请求测量。</text>
+  <text class="note" x="450" y="353">统一退出、员工停用及其他权限变更同样遵守最多 3 秒边界。</text>
+</svg>
