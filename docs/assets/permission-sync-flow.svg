@@ -1,55 +1,68 @@
-<svg viewBox="0 0 700 570" width="700" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="0 0 720 600" width="720" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">权限目录变更与失败重报</title>
+  <desc id="desc">平台校验外部系统目录。失败保留已确认目录，外部系统修正重报；成功整体确认，新增权限不自动授予，停用项失效，并在最多三秒内影响后续鉴权。</desc>
   <defs>
     <marker id="arrow" markerWidth="8" markerHeight="8" refX="2" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L8,4 L0,8 L2,4 z" fill="#64748b"/></marker>
     <marker id="arrow-red" markerWidth="8" markerHeight="8" refX="2" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L8,4 L0,8 L2,4 z" fill="#ef4444"/></marker>
   </defs>
   <style>
-    text { font-family: 'PingFang SC', 'Microsoft YaHei', 'Noto Sans CJK SC', system-ui, sans-serif; fill: #1e293b; letter-spacing: 0; }
-    .title { font-size: 16px; font-weight: 600; }
-    .step { font-size: 11px; text-anchor: middle; }
-    .note { font-size: 9px; fill: #64748b; text-anchor: middle; }
+    text { font-family: 'PingFang SC', 'Microsoft YaHei', 'Noto Sans CJK SC', system-ui, sans-serif; fill: #1e293b; }
+    .title { font-size: 16px; font-weight: 600; text-anchor: middle; }
+    .step { font-size: 12px; text-anchor: middle; }
+    .note { font-size: 10px; fill: #64748b; text-anchor: middle; }
     .flow { fill: none; stroke: #64748b; stroke-width: 1.1; marker-end: url(#arrow); }
+    .failure { fill: none; stroke: #ef4444; stroke-width: 1.1; marker-end: url(#arrow-red); }
   </style>
-  <rect width="700" height="570" fill="#ffffff"/>
-  <text class="title" x="350" y="30" text-anchor="middle">权限目录变更和失败重试流程</text>
+  <rect width="720" height="600" fill="#ffffff"/>
+  <text class="title" x="360" y="32">权限目录变更与失败重报</text>
 
-  <path class="flow" d="M350,111 L350,123"/>
-  <path class="flow" d="M350,195 L350,207"/>
-  <path class="flow" d="M350,279 L350,291"/>
-  <path class="flow" d="M350,363 L350,375"/>
-  <path class="flow" d="M350,447 L350,459"/>
-  <path class="flow" d="M466,414 C500,414 500,331 529,331"/>
-  <path d="M535,359 C500,390 500,498 472,498" fill="none" stroke="#ef4444" stroke-width="1.1" marker-end="url(#arrow-red)"/>
-  <path d="M535,331 C500,286 500,246 472,246" fill="none" stroke="#ef4444" stroke-width="1.1" marker-end="url(#arrow-red)"/>
+  <!-- Main column: x=30, width=300, center=180; gap=30. -->
+  <path class="flow" d="M180,115 L180,129"/>
+  <path class="flow" d="M180,199 L180,213"/>
+  <path class="flow" d="M180,283 L180,297"/>
+  <path class="flow" d="M180,385 L180,399"/>
+  <path class="flow" d="M180,469 L180,483"/>
+  <path class="failure" d="M335,167 L349,167"/>
+  <path class="failure" d="M515,199 L515,213"/>
 
-  <rect x="239" y="50" width="222" height="56" rx="6" fill="#d1fae5" stroke="#22c55e"/>
-  <text class="step" x="350" y="74">外部系统上报权限目录</text>
-  <text class="note" x="350" y="92">新增、修改或停用权限项</text>
+  <rect x="30" y="56" width="300" height="54" rx="6" fill="#dbeafe" stroke="#3b82f6"/>
+  <text class="step" x="180" y="79">外部系统提交权限目录变更</text>
+  <text class="note" x="180" y="97">来源必须对应已登记系统</text>
 
-  <rect x="239" y="134" width="222" height="56" rx="6" fill="#fef3c7" stroke="#f59e0b"/>
-  <text class="step" x="350" y="158">校验系统和权限项</text>
-  <text class="note" x="350" y="176">重复上报不重复创建</text>
+  <rect x="30" y="140" width="300" height="54" rx="6" fill="#fef3c7" stroke="#f59e0b"/>
+  <text class="step" x="180" y="163">校验系统归属与目录完整性</text>
+  <text class="note" x="180" y="181">重复提交不得产生重复权限项</text>
 
-  <rect x="239" y="218" width="222" height="56" rx="6" fill="#fef3c7" stroke="#f59e0b"/>
-  <text class="step" x="350" y="242">更新有效权限目录</text>
-  <text class="note" x="350" y="260">停用项立即失效</text>
+  <rect x="30" y="224" width="300" height="54" rx="6" fill="#d1fae5" stroke="#22c55e"/>
+  <text class="step" x="180" y="247">整体确认有效目录</text>
+  <text class="note" x="180" y="265">记录目录变更和确认结果</text>
 
-  <rect x="239" y="302" width="222" height="56" rx="6" fill="#fef3c7" stroke="#f59e0b"/>
-  <text class="step" x="350" y="326">计算受影响角色和员工</text>
-  <text class="note" x="350" y="344">建立权限更新或撤权任务</text>
+  <rect x="30" y="308" width="300" height="72" rx="6" fill="#fef3c7" stroke="#f59e0b"/>
+  <text class="step" x="180" y="330">更新权限有效状态</text>
+  <text class="note" x="180" y="348">新增权限默认不授予</text>
+  <text class="note" x="180" y="366">停用权限从有效角色中排除</text>
 
-  <rect x="239" y="386" width="222" height="56" rx="6" fill="#dbeafe" stroke="#3b82f6"/>
-  <text class="step" x="350" y="410">向外部系统同步当前目标状态</text>
-  <text class="note" x="350" y="428">发送结果应可重复处理</text>
+  <rect x="30" y="410" width="300" height="54" rx="6" fill="#fef3c7" stroke="#f59e0b"/>
+  <text class="step" x="180" y="433">更新版本并使旧鉴权快照失效</text>
+  <text class="note" x="180" y="451">确认提交后最多 3 秒</text>
 
-  <rect x="239" y="470" width="222" height="56" rx="6" fill="#d1fae5" stroke="#22c55e"/>
-  <text class="step" x="350" y="494">更新生效状态并记录审计</text>
-  <text class="note" x="350" y="512">成功任务结束</text>
+  <rect x="30" y="494" width="300" height="54" rx="6" fill="#d1fae5" stroke="#22c55e"/>
+  <text class="step" x="180" y="517">后续鉴权采用新有效权限</text>
+  <text class="note" x="180" y="535">业务数据仍由外部系统处理</text>
 
-  <rect x="540" y="303" width="135" height="56" rx="6" fill="#fce7f3" stroke="#ec4899"/>
-  <text class="step" x="607" y="327">同步失败</text>
-  <text class="note" x="607" y="345">保留失败原因</text>
+  <!-- Failure column: x=360, width=310, right=670. -->
+  <rect x="360" y="140" width="310" height="54" rx="6" fill="#fce7f3" stroke="#ec4899"/>
+  <text class="step" x="515" y="163">校验失败，返回失败原因</text>
+  <text class="note" x="515" y="181">保留已确认目录，不接受部分更新</text>
 
-  <text class="note" x="522" y="285">失败</text>
-  <text class="note" x="504" y="455">自动或人工重试</text>
+  <rect x="360" y="224" width="310" height="54" rx="6" fill="#dbeafe" stroke="#3b82f6"/>
+  <text class="step" x="515" y="247">外部系统修正后重新提交</text>
+  <text class="note" x="515" y="265">重报仍需完整校验</text>
+
+  <text class="note" x="154" y="211">通过</text>
+  <text class="note" x="345" y="150">失败</text>
+  <!-- Retry passes above the failure column, outside its right boundary. -->
+  <path class="failure" d="M675,251 C695,251 695,83 675,83 C600,83 410,83 341,83"/>
+  <text class="note" x="515" y="123">修正重报</text>
+  <text class="note" x="360" y="575">目录确认与失败重报均留痕；后续鉴权统一使用有效目录。</text>
 </svg>

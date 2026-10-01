@@ -1,60 +1,54 @@
-<svg viewBox="0 0 760 440" width="760" xmlns="http://www.w3.org/2000/svg">
+<svg viewBox="0 0 700 520" width="700" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">员工跨部门手工调动</title>
+  <desc id="desc">原部门先撤销员工全部系统角色。确认无剩余角色且撤权已生效后，最高管理员调整部门并取消原部门管理员身份，新部门重新授权。条件未满足则禁止调动，不自动继承权限。</desc>
   <defs>
     <marker id="arrow" markerWidth="8" markerHeight="8" refX="2" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L8,4 L0,8 L2,4 z" fill="#64748b"/></marker>
+    <marker id="arrow-red" markerWidth="8" markerHeight="8" refX="2" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L8,4 L0,8 L2,4 z" fill="#ef4444"/></marker>
   </defs>
   <style>
-    text { font-family: 'PingFang SC', 'Microsoft YaHei', 'Noto Sans CJK SC', system-ui, sans-serif; fill: #1e293b; letter-spacing: 0; }
-    .title { font-size: 16px; font-weight: 600; }
-    .lane { font-size: 11px; font-weight: 600; text-anchor: middle; }
-    .step { font-size: 10px; text-anchor: middle; }
-    .note { font-size: 9px; fill: #64748b; text-anchor: middle; }
+    text { font-family: 'PingFang SC', 'Microsoft YaHei', 'Noto Sans CJK SC', system-ui, sans-serif; fill: #1e293b; }
+    .title { font-size: 16px; font-weight: 600; text-anchor: middle; }
+    .step { font-size: 12px; text-anchor: middle; }
+    .note { font-size: 10px; fill: #64748b; text-anchor: middle; }
     .flow { fill: none; stroke: #64748b; stroke-width: 1.1; marker-end: url(#arrow); }
+    .failure { fill: none; stroke: #ef4444; stroke-width: 1.1; marker-end: url(#arrow-red); }
   </style>
-  <rect width="760" height="440" fill="#ffffff"/>
-  <text class="title" x="380" y="30" text-anchor="middle">员工跨部门手工调动流程</text>
+  <rect width="700" height="520" fill="#ffffff"/>
+  <text class="title" x="350" y="32">员工跨部门手工调动</text>
 
-  <rect x="20" y="55" width="180" height="350" fill="#f8fafc" stroke="#94a3b8"/>
-  <rect x="200" y="55" width="180" height="350" fill="#ffffff" stroke="#94a3b8"/>
-  <rect x="380" y="55" width="180" height="350" fill="#f8fafc" stroke="#94a3b8"/>
-  <rect x="560" y="55" width="180" height="350" fill="#ffffff" stroke="#94a3b8"/>
-  <rect x="20" y="55" width="720" height="36" fill="#e2e8f0" stroke="#94a3b8"/>
-  <line x1="200" y1="55" x2="200" y2="405" stroke="#94a3b8"/>
-  <line x1="380" y1="55" x2="380" y2="405" stroke="#94a3b8"/>
-  <line x1="560" y1="55" x2="560" y2="405" stroke="#94a3b8"/>
-  <text class="lane" x="110" y="78">原部门管理员</text>
-  <text class="lane" x="290" y="78">统一权限管理系统</text>
-  <text class="lane" x="470" y="78">最高管理员</text>
-  <text class="lane" x="650" y="78">新部门管理员</text>
+  <!-- Main column: x=30, width=320, center=190; gap=30. -->
+  <path class="flow" d="M190,115 L190,129"/>
+  <path class="flow" d="M190,199 L190,213"/>
+  <path class="flow" d="M190,301 L190,315"/>
+  <path class="flow" d="M190,385 L190,399"/>
+  <path class="failure" d="M355,167 L369,167"/>
 
-  <path class="flow" d="M179,133 L204,133"/>
-  <path class="flow" d="M290,166 L290,185"/>
-  <path class="flow" d="M370,224 L384,224"/>
-  <path class="flow" d="M470,257 C470,285 350,278 350,292"/>
-  <path class="flow" d="M430,331 C455,366 545,366 564,331"/>
+  <rect x="30" y="56" width="320" height="54" rx="6" fill="#fce7f3" stroke="#ec4899"/>
+  <text class="step" x="190" y="79">原部门管理员撤销员工全部系统角色</text>
+  <text class="note" x="190" y="97">覆盖原部门下的所有系统授权</text>
 
-  <rect x="36" y="105" width="138" height="56" rx="6" fill="#fce7f3" stroke="#ec4899"/>
-  <text class="step" x="105" y="129">撤销员工原角色</text>
-  <text class="note" x="105" y="147">等待外部撤权成功</text>
+  <rect x="30" y="140" width="320" height="54" rx="6" fill="#fef3c7" stroke="#f59e0b"/>
+  <text class="step" x="190" y="163">核对无剩余角色</text>
+  <text class="note" x="190" y="181">且有效权限撤销已生效</text>
 
-  <rect x="215" y="105" width="150" height="56" rx="6" fill="#fef3c7" stroke="#f59e0b"/>
-  <text class="step" x="290" y="129">同步撤权并停用账号</text>
-  <text class="note" x="290" y="147">成功后角色失效</text>
+  <rect x="30" y="224" width="320" height="72" rx="6" fill="#dbeafe" stroke="#3b82f6"/>
+  <text class="step" x="190" y="246">最高管理员调整所属部门</text>
+  <text class="note" x="190" y="264">取消原部门管理员身份（若有）</text>
+  <text class="note" x="190" y="282">保存后不继承旧角色</text>
 
-  <rect x="215" y="196" width="150" height="56" rx="6" fill="#d1fae5" stroke="#22c55e"/>
-  <text class="step" x="290" y="220">确认员工无有效角色</text>
-  <text class="note" x="290" y="238">允许修改所属部门</text>
+  <rect x="30" y="326" width="320" height="54" rx="6" fill="#dbeafe" stroke="#3b82f6"/>
+  <text class="step" x="190" y="349">新部门管理员重新授权</text>
+  <text class="note" x="190" y="367">仅选择本部门可用系统的角色</text>
 
-  <rect x="395" y="196" width="150" height="56" rx="6" fill="#dbeafe" stroke="#3b82f6"/>
-  <text class="step" x="470" y="220">修改员工所属部门</text>
-  <text class="note" x="470" y="238">不继承旧角色</text>
+  <rect x="30" y="410" width="320" height="54" rx="6" fill="#d1fae5" stroke="#22c55e"/>
+  <text class="step" x="190" y="433">后续鉴权取得新有效权限</text>
+  <text class="note" x="190" y="451">授权提交后最多 3 秒生效</text>
 
-  <rect x="275" y="303" width="150" height="56" rx="6" fill="#fef3c7" stroke="#f59e0b"/>
-  <text class="step" x="350" y="327">员工进入新部门待授权</text>
-  <text class="note" x="350" y="345">当前无外部有效权限</text>
+  <rect x="380" y="140" width="290" height="54" rx="6" fill="#fce7f3" stroke="#ec4899"/>
+  <text class="step" x="525" y="163">条件未满足，禁止调动</text>
+  <text class="note" x="525" y="181">保留原部门，先完成撤权</text>
 
-  <rect x="575" y="303" width="150" height="56" rx="6" fill="#dbeafe" stroke="#3b82f6"/>
-  <text class="step" x="650" y="327">选择新系统角色授权</text>
-  <text class="note" x="650" y="345">重新开户并授权</text>
-
-  <text class="note" x="380" y="425">任一步失败时暂停后续步骤，由相应管理员处理后继续。</text>
+  <text class="note" x="158" y="211">通过</text>
+  <text class="note" x="365" y="150">失败</text>
+  <text class="note" x="350" y="495">所有步骤留痕；调动期间由管理员手工处理，不自动继承权限。</text>
 </svg>
