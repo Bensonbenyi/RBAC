@@ -31,6 +31,7 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
+import org.springframework.security.oauth2.server.authorization.authentication.ClientSecretAuthenticationProvider;
 import org.springframework.security.oauth2.server.authorization.authentication.OAuth2AuthorizationCodeAuthenticationProvider;
 import org.springframework.security.oauth2.server.authorization.authentication.OAuth2TokenIntrospectionAuthenticationProvider;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
@@ -140,6 +141,7 @@ public class SecurityConfiguration {
     OAuth2AuthorizationServerConfigurer server =
         OAuth2AuthorizationServerConfigurer.authorizationServer();
     OidcLogoutAuthenticationSuccessHandler logout = new OidcLogoutAuthenticationSuccessHandler();
+    var secretVerifier = new ClientSecretVerifier();
     logout.setLogoutHandler(
         (request, response, authentication) -> {
           var oidc = (OidcLogoutAuthenticationToken) authentication;
@@ -165,6 +167,17 @@ public class SecurityConfiguration {
             server,
             config ->
                 config
+                    .clientAuthentication(
+                        client ->
+                            client.authenticationProviders(
+                                providers -> {
+                                  for (var provider : providers) {
+                                    if (provider
+                                        instanceof ClientSecretAuthenticationProvider secret) {
+                                      secret.setPasswordEncoder(secretVerifier);
+                                    }
+                                  }
+                                }))
                     .tokenIntrospectionEndpoint(
                         endpoint ->
                             endpoint.authenticationProviders(
@@ -359,6 +372,8 @@ public class SecurityConfiguration {
                     new org.springframework.security.web.util.matcher.AntPathRequestMatcher(
                         "/api/admin/**")))
         .csrf(Customizer.withDefaults())
+        .addFilterAfter(
+            new ManagementWriteGateFilter(), org.springframework.security.web.csrf.CsrfFilter.class)
         .addFilterAfter(new AbsoluteSessionFilter(identity), SecurityContextHolderFilter.class);
     return http.build();
   }
