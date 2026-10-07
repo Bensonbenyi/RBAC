@@ -133,6 +133,18 @@ class FoundationIntegrationTest {
     assertThat(catalog.report(oa.id(), 2, items)).isTrue();
     assertThat(catalog.report(oa.id(), 2, items)).isFalse();
     assertThat(catalog.permissions(oa.id())).noneMatch(CatalogApi.Permission::active);
+    var restored =
+        old.stream()
+            .map(
+                p ->
+                    new CatalogApi.DirectoryItem(
+                        p.key(), p.module(), p.feature(), p.action(), true))
+            .toList();
+    catalog.report(oa.id(), 3, restored);
+    assertThat(catalog.roles(1, oa.id(), null)).allMatch(r -> r.permissions().isEmpty());
+    assertThatThrownBy(() -> catalog.report(oa.id(), 4, List.of()))
+        .isInstanceOf(BusinessException.class);
+    assertThat(integration.system(oa.id()).directoryRevision()).isEqualTo(3);
   }
 
   @Test

@@ -63,6 +63,7 @@ public class CatalogService implements CatalogApi {
       organization.requireDepartmentScope(actorId, departmentId);
     }
     return roles.findAll().stream()
+        .filter(r -> !r.deleted)
         .filter(r -> systemId == null || Objects.equals(r.systemId, systemId))
         .filter(
             r -> departmentId == null || r.template || Objects.equals(r.departmentId, departmentId))
@@ -79,6 +80,7 @@ public class CatalogService implements CatalogApi {
   @Override
   @Transactional
   public Role save(long actorId, RoleChange change) {
+    organization.lockManagement(actorId);
     organization.requireDepartmentScope(actorId, change.departmentId());
     if (change.template() != (change.departmentId() == null)) {
       throw BusinessException.conflict("模板须为全局范围，部门角色须指定部门");
@@ -95,7 +97,8 @@ public class CatalogService implements CatalogApi {
     RoleEntity entity =
         change.id() == null ? new RoleEntity() : roles.lock(change.id()).orElseThrow();
     if (change.id() != null
-        && (entity.getVersion() != change.version()
+        && (entity.deleted
+            || entity.getVersion() != change.version()
             || !Objects.equals(entity.departmentId, change.departmentId())
             || !Objects.equals(entity.systemId, change.systemId())
             || entity.template != change.template())) {
@@ -150,6 +153,7 @@ public class CatalogService implements CatalogApi {
   @Override
   @Transactional
   public Role copy(long actorId, long templateId, long departmentId, String name) {
+    organization.lockManagement(actorId);
     organization.requireDepartmentScope(actorId, departmentId);
     Role template = role(templateId);
     integration.lock(template.systemId());
@@ -161,6 +165,34 @@ public class CatalogService implements CatalogApi {
         actorId,
         new RoleChange(
             null, template.systemId(), departmentId, name, false, true, 0, template.permissions()));
+  }
+
+  @Override
+  @Transactional
+  public void delete(long actorId, long roleId, long expectedVersion) {
+    organization.lockManagement(actorId);
+    var fact = role(roleId);
+    organization.requireDepartmentScope(actorId, fact.departmentId());
+    integration.lock(fact.systemId());
+    var entity = roles.lock(roleId).orElseThrow();
+    if (entity.deleted || entity.getVersion() != expectedVersion) {
+      throw BusinessException.conflict("角色已变化，请刷新后确认");
+    }
+    entity.deleted = true;
+    entity.active = false;
+    entity.permissions.clear();
+    entity.contentRevision++;
+    roles.flush();
+    audit.record(
+        new AuditApi.Event(
+            actorId,
+            entity.departmentId,
+            null,
+            entity.systemId,
+            "ROLE_DELETED",
+            "role:" + roleId,
+            "SUCCESS",
+            "确认无分配后逻辑删除角色 " + entity.name));
   }
 
   @Override
@@ -186,6 +218,9 @@ public class CatalogService implements CatalogApi {
       }
     }
     List<PermissionEntity> existing = permissions.findBySystemId(systemId);
+    if (existing.stream().anyMatch(p -> p.active && !incoming.containsKey(p.permissionKey))) {
+      throw new BusinessException(400, "INCOMPLETE_DIRECTORY", "有效历史项不能遗漏；停用须明确上报 active=false");
+    }
     if (revision == system.directoryRevision()) {
       // 同版本仅接受等价重报；已遗漏而停用的历史项不算本次目录内容。
       boolean equal =
@@ -203,8 +238,12 @@ public class CatalogService implements CatalogApi {
       return false;
     }
     Set<String> seen = new HashSet<>();
+    Set<Long> disabled = new HashSet<>();
     for (PermissionEntity entity : existing) {
       DirectoryItem item = incoming.get(entity.permissionKey);
+      if (entity.active && item != null && !item.active()) {
+        disabled.add(entity.getId());
+      }
       if (item == null) {
         entity.active = false;
       } else {
@@ -221,6 +260,18 @@ public class CatalogService implements CatalogApi {
       }
     }
     permissions.flush();
+    // 明确停用时从选择集中撤下，重新启用不会悄悄恢复旧授权；须管理员重新选择。
+    if (!disabled.isEmpty()) {
+      roles.findAll().stream()
+          .filter(r -> Objects.equals(r.systemId, systemId))
+          .forEach(
+              r -> {
+                if (r.permissions.removeAll(disabled)) {
+                  r.contentRevision++;
+                }
+              });
+      roles.flush();
+    }
     integration.advanceDirectory(systemId, revision);
     audit.record(
         new AuditApi.Event(
@@ -231,13 +282,14 @@ public class CatalogService implements CatalogApi {
             "DIRECTORY_ACCEPTED",
             "directory:" + revision,
             "SUCCESS",
-            "接收完整目录，缺失权限停用；新增项不自动授予"));
+            "接收完整目录；明确停用项撤下选择，重新启用或新增项不自动授予"));
     return true;
   }
 
   private RoleEntity find(long id) {
     return roles
         .findById(id)
+        .filter(r -> !r.deleted)
         .orElseThrow(() -> new BusinessException(404, "ROLE_UNKNOWN", "角色不存在"));
   }
 

@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
@@ -27,6 +28,7 @@ public class BatchService implements BatchApi {
   private final AuditApi audit;
   private final TransactionTemplate transaction;
   private final Set<Long> running = ConcurrentHashMap.newKeySet();
+  private final ReentrantLock[] requestLocks = new ReentrantLock[256];
 
   /** 注入本模块任务存储与公开授权、管理范围能力. */
   public BatchService(
@@ -42,10 +44,29 @@ public class BatchService implements BatchApi {
     this.organization = organization;
     this.audit = audit;
     this.transaction = transaction;
+    for (int i = 0; i < requestLocks.length; i++) {
+      requestLocks[i] = new ReentrantLock();
+    }
   }
 
   @Override
   public Job submit(long actorId, Request request) {
+    if (request == null || request.requestKey() == null) {
+      throw new BusinessException(400, "INVALID_BATCH", "缺少批量请求标识");
+    }
+    // 同一幂等标识的并发提交在单节点排队，第二次读取已保存结果，而非碰唯一键报错。
+    var lock =
+        requestLocks[
+            Math.floorMod((actorId + ":" + request.requestKey()).hashCode(), requestLocks.length)];
+    lock.lock();
+    try {
+      return submitOwned(actorId, request);
+    } finally {
+      lock.unlock();
+    }
+  }
+
+  private Job submitOwned(long actorId, Request request) {
     validate(actorId, request.targets());
     if (request.requestKey() == null || !request.requestKey().matches("[A-Za-z0-9-]{8,80}")) {
       throw new BusinessException(400, "INVALID_BATCH", "批量请求标识格式错误");
@@ -122,11 +143,19 @@ public class BatchService implements BatchApi {
 
   @Override
   public Job retry(long actorId, long jobId, List<Target> targets) {
-    Job job = requireJob(actorId, jobId);
-    validate(actorId, targets);
-    if (running.contains(jobId)) {
+    if (!running.add(jobId)) {
       throw BusinessException.conflict("任务正在执行");
     }
+    try {
+      return retryOwned(actorId, jobId, targets);
+    } finally {
+      running.remove(jobId);
+    }
+  }
+
+  private Job retryOwned(long actorId, long jobId, List<Target> targets) {
+    Job job = requireJob(actorId, jobId);
+    validate(actorId, targets);
     Map<Long, Long> desired =
         targets.stream().collect(Collectors.toMap(Target::employeeId, Target::expectedVersion));
     transaction.executeWithoutResult(
@@ -160,7 +189,7 @@ public class BatchService implements BatchApi {
                   "SUCCESS",
                   "明确确认新版本后重试"));
         });
-    execute(actorId, jobId);
+    execute(actorId, jobId, true);
     return requireJob(actorId, jobId);
   }
 
@@ -185,7 +214,11 @@ public class BatchService implements BatchApi {
   }
 
   private void execute(long actorId, long jobId) {
-    if (!running.add(jobId)) {
+    execute(actorId, jobId, false);
+  }
+
+  private void execute(long actorId, long jobId, boolean alreadyOwned) {
+    if (!alreadyOwned && !running.add(jobId)) {
       throw BusinessException.conflict("任务正在执行");
     }
     try {
@@ -224,7 +257,9 @@ public class BatchService implements BatchApi {
                     : "PARTIAL_FAILURE";
           });
     } finally {
-      running.remove(jobId);
+      if (!alreadyOwned) {
+        running.remove(jobId);
+      }
     }
   }
 

@@ -10,6 +10,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 /** 将服务端拒绝转为统一错误语义，保留业务拒绝和技术失败的区别. */
 @RestControllerAdvice
 public class FailureAdvice {
+  /** 不存在的业务对象是可识别的输入错误，不泄露底层查询信息. */
+  @ExceptionHandler(java.util.NoSuchElementException.class)
+  public ProblemDetail missing(java.util.NoSuchElementException failure) {
+    return business(new BusinessException(404, "NOT_FOUND", "对象不存在，请刷新资料"));
+  }
+
   /** 输出可用于界面提示的稳定代码，不泄露数据库或认证资料. */
   @ExceptionHandler(BusinessException.class)
   public ProblemDetail business(BusinessException failure) {

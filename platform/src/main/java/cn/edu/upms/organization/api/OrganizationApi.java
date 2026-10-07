@@ -45,6 +45,9 @@ public interface OrganizationApi {
   /** 校验管理员身份；最高管理员具有全局范围. */
   Employee administrator(long actorId);
 
+  /** 管理写入先取得同一治理锁并重新读取管理员；课程单节点采用粗粒度写入隔离. */
+  void lockManagement(long actorId);
+
   /** 校验操作者是否可维护指定员工. */
   void requireEmployeeScope(long actorId, long employeeId);
 

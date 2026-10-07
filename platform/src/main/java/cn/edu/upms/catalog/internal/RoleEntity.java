@@ -19,6 +19,7 @@ class RoleEntity extends PersistentRecord {
   String name;
   boolean template;
   boolean active = true;
+  boolean deleted;
   long contentRevision;
 
   @ElementCollection

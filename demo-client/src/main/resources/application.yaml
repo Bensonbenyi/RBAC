@@ -31,3 +31,4 @@ demo:
   title: ${DEMO_TITLE:OA 协同办公演示}
   permission-read: ${DEMO_READ:f001:查看}
   permission-write: ${DEMO_WRITE:f002:新增}
+  permission-own: ${DEMO_OWN:demo-own:查看本人}

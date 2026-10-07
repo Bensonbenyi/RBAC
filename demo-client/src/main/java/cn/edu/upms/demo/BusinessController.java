@@ -30,6 +30,7 @@ public class BusinessController {
   private final String title;
   private final String readPermission;
   private final String writePermission;
+  private final String ownPermission;
   private final RestClient platform;
   private final CopyOnWriteArrayList<Document> documents = new CopyOnWriteArrayList<>();
   private final AtomicLong ids = new AtomicLong();
@@ -40,11 +41,13 @@ public class BusinessController {
       @Value("${demo.title}") String title,
       @Value("${demo.permission-read}") String readPermission,
       @Value("${demo.permission-write}") String writePermission,
+      @Value("${demo.permission-own}") String ownPermission,
       @Value("${demo.platform}") String url) {
     this.system = system;
     this.title = title;
     this.readPermission = readPermission;
     this.writePermission = writePermission;
+    this.ownPermission = ownPermission;
     var factory =
         new org.springframework.http.client.JdkClientHttpRequestFactory(
             java.net.http.HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(1)).build());
@@ -100,14 +103,14 @@ public class BusinessController {
     return home(user, model);
   }
 
-  /** 本人编辑示例同时检查权限和记录所有者，不让平台判断业务记录归属. */
+  /** 本人查看示例同时检查独立权限和记录所有者，不让平台判断业务记录归属. */
   @PostMapping("/documents/own")
   public String own(
       @AuthenticationPrincipal OidcUser user,
       @RegisteredOAuth2AuthorizedClient("upms") OAuth2AuthorizedClient client,
       @RequestParam long id,
       Model model) {
-    if (!authorize(client, writePermission, model)) {
+    if (!authorize(client, ownPermission, model)) {
       return home(user, model);
     }
     boolean owned =

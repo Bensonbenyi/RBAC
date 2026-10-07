@@ -36,6 +36,7 @@ public class EmployeeLifecycle {
   public OrganizationApi.Employee state(
       long actorId, long employeeId, boolean active, long version) {
     audit.requireAvailable();
+    organization.lockManagement(actorId);
     organization.requireEmployeeScope(actorId, employeeId);
     var employee = organization.lockEmployee(employeeId);
     if (employee.version() != version) {
@@ -60,6 +61,7 @@ public class EmployeeLifecycle {
   public OrganizationApi.Employee transfer(
       long actorId, long employeeId, long departmentId, long version) {
     audit.requireAvailable();
+    organization.lockManagement(actorId);
     if (!organization.administrator(actorId).superAdmin()) {
       throw BusinessException.forbidden();
     }

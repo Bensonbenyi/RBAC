@@ -56,6 +56,9 @@ public interface CatalogApi {
   /** 新建、更新或停用角色；新增权限不会自动加入已有角色. */
   Role save(long actorId, RoleChange change);
 
+  /** 删除已由上层确认无员工分配的角色；历史资料保留，前台不再显示. */
+  void delete(long actorId, long roleId, long expectedVersion);
+
   /** 复制模板为部门角色；后续模板更新不会传播. */
   Role copy(long actorId, long templateId, long departmentId, String name);
 

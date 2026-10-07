@@ -6,16 +6,21 @@ import cn.edu.upms.catalog.api.CatalogApi;
 import cn.edu.upms.integration.api.IntegrationApi;
 import cn.edu.upms.organization.api.OrganizationApi;
 import cn.edu.upms.shared.BusinessException;
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 /** 以员工锁、唯一约束和版本检查实现单角色写入，并从当前事实逐次判断权限. */
 @Service
@@ -25,6 +30,15 @@ public class AuthorizationService implements AuthorizationApi {
   private final IntegrationApi integration;
   private final CatalogApi catalog;
   private final AuditApi audit;
+  private final boolean cacheEnabled;
+  private final TransactionTemplate reading;
+
+  private record Key(long employeeId, long systemId) {}
+
+  private record Snapshot(Effective facts, long deadline) {}
+
+  private final Cache<Key, Snapshot> snapshots =
+      Caffeine.newBuilder().maximumSize(20000).expireAfterWrite(Duration.ofSeconds(2)).build();
 
   /** 只依赖其它模块的公开事实与能力，禁止跨模块实体访问. */
   public AuthorizationService(
@@ -32,12 +46,18 @@ public class AuthorizationService implements AuthorizationApi {
       OrganizationApi organization,
       IntegrationApi integration,
       CatalogApi catalog,
-      AuditApi audit) {
+      AuditApi audit,
+      PlatformTransactionManager manager,
+      @Value("${upms.cache-enabled:false}") boolean cacheEnabled) {
     this.assignments = assignments;
     this.organization = organization;
     this.integration = integration;
     this.catalog = catalog;
     this.audit = audit;
+    this.cacheEnabled = cacheEnabled;
+    reading = new TransactionTemplate(manager);
+    reading.setReadOnly(true);
+    reading.setIsolationLevelName("ISOLATION_READ_COMMITTED");
   }
 
   @Override
@@ -56,11 +76,10 @@ public class AuthorizationService implements AuthorizationApi {
   }
 
   @Override
-  @Transactional(isolation = Isolation.READ_COMMITTED)
   public Decision decide(long employeeId, long systemId, String permissionKey) {
     long started = System.nanoTime();
     audit.requireAvailable();
-    Effective facts = readEffective(employeeId, systemId);
+    Effective facts = runtimeFacts(employeeId, systemId);
     boolean allowed = permissionKey != null && facts.permissions().contains(permissionKey);
     String reason =
         allowed
@@ -89,8 +108,9 @@ public class AuthorizationService implements AuthorizationApi {
   public Assignment change(
       long actorId, long employeeId, long systemId, Long roleId, long expectedVersion) {
     audit.requireAvailable();
+    organization.lockManagement(actorId);
     organization.requireEmployeeScope(actorId, employeeId);
-    // 统一锁顺序：员工、系统、角色。停用和调动同样先取得员工锁。
+    // 统一锁顺序：治理锁、员工、系统、角色。组织变更及管理员取消先取相同治理锁。
     var employee = organization.lockEmployee(employeeId);
     organization.requireEmployeeScope(actorId, employeeId);
     var system = integration.lock(systemId);
@@ -123,6 +143,7 @@ public class AuthorizationService implements AuthorizationApi {
     entity.revoked = roleId == null;
     entity.changedAt = Instant.now();
     assignments.saveAndFlush(entity);
+    afterCommitEvict(employeeId, systemId);
     audit.record(
         new AuditApi.Event(
             actorId,
@@ -146,6 +167,7 @@ public class AuthorizationService implements AuthorizationApi {
         entity.revoked = true;
         entity.roleId = null;
         entity.changedAt = Instant.now();
+        afterCommitEvict(employeeId, entity.systemId);
         audit.record(
             new AuditApi.Event(
                 actorId,
@@ -228,6 +250,38 @@ public class AuthorizationService implements AuthorizationApi {
                     && Objects.equals(role.departmentId(), employee.departmentId()),
                 keys));
     return new Effective(assignment, role, result.permissions(), result.reason());
+  }
+
+  private Effective runtimeFacts(long employeeId, long systemId) {
+    if (!cacheEnabled) {
+      return reading.execute(status -> readEffective(employeeId, systemId));
+    }
+    Key key = new Key(employeeId, systemId);
+    Snapshot snapshot = snapshots.getIfPresent(key);
+    long now = System.nanoTime();
+    if (snapshot != null && now < snapshot.deadline()) {
+      return snapshot.facts();
+    }
+    // 从最早读取前计时，读取耗时不额外增加陈旧期限；命中绝不续期。
+    long started = now;
+    Effective facts = reading.execute(status -> readEffective(employeeId, systemId));
+    long deadline = started + Duration.ofSeconds(2).toNanos();
+    if (System.nanoTime() >= deadline) {
+      throw BusinessException.unavailable();
+    }
+    snapshots.put(key, new Snapshot(facts, deadline));
+    return facts;
+  }
+
+  private void afterCommitEvict(long employeeId, long systemId) {
+    org.springframework.transaction.support.TransactionSynchronizationManager
+        .registerSynchronization(
+            new org.springframework.transaction.support.TransactionSynchronization() {
+              @Override
+              public void afterCommit() {
+                snapshots.invalidate(new Key(employeeId, systemId));
+              }
+            });
   }
 
   private static Assignment view(AssignmentEntity entity) {

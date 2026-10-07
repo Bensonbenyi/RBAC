@@ -65,6 +65,7 @@ public class IntegrationService implements IntegrationApi {
   @Override
   @Transactional
   public SystemFact save(long actorId, SystemChange change) {
+    organization.lockManagement(actorId);
     global(actorId);
     SystemEntity entity =
         change.id() == null ? new SystemEntity() : systems.lock(change.id()).orElseThrow();
@@ -101,6 +102,7 @@ public class IntegrationService implements IntegrationApi {
   @Override
   @Transactional
   public Credentials rotateCredentials(long actorId, long systemId, long version) {
+    organization.lockManagement(actorId);
     global(actorId);
     SystemEntity entity = systems.lock(systemId).orElseThrow();
     if (entity.getVersion() != version) {
@@ -124,6 +126,7 @@ public class IntegrationService implements IntegrationApi {
   @Override
   @Transactional
   public SystemFact bind(long actorId, long systemId, Set<Long> departments, long version) {
+    organization.lockManagement(actorId);
     global(actorId);
     SystemEntity entity = systems.lock(systemId).orElseThrow();
     if (entity.getVersion() != version) {

@@ -52,6 +52,34 @@ class ModuleBoundaryTest {
         .check(imported);
   }
 
+  @Test
+  @DisplayName("设计约束 业务模块无循环，控制器不直接存取，纯权限规则不依赖框架")
+  void layersAndCycles() {
+    var imported =
+        new ClassFileImporter()
+            .withImportOption(new ImportOption.DoNotIncludeTests())
+            .importPackages("cn.edu.upms");
+    com.tngtech.archunit.library.dependencies.SlicesRuleDefinition.slices()
+        .matching("cn.edu.upms.(*)..")
+        .should()
+        .beFreeOfCycles()
+        .check(imported);
+    classes()
+        .that()
+        .haveSimpleNameEndingWith("Controller")
+        .should()
+        .onlyDependOnClassesThat()
+        .resideOutsideOfPackages("..internal..", "..repository..")
+        .check(imported);
+    classes()
+        .that()
+        .haveSimpleNameStartingWith("EffectivePermissionRule")
+        .should()
+        .onlyDependOnClassesThat()
+        .resideInAnyPackage("java..", "cn.edu.upms.authorization.internal")
+        .check(imported);
+  }
+
   private static String module(String packageName) {
     String prefix = "cn.edu.upms.";
     if (!packageName.startsWith(prefix)) {

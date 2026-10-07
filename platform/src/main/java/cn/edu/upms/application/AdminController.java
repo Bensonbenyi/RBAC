@@ -132,9 +132,11 @@ public class AdminController {
 
   /** 保存部门资料；取消状态前检查接入模块拥有的关联. */
   @PostMapping("/departments")
+  @org.springframework.transaction.annotation.Transactional
   public OrganizationApi.Department department(
       Principal principal, @RequestBody DepartmentInput request) {
     long actorId = actor(principal);
+    organization.lockManagement(actorId);
     if (!request.active()
         && request.id() != null
         && integration.systems(actorId).stream()
@@ -259,6 +261,24 @@ public class AdminController {
   @PostMapping("/roles")
   public CatalogApi.Role role(Principal principal, @RequestBody CatalogApi.RoleChange request) {
     return catalog.save(actor(principal), request);
+  }
+
+  /** 治理锁内核对全部未撤销分配，再逻辑删除角色，避免分配与删除交错. */
+  @PostMapping("/roles/{id}/delete")
+  @org.springframework.transaction.annotation.Transactional
+  public Map<String, Boolean> deleteRole(
+      Principal principal, @PathVariable long id, @RequestBody Map<String, Long> request) {
+    long actorId = actor(principal);
+    organization.lockManagement(actorId);
+    if (!authorization.affected(actorId, id).isEmpty()) {
+      throw BusinessException.conflict("请先撤销全部员工分配，停用角色的分配也须撤销");
+    }
+    Long version = request.get("version");
+    if (version == null) {
+      throw new BusinessException(400, "INVALID_INPUT", "缺少角色确认版本");
+    }
+    catalog.delete(actorId, id, version);
+    return Map.of("deleted", true);
   }
 
   /** 复制全局模板为独立部门角色. */

@@ -81,6 +81,17 @@ public class OrganizationService implements OrganizationApi {
   }
 
   @Override
+  @Transactional(propagation = Propagation.MANDATORY)
+  public void lockManagement(long actorId) {
+    audit.requireAvailable();
+    // 固定总公司行只作为治理锁点，不修改公司状态；读请求不取得这把锁。
+    // 所有管理写入先取此锁，使管理员取消、组织停用与分配的范围检查不能交错。
+    companyRepository.lock(1L).orElseThrow();
+    entityManager.refresh(find(actorId));
+    administrator(actorId);
+  }
+
+  @Override
   public void requireDepartmentScope(long actorId, Long departmentId) {
     OrganizationApi.Employee actor = administrator(actorId);
     if (!actor.superAdmin() && !Objects.equals(actor.departmentId(), departmentId)) {
@@ -141,13 +152,15 @@ public class OrganizationService implements OrganizationApi {
   @Transactional(isolation = Isolation.READ_COMMITTED)
   public OrganizationApi.Company saveCompany(
       long actorId, Long id, String name, boolean active, long version) {
+    lockManagement(actorId);
     requireGlobal(actorId);
     CompanyEntity entity =
         id == null ? new CompanyEntity() : companyRepository.lock(id).orElseThrow();
     if (id != null && entity.getVersion() != version) {
       throw BusinessException.conflict("公司已变化");
     }
-    if (!active
+    if (id != null
+        && !active
         && (employeeRepository.countByCompanyIdAndActiveTrue(id) > 0
             || departmentRepository.findByCompanyId(id).stream().anyMatch(d -> d.active))) {
       throw BusinessException.conflict("请先处理有效员工和部门");
@@ -164,6 +177,7 @@ public class OrganizationService implements OrganizationApi {
   @Transactional(isolation = Isolation.READ_COMMITTED)
   public OrganizationApi.Department saveDepartment(
       long actorId, Long id, Long companyId, String name, boolean active, long version) {
+    lockManagement(actorId);
     requireGlobal(actorId);
     CompanyEntity company = companyRepository.lock(companyId).orElseThrow();
     if (!company.active) {
@@ -175,7 +189,7 @@ public class OrganizationService implements OrganizationApi {
         && (entity.getVersion() != version || !Objects.equals(entity.companyId, companyId))) {
       throw BusinessException.conflict("部门已变化或不能直接改变所属公司");
     }
-    if (!active && employeeRepository.countByDepartmentIdAndActiveTrue(id) > 0) {
+    if (id != null && !active && employeeRepository.countByDepartmentIdAndActiveTrue(id) > 0) {
       throw BusinessException.conflict("请先处理部门有效员工与管理员");
     }
     entity.companyId = companyId;
@@ -189,6 +203,7 @@ public class OrganizationService implements OrganizationApi {
   @Override
   @Transactional(isolation = Isolation.READ_COMMITTED)
   public OrganizationApi.Employee saveEmployee(long actorId, EmployeeChange change) {
+    lockManagement(actorId);
     final var actor = administrator(actorId);
     requireDepartmentScope(actorId, change.departmentId());
     EmployeeEntity entity = change.id() == null ? new EmployeeEntity() : lockRecord(change.id());
@@ -229,6 +244,7 @@ public class OrganizationService implements OrganizationApi {
   @Transactional(isolation = Isolation.READ_COMMITTED)
   public OrganizationApi.Employee appoint(
       long actorId, long employeeId, boolean superAdmin, boolean departmentAdmin, long version) {
+    lockManagement(actorId);
     requireGlobal(actorId);
     // 固定锁点串行化最高管理员数量检查，避免两人同时取消后无人管理。
     companyRepository.lock(1L).orElseThrow();
@@ -253,9 +269,6 @@ public class OrganizationService implements OrganizationApi {
   @Override
   @Transactional(propagation = Propagation.MANDATORY)
   public OrganizationApi.Employee lockEmployee(long employeeId) {
-    if (find(employeeId).superAdmin) {
-      companyRepository.lock(1L).orElseThrow();
-    }
     return view(lockRecord(employeeId));
   }
 

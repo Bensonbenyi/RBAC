@@ -49,6 +49,7 @@ import org.springframework.web.util.UriComponentsBuilder;
     properties = {
       "spring.datasource.url=jdbc:mysql://127.0.0.1:3307/upms_test?serverTimezone=Asia/Shanghai",
       "upms.seed=baseline",
+      "upms.cache-enabled=true",
       "upms.source-directory=../docs"
     })
 @AutoConfigureMockMvc
@@ -298,6 +299,90 @@ class OidcIntegrationTest {
       authorization.change(
           11, employeeId, systemId, null, authorization.assignment(employeeId, systemId).version());
     }
+  }
+
+  @Test
+  @DisplayName("ACC-F-009 删除角色先拒绝仍有分配，撤权后逻辑删除并保留审计")
+  void roleDeletion() throws Exception {
+    var session = login(1);
+    long system = integration.byKey("oa").id();
+    var role =
+        catalog.copy(
+            1,
+            catalog.roles(1, system, null).stream()
+                .filter(CatalogApi.Role::template)
+                .findFirst()
+                .orElseThrow()
+                .id(),
+            1,
+            "删除测试-" + UUID.randomUUID());
+    authorization.change(1, 26, system, role.id(), authorization.assignment(26, system).version());
+    String payload = "{\"version\":" + role.version() + "}";
+    assertThat(
+            mvc.perform(
+                    post("/api/admin/roles/" + role.id() + "/delete")
+                        .session(session)
+                        .with(csrf())
+                        .contentType("application/json")
+                        .content(payload))
+                .andReturn()
+                .getResponse()
+                .getStatus())
+        .isEqualTo(409);
+    authorization.change(1, 26, system, null, authorization.assignment(26, system).version());
+    assertThat(
+            mvc.perform(
+                    post("/api/admin/roles/" + role.id() + "/delete")
+                        .session(session)
+                        .with(csrf())
+                        .contentType("application/json")
+                        .content(payload))
+                .andReturn()
+                .getResponse()
+                .getStatus())
+        .isEqualTo(200);
+    assertThatThrownBy(() -> catalog.role(role.id())).isInstanceOf(BusinessException.class);
+    assertThat(
+            audit
+                .query(null, "ROLE_DELETED", null, "role:" + role.id(), null, null, 0, 100)
+                .items())
+        .isNotEmpty();
+  }
+
+  @Test
+  @DisplayName("ACC-P-005 缓存命中不续期，角色撤去权限后两秒期限内影响后续鉴权")
+  void cachedFactsExpire() throws Exception {
+    long systemId = integration.byKey("oa").id();
+    var role =
+        catalog.copy(
+            1,
+            catalog.roles(1, systemId, null).stream()
+                .filter(CatalogApi.Role::template)
+                .findFirst()
+                .orElseThrow()
+                .id(),
+            1,
+            "缓存测试-" + UUID.randomUUID());
+    authorization.change(
+        1, 27, systemId, role.id(), authorization.assignment(27, systemId).version());
+    String key =
+        catalog.permissions(systemId).stream()
+            .filter(p -> p.active() && role.permissions().contains(p.id()))
+            .findFirst()
+            .orElseThrow()
+            .key();
+    assertThat(authorization.decide(27, systemId, key).allowed()).isTrue();
+    catalog.save(
+        1,
+        new CatalogApi.RoleChange(
+            role.id(), systemId, 1L, role.name(), false, true, role.version(), Set.of()));
+    long deadline = System.nanoTime() + java.time.Duration.ofSeconds(3).toNanos();
+    while (System.nanoTime() < deadline) {
+      authorization.decide(27, systemId, key);
+      Thread.sleep(50);
+    }
+    assertThat(authorization.decide(27, systemId, key).allowed()).isFalse();
+    authorization.change(1, 27, systemId, null, authorization.assignment(27, systemId).version());
   }
 
   @Test
