@@ -29,6 +29,14 @@ public interface IntegrationApi {
       String logoutRedirectUri,
       long version) {}
 
+  /** 仅在重新签发响应中展示一次的凭据，不保存明文、不进入审计. */
+  record Credentials(
+      String clientId,
+      String clientSecret,
+      String directoryClientId,
+      String directorySecret,
+      long version) {}
+
   /** 读取系统；调用方必须另行执行员工或管理员范围校验. */
   SystemFact system(long id);
 
@@ -43,6 +51,9 @@ public interface IntegrationApi {
 
   /** 最高管理员登记或更新系统；新增系统的凭据由服务端生成. */
   SystemFact save(long actorId, SystemChange change);
+
+  /** 最高管理员显式重新签发独立凭据；旧凭据不能再发起兑换或目录取令牌. */
+  Credentials rotateCredentials(long actorId, long systemId, long version);
 
   /** 原子替换系统可用部门；取消关联立即影响后续鉴权. */
   SystemFact bind(long actorId, long systemId, Set<Long> departments, long version);

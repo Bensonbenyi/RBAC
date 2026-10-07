@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title th:text="${title}">业务系统</title>
+    <style>
+      body { max-width: 900px; margin: 40px auto; padding: 0 24px; background: #f8fafc; color: #172b4d; font-family: "PingFang SC", "Microsoft YaHei", sans-serif; }
+      section { background: white; padding: 26px; border: 1px solid #e2e8f0; border-radius: 8px; margin: 20px 0; }
+      p { line-height: 1.8; } input { padding: 9px; width: 260px; } button, .login { display: inline-block; padding: 10px 16px; background: #1d4ed8; border: none; color: white; border-radius: 5px; cursor: pointer; text-decoration: none; }
+      a { color: #1d4ed8; } table { width: 100%; border-collapse: collapse; } td,th { text-align: left; border-bottom: 1px solid #e2e8f0; padding: 12px; }
+      .message { background: #eff6ff; border-left: 4px solid #2563eb; padding: 16px; }
+    </style>
+  </head>
+  <body>
+    <h1 th:text="${title}">业务系统</h1>
+    <p>独立业务系统使用集团账号确认身份，每次受控操作均请求平台实时鉴权。</p>
+    <section th:if="${user == null}">
+      <p>使用集团统一账号登录。</p><a class="login" href="/oauth2/authorization/upms">集团账号统一登录</a>
+      <p th:if="${param.audit != null}">统一退出已完成；审计存储故障可能导致记录缺口。</p>
+    </section>
+    <section th:if="${user != null}">
+      <p>当前身份：<span th:text="${user.getName()}"></span>。登录成功后仍需独立取得本系统操作权限。</p>
+      <p class="message" th:if="${message != null}" th:text="${message}"></p>
+      <form th:action="@{/documents/read}" method="post"><button>查看业务记录</button></form>
+      <p></p>
+      <form th:action="@{/documents/write}" method="post"><input name="name" placeholder="演示记录标题" required maxlength="120" /><button>新增业务记录</button></form>
+      <p></p>
+      <form th:action="@{/documents/own}" method="post"><input name="id" type="number" value="2" required /><button>校验本人记录</button></form>
+      <table th:if="${documents != null}"><tr><th>编号</th><th>标题</th><th>所有者</th></tr><tr th:each="document : ${documents}"><td th:text="${document.id}"></td><td th:text="${document.title}"></td><td th:text="${document.owner}"></td></tr></table>
+      <p></p><form th:action="@{/logout}" method="post"><button>统一退出当前会话</button></form>
+    </section>
+    <p><a href="http://localhost:18081">OA 系统</a> · <a href="http://localhost:18082">知识库系统</a> · <a href="http://localhost:18080/admin">权限管理后台</a></p>
+  </body>
+</html>

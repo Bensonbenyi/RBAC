@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.LongAdder;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -26,6 +27,7 @@ public class AuditService implements AuditApi {
   private final LongAdder errors = new LongAdder();
   private final LongAdder elapsed = new LongAdder();
   private volatile Instant gapStarted;
+  private final AtomicLong failureEpoch = new AtomicLong();
 
   public AuditService(AuditRepository repository) {
     this.repository = repository;
@@ -62,7 +64,8 @@ public class AuditService implements AuditApi {
   }
 
   @Override
-  public void pause() {
+  public synchronized void pause() {
+    failureEpoch.incrementAndGet();
     if (paused.compareAndSet(false, true)) {
       gapStarted = Instant.now();
     }
@@ -71,22 +74,28 @@ public class AuditService implements AuditApi {
   /** 以数据库实际写入检验恢复；恢复事件明确说明缺口，绝不虚构补录. */
   @Scheduled(fixedDelay = 1000)
   public void probeStorage() {
+    long epoch = failureEpoch.get();
+    boolean wasPaused = paused.get();
     try {
-      if (paused.get()) {
-        AuditEvent event = new AuditEvent();
-        event.occurredAt = Instant.now();
-        event.eventType = "AUDIT_RECOVERED";
-        event.objectRef = "controlled-service";
-        event.result = "RECOVERED";
-        event.detail = "审计恢复，故障开始 " + gapStarted + "，故障区间记录完整性未知";
-        repository.saveAndFlush(event);
-        paused.set(false);
-      } else {
-        // 通过有界读查询发现数据库整体不可用。审计写失败仍由 record 立即发现。
-        repository.findById(-1L);
+      AuditEvent event = new AuditEvent();
+      event.occurredAt = Instant.now();
+      event.eventType = wasPaused ? "AUDIT_RECOVERED" : "AUDIT_HEALTH";
+      event.objectRef = "controlled-service";
+      event.result = wasPaused ? "RECOVERED" : "SUCCESS";
+      event.detail = wasPaused ? "审计恢复，故障开始 " + gapStarted + "，故障区间记录完整性未知" : "审计存储写入探测";
+      repository.saveAndFlush(event);
+      if (wasPaused) {
+        recover(epoch);
       }
     } catch (RuntimeException failure) {
       pause();
+    }
+  }
+
+  private synchronized void recover(long epoch) {
+    // 探测期间若又出现写失败，旧探测结果不能解除新的暂停状态。
+    if (failureEpoch.get() == epoch) {
+      paused.set(false);
     }
   }
 

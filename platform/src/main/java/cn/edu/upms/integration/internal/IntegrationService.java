@@ -74,6 +74,7 @@ public class IntegrationService implements IntegrationApi {
     }
     if (change.key() == null
         || !change.key().matches("[a-z][a-z0-9-]{1,59}")
+        || change.key().endsWith("-directory")
         || change.name() == null
         || change.name().isBlank()) {
       throw new BusinessException(400, "INVALID_SYSTEM", "系统标识或名称格式错误");
@@ -95,6 +96,29 @@ public class IntegrationService implements IntegrationApi {
     systems.saveAndFlush(entity);
     record(actorId, entity.getId(), "SYSTEM_CHANGED", "系统登记或状态更新");
     return view(entity);
+  }
+
+  @Override
+  @Transactional
+  public Credentials rotateCredentials(long actorId, long systemId, long version) {
+    global(actorId);
+    SystemEntity entity = systems.lock(systemId).orElseThrow();
+    if (entity.getVersion() != version) {
+      throw BusinessException.conflict("系统资料已变化，请刷新后重新确认");
+    }
+    String clientSecret = UUID.randomUUID().toString();
+    String directorySecret = UUID.randomUUID().toString();
+    var encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    entity.clientSecret = encoder.encode(clientSecret);
+    entity.directorySecret = encoder.encode(directorySecret);
+    systems.flush();
+    record(actorId, systemId, "SYSTEM_CREDENTIALS_ROTATED", "重新签发独立凭据，仅响应展示一次");
+    return new Credentials(
+        entity.systemKey,
+        clientSecret,
+        entity.systemKey + "-directory",
+        directorySecret,
+        entity.getVersion());
   }
 
   @Override

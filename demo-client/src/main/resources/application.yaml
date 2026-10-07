@@ -1,0 +1,33 @@
+server:
+  address: 127.0.0.1
+  port: ${DEMO_PORT:18081}
+  servlet:
+    session:
+      timeout: 8h
+      cookie:
+        name: ${DEMO_COOKIE:OA_SESSION}
+        http-only: true
+        same-site: lax
+spring:
+  application:
+    name: ${DEMO_SYSTEM:oa}-demo
+  security:
+    oauth2:
+      client:
+        registration:
+          upms:
+            client-id: ${DEMO_SYSTEM:oa}
+            client-secret: ${DEMO_SECRET:oa-demo-secret}
+            authorization-grant-type: authorization_code
+            client-authentication-method: client_secret_basic
+            redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
+            scope: openid,profile
+        provider:
+          upms:
+            issuer-uri: ${UPMS_ISSUER:http://localhost:18080}
+demo:
+  system: ${DEMO_SYSTEM:oa}
+  platform: ${UPMS_ISSUER:http://localhost:18080}
+  title: ${DEMO_TITLE:OA 协同办公演示}
+  permission-read: ${DEMO_READ:f001:查看}
+  permission-write: ${DEMO_WRITE:f002:新增}

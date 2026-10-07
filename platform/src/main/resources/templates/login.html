@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>集团统一登录</title>
+    <style>
+      * { box-sizing: border-box; }
+      body { margin: 0; background: #f1f5f9; color: #172b4d; font-family: "PingFang SC", "Microsoft YaHei", sans-serif; }
+      main { max-width: 440px; margin: 10vh auto; padding: 36px; background: white; border-radius: 12px; box-shadow: 0 8px 32px #172b4d12; }
+      h1 { font-size: 26px; margin: 0 0 12px; }
+      p { color: #5b6b80; line-height: 1.7; }
+      label { display: block; margin-top: 20px; font-size: 14px; }
+      input { width: 100%; padding: 11px; margin-top: 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 16px; }
+      button { width: 100%; margin-top: 26px; padding: 12px; border: 0; border-radius: 6px; background: #1d4ed8; color: white; font-size: 16px; cursor: pointer; }
+      .error { color: #b91c1c; background: #fef2f2; padding: 10px; }
+      .note { font-size: 13px; }
+      a { color: #1d4ed8; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>集团统一登录</h1>
+      <p>验证身份后返回发起登录的系统。各系统操作权限分别由管理员授予。</p>
+      <p class="error" th:if="${param.error != null}">用户名、手机号不匹配或员工已停用。</p>
+      <p th:if="${param.logout != null}">当前统一会话已退出。</p>
+      <p class="error" th:if="${param.audit != null}">退出已完成，审计存储暂不可用，故障区间可能缺少记录。</p>
+      <form th:action="@{/login}" method="post">
+        <label for="username">用户名</label>
+        <input id="username" name="username" required maxlength="80" autocomplete="username" />
+        <label for="phone">手机号</label>
+        <input id="phone" name="phone" required maxlength="30" autocomplete="tel" />
+        <button type="submit">登录</button>
+      </form>
+      <p class="note">课程 Demo 使用两项资料同时匹配，不使用密码或短信验证码。普通员工通过业务系统发起统一登录。</p>
+      <p><a href="http://localhost:18081">OA 演示</a> · <a href="http://localhost:18082">知识库演示</a></p>
+    </main>
+  </body>
+</html>
