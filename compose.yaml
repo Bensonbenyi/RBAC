@@ -1,0 +1,22 @@
+name: upms-course
+services:
+  mysql:
+    image: mysql:8.4
+    ports:
+      - '127.0.0.1:3307:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-upms-local-root}
+      MYSQL_DATABASE: upms
+      MYSQL_USER: upms
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-upms-local}
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_0900_as_cs
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./infra/mysql/init.sql:/docker-entrypoint-initdb.d/01-databases.sql:ro
+    healthcheck:
+      test: ['CMD-SHELL', 'mysqladmin ping -h 127.0.0.1 -u root -p"$$MYSQL_ROOT_PASSWORD" --silent']
+      interval: 3s
+      timeout: 3s
+      retries: 40
+volumes:
+  mysql-data:

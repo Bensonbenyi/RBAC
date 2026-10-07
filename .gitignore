@@ -1,0 +1,12 @@
+.DS_Store
+.idea/
+**/target/
+**/node_modules/
+**/dist/
+.runtime/
+output/
+.env
+**/.env.local
+*.log
+playwright-report/
+test-results/

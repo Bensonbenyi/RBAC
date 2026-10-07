@@ -1,0 +1,40 @@
+server:
+  port: 18080
+  address: 127.0.0.1
+  servlet:
+    session:
+      timeout: 8h
+      cookie:
+        name: UPMS_SESSION
+        http-only: true
+        same-site: lax
+spring:
+  application:
+    name: upms-platform
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3307/${UPMS_DB:upms}?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai
+    username: upms
+    password: ${MYSQL_PASSWORD:upms-local}
+    hikari:
+      maximum-pool-size: 24
+      connection-timeout: 2000
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          batch_size: 100
+  flyway:
+    enabled: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+upms:
+  issuer: http://localhost:18080
+  seed: ${UPMS_SEED:demo}
+  source-directory: ${UPMS_SOURCE:docs}
+  cache-enabled: ${UPMS_CACHE:false}
