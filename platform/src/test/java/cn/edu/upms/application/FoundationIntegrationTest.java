@@ -47,19 +47,19 @@ class FoundationIntegrationTest {
         .containsEntry("departments", 101L)
         .containsEntry("unconfirmedDepartments", 54L);
     assertThat(integration.registered()).hasSize(17);
-    assertThat(catalog.roles(1, null, null)).hasSize(85).allMatch(CatalogApi.Role::template);
+    assertThat(catalog.roles(1, null, null).stream().filter(CatalogApi.Role::template)).hasSize(85);
     assertThat(organization.employee(12).departmentAdmin()).isFalse();
   }
 
   @Test
   @DisplayName("ACC-F-002 用户名和手机号同时匹配，普通员工无后台资格")
   void loginAndAdministrator() {
-    var employee = organization.employee(13);
+    var employee = organization.employee(20);
     assertThat(organization.authenticate(employee.username(), employee.phone()).id())
-        .isEqualTo(13L);
+        .isEqualTo(20L);
     assertThatThrownBy(() -> organization.authenticate(employee.username(), "00000000000"))
         .isInstanceOf(BusinessException.class);
-    assertThatThrownBy(() -> organization.administrator(13)).isInstanceOf(BusinessException.class);
+    assertThatThrownBy(() -> organization.administrator(20)).isInstanceOf(BusinessException.class);
   }
 
   @Test

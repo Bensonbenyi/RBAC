@@ -4,6 +4,8 @@ import cn.edu.upms.audit.api.AuditApi;
 import cn.edu.upms.organization.api.OrganizationApi;
 import cn.edu.upms.shared.BusinessException;
 import cn.edu.upms.shared.PageResult;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.LockModeType;
 import jakarta.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,17 +25,20 @@ public class OrganizationService implements OrganizationApi {
   private final DepartmentRepository departmentRepository;
   private final EmployeeRepository employeeRepository;
   private final AuditApi audit;
+  private final EntityManager entityManager;
 
   /** 注入本模块存储与审计公开能力. */
   public OrganizationService(
       CompanyRepository companyRepository,
       DepartmentRepository departmentRepository,
       EmployeeRepository employeeRepository,
-      AuditApi audit) {
+      AuditApi audit,
+      EntityManager entityManager) {
     this.companyRepository = companyRepository;
     this.departmentRepository = departmentRepository;
     this.employeeRepository = employeeRepository;
     this.audit = audit;
+    this.entityManager = entityManager;
   }
 
   @Override
@@ -186,10 +191,7 @@ public class OrganizationService implements OrganizationApi {
   public OrganizationApi.Employee saveEmployee(long actorId, EmployeeChange change) {
     final var actor = administrator(actorId);
     requireDepartmentScope(actorId, change.departmentId());
-    EmployeeEntity entity =
-        change.id() == null
-            ? new EmployeeEntity()
-            : employeeRepository.lock(change.id()).orElseThrow();
+    EmployeeEntity entity = change.id() == null ? new EmployeeEntity() : lockRecord(change.id());
     if (change.id() != null) {
       requireEmployeeScope(actorId, change.id());
       if (entity.getVersion() != change.version()) {
@@ -230,7 +232,7 @@ public class OrganizationService implements OrganizationApi {
     requireGlobal(actorId);
     // 固定锁点串行化最高管理员数量检查，避免两人同时取消后无人管理。
     companyRepository.lock(1L).orElseThrow();
-    EmployeeEntity entity = employeeRepository.lock(employeeId).orElseThrow();
+    EmployeeEntity entity = lockRecord(employeeId);
     if (entity.getVersion() != version) {
       throw BusinessException.conflict("管理员资料已变化");
     }
@@ -254,14 +256,14 @@ public class OrganizationService implements OrganizationApi {
     if (find(employeeId).superAdmin) {
       companyRepository.lock(1L).orElseThrow();
     }
-    return view(employeeRepository.lock(employeeId).orElseThrow());
+    return view(lockRecord(employeeId));
   }
 
   @Override
   @Transactional(propagation = Propagation.MANDATORY)
   public void setActive(long actorId, long employeeId, boolean active) {
     requireEmployeeScope(actorId, employeeId);
-    EmployeeEntity entity = employeeRepository.lock(employeeId).orElseThrow();
+    EmployeeEntity entity = lockRecord(employeeId);
     if (!active) {
       preserveLastAdministrator(entity, false);
     }
@@ -274,7 +276,7 @@ public class OrganizationService implements OrganizationApi {
   @Transactional(propagation = Propagation.MANDATORY)
   public void transfer(long actorId, long employeeId, long departmentId, long expectedVersion) {
     requireGlobal(actorId);
-    EmployeeEntity entity = employeeRepository.lock(employeeId).orElseThrow();
+    EmployeeEntity entity = lockRecord(employeeId);
     if (entity.getVersion() != expectedVersion) {
       throw BusinessException.conflict("员工已变化");
     }
@@ -315,6 +317,13 @@ public class OrganizationService implements OrganizationApi {
     return employeeRepository
         .findById(id)
         .orElseThrow(() -> new BusinessException(404, "NOT_FOUND", "员工不存在"));
+  }
+
+  private EmployeeEntity lockRecord(long id) {
+    EmployeeEntity entity = find(id);
+    // refresh 同时取得行锁和最新版本，避免范围预读留下一级缓存中的旧状态。
+    entityManager.refresh(entity, LockModeType.PESSIMISTIC_WRITE);
+    return entity;
   }
 
   private void preserveLastAdministrator(EmployeeEntity employee, boolean remainsAdmin) {
