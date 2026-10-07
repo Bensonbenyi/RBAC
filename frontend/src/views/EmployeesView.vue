@@ -3,6 +3,7 @@ import { computed, onMounted, reactive, ref } from 'vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import {
   api,
+  statusLabel,
   query,
   type Employee,
   type Company,
@@ -333,8 +334,9 @@ onMounted(load);
         }}</template></el-table-column
       ><el-table-column label="当前角色" min-width="120"
         ><template #default="{ row }">{{ row.role?.name ?? '未分配' }}</template></el-table-column
-      ><el-table-column prop="reason" label="有效性原因" width="170" /><el-table-column
-        label="有效权限"
+      ><el-table-column label="有效性原因" width="170"
+        ><template #default="{ row }">{{ statusLabel(row.reason) }}</template></el-table-column
+      ><el-table-column label="有效权限"
         ><template #default="{ row }"
           ><el-tag v-for="permission in row.permissions" :key="permission" style="margin: 3px">{{
             permission
@@ -367,9 +369,9 @@ onMounted(load);
       部门角色须与员工归属一致。跨部门批量选择错误角色会逐项报告失败；越管理范围整批拒绝。
     </p>
     <el-table v-if="batchResult" :data="batchResult.items"
-      ><el-table-column prop="employeeId" label="员工编号" /><el-table-column
-        prop="status"
-        label="结果" /><el-table-column prop="message" label="说明" min-width="300" /></el-table
+      ><el-table-column prop="employeeId" label="员工编号" /><el-table-column label="结果"
+        ><template #default="{ row }">{{ statusLabel(row.status) }}</template></el-table-column
+      ><el-table-column prop="message" label="说明" min-width="300" /></el-table
     ><template #footer
       ><el-button @click="assignmentOpen = false">关闭</el-button
       ><el-button type="primary" @click="applyAssignment">预览并确认提交</el-button></template

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
 import { ElMessageBox } from 'element-plus';
-import { api, type System, type Batch, type Effective } from '../api';
+import { api, statusLabel, type System, type Batch, type Effective } from '../api';
 defineProps<{ systems: System[] }>();
 const jobs = ref<Batch[]>([]);
 const chosen = ref<Batch>();
@@ -47,9 +47,9 @@ onMounted(load);
         ><template #default="{ row }">{{
           row.roleId === null ? '撤权' : '角色替换'
         }}</template></el-table-column
-      ><el-table-column prop="status" label="总体结果" width="180" /><el-table-column
-        label="成功／总数"
-        width="120"
+      ><el-table-column label="总体结果" width="180"
+        ><template #default="{ row }">{{ statusLabel(row.status) }}</template></el-table-column
+      ><el-table-column label="成功／总数" width="120"
         ><template #default="{ row }"
           >{{ row.items.filter((i: { status: string }) => i.status === 'SUCCESS').length }} /
           {{ row.items.length }}</template
@@ -72,9 +72,10 @@ onMounted(load);
   <el-dialog v-model="dialog" :title="`批量任务 ${chosen?.id}`" width="800px"
     ><el-table :data="chosen?.items"
       ><el-table-column prop="employeeId" label="员工编号" width="110" /><el-table-column
-        prop="status"
         label="结果"
-        width="140" /><el-table-column prop="message" label="说明" min-width="300" /></el-table
+        width="140"
+        ><template #default="{ row }">{{ statusLabel(row.status) }}</template></el-table-column
+      ><el-table-column prop="message" label="说明" min-width="300" /></el-table
     ><template #footer
       ><el-button @click="dialog = false">关闭</el-button
       ><el-button

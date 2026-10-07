@@ -1,6 +1,15 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue';
-import { api, query, type Employee, type Department, type Audit, type Page } from '../api';
+import {
+  api,
+  query,
+  statusLabel,
+  auditEventTypes,
+  type Employee,
+  type Department,
+  type Audit,
+  type Page,
+} from '../api';
 defineProps<{ me: Employee; departments: Department[] }>();
 const departmentId = ref<number>();
 const eventType = ref('');
@@ -18,8 +27,8 @@ function filters() {
     eventType: eventType.value,
     result: result.value,
     query: search.value,
-    from: range.value[0],
-    to: range.value[1],
+    from: range.value[0] ? new Date(range.value[0]).toISOString() : undefined,
+    to: range.value[1] ? new Date(range.value[1]).toISOString() : undefined,
   };
 }
 async function load() {
@@ -43,20 +52,26 @@ onMounted(load);
           :key="department.id"
           :label="department.name"
           :value="department.id" /></el-select
-      ><el-input v-model="eventType" placeholder="事件类型，如 ROLE_ASSIGNED" clearable /><el-input
-        v-model="search"
-        placeholder="对象编号或标识"
+      ><el-select v-model="eventType" placeholder="全部事件类型" clearable filterable>
+        <el-option
+          v-for="value in auditEventTypes"
+          :key="value"
+          :label="statusLabel(value)"
+          :value="value"
+        /> </el-select
+      ><el-input v-model="search" placeholder="对象编号或标识" clearable /><el-select
+        v-model="result"
         clearable
-      /><el-select v-model="result" clearable placeholder="全部结果"
+        placeholder="全部结果"
         ><el-option
           v-for="value in ['SUCCESS', 'DENY', 'FAILURE', 'RECOVERED']"
           :key="value"
-          :label="value"
+          :label="statusLabel(value)"
           :value="value" /></el-select
       ><el-date-picker
         v-model="range"
         type="datetimerange"
-        value-format="YYYY-MM-DDTHH:mm:ss.SSS[Z]"
+        value-format="YYYY-MM-DDTHH:mm:ss"
         start-placeholder="开始时间"
         end-placeholder="结束时间"
       /><el-button
@@ -76,14 +91,14 @@ onMounted(load);
           new Date(row.occurredAt).toLocaleString('zh-CN')
         }}</template></el-table-column
       ><el-table-column prop="actorId" label="操作者" width="90" /><el-table-column
-        prop="eventType"
         label="事件类型"
         min-width="190"
-      /><el-table-column prop="objectRef" label="对象" min-width="180" /><el-table-column
-        prop="result"
+        ><template #default="{ row }">{{ statusLabel(row.eventType) }}</template></el-table-column
+      ><el-table-column prop="objectRef" label="对象" min-width="180" /><el-table-column
         label="结果"
         width="110"
-      /><el-table-column label="操作" width="80"
+        ><template #default="{ row }">{{ statusLabel(row.result) }}</template></el-table-column
+      ><el-table-column label="操作" width="80"
         ><template #default="{ row }"
           ><el-button
             link
@@ -107,9 +122,10 @@ onMounted(load);
   <el-dialog v-model="dialog" title="审计事件详情" width="650px"
     ><el-descriptions v-if="detail" :column="1" border
       ><el-descriptions-item label="编号">{{ detail.id }}</el-descriptions-item
-      ><el-descriptions-item label="事件">{{ detail.eventType }}</el-descriptions-item
+      ><el-descriptions-item label="事件"
+        >{{ statusLabel(detail.eventType) }} ({{ detail.eventType }})</el-descriptions-item
       ><el-descriptions-item label="对象">{{ detail.objectRef }}</el-descriptions-item
-      ><el-descriptions-item label="结果">{{ detail.result }}</el-descriptions-item
+      ><el-descriptions-item label="结果">{{ statusLabel(detail.result) }}</el-descriptions-item
       ><el-descriptions-item label="说明">{{
         detail.detail
       }}</el-descriptions-item></el-descriptions

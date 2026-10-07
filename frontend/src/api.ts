@@ -95,6 +95,92 @@ export interface Page<T> {
   size: number;
 }
 
+/** 显示业务结果含义；稳定英文代码留在接口与日志中，不要求演示者记忆内部枚举。 */
+export function statusLabel(code: string): string {
+  const names: Record<string, string> = {
+    EFFECTIVE: '权限有效',
+    EMPLOYEE_DISABLED: '员工已停用',
+    DEPARTMENT_UNAVAILABLE: '部门未确认或停用',
+    SYSTEM_UNAVAILABLE: '系统未获准或停用',
+    NO_ROLE: '未分配角色',
+    ROLE_UNAVAILABLE: '角色已停用或归属不符',
+    ROLE_UNKNOWN: '角色不存在',
+    SYSTEM_UNKNOWN: '系统不存在',
+    PERMISSION_MISSING: '不具备该操作权限',
+    RUNNING: '执行中',
+    COMPLETED: '全部成功',
+    PARTIAL_FAILURE: '部分失败',
+    PENDING: '待执行',
+    INTERRUPTED: '已中断',
+    FAILED: '失败',
+    SUCCESS: '成功',
+    DENY: '拒绝',
+    FAILURE: '失败',
+    RECOVERED: '已恢复',
+    LOGIN_SUCCEEDED: '登录成功',
+    LOGIN_FAILED: '登录失败',
+    LOGOUT: '统一退出',
+    ROLE_ASSIGNED: '角色分配或替换',
+    ROLE_REVOKED: '撤销角色',
+    ROLE_CHANGED: '角色配置',
+    ROLE_DELETED: '删除角色',
+    DIRECTORY_ACCEPTED: '目录接收',
+    DIRECTORY_FAILED: '目录失败',
+    IDENTITY_REJECTED: '身份拒绝',
+    AUTHORIZATION_DENIED: '鉴权拒绝',
+    EMPLOYEE_CHANGED: '员工资料变更',
+    EMPLOYEE_STATE: '员工启停',
+    EMPLOYEE_TRANSFER: '员工调动',
+    ADMIN_CHANGED: '管理员身份变更',
+    COMPANY_CHANGED: '公司变更',
+    DEPARTMENT_CHANGED: '部门变更',
+    SYSTEM_CHANGED: '系统变更',
+    SYSTEM_SCOPE: '可用范围变更',
+    SYSTEM_CREDENTIALS_ROTATED: '重新签发系统凭据',
+    AUDIT_EXPORTED: '审计导出',
+    AUDIT_HEALTH: '审计存储探测',
+    AUDIT_RECOVERED: '审计故障恢复',
+    BATCH_CREATED: '建立批量任务',
+    BATCH_RETRY: '重试批量任务',
+    DEMO_CONFIGURED: '演示配置',
+    LOAD_CONFIGURED: '压测配置',
+    BASELINE_IMPORTED: '基础资料导入',
+  };
+  return names[code] ?? code;
+}
+
+/** 查询菜单覆盖全部关键审计事件，筛选和详情共用中文名称。 */
+export const auditEventTypes = [
+  'LOGIN_SUCCEEDED',
+  'LOGIN_FAILED',
+  'LOGOUT',
+  'COMPANY_CHANGED',
+  'DEPARTMENT_CHANGED',
+  'EMPLOYEE_CHANGED',
+  'EMPLOYEE_STATE',
+  'EMPLOYEE_TRANSFER',
+  'ADMIN_CHANGED',
+  'SYSTEM_CHANGED',
+  'SYSTEM_SCOPE',
+  'SYSTEM_CREDENTIALS_ROTATED',
+  'DIRECTORY_ACCEPTED',
+  'DIRECTORY_FAILED',
+  'ROLE_CHANGED',
+  'ROLE_DELETED',
+  'ROLE_ASSIGNED',
+  'ROLE_REVOKED',
+  'BATCH_CREATED',
+  'BATCH_RETRY',
+  'AUTHORIZATION_DENIED',
+  'IDENTITY_REJECTED',
+  'AUDIT_EXPORTED',
+  'AUDIT_HEALTH',
+  'AUDIT_RECOVERED',
+  'BASELINE_IMPORTED',
+  'DEMO_CONFIGURED',
+  'LOAD_CONFIGURED',
+] as const;
+
 let csrf: { token: string; headerName: string } | null = null;
 
 /** 所有写入携带框架提供的 CSRF；身份由 HttpOnly 会话管理，不保存令牌。 */
