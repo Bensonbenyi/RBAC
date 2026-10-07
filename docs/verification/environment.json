@@ -1,0 +1,56 @@
+{
+  "measuredOn": "2026-10-08",
+  "hardware": {
+    "model": "Mac17,9",
+    "processor": "Apple M5 Pro",
+    "logicalProcessors": 15,
+    "memoryBytes": 51539607552
+  },
+  "software": {
+    "macOS": "26.6.2 (25G83)",
+    "java": "Eclipse Temurin 21.0.11+10 LTS",
+    "maven": "3.9.16",
+    "node": "24.16.0",
+    "springBoot": "3.5.16",
+    "authorizationServer": "1.5.8",
+    "mysqlFamily": "8.4",
+    "mysqlServer": "8.4.11",
+    "gatling": "3.16.0"
+  },
+  "topology": "平台与 Gatling 同机；MySQL 在 OrbStack 的项目专用 Compose 容器",
+  "containerRuntime": {
+    "virtualMachineLogicalProcessors": 15,
+    "virtualMachineMemoryBytes": 16818823168,
+    "mysqlContainerMemoryLimitBytes": 0,
+    "mysqlContainerNanoCpuLimit": 0,
+    "zeroLimitMeaning": "容器不另设限，仍受 OrbStack 虚拟机资源限制"
+  },
+  "platform": {
+    "database": "upms_load",
+    "seed": "load",
+    "jvm": ["-Xms1g", "-Xmx4g"],
+    "hikariMaximumConnections": 24,
+    "hikariConnectionTimeoutMs": 2000,
+    "managementConcurrentWriters": 4,
+    "managementWaitLimitMs": 2000,
+    "businessPermissionCache": false,
+    "clientCredentialSuccessCacheMaximum": 256,
+    "clientCredentialSuccessCacheAbsoluteLifetimeSeconds": 120
+  },
+  "load": {
+    "loginAccounts": 10000,
+    "loginInjectionSeconds": 60,
+    "authorizationRatePerSecond": 1000,
+    "authorizationSeconds": 300,
+    "authorizationExpectedRequests": 300000,
+    "expectedAllowedAccounts": 9946,
+    "expectedDeniedAccounts": 54,
+    "administrators": 100,
+    "administratorSeconds": 300,
+    "administratorThinkSeconds": 1,
+    "changeBackgroundSeconds": 90,
+    "clientConnectionPoolMaximum": 500,
+    "clientTimeoutSeconds": 10,
+    "loginGroupMetric": "经过时间；包含签名及 nonce 校验，报告百分位以控制台 HDR 断言为准"
+  }
+}

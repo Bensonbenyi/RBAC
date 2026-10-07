@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 790 235" width="790" role="img" aria-labelledby="title description">
+  <title id="title">单角色写入的事务与锁顺序</title>
+  <desc id="description">箭头表示同一管理用例取得锁及提交数据的运行顺序。固定治理锁串行管理写入，鉴权读取不经过治理锁。</desc>
+  <defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="2" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L8,4 L0,8 L2,4 z" fill="#64748b"/></marker></defs>
+  <style>text { font-family:'PingFang SC','Microsoft YaHei','Noto Sans CJK SC',system-ui,sans-serif; font-size:12px; fill:#1e293b; } .note { font-size:11px; fill:#64748b; }</style>
+  <text x="395" y="32" text-anchor="middle" font-size="16" style="font-size:16px">单角色写入：先确定管理范围，再提交授权与审计</text>
+  <rect x="25" y="67" width="740" height="99" rx="9" fill="#f8fafc" stroke="#94a3b8" stroke-dasharray="6,4"/>
+  <text x="35" y="82" class="note">同一数据库事务；箭头表示运行顺序</text>
+  <g fill="none" stroke="#64748b" marker-end="url(#arrow)">
+    <path d="M127,124 L139,124"/><path d="M250,124 L262,124"/><path d="M373,124 L385,124"/><path d="M496,124 L508,124"/><path d="M619,124 L631,124"/>
+  </g>
+  <g text-anchor="middle">
+    <rect x="40" y="97" width="82" height="54" rx="6" fill="#dbeafe" stroke="#3b82f6"/><text x="81" y="119">治理锁</text><text x="81" y="137">重验管理员</text>
+    <rect x="150" y="97" width="95" height="54" rx="6" fill="#fef3c7" stroke="#f59e0b"/><text x="197.5" y="119">员工行锁</text><text x="197.5" y="137">重验归属状态</text>
+    <rect x="273" y="97" width="95" height="54" rx="6" fill="#fef3c7" stroke="#f59e0b"/><text x="320.5" y="119">系统行锁</text><text x="320.5" y="137">重验可用范围</text>
+    <rect x="396" y="97" width="95" height="54" rx="6" fill="#fef3c7" stroke="#f59e0b"/><text x="443.5" y="119">角色行锁</text><text x="443.5" y="137">重验有效归属</text>
+    <rect x="519" y="97" width="95" height="54" rx="6" fill="#d1fae5" stroke="#22c55e"/><text x="566.5" y="119">分配版本</text><text x="566.5" y="137">唯一键与替换</text>
+    <rect x="642" y="97" width="95" height="54" rx="6" fill="#d1fae5" stroke="#22c55e"/><text x="689.5" y="119">成功审计</text><text x="689.5" y="137">共同提交</text>
+  </g>
+  <text x="25" y="191" class="note">治理锁只串行管理写入；实时鉴权与普通查询不取得此锁。代价是在管理高负载下写入吞吐受限。</text>
+  <text x="25" y="210" class="note">员工停用先取治理锁与员工锁，再撤权；目录上报只取系统锁，不反向取得治理锁或员工锁。</text>
+</svg>

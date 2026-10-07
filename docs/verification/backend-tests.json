@@ -1,0 +1,103 @@
+{
+  "measuredAt": "2026-10-07T22:43:21.900Z",
+  "database": "upms_test",
+  "total": {
+    "tests": 32,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "suites": [
+    {
+      "module": "platform",
+      "name": "cn.edu.upms.ModuleBoundaryTest",
+      "tests": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.717
+    },
+    {
+      "module": "platform",
+      "name": "cn.edu.upms.application.FoundationIntegrationTest",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.551
+    },
+    {
+      "module": "platform",
+      "name": "cn.edu.upms.application.TeacherSourceReaderTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.686
+    },
+    {
+      "module": "platform",
+      "name": "cn.edu.upms.authorization.AssignmentConcurrencyTest",
+      "tests": 4,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 3.337
+    },
+    {
+      "module": "platform",
+      "name": "cn.edu.upms.authorization.internal.EffectivePermissionRuleTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0
+    },
+    {
+      "module": "platform",
+      "name": "cn.edu.upms.identity.internal.ClientSecretVerifierTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.339
+    },
+    {
+      "module": "platform",
+      "name": "cn.edu.upms.identity.internal.ManagementWriteGateFilterTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 2.021
+    },
+    {
+      "module": "platform",
+      "name": "cn.edu.upms.identity.internal.OidcIntegrationTest",
+      "tests": 11,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 10.219
+    },
+    {
+      "module": "platform",
+      "name": "cn.edu.upms.identity.internal.UnifiedSessionsTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 0.001
+    },
+    {
+      "module": "demo-client",
+      "name": "cn.edu.upms.demo.BusinessBoundaryTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 2.173
+    }
+  ],
+  "passed": true
+}

@@ -1,0 +1,15 @@
+{
+  "measuredOn": "2026-10-08",
+  "database": "upms_baseline",
+  "seed": "baseline",
+  "applicationReadiness": "UP",
+  "employees": 10000,
+  "companies": 10,
+  "departments": 101,
+  "externalSystems": 17,
+  "templates": 85,
+  "departmentRoles": 0,
+  "employeeAssignments": 0,
+  "administrators": 0,
+  "passed": true
+}

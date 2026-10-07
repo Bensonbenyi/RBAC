@@ -1,0 +1,322 @@
+ Container upms-course-mysql-1 Starting 
+ Container upms-course-mysql-1 Started 
+ Container upms-course-mysql-1 Waiting 
+ Container upms-course-mysql-1 Healthy 
+npm warn deprecated eslint@9.39.5: This version is no longer supported. Please see https://eslint.org/version-support for other options.
+
+added 185 packages, and audited 186 packages in 3s
+
+51 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+
+> upms-admin@1.0.0 lint
+> eslint . && prettier --check .
+
+Checking formatting...
+All matched files use Prettier code style!
+
+> upms-admin@1.0.0 build
+> vue-tsc --noEmit && vite build
+
+vite v7.3.7 building client environment for production...
+transforming...
+✓ 1613 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                     0.41 kB │ gzip:   0.31 kB
+dist/assets/index-De71K58Q.css    362.48 kB │ gzip:  48.66 kB
+dist/assets/index-BnOLrHQ1.js   1,046.35 kB │ gzip: 341.48 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 1.56s
+[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] upms                                                               [pom]
+[INFO] platform                                                           [jar]
+[INFO] demo-client                                                        [jar]
+[INFO] load-test                                                          [jar]
+[INFO] 
+[INFO] --------------------------< cn.edu.upms:upms >--------------------------
+[INFO] Building upms 1.0.0                                                [1/4]
+[INFO]   from pom.xml
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] 
+[INFO] --- spotless:2.44.3:check (default-cli) @ upms ---
+[INFO] 
+[INFO] --- spotless:2.44.3:check (default) @ upms ---
+[INFO] 
+[INFO] --- checkstyle:3.6.0:check (default) @ upms ---
+[INFO] 开始检查……
+检查完成。
+[INFO] You have 0 Checkstyle violations.
+[INFO] 
+[INFO] ------------------------< cn.edu.upms:platform >------------------------
+[INFO] Building platform 1.0.0                                            [2/4]
+[INFO]   from platform/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- spotless:2.44.3:check (default-cli) @ platform ---
+[INFO] Spotless.Java is keeping 83 files clean - 0 needs changes to be clean, 0 were already clean, 83 were skipped because caching determined they were already clean
+[INFO] 
+[INFO] --- spotless:2.44.3:check (default) @ platform ---
+[INFO] Spotless.Java is keeping 83 files clean - 0 needs changes to be clean, 0 were already clean, 83 were skipped because caching determined they were already clean
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ platform ---
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] Copying 5 resources from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (default-compile) @ platform ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ platform ---
+[INFO] Copying 1 resource from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.14.1:testCompile (default-testCompile) @ platform ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 9 source files with javac [debug parameters release 21] to target/test-classes
+[INFO] 
+[INFO] --- surefire:3.5.6:test (default-test) @ platform ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running cn.edu.upms.identity.internal.OidcIntegrationTest
+06:42:41.509 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [cn.edu.upms.identity.internal.OidcIntegrationTest]: OidcIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+06:42:41.555 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration cn.edu.upms.UpmsApplication for test class cn.edu.upms.identity.internal.OidcIntegrationTest
+2026-10-08T06:42:42.362+08:00  WARN 12030 --- [upms-platform] [           main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: MySQL 8.4 is newer than this version of Flyway and support has not been tested. The latest supported version of MySQL is 8.1.
+Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build as described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+WARNING: A Java agent has been loaded dynamically (/Users/baakarshan/.m2/repository/net/bytebuddy/byte-buddy-agent/1.17.8/byte-buddy-agent-1.17.8.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+2026-10-08T06:42:44.089+08:00  WARN 12030 --- [upms-platform] [           main] o.s.w.s.h.HandlerMappingIntrospector     : Cache miss for REQUEST dispatch to '/login' (previous null). Performing MatchableHandlerMapping lookup. This is logged once only at WARN level, and every time at TRACE.
+2026-10-08T06:42:44.494+08:00  WARN 12030 --- [upms-platform] [           main] 2AuthorizationCodeAuthenticationProvider : Invalidated authorization code used by registered client '3'
+2026-10-08T06:42:44.705+08:00  WARN 12030 --- [upms-platform] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 1146, SQLState: 42S02
+2026-10-08T06:42:44.706+08:00 ERROR 12030 --- [upms-platform] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : Table 'upms_test.audit_event' doesn't exist
+2026-10-08T06:42:51.656+08:00  WARN 12030 --- [upms-platform] [pool-3-thread-2] 2AuthorizationCodeAuthenticationProvider : Invalidated authorization token(s) previously issued to registered client '1'
+2026-10-08T06:42:51.660+08:00  WARN 12030 --- [upms-platform] [           main] 2AuthorizationCodeAuthenticationProvider : Invalidated authorization token(s) previously issued to registered client '1'
+[INFO] Tests run: 11, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 10.22 s -- in cn.edu.upms.identity.internal.OidcIntegrationTest
+[INFO] Running cn.edu.upms.identity.internal.ManagementWriteGateFilterTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.021 s -- in cn.edu.upms.identity.internal.ManagementWriteGateFilterTest
+[INFO] Running cn.edu.upms.identity.internal.ClientSecretVerifierTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.339 s -- in cn.edu.upms.identity.internal.ClientSecretVerifierTest
+[INFO] Running cn.edu.upms.identity.internal.UnifiedSessionsTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.001 s -- in cn.edu.upms.identity.internal.UnifiedSessionsTest
+[INFO] Running cn.edu.upms.application.TeacherSourceReaderTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.686 s -- in cn.edu.upms.application.TeacherSourceReaderTest
+[INFO] Running cn.edu.upms.application.FoundationIntegrationTest
+2026-10-08T06:42:54.907+08:00  WARN 12030 --- [upms-platform] [           main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: MySQL 8.4 is newer than this version of Flyway and support has not been tested. The latest supported version of MySQL is 8.1.
+2026-10-08T06:42:55.151+08:00  WARN 12030 --- [upms-platform] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 1062, SQLState: 23000
+2026-10-08T06:42:55.151+08:00 ERROR 12030 --- [upms-platform] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : Duplicate entry 'SG000001' for key 'employee.username'
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.551 s -- in cn.edu.upms.application.FoundationIntegrationTest
+[INFO] Running cn.edu.upms.authorization.internal.EffectivePermissionRuleTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0 s -- in cn.edu.upms.authorization.internal.EffectivePermissionRuleTest
+[INFO] Running cn.edu.upms.authorization.AssignmentConcurrencyTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.337 s -- in cn.edu.upms.authorization.AssignmentConcurrencyTest
+[INFO] Running cn.edu.upms.ModuleBoundaryTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.717 s -- in cn.edu.upms.ModuleBoundaryTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 29, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] 
+[INFO] --- jar:3.4.2:jar (default-jar) @ platform ---
+[INFO] 
+[INFO] --- spring-boot:3.5.16:repackage (repackage) @ platform ---
+[INFO] Replacing main artifact /Users/baakarshan/Developer/products/ooad/RBAC/platform/target/platform-1.0.0.jar with repackaged archive, adding nested dependencies in BOOT-INF/.
+[INFO] The original artifact has been renamed to /Users/baakarshan/Developer/products/ooad/RBAC/platform/target/platform-1.0.0.jar.original
+[INFO] 
+[INFO] --- checkstyle:3.6.0:check (default) @ platform ---
+[INFO] 开始检查……
+检查完成。
+[INFO] You have 0 Checkstyle violations.
+[INFO] 
+[INFO] ----------------------< cn.edu.upms:demo-client >-----------------------
+[INFO] Building demo-client 1.0.0                                         [3/4]
+[INFO]   from demo-client/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- spotless:2.44.3:check (default-cli) @ demo-client ---
+[INFO] Spotless.Java is keeping 4 files clean - 0 needs changes to be clean, 0 were already clean, 4 were skipped because caching determined they were already clean
+[INFO] 
+[INFO] --- spotless:2.44.3:check (default) @ demo-client ---
+[INFO] Spotless.Java is keeping 4 files clean - 0 needs changes to be clean, 0 were already clean, 4 were skipped because caching determined they were already clean
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ demo-client ---
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (default-compile) @ demo-client ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ demo-client ---
+[INFO] skip non existing resourceDirectory /Users/baakarshan/Developer/products/ooad/RBAC/demo-client/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.14.1:testCompile (default-testCompile) @ demo-client ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.6:test (default-test) @ demo-client ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running cn.edu.upms.demo.BusinessBoundaryTest
+Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build as described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3
+WARNING: A Java agent has been loaded dynamically (/Users/baakarshan/.m2/repository/net/bytebuddy/byte-buddy-agent/1.17.8/byte-buddy-agent-1.17.8.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.173 s -- in cn.edu.upms.demo.BusinessBoundaryTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] 
+[INFO] --- jar:3.4.2:jar (default-jar) @ demo-client ---
+[INFO] 
+[INFO] --- spring-boot:3.5.16:repackage (repackage) @ demo-client ---
+[INFO] Replacing main artifact /Users/baakarshan/Developer/products/ooad/RBAC/demo-client/target/demo-client-1.0.0.jar with repackaged archive, adding nested dependencies in BOOT-INF/.
+[INFO] The original artifact has been renamed to /Users/baakarshan/Developer/products/ooad/RBAC/demo-client/target/demo-client-1.0.0.jar.original
+[INFO] 
+[INFO] --- checkstyle:3.6.0:check (default) @ demo-client ---
+[INFO] 开始检查……
+检查完成。
+[INFO] You have 0 Checkstyle violations.
+[INFO] 
+[INFO] -----------------------< cn.edu.upms:load-test >------------------------
+[INFO] Building load-test 1.0.0                                           [4/4]
+[INFO]   from load-test/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- spotless:2.44.3:check (default-cli) @ load-test ---
+[INFO] Spotless.Java is keeping 6 files clean - 0 needs changes to be clean, 0 were already clean, 6 were skipped because caching determined they were already clean
+[INFO] 
+[INFO] --- spotless:2.44.3:check (default) @ load-test ---
+[INFO] Spotless.Java is keeping 6 files clean - 0 needs changes to be clean, 0 were already clean, 6 were skipped because caching determined they were already clean
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ load-test ---
+[INFO] skip non existing resourceDirectory /Users/baakarshan/Developer/products/ooad/RBAC/load-test/src/main/resources
+[INFO] skip non existing resourceDirectory /Users/baakarshan/Developer/products/ooad/RBAC/load-test/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (default-compile) @ load-test ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ load-test ---
+[INFO] Copying 1 resource from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.14.1:testCompile (default-testCompile) @ load-test ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.6:test (default-test) @ load-test ---
+[INFO] 
+[INFO] --- jar:3.4.2:jar (default-jar) @ load-test ---
+[WARNING] JAR will be empty - no content was marked for inclusion!
+[INFO] 
+[INFO] --- checkstyle:3.6.0:check (default) @ load-test ---
+[INFO] 开始检查……
+检查完成。
+[INFO] You have 0 Checkstyle violations.
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for upms 1.0.0:
+[INFO] 
+[INFO] upms ............................................... SUCCESS [  0.560 s]
+[INFO] platform ........................................... SUCCESS [ 19.301 s]
+[INFO] demo-client ........................................ SUCCESS [  2.843 s]
+[INFO] load-test .......................................... SUCCESS [  0.068 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  22.876 s
+[INFO] Finished at: 2026-10-08T06:43:02+08:00
+[INFO] ------------------------------------------------------------------------
+[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] platform                                                           [jar]
+[INFO] demo-client                                                        [jar]
+[INFO] 
+[INFO] ------------------------< cn.edu.upms:platform >------------------------
+[INFO] Building platform 1.0.0                                            [1/2]
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- spotless:2.44.3:check (default) @ platform ---
+[INFO] Spotless.Java is keeping 83 files clean - 0 needs changes to be clean, 0 were already clean, 83 were skipped because caching determined they were already clean
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ platform ---
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] Copying 5 resources from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (default-compile) @ platform ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ platform ---
+[INFO] Copying 1 resource from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.14.1:testCompile (default-testCompile) @ platform ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.6:test (default-test) @ platform ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- jar:3.4.2:jar (default-jar) @ platform ---
+[INFO] Building jar: /Users/baakarshan/Developer/products/ooad/RBAC/platform/target/platform-1.0.0.jar
+[INFO] 
+[INFO] --- spring-boot:3.5.16:repackage (repackage) @ platform ---
+[INFO] Replacing main artifact /Users/baakarshan/Developer/products/ooad/RBAC/platform/target/platform-1.0.0.jar with repackaged archive, adding nested dependencies in BOOT-INF/.
+[INFO] The original artifact has been renamed to /Users/baakarshan/Developer/products/ooad/RBAC/platform/target/platform-1.0.0.jar.original
+[INFO] 
+[INFO] ----------------------< cn.edu.upms:demo-client >-----------------------
+[INFO] Building demo-client 1.0.0                                         [2/2]
+[INFO]   from /Users/baakarshan/Developer/products/ooad/RBAC/demo-client/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- spotless:2.44.3:check (default) @ demo-client ---
+[INFO] Spotless.Java is keeping 4 files clean - 0 needs changes to be clean, 0 were already clean, 4 were skipped because caching determined they were already clean
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ demo-client ---
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (default-compile) @ demo-client ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ demo-client ---
+[INFO] skip non existing resourceDirectory /Users/baakarshan/Developer/products/ooad/RBAC/demo-client/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.14.1:testCompile (default-testCompile) @ demo-client ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- surefire:3.5.6:test (default-test) @ demo-client ---
+[INFO] Tests are skipped.
+[INFO] 
+[INFO] --- jar:3.4.2:jar (default-jar) @ demo-client ---
+[INFO] 
+[INFO] --- spring-boot:3.5.16:repackage (repackage) @ demo-client ---
+[INFO] Replacing main artifact /Users/baakarshan/Developer/products/ooad/RBAC/demo-client/target/demo-client-1.0.0.jar with repackaged archive, adding nested dependencies in BOOT-INF/.
+[INFO] The original artifact has been renamed to /Users/baakarshan/Developer/products/ooad/RBAC/demo-client/target/demo-client-1.0.0.jar.original
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for platform 1.0.0:
+[INFO] 
+[INFO] platform ........................................... SUCCESS [  0.764 s]
+[INFO] demo-client ........................................ SUCCESS [  0.034 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  0.898 s
+[INFO] Finished at: 2026-10-08T06:43:04+08:00
+[INFO] ------------------------------------------------------------------------

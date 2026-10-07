@@ -1,0 +1,3231 @@
+{
+  "measuredAt": "2026-10-07T22:27:44.403Z",
+  "database": "upms_load",
+  "results": [
+    {
+      "name": "单个授权",
+      "expected": true,
+      "firstCorrectMs": 10,
+      "incorrectAfterDeadline": 0,
+      "passed": true,
+      "samples": [
+        {
+          "elapsedMs": 10,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 71,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 130,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 190,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 250,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 310,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 368,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 427,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 488,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 548,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 610,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 670,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 730,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 789,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 850,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 909,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 969,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 1029,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 1087,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 1147,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 1206,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 1266,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 1327,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 1386,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 1446,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 1506,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 1566,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 1630,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 1691,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 1751,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 1811,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 1870,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 1932,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 1991,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 2051,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 2110,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 2168,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 2228,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 2287,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 2346,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 2405,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 2464,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 2523,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 2582,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 2642,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 2707,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 2766,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 2828,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 2887,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 2950,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 3010,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 3069,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 3127,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 3185,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 3245,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 3305,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 3364,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 3423,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        },
+        {
+          "elapsedMs": 3481,
+          "status": 200,
+          "allowed": true,
+          "reason": "ALLOW"
+        }
+      ]
+    },
+    {
+      "name": "换角替换旧权限",
+      "expected": false,
+      "firstCorrectMs": 13,
+      "incorrectAfterDeadline": 0,
+      "passed": true,
+      "samples": [
+        {
+          "elapsedMs": 13,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 76,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 149,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 212,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 277,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 341,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 404,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 470,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 534,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 598,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 663,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 727,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 789,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 855,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 918,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 982,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 1044,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 1109,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 1173,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 1239,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 1304,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 1369,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 1432,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 1495,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 1559,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 1624,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 1687,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 1752,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 1817,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 1881,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 1944,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 2008,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 2071,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 2137,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 2205,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 2271,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 2335,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 2399,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 2462,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 2525,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 2587,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 2653,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 2719,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 2783,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 2846,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 2910,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 2974,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 3038,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 3101,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 3165,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 3229,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 3292,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 3360,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 3423,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 3487,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        }
+      ]
+    },
+    {
+      "name": "撤权",
+      "expected": false,
+      "firstCorrectMs": 11,
+      "incorrectAfterDeadline": 0,
+      "passed": true,
+      "samples": [
+        {
+          "elapsedMs": 11,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        },
+        {
+          "elapsedMs": 73,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        },
+        {
+          "elapsedMs": 138,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        },
+        {
+          "elapsedMs": 200,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        },
+        {
+          "elapsedMs": 262,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        },
+        {
+          "elapsedMs": 326,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        },
+        {
+          "elapsedMs": 388,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        },
+        {
+          "elapsedMs": 450,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        },
+        {
+          "elapsedMs": 511,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        },
+        {
+          "elapsedMs": 573,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        },
+        {
+          "elapsedMs": 636,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        },
+        {
+          "elapsedMs": 699,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        },
+        {
+          "elapsedMs": 761,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        },
+        {
+          "elapsedMs": 825,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        },
+        {
+          "elapsedMs": 886,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        },
+        {
+          "elapsedMs": 949,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        },
+        {
+          "elapsedMs": 1011,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        },
+        {
+          "elapsedMs": 1077,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        },
+        {
+          "elapsedMs": 1140,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        },
+        {
+          "elapsedMs": 1201,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        },
+        {
+          "elapsedMs": 1266,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        },
+        {
+          "elapsedMs": 1329,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        },
+        {
+          "elapsedMs": 1390,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        },
+        {
+          "elapsedMs": 1454,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        },
+        {
+          "elapsedMs": 1524,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        },
+        {
+          "elapsedMs": 1587,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        },
+        {
+          "elapsedMs": 1649,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        },
+        {
+          "elapsedMs": 1712,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        },
+        {
+          "elapsedMs": 1773,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        },
+        {
+          "elapsedMs": 1836,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        },
+        {
+          "elapsedMs": 1900,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        },
+        {
+          "elapsedMs": 1963,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        },
+        {
+          "elapsedMs": 2025,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        },
+        {
+          "elapsedMs": 2088,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        },
+        {
+          "elapsedMs": 2149,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        },
+        {
+          "elapsedMs": 2212,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        },
+        {
+          "elapsedMs": 2273,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        },
+        {
+          "elapsedMs": 2338,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        },
+        {
+          "elapsedMs": 2400,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        },
+        {
+          "elapsedMs": 2462,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        },
+        {
+          "elapsedMs": 2525,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        },
+        {
+          "elapsedMs": 2589,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        },
+        {
+          "elapsedMs": 2653,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        },
+        {
+          "elapsedMs": 2718,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        },
+        {
+          "elapsedMs": 2783,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        },
+        {
+          "elapsedMs": 2847,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        },
+        {
+          "elapsedMs": 2910,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        },
+        {
+          "elapsedMs": 2973,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        },
+        {
+          "elapsedMs": 3034,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        },
+        {
+          "elapsedMs": 3097,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        },
+        {
+          "elapsedMs": 3158,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        },
+        {
+          "elapsedMs": 3220,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        },
+        {
+          "elapsedMs": 3282,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        },
+        {
+          "elapsedMs": 3344,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        },
+        {
+          "elapsedMs": 3409,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        },
+        {
+          "elapsedMs": 3470,
+          "status": 200,
+          "allowed": false,
+          "reason": "NO_ROLE"
+        }
+      ]
+    },
+    {
+      "name": "角色权限修改",
+      "expected": false,
+      "firstCorrectMs": 15,
+      "incorrectAfterDeadline": 0,
+      "passed": true,
+      "samples": [
+        {
+          "elapsedMs": 15,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 81,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 144,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 207,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 271,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 334,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 399,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 461,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 526,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 592,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 655,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 716,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 781,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 845,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 909,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 975,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 1039,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 1103,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 1170,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 1232,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 1296,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 1360,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 1425,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 1489,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 1555,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 1618,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 1681,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 1744,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 1809,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 1876,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 1938,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 2002,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 2068,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 2132,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 2198,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 2262,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 2325,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 2391,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 2455,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 2517,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 2579,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 2645,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 2708,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 2772,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 2836,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 2899,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 2965,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 3029,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 3094,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 3158,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 3222,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 3285,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 3348,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 3410,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 3475,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        }
+      ]
+    },
+    {
+      "name": "目录明确停用",
+      "expected": false,
+      "firstCorrectMs": 14,
+      "incorrectAfterDeadline": 0,
+      "passed": true,
+      "samples": [
+        {
+          "elapsedMs": 14,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 78,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 142,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 207,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 271,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 334,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 398,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 461,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 525,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 588,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 653,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 716,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 780,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 843,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 908,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 970,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 1034,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 1098,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 1161,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 1224,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 1288,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 1354,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 1419,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 1482,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 1545,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 1611,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 1676,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 1739,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 1802,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 1867,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 1930,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 1994,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 2059,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 2120,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 2185,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 2250,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 2314,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 2381,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 2445,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 2510,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 2573,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 2639,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 2703,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 2768,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 2832,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 2896,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 2959,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 3023,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 3087,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 3150,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 3214,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 3281,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 3347,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 3410,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        },
+        {
+          "elapsedMs": 3474,
+          "status": 200,
+          "allowed": false,
+          "reason": "PERMISSION_MISSING"
+        }
+      ]
+    },
+    {
+      "name": "部门可用系统范围取消",
+      "expected": false,
+      "firstCorrectMs": 15,
+      "incorrectAfterDeadline": 0,
+      "passed": true,
+      "samples": [
+        {
+          "elapsedMs": 15,
+          "status": 200,
+          "allowed": false,
+          "reason": "SYSTEM_UNAVAILABLE"
+        },
+        {
+          "elapsedMs": 78,
+          "status": 200,
+          "allowed": false,
+          "reason": "SYSTEM_UNAVAILABLE"
+        },
+        {
+          "elapsedMs": 141,
+          "status": 200,
+          "allowed": false,
+          "reason": "SYSTEM_UNAVAILABLE"
+        },
+        {
+          "elapsedMs": 206,
+          "status": 200,
+          "allowed": false,
+          "reason": "SYSTEM_UNAVAILABLE"
+        },
+        {
+          "elapsedMs": 273,
+          "status": 200,
+          "allowed": false,
+          "reason": "SYSTEM_UNAVAILABLE"
+        },
+        {
+          "elapsedMs": 337,
+          "status": 200,
+          "allowed": false,
+          "reason": "SYSTEM_UNAVAILABLE"
+        },
+        {
+          "elapsedMs": 401,
+          "status": 200,
+          "allowed": false,
+          "reason": "SYSTEM_UNAVAILABLE"
+        },
+        {
+          "elapsedMs": 467,
+          "status": 200,
+          "allowed": false,
+          "reason": "SYSTEM_UNAVAILABLE"
+        },
+        {
+          "elapsedMs": 530,
+          "status": 200,
+          "allowed": false,
+          "reason": "SYSTEM_UNAVAILABLE"
+        },
+        {
+          "elapsedMs": 594,
+          "status": 200,
+          "allowed": false,
+          "reason": "SYSTEM_UNAVAILABLE"
+        },
+        {
+          "elapsedMs": 659,
+          "status": 200,
+          "allowed": false,
+          "reason": "SYSTEM_UNAVAILABLE"
+        },
+        {
+          "elapsedMs": 723,
+          "status": 200,
+          "allowed": false,
+          "reason": "SYSTEM_UNAVAILABLE"
+        },
+        {
+          "elapsedMs": 786,
+          "status": 200,
+          "allowed": false,
+          "reason": "SYSTEM_UNAVAILABLE"
+        },
+        {
+          "elapsedMs": 850,
+          "status": 200,
+          "allowed": false,
+          "reason": "SYSTEM_UNAVAILABLE"
+        },
+        {
+          "elapsedMs": 916,
+          "status": 200,
+          "allowed": false,
+          "reason": "SYSTEM_UNAVAILABLE"
+        },
+        {
+          "elapsedMs": 980,
+          "status": 200,
+          "allowed": false,
+          "reason": "SYSTEM_UNAVAILABLE"
+        },
+        {
+          "elapsedMs": 1044,
+          "status": 200,
+          "allowed": false,
+          "reason": "SYSTEM_UNAVAILABLE"
+        },
+        {
+          "elapsedMs": 1108,
+          "status": 200,
+          "allowed": false,
+          "reason": "SYSTEM_UNAVAILABLE"
+        },
+        {
+          "elapsedMs": 1171,
+          "status": 200,
+          "allowed": false,
+          "reason": "SYSTEM_UNAVAILABLE"
+        },
+        {
+          "elapsedMs": 1237,
+          "status": 200,
+          "allowed": false,
+          "reason": "SYSTEM_UNAVAILABLE"
+        },
+        {
+          "elapsedMs": 1302,
+          "status": 200,
+          "allowed": false,
+          "reason": "SYSTEM_UNAVAILABLE"
+        },
+        {
+          "elapsedMs": 1366,
+          "status": 200,
+          "allowed": false,
+          "reason": "SYSTEM_UNAVAILABLE"
+        },
+        {
+          "elapsedMs": 1428,
+          "status": 200,
+          "allowed": false,
+          "reason": "SYSTEM_UNAVAILABLE"
+        },
+        {
+          "elapsedMs": 1493,
+          "status": 200,
+          "allowed": false,
+          "reason": "SYSTEM_UNAVAILABLE"
+        },
+        {
+          "elapsedMs": 1557,
+          "status": 200,
+          "allowed": false,
+          "reason": "SYSTEM_UNAVAILABLE"
+        },
+        {
+          "elapsedMs": 1621,
+          "status": 200,
+          "allowed": false,
+          "reason": "SYSTEM_UNAVAILABLE"
+        },
+        {
+          "elapsedMs": 1687,
+          "status": 200,
+          "allowed": false,
+          "reason": "SYSTEM_UNAVAILABLE"
+        },
+        {
+          "elapsedMs": 1751,
+          "status": 200,
+          "allowed": false,
+          "reason": "SYSTEM_UNAVAILABLE"
+        },
+        {
+          "elapsedMs": 1815,
+          "status": 200,
+          "allowed": false,
+          "reason": "SYSTEM_UNAVAILABLE"
+        },
+        {
+          "elapsedMs": 1879,
+          "status": 200,
+          "allowed": false,
+          "reason": "SYSTEM_UNAVAILABLE"
+        },
+        {
+          "elapsedMs": 1942,
+          "status": 200,
+          "allowed": false,
+          "reason": "SYSTEM_UNAVAILABLE"
+        },
+        {
+          "elapsedMs": 2006,
+          "status": 200,
+          "allowed": false,
+          "reason": "SYSTEM_UNAVAILABLE"
+        },
+        {
+          "elapsedMs": 2070,
+          "status": 200,
+          "allowed": false,
+          "reason": "SYSTEM_UNAVAILABLE"
+        },
+        {
+          "elapsedMs": 2133,
+          "status": 200,
+          "allowed": false,
+          "reason": "SYSTEM_UNAVAILABLE"
+        },
+        {
+          "elapsedMs": 2197,
+          "status": 200,
+          "allowed": false,
+          "reason": "SYSTEM_UNAVAILABLE"
+        },
+        {
+          "elapsedMs": 2261,
+          "status": 200,
+          "allowed": false,
+          "reason": "SYSTEM_UNAVAILABLE"
+        },
+        {
+          "elapsedMs": 2325,
+          "status": 200,
+          "allowed": false,
+          "reason": "SYSTEM_UNAVAILABLE"
+        },
+        {
+          "elapsedMs": 2393,
+          "status": 200,
+          "allowed": false,
+          "reason": "SYSTEM_UNAVAILABLE"
+        },
+        {
+          "elapsedMs": 2456,
+          "status": 200,
+          "allowed": false,
+          "reason": "SYSTEM_UNAVAILABLE"
+        },
+        {
+          "elapsedMs": 2521,
+          "status": 200,
+          "allowed": false,
+          "reason": "SYSTEM_UNAVAILABLE"
+        },
+        {
+          "elapsedMs": 2585,
+          "status": 200,
+          "allowed": false,
+          "reason": "SYSTEM_UNAVAILABLE"
+        },
+        {
+          "elapsedMs": 2650,
+          "status": 200,
+          "allowed": false,
+          "reason": "SYSTEM_UNAVAILABLE"
+        },
+        {
+          "elapsedMs": 2713,
+          "status": 200,
+          "allowed": false,
+          "reason": "SYSTEM_UNAVAILABLE"
+        },
+        {
+          "elapsedMs": 2778,
+          "status": 200,
+          "allowed": false,
+          "reason": "SYSTEM_UNAVAILABLE"
+        },
+        {
+          "elapsedMs": 2841,
+          "status": 200,
+          "allowed": false,
+          "reason": "SYSTEM_UNAVAILABLE"
+        },
+        {
+          "elapsedMs": 2908,
+          "status": 200,
+          "allowed": false,
+          "reason": "SYSTEM_UNAVAILABLE"
+        },
+        {
+          "elapsedMs": 2971,
+          "status": 200,
+          "allowed": false,
+          "reason": "SYSTEM_UNAVAILABLE"
+        },
+        {
+          "elapsedMs": 3037,
+          "status": 200,
+          "allowed": false,
+          "reason": "SYSTEM_UNAVAILABLE"
+        },
+        {
+          "elapsedMs": 3101,
+          "status": 200,
+          "allowed": false,
+          "reason": "SYSTEM_UNAVAILABLE"
+        },
+        {
+          "elapsedMs": 3165,
+          "status": 200,
+          "allowed": false,
+          "reason": "SYSTEM_UNAVAILABLE"
+        },
+        {
+          "elapsedMs": 3230,
+          "status": 200,
+          "allowed": false,
+          "reason": "SYSTEM_UNAVAILABLE"
+        },
+        {
+          "elapsedMs": 3293,
+          "status": 200,
+          "allowed": false,
+          "reason": "SYSTEM_UNAVAILABLE"
+        },
+        {
+          "elapsedMs": 3356,
+          "status": 200,
+          "allowed": false,
+          "reason": "SYSTEM_UNAVAILABLE"
+        },
+        {
+          "elapsedMs": 3419,
+          "status": 200,
+          "allowed": false,
+          "reason": "SYSTEM_UNAVAILABLE"
+        },
+        {
+          "elapsedMs": 3482,
+          "status": 200,
+          "allowed": false,
+          "reason": "SYSTEM_UNAVAILABLE"
+        }
+      ]
+    },
+    {
+      "name": "管理员身份取消",
+      "expected": false,
+      "firstCorrectMs": 6,
+      "incorrectAfterDeadline": 0,
+      "passed": true,
+      "samples": [
+        {
+          "elapsedMs": 6,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 64,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 119,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 175,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 232,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 290,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 347,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 403,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 459,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 514,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 572,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 626,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 682,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 738,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 794,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 850,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 909,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 964,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 1020,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 1076,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 1131,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 1186,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 1243,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 1299,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 1356,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 1413,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 1469,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 1526,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 1583,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 1640,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 1696,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 1752,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 1807,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 1864,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 1920,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 1976,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 2031,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 2091,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 2150,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 2205,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 2260,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 2316,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 2372,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 2428,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 2483,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 2539,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 2596,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 2651,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 2706,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 2763,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 2819,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 2874,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 2931,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 2987,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 3043,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 3098,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 3153,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 3208,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 3263,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 3319,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 3375,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 3431,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        },
+        {
+          "elapsedMs": 3487,
+          "status": 403,
+          "allowed": false,
+          "reason": "OUT_OF_SCOPE"
+        }
+      ]
+    },
+    {
+      "name": "统一退出",
+      "expected": false,
+      "firstCorrectMs": 7,
+      "incorrectAfterDeadline": 0,
+      "passed": true,
+      "samples": [
+        {
+          "elapsedMs": 7,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 63,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 121,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 177,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 234,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 290,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 347,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 404,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 460,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 521,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 577,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 632,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 689,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 745,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 801,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 862,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 919,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 978,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 1036,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 1093,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 1151,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 1210,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 1268,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 1324,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 1383,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 1440,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 1496,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 1554,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 1610,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 1668,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 1727,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 1785,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 1841,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 1898,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 1956,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 2011,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 2068,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 2125,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 2181,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 2238,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 2294,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 2352,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 2409,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 2465,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 2521,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 2577,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 2633,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 2688,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 2745,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 2801,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 2857,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 2915,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 2972,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 3028,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 3085,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 3141,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 3198,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 3254,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 3310,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 3365,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 3421,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 3477,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        }
+      ]
+    },
+    {
+      "name": "独立浏览器会话保留",
+      "passed": true
+    },
+    {
+      "name": "员工停用撤销全部会话",
+      "expected": false,
+      "firstCorrectMs": 5,
+      "incorrectAfterDeadline": 0,
+      "passed": true,
+      "samples": [
+        {
+          "elapsedMs": 5,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 61,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 121,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 176,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 232,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 288,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 346,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 403,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 460,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 516,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 573,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 629,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 686,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 742,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 799,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 855,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 912,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 970,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 1027,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 1083,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 1139,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 1193,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 1248,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 1305,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 1361,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 1417,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 1473,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 1531,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 1586,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 1643,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 1699,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 1756,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 1813,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 1869,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 1926,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 1983,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 2039,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 2095,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 2152,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 2207,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 2263,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 2320,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 2376,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 2432,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 2489,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 2544,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 2600,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 2656,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 2714,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 2770,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 2828,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 2886,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 2941,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 2997,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 3053,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 3109,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 3164,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 3221,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 3277,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 3334,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 3389,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 3446,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        },
+        {
+          "elapsedMs": 3504,
+          "status": 401,
+          "allowed": false,
+          "reason": "IDENTITY_EXPIRED"
+        }
+      ]
+    }
+  ],
+  "failures": [],
+  "passed": true
+}

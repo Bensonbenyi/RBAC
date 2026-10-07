@@ -1,0 +1,12 @@
+[
+  { name: '单个授权', passed: true, firstCorrectMs: 10 },
+  { name: '换角替换旧权限', passed: true, firstCorrectMs: 13 },
+  { name: '撤权', passed: true, firstCorrectMs: 11 },
+  { name: '角色权限修改', passed: true, firstCorrectMs: 15 },
+  { name: '目录明确停用', passed: true, firstCorrectMs: 14 },
+  { name: '部门可用系统范围取消', passed: true, firstCorrectMs: 15 },
+  { name: '管理员身份取消', passed: true, firstCorrectMs: 6 },
+  { name: '统一退出', passed: true, firstCorrectMs: 7 },
+  { name: '独立浏览器会话保留', passed: true, firstCorrectMs: undefined },
+  { name: '员工停用撤销全部会话', passed: true, firstCorrectMs: 5 }
+]
