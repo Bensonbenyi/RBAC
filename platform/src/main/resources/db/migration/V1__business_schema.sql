@@ -116,7 +116,7 @@ CREATE TABLE batch_job (
   actor_id BIGINT NOT NULL,
   system_id BIGINT NOT NULL,
   role_id BIGINT,
-  revoke BOOLEAN NOT NULL,
+  revoke_roles BOOLEAN NOT NULL,
   status VARCHAR(30) NOT NULL,
   created_at TIMESTAMP(6) NOT NULL,
   version BIGINT NOT NULL DEFAULT 0
