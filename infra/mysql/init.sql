@@ -1,4 +1,6 @@
 CREATE DATABASE IF NOT EXISTS upms_test CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_as_cs;
 CREATE DATABASE IF NOT EXISTS upms_load CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_as_cs;
+CREATE DATABASE IF NOT EXISTS upms_baseline CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_as_cs;
 GRANT ALL PRIVILEGES ON upms_test.* TO 'upms'@'%';
 GRANT ALL PRIVILEGES ON upms_load.* TO 'upms'@'%';
+GRANT ALL PRIVILEGES ON upms_baseline.* TO 'upms'@'%';
