@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent><groupId>cn.edu.upms</groupId><artifactId>upms</artifactId><version>1.0.0</version></parent>
+  <artifactId>load-test</artifactId>
+  <properties>
+    <gatling.version>3.16.0</gatling.version>
+    <!-- 仅压测进程使用 Gatling 要求的 Netty，不改变平台依赖。 -->
+    <netty.version>4.2.18.Final</netty.version>
+    <netty-tcnative.version>2.0.84.Final</netty-tcnative.version>
+  </properties>
+  <dependencies>
+    <dependency><groupId>io.gatling.highcharts</groupId><artifactId>gatling-charts-highcharts</artifactId><version>${gatling.version}</version><scope>test</scope></dependency>
+    <dependency><groupId>io.gatling</groupId><artifactId>gatling-test-framework</artifactId><version>${gatling.version}</version><scope>test</scope></dependency>
+    <dependency><groupId>io.gatling</groupId><artifactId>gatling-http-java</artifactId><version>${gatling.version}</version><scope>test</scope></dependency>
+    <dependency><groupId>com.nimbusds</groupId><artifactId>nimbus-jose-jwt</artifactId><version>9.37.4</version><scope>test</scope></dependency>
+  </dependencies>
+  <build><plugins><plugin>
+    <groupId>io.gatling</groupId><artifactId>gatling-maven-plugin</artifactId><version>4.21.12</version>
+    <configuration><runMultipleSimulations>true</runMultipleSimulations></configuration>
+  </plugin></plugins></build>
+</project>
