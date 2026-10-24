@@ -68,7 +68,7 @@ public class BatchService implements BatchApi {
 
   private Job submitOwned(long actorId, Request request) {
     validate(actorId, request.targets());
-    if (request.requestKey() == null || !request.requestKey().matches("[A-Za-z0-9-]{8,80}")) {
+    if (!request.requestKey().matches("[A-Za-z0-9-]{8,80}")) {
       throw new BusinessException(400, "INVALID_BATCH", "批量请求标识格式错误");
     }
     var existing = jobs.findByActorIdAndRequestKey(actorId, request.requestKey());

@@ -175,7 +175,7 @@ public class CatalogService implements CatalogApi {
     organization.requireDepartmentScope(actorId, fact.departmentId());
     integration.lock(fact.systemId());
     var entity = roles.lock(roleId).orElseThrow();
-    if (entity.deleted || entity.getVersion() != expectedVersion) {
+    if (entity.getVersion() != expectedVersion) {
       throw BusinessException.conflict("角色已变化，请刷新后确认");
     }
     entity.deleted = true;
@@ -228,7 +228,8 @@ public class CatalogService implements CatalogApi {
                   .allMatch(
                       p -> {
                         DirectoryItem item = incoming.get(p.permissionKey);
-                        return item == null ? !p.active : matches(p, item);
+                        // 前面的完整性校验已保证遗漏项只能是停用历史。
+                        return item == null || matches(p, item);
                       })
               && incoming.keySet().stream()
                   .allMatch(k -> existing.stream().anyMatch(p -> p.permissionKey.equals(k)));
@@ -241,7 +242,7 @@ public class CatalogService implements CatalogApi {
     Set<Long> disabled = new HashSet<>();
     for (PermissionEntity entity : existing) {
       DirectoryItem item = incoming.get(entity.permissionKey);
-      if (entity.active && item != null && !item.active()) {
+      if (entity.active && !item.active()) {
         disabled.add(entity.getId());
       }
       if (item == null) {

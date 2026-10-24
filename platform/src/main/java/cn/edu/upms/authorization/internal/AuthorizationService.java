@@ -31,6 +31,7 @@ public class AuthorizationService implements AuthorizationApi {
   private final CatalogApi catalog;
   private final AuditApi audit;
   private final boolean cacheEnabled;
+  private final java.util.function.LongSupplier monotonicClock;
   private final TransactionTemplate reading;
 
   private record Key(long employeeId, long systemId) {}
@@ -41,6 +42,7 @@ public class AuthorizationService implements AuthorizationApi {
       Caffeine.newBuilder().maximumSize(20000).expireAfterWrite(Duration.ofSeconds(2)).build();
 
   /** 只依赖其它模块的公开事实与能力，禁止跨模块实体访问. */
+  @org.springframework.beans.factory.annotation.Autowired
   public AuthorizationService(
       AssignmentRepository assignments,
       OrganizationApi organization,
@@ -49,6 +51,28 @@ public class AuthorizationService implements AuthorizationApi {
       AuditApi audit,
       PlatformTransactionManager manager,
       @Value("${upms.cache-enabled:false}") boolean cacheEnabled) {
+    this(
+        assignments,
+        organization,
+        integration,
+        catalog,
+        audit,
+        manager,
+        cacheEnabled,
+        System::nanoTime);
+  }
+
+  /** 测试可替换单调时钟；实例创建后不再修改时钟或请求身份. */
+  AuthorizationService(
+      AssignmentRepository assignments,
+      OrganizationApi organization,
+      IntegrationApi integration,
+      CatalogApi catalog,
+      AuditApi audit,
+      PlatformTransactionManager manager,
+      boolean cacheEnabled,
+      java.util.function.LongSupplier monotonicClock) {
+    this.monotonicClock = monotonicClock;
     this.assignments = assignments;
     this.organization = organization;
     this.integration = integration;
@@ -258,7 +282,7 @@ public class AuthorizationService implements AuthorizationApi {
     }
     Key key = new Key(employeeId, systemId);
     Snapshot snapshot = snapshots.getIfPresent(key);
-    long now = System.nanoTime();
+    long now = monotonicClock.getAsLong();
     if (snapshot != null && now < snapshot.deadline()) {
       return snapshot.facts();
     }
@@ -266,7 +290,7 @@ public class AuthorizationService implements AuthorizationApi {
     long started = now;
     Effective facts = reading.execute(status -> readEffective(employeeId, systemId));
     long deadline = started + Duration.ofSeconds(2).toNanos();
-    if (System.nanoTime() >= deadline) {
+    if (monotonicClock.getAsLong() >= deadline) {
       throw BusinessException.unavailable();
     }
     snapshots.put(key, new Snapshot(facts, deadline));
