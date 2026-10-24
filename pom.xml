@@ -17,13 +17,39 @@
     <module>platform</module>
     <module>demo-client</module>
     <module>load-test</module>
+    <module>coverage-report</module>
   </modules>
   <properties>
     <java.version>21</java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <jacoco.version>0.8.13</jacoco.version>
+    <coverage.skip-check>false</coverage.skip-check>
   </properties>
   <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <version>${jacoco.version}</version>
+          <executions>
+            <execution><id>coverage-agent</id><goals><goal>prepare-agent</goal></goals></execution>
+            <execution><id>coverage-report</id><phase>verify</phase><goals><goal>report</goal></goals></execution>
+            <execution>
+              <id>coverage-gate</id><phase>verify</phase><goals><goal>check</goal></goals>
+              <configuration>
+                <skip>${coverage.skip-check}</skip>
+                <rules><rule><element>BUNDLE</element><limits>
+                  <limit><counter>LINE</counter><value>COVEREDRATIO</value><minimum>1.00</minimum></limit>
+                  <limit><counter>BRANCH</counter><value>COVEREDRATIO</value><minimum>1.00</minimum></limit>
+                </limits></rule></rules>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
     <plugins>
       <plugin>
         <groupId>com.diffplug.spotless</groupId>
