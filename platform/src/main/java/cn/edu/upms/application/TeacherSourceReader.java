@@ -16,7 +16,12 @@ import org.apache.poi.ss.usermodel.DataFormatter;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 
-/** 只读解析三份教师资料，校验后交给各模块导入；不使用不可靠的范围标记. */
+/**
+ * 只读解析组织、员工及功能权限三份来源 Excel，返回经过校验的导入事实.
+ *
+ * <p>本类不访问数据库，不任命管理员，也不根据岗位给员工授予业务角色。来源中存在合法的直属员工待确认部门，保留 null；其他未知归属、重复身份或规模不符会使导入在写库前停止。
+ * LinkedHashMap 保持来源顺序，便于在相同资料上得到可重复的初始编号.
+ */
 public final class TeacherSourceReader {
   /** 完整基础资料；模板权限以目录稳定标识关联. */
   public record Source(
@@ -67,6 +72,8 @@ public final class TeacherSourceReader {
       String company = row.get(2);
       String department = row.get(3);
       Long departmentId = departmentIds.get(company + "/" + department);
+      // 来源表把部分分公司直属员工的"部门"填为公司名；只承认这一已确认特例。
+      // 其他未知部门直接报错，不能统一吞成 null，否则会隐藏错误归属。
       if (departmentId == null && !(department.equals(company) && !"总公司".equals(company))) {
         throw new IllegalStateException("未知部门归属：" + company + "/" + department);
       }
@@ -132,7 +139,11 @@ public final class TeacherSourceReader {
         selections.add(actions);
         actions.stream().filter(a -> !a.equals("全部")).forEach(concrete::add);
       }
+      // "全部"是模板选择规则，不生成一个绕过具体动作校验的万能权限。
+      // 它只展开为本功能在来源中明确出现的具体动作；"无"则不形成任何选择。
       for (String action : concrete) {
+        // 这是首次课程导入按固定来源顺序生成的标识；运行期目录须保持 key 稳定。
+        // 来源重排不应被误当作可随意覆盖已有目录的在线更新方案。
         String key = String.format("f%03d:%s", featureIndex, action);
         items.add(new DirectoryItem(key, module, row.get(2), action, true));
         int index = 0;

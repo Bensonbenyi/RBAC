@@ -29,7 +29,15 @@ import java.util.Base64;
 import java.util.UUID;
 import java.util.concurrent.atomic.LongAdder;
 
-/** 压测客户端完成标准授权码与 PKCE 兑换，并验证身份签名，不能用直取令牌替代登录. */
+/**
+ * Gatling 场景共用的完整登录链与权限正确性检查，运行前须启动专用压测平台.
+ *
+ * <p>Gatling Session 是一个虚拟用户的状态容器，与平台统一会话和 Servlet HttpSession 不同。每个账号各自保存
+ * state、nonce、授权码和访问令牌；共享连接池只复用 TCP 连接，不共享身份。本地固定 verifier 是压测夹具，真实客户端应为每次授权随机生成 PKCE 材料.
+ *
+ * <p>技术请求成功不代表权限结论正确。checkPermission 另外比较 expectedAllowed， verifyDecisions
+ * 要求错误允许与错误拒绝都为零，不用百分之一技术失败预算容忍越权.
+ */
 final class LoadSupport {
   static final String BASE = System.getProperty("load.base", "http://localhost:18080");
   static final String VERIFIER = "abcdefghijklmnopqrstuvwxyz0123456789-ABCDEFG";
@@ -61,6 +69,7 @@ final class LoadSupport {
     throw new IllegalStateException("请从项目目录运行，或显式指定 load.root");
   }
 
+  /** 按真实协议顺序执行跳转、表单、回调关联、兑换、ID Token 验证与 UserInfo. */
   static ChainBuilder login() {
     return exec(session ->
             session

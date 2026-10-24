@@ -15,7 +15,12 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionTemplate;
 
-/** 单独叠加少量演示管理员与角色，基础模式不会执行；与来源岗位无关. */
+/**
+ * 在教师基线之上显式叠加少量课程演示账号与权限，和纯基础数据分开.
+ *
+ * <p>Order=20 保证基线已经导入；仅 seed=demo 且 marker 不存在时执行。管理员清单、可用部门、模板复制与员工分配在同一事务里配置，成功后记录
+ * marker，重复启动不重复授权。这里的少量固定编号是受控演示夹具，不是运行期按岗位或姓名猜测权限的规则.
+ */
 @Component
 @Order(20)
 public class DemonstrationInitializer implements ApplicationRunner {

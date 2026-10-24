@@ -24,7 +24,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-/** 后台传输适配；每次请求重新验证身份和管理范围，业务约束由模块公开用例维护. */
+/**
+ * 将后台 HTTP 请求适配成六个业务模块的公开操作，并组织少量跨模块检查.
+ *
+ * <p>阅读一条接口时按"Principal 身份 -> 请求 DTO -> 模块用例 -> 响应事实"追踪。 Principal 由安全框架提供；请求中员工编号表示目标对象，不能充当操作者身份。
+ * actor 每次复核会话与管理员资格，具体模块还会检查目标范围及并发版本.
+ *
+ * <p>DTO 是 HTTP 输入输出的形状，record 是模块事实，JPA 实体只存在各模块内部，三者不必一一对应。例如 SystemView
+ * 主动去掉凭据哈希。一般方法只转换参数；部门停用和角色删除还需组合其他模块的条件，因此这里显式开启事务并先取得治理锁.
+ */
 @RestController
 @RequestMapping("/api/admin")
 public class AdminController {
@@ -51,7 +59,14 @@ public class AdminController {
   /** 模板复制输入. */
   public record CopyInput(long templateId, long departmentId, String name) {}
 
-  /** 明确单角色替换或撤销的输入. */
+  /**
+   * 员工角色分配请求，只表达目标与用户确认的旧状态.
+   *
+   * @param employeeId 被管理员工编号；操作者从 Principal 另行取得
+   * @param systemId 目标系统编号
+   * @param roleId 新角色编号；{@code null} 代表撤销
+   * @param expectedVersion 上次读取的分配版本，首次分配为 {@code -1}
+   */
   public record AssignmentInput(
       long employeeId, long systemId, Long roleId, long expectedVersion) {}
 
@@ -135,6 +150,7 @@ public class AdminController {
   @org.springframework.transaction.annotation.Transactional
   public OrganizationApi.Department department(
       Principal principal, @RequestBody DepartmentInput request) {
+    // 范围预览可能已过时，检查关联与停用写入必须在同一个治理锁、同一个事务内完成。
     long actorId = actor(principal);
     organization.lockManagement(actorId);
     if (!request.active()
@@ -268,6 +284,8 @@ public class AdminController {
   @org.springframework.transaction.annotation.Transactional
   public Map<String, Boolean> deleteRole(
       Principal principal, @PathVariable long id, @RequestBody Map<String, Long> request) {
+    // 授权模块回答"是否仍有人持有"，目录模块执行删除；上层组合，两个模块不相互访问存储。
+    // 持有同一治理锁，防止影响查询之后又有并发分配进入。
     long actorId = actor(principal);
     organization.lockManagement(actorId);
     if (!authorization.affected(actorId, id).isEmpty()) {
@@ -398,6 +416,11 @@ public class AdminController {
     }
   }
 
+  /**
+   * 从可信会话提取操作者，并检查最新管理员身份；客户端不能自行提交 actorId.
+   *
+   * <p>这里只确认"谁在操作"，不代表该管理员对任意目标有权；目标范围由后续用例校验.
+   */
   private long actor(Principal principal) {
     audit.requireAvailable();
     long actorId = identity.browser(principal).employeeId();
@@ -405,6 +428,7 @@ public class AdminController {
     return actorId;
   }
 
+  /** 部门管理员不能用省略参数获得全局日志；null 的全局含义只对最高管理员开放. */
   private Long logScope(long actorId, Long requested) {
     var actor = organization.administrator(actorId);
     if (requested != null) {
@@ -413,6 +437,7 @@ public class AdminController {
     return actor.superAdmin() ? requested : actor.departmentId();
   }
 
+  /** 构造允许发给浏览器的字段白名单，避免完整 SystemFact 中的凭据哈希泄漏. */
   private static SystemView systemView(IntegrationApi.SystemFact s) {
     return new SystemView(
         s.id(),
@@ -426,6 +451,11 @@ public class AdminController {
         s.departments());
   }
 
+  /**
+   * 转义 CSV 引号，并让可能被电子表格当作公式的文本按普通文字打开.
+   *
+   * <p>CSV 双引号转义只保证格式正确，不能阻止以 =、+、-、@ 开头的公式被执行，故另加单引号.
+   */
   private static String csv(Object value) {
     String text = value == null ? "" : value.toString();
     if (text.matches("^[=+@\\-].*")) {

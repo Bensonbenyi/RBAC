@@ -9,7 +9,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-/** 批量装载可重复的专用压测夹具；SQL 仅访问本模块拥有的分配表. */
+/**
+ * 只为空压测分配表批量写入已经核对归属的夹具，不是运行期授权捷径.
+ *
+ * <p>上层 LoadInitializer 负责专用库限制、角色创建及归属核对；这里要求现有分配为空，参加上层事务并只写本模块表。运行期必须使用
+ * AuthorizationApi.change，不能跳过范围、版本、锁与审计检查来调用本导入器.
+ */
 @Service
 class AuthorizationImportService implements AuthorizationImportApi {
   private final AssignmentRepository assignments;

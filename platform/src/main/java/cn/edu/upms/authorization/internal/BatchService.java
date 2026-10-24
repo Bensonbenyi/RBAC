@@ -18,7 +18,14 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
-/** 整批先验范围、单项原子提交，失败结果可查询；未完成项重启后明确中断. */
+/**
+ * 按员工逐项提交的批量授权用例，保存可查询和可重试的任务结果.
+ *
+ * <p>入口先检查整批范围，避免先给范围内员工授权、再发现其他员工越界。之后每名员工拥有独立事务，单项授权与该项 SUCCESS 状态一起提交，其他项失败不撤销已成功项。
+ * 本类整体没有 @Transactional，事务模板清楚划出任务创建、单项执行、失败登记等边界.
+ *
+ * <p>running 防止同一任务并发执行，requestLocks 防止同一幂等标识并发创建。两者都是单节点协调措施，持久化唯一键仍是最后约束；扩为多实例时需要重新设计执行权.
+ */
 @Service
 public class BatchService implements BatchApi {
   private final BatchRepository jobs;
@@ -27,7 +34,9 @@ public class BatchService implements BatchApi {
   private final OrganizationApi organization;
   private final AuditApi audit;
   private final TransactionTemplate transaction;
+  // Set.add 的原子结果表示能否取得执行权；无论成功还是异常都必须在 finally 释放。
   private final Set<Long> running = ConcurrentHashMap.newKeySet();
+  // 固定条带避免为每个请求无限创建锁。不同请求哈希碰撞只会多等一会，不会混用结果。
   private final ReentrantLock[] requestLocks = new ReentrantLock[256];
 
   /** 注入本模块任务存储与公开授权、管理范围能力. */
@@ -66,11 +75,13 @@ public class BatchService implements BatchApi {
     }
   }
 
+  /** 已取得幂等条带锁后，核对重报内容，再创建并同步执行任务. */
   private Job submitOwned(long actorId, Request request) {
     validate(actorId, request.targets());
     if (!request.requestKey().matches("[A-Za-z0-9-]{8,80}")) {
       throw new BusinessException(400, "INVALID_BATCH", "批量请求标识格式错误");
     }
+    // 重报要比较系统、角色、员工集合及版本。仅凭 key 相同就返回，会掩盖用户提交的新意图。
     var existing = jobs.findByActorIdAndRequestKey(actorId, request.requestKey());
     if (existing.isPresent()) {
       Job job = view(existing.get());
@@ -217,6 +228,11 @@ public class BatchService implements BatchApi {
     execute(actorId, jobId, false);
   }
 
+  /**
+   * 逐项执行 PENDING 项，每项拥有独立事务，并最终汇总任务状态.
+   *
+   * @param alreadyOwned 重试入口已经持有执行权时为 true，避免重复取得或过早释放执行权
+   */
   private void execute(long actorId, long jobId, boolean alreadyOwned) {
     if (!alreadyOwned && !running.add(jobId)) {
       throw BusinessException.conflict("任务正在执行");
@@ -238,6 +254,8 @@ public class BatchService implements BatchApi {
                 items.flush();
               });
         } catch (RuntimeException failure) {
+          // 授权事务此时已回滚；用新的事务保存失败，不能在回滚中的事务里写"失败结果"。
+          // 若连结果存储也失败，则不承诺任务完成；重启检查会将遗留 PENDING 项标为中断。
           transaction.executeWithoutResult(
               status -> {
                 var item = items.findById(target.getId()).orElseThrow();
@@ -283,6 +301,7 @@ public class BatchService implements BatchApi {
         || targets.stream().map(Target::employeeId).distinct().count() != targets.size()) {
       throw new BusinessException(400, "INVALID_BATCH", "每批须为 1 至 100 名不重复员工");
     }
+    // 员工范围逐个在服务端确认；逐项真正写入时 change 仍会在锁内再次校验最新状态。
     targets.forEach(t -> organization.requireEmployeeScope(actorId, t.employeeId()));
   }
 

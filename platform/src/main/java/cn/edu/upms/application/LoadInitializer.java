@@ -22,7 +22,12 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionTemplate;
 
-/** 只在 upms_load 库建立压测专用身份及授权，54 名部门待确认员工保持无业务授权. */
+/**
+ * 构造专用压测夹具与 CSV 输入，不改变教师来源和正常演示数据库.
+ *
+ * <p>只有 seed=load 且实际数据库名为 upms_load 才能执行。夹具给 100 名账号明确管理身份，给已确认部门员工配置 OA 角色；54
+ * 名待确认员工继续作为预期拒绝样本，不能为了压测全通过而给他们补造部门。CSV 中 expectedAllowed 是正确性断言依据，不是平台判断的输入.
+ */
 @Component
 @Order(30)
 public class LoadInitializer implements ApplicationRunner {

@@ -17,7 +17,14 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-/** 同步关键事件并维护故障闸门；共享字段仅存线程安全状态. */
+/**
+ * 保存持久化审计，并维护当前进程的运行计数和故障暂停状态.
+ *
+ * <p>record 参加管理事务，查询不负责推导操作者范围，入口必须先限制部门。审计存储失败后 paused 阻断新的受控请求；每秒通过真实写入探测恢复，恢复事件说明缺口.
+ *
+ * <p>这是共享 Service：计数使用 LongAdder，暂停开关使用 AtomicBoolean，跨线程读取的缺口起点使用 volatile。failureEpoch
+ * 配合短同步段，防止旧探测覆盖刚发生的新故障。这些内存状态重启会丢失，不能称为持久化消息队列或完整故障补录机制.
+ */
 @Service
 public class AuditService implements AuditApi {
   private final AuditRepository repository;
@@ -48,6 +55,8 @@ public class AuditService implements AuditApi {
     entity.result = event.result();
     entity.detail = event.detail();
     try {
+      // 使用默认 REQUIRED 传播：上层已有事务就加入，否则开启独立事务。
+      // flush 不等于 commit；外层后续失败时，已 flush 的成功事件仍随业务整体回滚。
       // 立即 flush，使审计表故障在用例返回成功前暴露。
       repository.saveAndFlush(entity);
     } catch (RuntimeException failure) {
@@ -65,6 +74,7 @@ public class AuditService implements AuditApi {
 
   @Override
   public synchronized void pause() {
+    // 每次失败都推进代次，即使已经暂停；只记录第一次暂停的时间以描述整个缺口区间。
     failureEpoch.incrementAndGet();
     if (paused.compareAndSet(false, true)) {
       gapStarted = Instant.now();
@@ -74,6 +84,7 @@ public class AuditService implements AuditApi {
   /** 以数据库实际写入检验恢复；恢复事件明确说明缺口，绝不虚构补录. */
   @Scheduled(fixedDelay = 1000)
   public void probeStorage() {
+    // 先记住本次探测依据的故障代次，再执行 I/O，避免持同步锁等待数据库。
     long epoch = failureEpoch.get();
     boolean wasPaused = paused.get();
     try {
@@ -167,6 +178,7 @@ public class AuditService implements AuditApi {
       case "DENY" -> denied.increment();
       default -> errors.increment();
     }
+    // 这里只累计耗时；平均值可由总耗时与次数推导，但不能用它计算 P95。
     elapsed.add(elapsedNanos);
   }
 

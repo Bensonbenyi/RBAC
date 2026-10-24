@@ -29,6 +29,8 @@ public class LoginSimulation extends Simulation {
             .exec(
                 session -> {
                   try {
+                    // 多个虚拟用户同时完成登录，单个 Writer 需串行写，避免 token CSV 行交叉。
+                    // 这段只保护压测输入文件，不参与平台授权码并发控制。
                     synchronized (this) {
                       tokens.write(
                           session.getString("employeeId")

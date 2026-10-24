@@ -14,7 +14,12 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionTemplate;
 
-/** 显式演示叠加“本人”动作，保留教师目录，不把新权限自动传播给全部角色. */
+/**
+ * 为两个模拟系统增加可识别的"本人"演示动作，并只选择进明确指定的演示角色.
+ *
+ * <p>先复制当前完整目录，再用新版本追加演示项；这是完整上报，不能只发送新增一项。目录接收不会自动授予新增权限，所以随后另行显式更新演示角色的选择集。
+ * 真正记录所有者检查仍由两个模拟系统执行，平台只识别该功能动作.
+ */
 @Component
 @Order(21)
 public class DemonstrationPermissionInitializer implements ApplicationRunner {

@@ -4,7 +4,11 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-/** 统一权限平台的单进程入口；业务规则分别归属于六个模块. */
+/**
+ * 统一权限平台启动入口，Spring Boot 从本包向下扫描配置、Controller 和 Service.
+ *
+ * <p>业务仍按六个模块组织，单个启动类不代表所有职责混在一起。EnableScheduling 启用会话过期清理和审计恢复探测；请求身份由安全上下文逐请求提供，不在启动类保存.
+ */
 @SpringBootApplication
 @EnableScheduling
 public class UpmsApplication {

@@ -22,6 +22,8 @@ public class AuthorizationSimulation extends Simulation {
         scenario("持续实时鉴权")
             .feed(csv(LoadSupport.ROOT.resolve(".runtime/load/tokens.csv").toString()).circular())
             .exec(LoadSupport.checkPermission());
+    // 每秒到达率与同时在线用户数是不同指标；循环读取已登录账号，逐次验证当前权限。
+    // percentile3 在本项目 gatling.conf 中设为 95；阈值是验收目标，执行结果另存实验报告。
     setUp(
             scenario.injectOpen(
                 constantUsersPerSec(Integer.getInteger("load.rate", 1000))

@@ -22,7 +22,15 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
-/** 以员工锁、唯一约束和版本检查实现单角色写入，并从当前事实逐次判断权限. */
+/**
+ * 授权用例实现：写入单角色分配，读取有效事实，再调用纯规则判断权限.
+ *
+ * <p>从 {@code change} 看写路径，从 {@code decide -> runtimeFacts -> readEffective} 看读路径。这里只使用其他模块的
+ * api；本模块的 AssignmentEntity 不越过公开接口边界.
+ *
+ * <p>Spring 默认复用同一个 Service 实例处理多个线程，因此员工、操作者等请求状态都保留在方法局部变量中。共享缓存使用线程安全的
+ * Caffeine，且默认关闭；写入正确性由数据库事务、统一锁顺序和版本检查共同保证，不能依赖 Java 对象恰好只被一个线程调用.
+ */
 @Service
 public class AuthorizationService implements AuthorizationApi {
   private final AssignmentRepository assignments;
@@ -36,6 +44,7 @@ public class AuthorizationService implements AuthorizationApi {
 
   private record Key(long employeeId, long systemId) {}
 
+  /** deadline 使用单调时钟的纳秒值，只比较时间间隔，不是可显示的日历时间. */
   private record Snapshot(Effective facts, long deadline) {}
 
   private final Cache<Key, Snapshot> snapshots =
@@ -79,6 +88,8 @@ public class AuthorizationService implements AuthorizationApi {
     this.catalog = catalog;
     this.audit = audit;
     this.cacheEnabled = cacheEnabled;
+    // decide 没有长事务；显式模板只包住一次事实读取，避免缓存命中也占数据库连接。
+    // 同类内部调用不会经过 Spring 事务代理，因此不能只依赖 readEffective 上的注解。
     reading = new TransactionTemplate(manager);
     reading.setReadOnly(true);
     reading.setIsolationLevelName("ISOLATION_READ_COMMITTED");
@@ -102,6 +113,7 @@ public class AuthorizationService implements AuthorizationApi {
   @Override
   public Decision decide(long employeeId, long systemId, String permissionKey) {
     long started = System.nanoTime();
+    // 1. 审计故障属于技术不可用，须在普通 ALLOW/DENY 判断之前阻断。
     audit.requireAvailable();
     Effective facts = runtimeFacts(employeeId, systemId);
     boolean allowed = permissionKey != null && facts.permissions().contains(permissionKey);
@@ -132,6 +144,7 @@ public class AuthorizationService implements AuthorizationApi {
   public Assignment change(
       long actorId, long employeeId, long systemId, Long roleId, long expectedVersion) {
     audit.requireAvailable();
+    // 1. 锁内重新确认操作者；前端可见按钮或先前的范围查询都不能替代此检查。
     organization.lockManagement(actorId);
     organization.requireEmployeeScope(actorId, employeeId);
     // 统一锁顺序：治理锁、员工、系统、角色。组织变更及管理员取消先取相同治理锁。
@@ -140,10 +153,13 @@ public class AuthorizationService implements AuthorizationApi {
     var system = integration.lock(systemId);
     AssignmentEntity entity =
         assignments.findByEmployeeIdAndSystemId(employeeId, systemId).orElse(null);
+    // 2. 悲观锁让竞争写入排队；expectedVersion 仍用于识别用户基于旧结果发出的请求。
+    // 例如两个页面都读到版本 4，先提交者成功后，后提交者必须刷新，不能静默覆盖。
     long actualVersion = entity == null ? -1 : entity.getVersion();
     if (actualVersion != expectedVersion) {
       throw BusinessException.conflict("角色分配已变化，请刷新确认当前角色后重试");
     }
+    // 3. 撤权无需有效角色；分配则必须同时满足员工、部门、系统与角色归属规则。
     if (roleId != null) {
       var role = catalog.lock(roleId);
       if (!employee.active()
@@ -166,6 +182,8 @@ public class AuthorizationService implements AuthorizationApi {
     entity.roleId = roleId;
     entity.revoked = roleId == null;
     entity.changedAt = Instant.now();
+    // 4. flush 触发 SQL 和 JPA 版本更新，让返回值包含新版本；它还没有提交事务。
+    // 后面的审计若失败，这次分配也会回滚。数据库唯一键兜住每员工每系统一条分配。
     assignments.saveAndFlush(entity);
     afterCommitEvict(employeeId, systemId);
     audit.record(
@@ -237,6 +255,11 @@ public class AuthorizationService implements AuthorizationApi {
     return assignments.findByRoleIdAndRevokedFalse(roleId).stream().map(a -> a.employeeId).toList();
   }
 
+  /**
+   * 将多个模块的当前事实组装成纯规则输入，保持查询有效权限与运行鉴权的语义一致.
+   *
+   * <p>READ_COMMITTED 允许看到已提交变化，但多次查询不是全库原子快照。不能因一次查询曾经有效，就跳过后续请求的状态校验。角色选中的权限还须与当前有效目录取交集.
+   */
   private Effective readEffective(long employeeId, long systemId) {
     var employee = organization.employee(employeeId);
     Assignment assignment = assignment(employeeId, systemId);
@@ -276,6 +299,11 @@ public class AuthorizationService implements AuthorizationApi {
     return new Effective(assignment, role, result.permissions(), result.reason());
   }
 
+  /**
+   * 根据配置读取实时事实或短期快照；缓存只能减少查询，不能改变拒绝规则.
+   *
+   * <p>Caffeine 的写入到期用于清理内存，自定义 deadline 才把数据库读取耗时算进陈旧预算。命中只读，不续期；耗时过长的加载结果直接拒绝，避免刚写入缓存就已超过期限.
+   */
   private Effective runtimeFacts(long employeeId, long systemId) {
     if (!cacheEnabled) {
       return reading.execute(status -> readEffective(employeeId, systemId));
@@ -297,6 +325,11 @@ public class AuthorizationService implements AuthorizationApi {
     return facts;
   }
 
+  /**
+   * 仅在数据库真正提交后清理对应快照.
+   *
+   * <p>若写入尚未提交就失效，另一线程可能读到旧数据并重新缓存。提交后失效缩短可见延迟，并发加载遗漏失效时仍受绝对期限约束。回滚不执行 afterCommit 回调.
+   */
   private void afterCommitEvict(long employeeId, long systemId) {
     org.springframework.transaction.support.TransactionSynchronizationManager
         .registerSynchronization(
