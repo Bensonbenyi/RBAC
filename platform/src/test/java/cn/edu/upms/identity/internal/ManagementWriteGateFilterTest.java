@@ -83,6 +83,26 @@ class ManagementWriteGateFilterTest {
     assertThat(restored.getContentType()).isEqualTo("ok");
   }
 
+  @Test
+  @DisplayName("等待被中断时返回技术失败，恢复中断标记且不继续执行请求")
+  void interruptedRequest() throws Exception {
+    var filter = new ManagementWriteGateFilter();
+    var response = new MockHttpServletResponse();
+    Thread.currentThread().interrupt();
+    try {
+      filter.doFilter(
+          request("POST"),
+          response,
+          (req, res) -> {
+            throw new AssertionError("中断后不能进入用例");
+          });
+      assertThat(response.getStatus()).isEqualTo(503);
+      assertThat(Thread.currentThread().isInterrupted()).isTrue();
+    } finally {
+      Thread.interrupted();
+    }
+  }
+
   private MockHttpServletRequest request(String method) {
     var request = new MockHttpServletRequest(method, "/api/admin/employees");
     request.setServletPath("/api/admin/employees");

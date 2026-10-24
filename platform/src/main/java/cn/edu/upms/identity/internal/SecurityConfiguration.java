@@ -1,18 +1,15 @@
 package cn.edu.upms.identity.internal;
 
 import cn.edu.upms.audit.api.AuditApi;
-import cn.edu.upms.shared.BusinessException;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 import jakarta.servlet.http.HttpServletResponse;
 import java.security.KeyPairGenerator;
-import java.security.Principal;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.time.Clock;
-import java.util.HashMap;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -22,20 +19,15 @@ import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
-import org.springframework.security.oauth2.core.DefaultOAuth2AuthenticatedPrincipal;
 import org.springframework.security.oauth2.core.oidc.endpoint.OidcParameterNames;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
-import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
 import org.springframework.security.oauth2.server.authorization.authentication.ClientSecretAuthenticationProvider;
 import org.springframework.security.oauth2.server.authorization.authentication.OAuth2AuthorizationCodeAuthenticationProvider;
-import org.springframework.security.oauth2.server.authorization.authentication.OAuth2TokenIntrospectionAuthenticationProvider;
 import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
-import org.springframework.security.oauth2.server.authorization.oidc.authentication.OidcLogoutAuthenticationToken;
 import org.springframework.security.oauth2.server.authorization.oidc.web.authentication.OidcLogoutAuthenticationSuccessHandler;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.oauth2.server.authorization.token.DelegatingOAuth2TokenGenerator;
@@ -44,11 +36,9 @@ import org.springframework.security.oauth2.server.authorization.token.OAuth2Acce
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenGenerator;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.security.web.context.SecurityContextHolderFilter;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
-import org.springframework.web.util.UriComponentsBuilder;
 
 /** 配置标准 OIDC、独立目录凭据与同源后台会话；协议校验采用成熟安全框架. */
 @Configuration
@@ -93,7 +83,7 @@ public class SecurityConfiguration {
         .configuration.OAuth2AuthorizationServerConfiguration.jwtDecoder(source);
   }
 
-  /** 明确本机发行者，发现文档与模拟系统校验使用同一地址. */
+  /** 按运行环境固定发行者，发现文档与模拟系统校验使用同一地址. */
   @Bean
   public AuthorizationServerSettings authorizationServerSettings(
       @Value("${upms.issuer}") String issuer) {
@@ -142,26 +132,7 @@ public class SecurityConfiguration {
         OAuth2AuthorizationServerConfigurer.authorizationServer();
     OidcLogoutAuthenticationSuccessHandler logout = new OidcLogoutAuthenticationSuccessHandler();
     var secretVerifier = new ClientSecretVerifier();
-    logout.setLogoutHandler(
-        (request, response, authentication) -> {
-          var oidc = (OidcLogoutAuthenticationToken) authentication;
-          var authorization =
-              authorizations.findByToken(
-                  oidc.getIdTokenHint(), new OAuth2TokenType(OidcParameterNames.ID_TOKEN));
-          Principal user =
-              authorization == null ? null : authorization.getAttribute(Principal.class.getName());
-          boolean stored = identity.logout(user);
-          if (!stored) {
-            request.setAttribute("auditGap", true);
-          }
-          if (oidc.isPrincipalAuthenticated()) {
-            new SecurityContextLogoutHandler()
-                .logout(
-                    request,
-                    response,
-                    (org.springframework.security.core.Authentication) oidc.getPrincipal());
-          }
-        });
+    logout.setLogoutHandler(new UnifiedOidcLogoutHandler(authorizations, identity));
     http.securityMatcher(server.getEndpointsMatcher())
         .with(
             server,
@@ -182,13 +153,7 @@ public class SecurityConfiguration {
                         endpoint ->
                             endpoint.authenticationProviders(
                                 providers -> {
-                                  for (int i = 0; i < providers.size(); i++) {
-                                    if (providers.get(i)
-                                        instanceof OAuth2TokenIntrospectionAuthenticationProvider) {
-                                      providers.set(
-                                          i, new LiveIntrospection(providers.get(i), identity));
-                                    }
-                                  }
+                                  ProtocolProviders.liveIntrospection(providers, identity);
                                 }))
                     .tokenEndpoint(
                         token ->
@@ -210,23 +175,7 @@ public class SecurityConfiguration {
                                           // 标准处理器先执行退出并校验过的重定向；故障标识随回调呈现。
                                           logout.onAuthenticationSuccess(
                                               request,
-                                              new jakarta.servlet.http.HttpServletResponseWrapper(
-                                                  response) {
-                                                @Override
-                                                public void sendRedirect(String location)
-                                                    throws java.io.IOException {
-                                                  String target =
-                                                      Boolean.TRUE.equals(
-                                                              request.getAttribute("auditGap"))
-                                                          ? UriComponentsBuilder.fromUriString(
-                                                                  location)
-                                                              .queryParam("audit", "failed")
-                                                              .build(true)
-                                                              .toUriString()
-                                                          : location;
-                                                  super.sendRedirect(target);
-                                                }
-                                              },
+                                              new AuditGapResponse(response, request),
                                               authentication);
                                         }))))
         .authorizeHttpRequests(requests -> requests.anyRequest().authenticated())
@@ -259,37 +208,7 @@ public class SecurityConfiguration {
                 resource.opaqueToken(
                     token ->
                         token.introspector(
-                            value -> {
-                              audit.requireAvailable();
-                              var authorization =
-                                  authorizations.findByToken(value, OAuth2TokenType.ACCESS_TOKEN);
-                              if (authorization == null
-                                  || authorization.getAccessToken() == null
-                                  || !authorization.getAccessToken().isActive()) {
-                                throw new org.springframework.security.oauth2.server.resource
-                                    .introspection.BadOpaqueTokenException("令牌无效");
-                              }
-                              UnifiedPrincipal user =
-                                  IdentityService.user(
-                                      authorization.getAttribute(Principal.class.getName()));
-                              if (user != null) {
-                                try {
-                                  identity.requireUser(user);
-                                } catch (BusinessException expired) {
-                                  throw new org.springframework.security.oauth2.server.resource
-                                      .introspection.BadOpaqueTokenException("会话失效");
-                                }
-                              }
-                              var claims =
-                                  new HashMap<>(authorization.getAccessToken().getClaims());
-                              var authorities =
-                                  authorization.getAccessToken().getToken().getScopes().stream()
-                                      .<org.springframework.security.core.GrantedAuthority>map(
-                                          scope -> new SimpleGrantedAuthority("SCOPE_" + scope))
-                                      .toList();
-                              return new DefaultOAuth2AuthenticatedPrincipal(
-                                  authorization.getPrincipalName(), claims, authorities);
-                            })));
+                            new UserInfoIntrospector(authorizations, identity, audit))));
     return http.build();
   }
 

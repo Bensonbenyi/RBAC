@@ -54,6 +54,73 @@ import org.springframework.web.util.UriComponentsBuilder;
     })
 @AutoConfigureMockMvc
 class OidcIntegrationTest {
+  @Test
+  @DisplayName("ACC-F-003 UserInfo 校验访问令牌与统一会话，目录令牌不具备 openid 范围")
+  void userInfoAndUnauthenticatedAdmin() throws Exception {
+    var session = login(20);
+    var tokens = tokens(code(session, "userinfo-state", "nonce"), VERIFIER, "oa", "oa-demo-secret");
+    String access = tokens.get("access_token").asText();
+    var info =
+        mvc.perform(get("/userinfo").header("Authorization", "Bearer " + access))
+            .andReturn()
+            .getResponse();
+    assertThat(info.getStatus()).isEqualTo(200);
+    assertThat(json.readTree(info.getContentAsString()).get("sub").asText()).isEqualTo("20");
+    assertThat(
+            mvc.perform(get("/userinfo").header("Authorization", "Bearer unknown"))
+                .andReturn()
+                .getResponse()
+                .getStatus())
+        .isEqualTo(401);
+    assertThat(mvc.perform(get("/api/admin/me")).andReturn().getResponse().getStatus())
+        .isEqualTo(401);
+    var before = store.findByToken(access, OAuth2TokenType.ACCESS_TOKEN);
+    store.save(
+        OAuth2Authorization.from(before)
+            .accessToken(
+                new org.springframework.security.oauth2.core.OAuth2AccessToken(
+                    org.springframework.security.oauth2.core.OAuth2AccessToken.TokenType.BEARER,
+                    access,
+                    Instant.now().minusSeconds(120),
+                    Instant.now().minusSeconds(60),
+                    Set.of("openid")))
+            .build());
+    assertThat(
+            mvc.perform(get("/userinfo").header("Authorization", "Bearer " + access))
+                .andReturn()
+                .getResponse()
+                .getStatus())
+        .isEqualTo(401);
+    store.save(before);
+    mvc.perform(post("/logout").session(session).with(csrf()));
+    assertThat(
+            mvc.perform(get("/userinfo").header("Authorization", "Bearer " + access))
+                .andReturn()
+                .getResponse()
+                .getStatus())
+        .isEqualTo(401);
+  }
+
+  @Test
+  @DisplayName("ACC-F-006 标准 RP 发起退出验证回调和 state，并使当前会话令牌失效")
+  void standardRpLogout() throws Exception {
+    var session = login(20);
+    var tokens = tokens(code(session, "rp-state", "nonce"), VERIFIER, "oa", "oa-demo-secret");
+    var result =
+        mvc.perform(
+                post("/connect/logout")
+                    .session(session)
+                    .with(csrf())
+                    .param("id_token_hint", tokens.get("id_token").asText())
+                    .param("post_logout_redirect_uri", "http://localhost:18081")
+                    .param("state", "logout-state"))
+            .andReturn()
+            .getResponse();
+    assertThat(result.getStatus()).isEqualTo(302);
+    assertThat(result.getRedirectedUrl()).isEqualTo("http://localhost:18081?state=logout-state");
+    assertThat(runtime(tokens.get("access_token").asText(), "oa")).isEqualTo(401);
+  }
+
   private static final String REDIRECT = "http://localhost:18081/login/oauth2/code/upms";
   private static final String VERIFIER = "abcdefghijklmnopqrstuvwxyz0123456789-ABCDEFG";
   @Autowired private MockMvc mvc;
