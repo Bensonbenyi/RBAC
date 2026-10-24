@@ -1,9 +1,10 @@
 import { test, expect, type Page } from '@playwright/test';
+import { platformUrl, oaUrl, knowledgeUrl, proofPrefix } from './target';
 
 const createdRoles = new Set<number>();
 
 async function highest(page: Page) {
-  await page.goto('http://localhost:18080/admin');
+  await page.goto(platformUrl + '/admin');
   await page.getByLabel('用户名', { exact: true }).fill('SG000001');
   await page.getByLabel('手机号', { exact: true }).fill('13976537502');
   await page.getByRole('button', { name: '登录', exact: true }).click();
@@ -131,7 +132,7 @@ test('ACC-F-009、010 界面选择权限、预览替换、撤权并导出日志'
     await page.getByRole('button', { name: '导出筛选日志', exact: true }).click();
     expect((await download).suggestedFilename()).toBe('upms-audit.csv');
     await page.screenshot({
-      path: '../output/playwright/admin-management-verified.png',
+      path: `../output/playwright/${proofPrefix}admin-management-verified.png`,
       fullPage: true,
     });
   } finally {
@@ -140,7 +141,7 @@ test('ACC-F-009、010 界面选择权限、预览替换、撤权并导出日志'
 });
 
 test('ACC-F-012 两个系统权限不同，本人记录校验留在业务系统', async ({ page }) => {
-  await page.goto('http://localhost:18081');
+  await page.goto(oaUrl);
   await page.getByRole('link', { name: '集团账号统一登录' }).click();
   await page.getByLabel('用户名', { exact: true }).fill('SG000013');
   await page.getByLabel('手机号', { exact: true }).fill('13554810349');
@@ -153,9 +154,95 @@ test('ACC-F-012 两个系统权限不同，本人记录校验留在业务系统'
   await page.locator('input[name="id"]').fill('1');
   await page.getByRole('button', { name: '校验本人记录' }).click();
   await expect(page.getByText('本人范围校验通过', { exact: true })).toBeVisible();
-  await page.goto('http://localhost:18082');
+  await page.goto(knowledgeUrl);
   await page.getByRole('link', { name: '集团账号统一登录' }).click();
   await page.getByPlaceholder('演示记录标题').fill('知识库应拒绝的写入');
   await page.getByRole('button', { name: '新增业务记录' }).click();
   await expect(page.getByText('权限拒绝：PERMISSION_MISSING', { exact: true })).toBeVisible();
+});
+
+test('ACC-F-014 无授权拒绝、三秒撤权与停用结束现有会话', async ({ browser }) => {
+  const adminContext = await browser.newContext();
+  const employeeContext = await browser.newContext();
+  const admin = await adminContext.newPage();
+  let roleId: number | undefined;
+  let systemId: number | undefined;
+  try {
+    await highest(admin);
+    const employee = await adminApi(admin, '/employees/20');
+    if (!employee.active) throw new Error('测试员工已停用，禁止覆盖未知状态');
+    const system = (await adminApi(admin, '/systems')).find((s: { key: string }) => s.key === 'oa');
+    systemId = system.id;
+    const initial = (await adminApi(admin, '/employees/20/permissions')).find(
+      (f: { assignment: { systemId: number } }) => f.assignment.systemId === system.id,
+    );
+    if (!initial.assignment.revoked) throw new Error('测试员工已有授权，禁止覆盖未知状态');
+    const template = (await adminApi(admin, `/roles?systemId=${system.id}`)).find(
+      (r: { template: boolean; name: string }) => r.template && r.name === '普通员工',
+    );
+    const role = await adminApi(admin, '/roles/copy', {
+      templateId: template.id,
+      departmentId: 1,
+      name: `生命周期验收-${Date.now()}`,
+    });
+    roleId = role.id;
+    createdRoles.add(role.id);
+    const page = await employeeContext.newPage();
+    await page.goto(oaUrl);
+    await page.getByRole('link', { name: '集团账号统一登录' }).click();
+    await page.getByLabel('用户名', { exact: true }).fill('SG000020');
+    await page.getByLabel('手机号', { exact: true }).fill('18921085097');
+    await page.getByRole('button', { name: '登录', exact: true }).click();
+    const read = page.getByRole('button', { name: '查看业务记录', exact: true });
+    await read.click();
+    await expect(page.getByText(/^权限拒绝：/)).toBeVisible();
+    const granted = await adminApi(admin, '/assignments', {
+      employeeId: 20,
+      systemId,
+      roleId,
+      expectedVersion: initial.assignment.version,
+    });
+    await read.click();
+    await expect(page.getByText('已允许查看业务记录', { exact: true })).toBeVisible();
+    const revoked = await adminApi(admin, '/assignments', {
+      employeeId: 20,
+      systemId,
+      roleId: null,
+      expectedVersion: granted.version,
+    });
+    const started = Date.now();
+    await read.click();
+    await expect(page.getByText(/^权限拒绝：/)).toBeVisible();
+    expect(Date.now() - started).toBeLessThanOrEqual(3000);
+    await adminApi(admin, '/assignments', {
+      employeeId: 20,
+      systemId,
+      roleId,
+      expectedVersion: revoked.version,
+    });
+    await read.click();
+    await expect(page.getByText('已允许查看业务记录', { exact: true })).toBeVisible();
+    const current = await adminApi(admin, '/employees/20');
+    await adminApi(admin, '/employees/20/state', { active: false, version: current.version });
+    await read.click();
+    await expect(page.getByText(/操作拒绝/)).toBeVisible();
+    const disabled = await adminApi(admin, '/employees/20');
+    await adminApi(admin, '/employees/20/state', { active: true, version: disabled.version });
+    // 重新启用不能恢复已结束的统一会话，也不能恢复旧角色。
+    await read.click();
+    await expect(page.getByText(/操作拒绝/)).toBeVisible();
+    await page.screenshot({
+      path: `../output/playwright/${proofPrefix}employee-disabled.png`,
+      fullPage: true,
+    });
+  } finally {
+    if (roleId !== undefined && systemId !== undefined) {
+      const employee = await adminApi(admin, '/employees/20');
+      if (!employee.active)
+        await adminApi(admin, '/employees/20/state', { active: true, version: employee.version });
+      await cleanupRole(admin, roleId, systemId);
+    }
+    await adminContext.close();
+    await employeeContext.close();
+  }
 });
