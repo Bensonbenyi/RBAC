@@ -41,15 +41,19 @@ public class EmployeeLifecycle {
   @Transactional(isolation = Isolation.READ_COMMITTED)
   public OrganizationApi.Employee state(
       long actorId, long employeeId, boolean active, long version) {
+    // 先检查审计可用，再取得治理锁；任一失败都不能改变员工状态。
     audit.requireAvailable();
     organization.lockManagement(actorId);
+    // 根据目标员工当前部门检查范围，再取得员工锁与最新版本。
     organization.requireEmployeeScope(actorId, employeeId);
     var employee = organization.lockEmployee(employeeId);
+    // 旧页面版本不匹配时要求重新确认，避免覆盖并发启停或调动。
     if (employee.version() != version) {
       throw BusinessException.conflict("员工状态已变化");
     }
     // 1. 在同一事务内更新员工；版本比较阻止旧页面覆盖新状态。
     organization.setActive(actorId, employeeId, active);
+    // 只有停用才同时撤权和撤销会话；重新启用不恢复历史角色。
     if (!active) {
       // 2. 撤权与状态、审计共同提交；任何模块失败都会让全部数据库修改回滚。
       authorization.revokeAll(actorId, employeeId);
@@ -58,10 +62,12 @@ public class EmployeeLifecycle {
           new TransactionSynchronization() {
             @Override
             public void afterCommit() {
+              // 此回调仅在数据库成功提交后运行，撤销该员工所有浏览器统一会话。
               identity.revokeEmployeeSessions(employeeId);
             }
           });
     }
+    // 在当前事务读取更新后的员工事实，提交失败时调用方仍会收到异常。
     return organization.employee(employeeId);
   }
 
@@ -69,15 +75,20 @@ public class EmployeeLifecycle {
   @Transactional(isolation = Isolation.READ_COMMITTED)
   public OrganizationApi.Employee transfer(
       long actorId, long employeeId, long departmentId, long version) {
+    // 先确认可记录变更，再用治理锁稳定范围与调动前置条件。
     audit.requireAvailable();
     organization.lockManagement(actorId);
+    // 调动跨越部门边界，只允许最高管理员执行。
     if (!organization.administrator(actorId).superAdmin()) {
       throw BusinessException.forbidden();
     }
+    // 先锁员工，使调动与角色变更按统一锁序竞争。
     organization.lockEmployee(employeeId);
     // 已失效但尚未手工撤销的分配仍会阻挡调动；等待窗口防止旧部门快照跨到新部门。
     authorization.requireTransferReady(employeeId);
+    // 前置检查通过后由组织模块修改归属，授权模块不自动继承或新建角色。
     organization.transfer(actorId, employeeId, departmentId, version);
+    // 返回新部门事实，数据库变更和调动审计仍共用当前事务。
     return organization.employee(employeeId);
   }
 }

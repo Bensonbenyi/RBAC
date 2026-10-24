@@ -378,8 +378,10 @@ public class AdminController {
       @RequestParam(required = false) Instant to,
       HttpServletResponse response)
       throws IOException {
+    // 先从可信会话识别操作者，再计算实际可导出的部门范围。
     long actorId = actor(principal);
     Long scope = logScope(actorId, departmentId);
+    // 输出文件前记录导出事件；这表示开始导出，不保证后续网络传输一定完成。
     audit.record(
         new AuditApi.Event(
             actorId,
@@ -390,26 +392,36 @@ public class AdminController {
             "audit-csv",
             "SUCCESS",
             "按已校验管理范围导出筛选日志"));
+    // 明确 CSV 编码和下载文件名，让浏览器按附件接收。
     response.setContentType("text/csv;charset=UTF-8");
     response.setHeader("Content-Disposition", "attachment; filename=upms-audit.csv");
+    // 取得响应流，表头前的 BOM 便于常见表格工具识别中文 UTF-8。
     var writer = response.getWriter();
     writer.write("\uFEFF时间,操作者,部门,系统,事件,对象,结果,说明\n");
+    // 每次最多读取 100 条并直接写响应，避免一次把所有历史加载进内存。
     for (int page = 0; ; page++) {
+      // 每页沿用同一已校验范围和筛选；当前实现按页读取，不是跨页数据库快照。
       var records = audit.query(scope, eventType, result, query, from, to, page, 100);
+      // 逐条输出事件，所有单元格都经 csv 转义，避免公式执行和分隔符错列。
       for (var event : records.items()) {
         writer.write(
             String.join(
                     ",",
+                    // 先输出时间和操作者，空引用由同一转换函数处理。
                     csv(event.occurredAt()),
                     csv(event.actorId()),
+                    // 部门与系统分别定位管理范围和外部业务范围。
                     csv(event.departmentId()),
                     csv(event.systemId()),
+                    // 事件类型与对象引用说明操作及目标，不输出密钥或令牌。
                     csv(event.eventType()),
                     csv(event.objectRef()),
+                    // 结果和说明完成本行，末尾换行将事件彼此分开。
                     csv(event.result()),
                     csv(event.detail()))
                 + "\n");
       }
+      // 已读取条数达到当前查询总数时结束，包括第一页就没有数据的情况。
       if ((page + 1L) * 100 >= records.total()) {
         break;
       }

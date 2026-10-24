@@ -62,30 +62,40 @@ public class BaselineInitializer implements ApplicationRunner {
 
   @Override
   public void run(ApplicationArguments arguments) throws Exception {
+    // none 模式完全跳过初始化，适用于已有独立测试或部署数据。
     if (seed.equals("none")) {
       return;
     }
+    // 显式限制模式名称，拼写错误不能静默降级成意料之外的数据集。
     if (!java.util.Set.of("baseline", "demo", "load").contains(seed)) {
       throw new IllegalStateException("未知初始化模式：" + seed);
     }
+    // 用持久化 marker 判断基线是否已完成，重复启动不会重复导入。
     if (jdbc.queryForObject(
             "SELECT COUNT(*) FROM seed_marker WHERE marker_key='baseline-v1'", Long.class)
         == 0) {
       // 先只读验证全部来源，再持有数据库事务；不要在长事务中等待文件解析。
       var source = TeacherSourceReader.read(directory);
+      // 全部解析成功后才打开写事务，各模块导入共享这一提交边界。
       transaction.executeWithoutResult(
           status -> {
+            // 按组织、系统、目录的依赖顺序写入，避免引用尚不存在的对象。
             organization.load(source.companies(), source.departments(), source.employees());
             integration.load(
                 source.systems().stream()
+                    // 系统登记只取编号、标识和名称，权限及模板交给目录模块处理。
                     .map(s -> new IntegrationImportApi.SystemRow(s.id(), s.key(), s.name()))
                     .toList());
+            // 逐系统接收初始完整目录，再用其已生成编号创建模板。
             for (var system : source.systems()) {
               catalog.report(system.id(), 1, system.permissions());
+              // 模板引用的 key 必须都能在刚导入的目录中定位，否则整个事务回滚。
               catalogImport.templates(system.id(), system.templates());
             }
+            // marker 也在同一事务保存，失败后不会留下虚假的已完成标记。
             jdbc.update(
                 "INSERT INTO seed_marker(marker_key,applied_at) VALUES ('baseline-v1',NOW(6))");
+            // 基础导入成功事件一起提交，审计失败同样不能留下半套初始化数据。
             audit.record(
                 new AuditApi.Event(
                     null,
@@ -98,6 +108,7 @@ public class BaselineInitializer implements ApplicationRunner {
                     "装载基础资料，不按岗位任命或授权"));
           });
     }
+    // 输出最终数量和模式，便于确认运行的是基础、演示还是压测数据。
     logger.info("基础资料数量：{}；初始化模式：{}", organization.counts(), seed);
   }
 }

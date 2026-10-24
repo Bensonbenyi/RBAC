@@ -145,20 +145,29 @@ public class BusinessController {
    */
   private boolean authorize(OAuth2AuthorizedClient client, String permission, Model model) {
     try {
+      // 每个受控操作重新询问平台，页面按钮或先前登录结果不能代替当前鉴权。
       Decision result =
           platform
+              // 使用后端 HTTP 客户端请求鉴权端点，访问令牌始终由服务端读取。
               .post()
               .uri("/api/runtime/check")
+              // Bearer 身份来自本应用保存的授权客户端，浏览器不能指定另一人的令牌。
               .headers(headers -> headers.setBearerAuth(client.getAccessToken().getTokenValue()))
+              // 请求只声明登记系统和具体权限，员工身份交给平台从令牌还原。
               .body(Map.of("system", system, "permission", permission))
+              // 非成功响应会抛客户端异常，成功响应再映射成明确的 Decision。
               .retrieve()
               .body(Decision.class);
+      // 空结果与明确拒绝均阻止业务执行，不能把没有结论视为默认允许。
       if (result == null || !result.allowed()) {
         model.addAttribute("message", "权限拒绝：" + (result == null ? "无有效结果" : result.reason()));
+        // 返回拒绝给调用方，调用方应立即结束本次受控业务操作。
         return false;
       }
+      // 只有获得明确允许才继续；记录所有者等业务规则仍由当前系统另行检查。
       return true;
     } catch (RestClientException failure) {
+      // 超时、网络和非成功 HTTP 响应统一故障拒绝，并提示登录或重试。
       model.addAttribute("message", "操作拒绝：统一身份或鉴权服务不可用，请重新登录或稍后重试");
       return false;
     }

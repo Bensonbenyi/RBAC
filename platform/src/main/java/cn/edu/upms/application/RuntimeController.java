@@ -39,11 +39,15 @@ public class RuntimeController {
   @PostMapping("/api/runtime/check")
   public AuthorizationApi.Decision check(
       @RequestHeader("Authorization") String header, @Valid @RequestBody Check request) {
+    // 身份变量只接收令牌验证结果，员工编号不从请求体读取。
     IdentityApi.TokenIdentity user;
     try {
+      // 解析 Bearer 值，并要求令牌登记系统等于本次请求的目标系统。
       user = identity.token(bearer(header), request.system());
     } catch (BusinessException failure) {
+      // 身份验证失败记入异常计数，再保存拒绝事件，不能按普通业务允许处理。
       audit.count("ERROR", 0);
+      // 没有可信员工与系统时不编造编号，仅记录入口及错误码。
       audit.record(
           new AuditApi.Event(
               null,
@@ -54,6 +58,7 @@ public class RuntimeController {
               "runtime-check",
               "DENY",
               failure.getCode()));
+      // 保留原身份拒绝或不可用语义，让统一异常处理返回相应状态。
       throw failure;
     }
     // 用令牌核验后的系统编号调用，不能直接信任请求体给出的目标归属。
