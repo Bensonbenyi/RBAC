@@ -27,24 +27,32 @@ public class CatalogImportService implements CatalogImportApi {
   @Override
   @Transactional(propagation = Propagation.MANDATORY)
   public void templates(long systemId, Map<String, Set<String>> grants) {
+    // 先将该系统稳定 key 映射为刚导入的数据库编号，模板内部保存编号引用。
     Map<String, Long> ids =
         permissions.findBySystemId(systemId).stream()
             .collect(Collectors.toMap(p -> p.permissionKey, PermissionEntity::getId));
+    // 逐个全局模板处理，不在这里给任何员工建立分配。
     grants.forEach(
         (name, keys) -> {
+          // 每个模板独立一行，绑定所属系统并显式标记 template。
           RoleEntity role = new RoleEntity();
           role.systemId = systemId;
           role.template = true;
+          // 保留来源模板名；部门保持 null，后续需要复制为部门角色才能分配。
           role.name = name;
           for (String key : keys) {
+            // 逐 key 查询目录编号，缺失说明输入与目录不一致，不能静默忽略。
             Long id = ids.get(key);
             if (id == null) {
               throw new IllegalStateException("初始模板引用未知动作");
             }
+            // 校验通过的编号加入该模板选择，重复项由集合去重。
             role.permissions.add(id);
           }
+          // 模板与权限集合加入当前事务，外层失败会一起回滚。
           roles.save(role);
         });
+    // 在方法结束前刷新所有模板，提前发现关联约束错误。
     roles.flush();
   }
 }

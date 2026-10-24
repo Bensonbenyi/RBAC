@@ -72,14 +72,18 @@ public class IntegrationService implements IntegrationApi {
   @Override
   @Transactional
   public SystemFact save(long actorId, SystemChange change) {
+    // 先取得治理锁并限制为最高管理员，系统登记不属于部门内维护。
     organization.lockManagement(actorId);
     global(actorId);
+    // 新增构造实体，编辑取得系统行锁，后续版本校验使用锁内状态。
     SystemEntity entity =
         change.id() == null ? new SystemEntity() : systems.lock(change.id()).orElseThrow();
+    // 公开客户端标识参与协议识别，编辑时禁止修改并检查页面旧版本。
     if (change.id() != null
         && (entity.getVersion() != change.version() || !entity.systemKey.equals(change.key()))) {
       throw BusinessException.conflict("系统已变化，客户端标识不能修改");
     }
+    // 限制标识格式，并保留 -directory 后缀给目录客户端使用。
     if (change.key() == null
         || !change.key().matches("[a-z][a-z0-9-]{1,59}")
         || change.key().endsWith("-directory")
@@ -87,31 +91,41 @@ public class IntegrationService implements IntegrationApi {
         || change.name().isBlank()) {
       throw new BusinessException(400, "INVALID_SYSTEM", "系统标识或名称格式错误");
     }
+    // 分别校验登录和退出回调地址；运行时精确匹配由协议框架执行。
     callback(change.redirectUri());
     callback(change.logoutRedirectUri());
     if (change.id() == null) {
       // 两种凭据独立生成；运行端不得使用目录身份进行员工鉴权。
       var encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+      // 两类随机密钥分别编码保存，目录身份不能替代员工登录客户端身份。
       entity.clientSecret = encoder.encode(UUID.randomUUID().toString());
       entity.directorySecret = encoder.encode(UUID.randomUUID().toString());
     }
+    // 写入稳定标识和展示名称，名称允许调整，标识保持不变。
     entity.systemKey = change.key();
     entity.name = change.name().trim();
+    // 系统停用会参与后续鉴权拒绝，回调配置用于下一次协议交互。
     entity.active = change.active();
     entity.redirectUri = change.redirectUri();
+    // 保存退出目标并推进管理配置修订号；目录版本在上报流程单独维护。
     entity.logoutRedirectUri = change.logoutRedirectUri();
     entity.managementRevision++;
+    // 先验证持久化约束，再在同一事务写入成功审计。
     systems.saveAndFlush(entity);
     record(actorId, entity.getId(), "SYSTEM_CHANGED", "系统登记或状态更新");
+    // 公开事实仍含内部凭据哈希，HTTP 入口必须另行构造脱敏响应。
     return view(entity);
   }
 
   @Override
   @Transactional
   public Credentials rotateCredentials(long actorId, long systemId, long version) {
+    // 先验证最高管理员身份，再锁系统；凭据属于系统全局配置。
     organization.lockManagement(actorId);
     global(actorId);
+    // 锁内读取系统，保证与并发编辑、其他轮换按顺序执行。
     SystemEntity entity = systems.lock(systemId).orElseThrow();
+    // 要求管理员确认的系统版本仍有效，避免盲目覆盖刚轮换的密钥。
     if (entity.getVersion() != version) {
       throw BusinessException.conflict("系统资料已变化，请刷新后重新确认");
     }
@@ -119,11 +133,14 @@ public class IntegrationService implements IntegrationApi {
     // 轮换阻止旧密钥进行新的客户端认证，不等同于自动撤销所有已发行员工访问令牌。
     String clientSecret = UUID.randomUUID().toString();
     String directorySecret = UUID.randomUUID().toString();
+    // 编码器产生可验证的哈希，明文仅保留在当前方法局部变量中。
     var encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
     entity.clientSecret = encoder.encode(clientSecret);
     entity.directorySecret = encoder.encode(directorySecret);
+    // 数据库仅保存编码结果；轮换成功审计与变更共同提交。
     systems.flush();
     record(actorId, systemId, "SYSTEM_CREDENTIALS_ROTATED", "重新签发独立凭据，仅响应展示一次");
+    // 一次性返回两类明文及新版本，后续普通查询无法取回原文。
     return new Credentials(
         entity.systemKey,
         clientSecret,
@@ -135,33 +152,44 @@ public class IntegrationService implements IntegrationApi {
   @Override
   @Transactional
   public SystemFact bind(long actorId, long systemId, Set<Long> departments, long version) {
+    // 部门可用系统由最高管理员统一设置，先完成治理范围检查。
     organization.lockManagement(actorId);
     global(actorId);
+    // 锁住系统并检查预期版本，防止两次全量范围替换互相覆盖。
     SystemEntity entity = systems.lock(systemId).orElseThrow();
     if (entity.getVersion() != version) {
       throw BusinessException.conflict("可用范围已变化");
     }
+    // 复制完整目标集合并逐一验证部门有效，全部通过后再改关系。
     Set<Long> desired = Set.copyOf(departments);
     desired.forEach(organization::activeDepartment);
     // 保留已有关系行并切换 active，重新绑定时复用它，避免历史引用及唯一关系被重复创建。
     List<SystemDepartment> existing = links.findBySystemId(systemId);
+    // 已有关系与新建关系分开处理，seen 防止重复创建同一对关联。
     Set<Long> seen = new HashSet<>();
     for (SystemDepartment link : existing) {
+      // 本次仍选择的关系启用，未选择的关系停用，保留历史行。
       link.active = desired.contains(link.departmentId);
       seen.add(link.departmentId);
     }
+    // 只为从未出现过的系统、部门组合新增关联。
     for (Long departmentId : desired) {
       if (!seen.contains(departmentId)) {
+        // 建立关联双方编号；新关联默认启用，不复制部门或系统资料。
         SystemDepartment link = new SystemDepartment();
         link.systemId = systemId;
         link.departmentId = departmentId;
+        // 把新关系加入当前事务，稍后与系统管理版本一起刷新。
         links.save(link);
       }
     }
+    // 范围变更也推进系统实体版本，使旧页面的配置操作检测到冲突。
     entity.managementRevision++;
     systems.flush();
+    // 关系更新与系统更新共同参加事务，随后记录完整目标范围。
     links.flush();
     record(actorId, systemId, "SYSTEM_SCOPE", "可用部门更新为 " + desired);
+    // 重新组装启用的部门集合，响应包含本次配置后的系统版本。
     return view(entity);
   }
 

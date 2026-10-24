@@ -40,23 +40,32 @@ public class IntegrationImportService implements IntegrationImportApi {
   @Override
   @Transactional(propagation = Propagation.MANDATORY)
   public void load(List<SystemRow> systems) {
+    // 只对空系统表执行基础导入，不拿启动导入覆盖运行期维护。
     if (jdbc.queryForObject("SELECT COUNT(*) FROM business_system", Long.class) != 0) {
       throw new IllegalStateException("系统基础导入要求空数据集");
     }
+    // 数据库仅保存编码后的密钥，课程可复现后缀来自显式环境配置。
     var encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    // 逐系统登记；只有两个模拟系统具备实际回调，其他只保存登记和目录。
     for (SystemRow row : systems) {
+      // 根据公开系统 key 选择对应部署地址，非模拟系统没有默认登录目标。
       String base =
           row.key().equals("oa") ? oaUrl : row.key().equals("knowledge") ? knowledgeUrl : null;
+      // 本模块直接写自己拥有的系统表，参加上层已经开启的导入事务。
       jdbc.update(
           """
           INSERT INTO business_system(id,system_key,name,client_secret,directory_secret,
             redirect_uri,logout_redirect_uri) VALUES (?,?,?,?,?,?,?)
           """,
+          // 固定编号和 key 来自来源解析，展示名称与协议标识分开保存。
           row.id(),
           row.key(),
+          // 系统名称保留原文，随后分别计算登录客户端和目录客户端哈希。
           row.name(),
           encoder.encode(row.key() + "-" + clientSuffix),
+          // 目录密钥独立配置，不能用同一凭据替代两种身份。
           encoder.encode(row.key() + "-" + directorySuffix),
+          // 模拟系统登记标准授权码回调；退出成功回到应用基址。
           base == null ? null : base + "/login/oauth2/code/upms",
           base);
     }
