@@ -4,6 +4,16 @@ OOAD 课程项目。平台管理身份、统一会话和 RBAC0 权限，OA 与�
 
 行为见 [需求规格 2.1](docs/统一权限管理系统需求规格说明书.md)，模块与架构推导见 [分析与设计指南](docs/统一权限管理系统分析与设计指南.md)，操作契约、ER 与持久化推导见 [接口与数据库设计指南](docs/统一权限管理系统接口与数据库设计指南.md)，实际端点速查见 [实现设计记录](docs/实现设计记录.md)，验收数据见 [最终报告](docs/最终验收报告.md)。
 
+## 口试交付
+
+[公网后台](https://113.44.144.119/admin) · [OA](https://113.44.144.119:8443) · [知识库](https://113.44.144.119:9443) · [公开 API](https://3wq8lbigke.apifox.cn/) · [JaCoCo 报告](https://113.44.144.119/reports/) · [七章设计 HTML](https://113.44.144.119/design/)
+
+课程提交源文件为[需求与详细设计说明书.adoc](docs/统一权限管理系统需求与详细设计说明书.adoc)，含数据库设计和详细设计。最新结果及 Gitee 导入清单见[口试交付报告](docs/口试交付验收报告.md)，服务器运行与恢复见[部署说明](infra/server/README.md)。
+
+两个后端 89 项测试通过，行、分支覆盖率分别达到 100%。现场重跑 `bash scripts/coverage.sh`，本地打开 `coverage-report/target/site/jacoco-aggregate/index.html`；公开网页是本机测试报告副本。当前课程服务器未重跑万人容量实验。
+
+设计网页可用 `npm --prefix docs/tooling ci && npm --prefix docs/tooling run build` 生成到 `.runtime/design/`，不生成 PDF。
+
 ## 本机启动
 
 需要 Java 21、Node.js 24 和可用的 Docker Compose。Maven Wrapper、前端锁文件已包含在仓库中。首次构建会下载依赖。
@@ -66,6 +76,8 @@ bash scripts/start.sh
 bash scripts/test.sh
 # 先以 demo 模式启动三个应用，再执行浏览器测试。
 npm --prefix frontend run test:e2e
+# 在已部署的公网课程环境执行同一组场景。
+UPMS_E2E_TARGET=server npm --prefix frontend run test:e2e
 ```
 
 后端检查包含 Google Java 格式、Checkstyle、JUnit、真实 MySQL 事务竞争和 ArchUnit 边界；前端包含 ESLint、Prettier、TypeScript 与 Playwright。测试不能指向演示数据库。

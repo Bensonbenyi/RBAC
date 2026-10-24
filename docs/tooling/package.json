@@ -1,0 +1,7 @@
+{
+  "name": "upms-design-docs",
+  "private": true,
+  "type": "module",
+  "scripts": { "build": "node ../../scripts/render-design.mjs" },
+  "dependencies": { "@asciidoctor/core": "3.0.4" }
+}

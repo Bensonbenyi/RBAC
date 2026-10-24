@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="750" viewBox="0 0 750 380">
+  <style>text{font-family:'PingFang SC','Microsoft YaHei','Noto Sans CJK SC',system-ui,sans-serif;fill:#1e293b;font-size:12px}.title{font-size:16px}.note{font-size:10px;fill:#64748b}</style>
+  <defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="2" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L8,4 L0,8 L2,4 z" fill="#64748b"/></marker></defs>
+  <rect width="750" height="380" fill="white"/>
+  <text x="375" y="32" text-anchor="middle" class="title">两台课程服务器：单实例平台与独立模拟系统</text>
+  <rect x="20" y="55" width="340" height="270" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-dasharray="6,4"/>
+  <rect x="390" y="55" width="340" height="270" rx="8" fill="#f8fafc" stroke="#94a3b8" stroke-dasharray="6,4"/>
+  <text x="190" y="79" text-anchor="middle">Manager · 113.44.144.119</text>
+  <text x="560" y="79" text-anchor="middle">Node1 · 172.31.12.231</text>
+  <rect x="45" y="100" width="290" height="55" rx="6" fill="#dbeafe" stroke="#3b82f6"/>
+  <text x="190" y="123" text-anchor="middle">Nginx · HTTPS 与页面入口</text>
+  <text x="190" y="141" text-anchor="middle" class="note">443 平台 / 8443 OA / 9443 知识库</text>
+  <path d="M190,160 L190,174" fill="none" stroke="#64748b" marker-end="url(#arrow)"/>
+  <rect x="45" y="185" width="290" height="55" rx="6" fill="#fef3c7" stroke="#f59e0b"/>
+  <text x="190" y="208" text-anchor="middle">UPMS · 18080</text>
+  <text x="190" y="226" text-anchor="middle" class="note">单实例；会话与令牌索引在内存</text>
+  <rect x="415" y="100" width="290" height="55" rx="6" fill="#dbeafe" stroke="#3b82f6"/>
+  <text x="560" y="123" text-anchor="middle">OA · 18081 / 知识库 · 18082</text>
+  <text x="560" y="141" text-anchor="middle" class="note">两个独立进程；各自保存客户端令牌</text>
+  <rect x="415" y="185" width="290" height="55" rx="6" fill="#d1fae5" stroke="#22c55e"/>
+  <text x="560" y="208" text-anchor="middle">MySQL 8.4 · 内网 3307</text>
+  <text x="560" y="226" text-anchor="middle" class="note">专用数据卷；模拟系统不连接此库</text>
+  <path d="M340,127 L404,127" fill="none" stroke="#64748b" marker-end="url(#arrow)"/>
+  <path d="M340,212 L404,212" fill="none" stroke="#64748b" marker-end="url(#arrow)"/>
+  <path d="M410,145 C375,145 375,267 320,267 C260,267 190,267 190,251" fill="none" stroke="#64748b" marker-end="url(#arrow)"/>
+  <text x="375" y="298" text-anchor="middle" class="note">模拟系统后端调用平台：身份验证与实时鉴权</text>
+  <text x="375" y="352" text-anchor="middle" class="note">实线箭头表示请求方向；浏览器访问 Manager 的 HTTPS 入口；原课程数据保留</text>
+</svg>
