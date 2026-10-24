@@ -96,14 +96,18 @@ public class IdentityService implements IdentityApi {
 
   @Override
   public boolean logout(Principal principal) {
+    // 从可信认证上下文提取统一主体，不能从浏览器参数选择要退出的会话。
     UnifiedPrincipal user = user(principal);
+    // 没有统一主体时按无须额外撤销处理，保持退出可重复执行。
     if (user == null) {
       return true;
     }
     // 先撤销会话，再尝试审计；审计失败不可能恢复已经退出的会话。
     sessions.end(user.sessionId());
     try {
+      // 读取员工当前部门用于审计；会话已经撤销，后续查询失败也不恢复。
       var employee = organization.employee(user.employeeId());
+      // 正常路径记录当前会话退出，其他浏览器的独立会话不受影响。
       audit.record(
           new AuditApi.Event(
               user.employeeId(),
@@ -114,9 +118,12 @@ public class IdentityService implements IdentityApi {
               "session:" + user.sessionId(),
               "SUCCESS",
               "仅结束当前统一会话"));
+      // true 表示会话处理和审计均完成，页面可展示正常退出提示。
       return true;
     } catch (RuntimeException failure) {
+      // 审计或资料读取出错则暂停后续受控操作，保留已退出的事实。
       audit.pause();
+      // false 用于向退出回调报告审计缺口，不表示允许旧会话继续使用。
       return false;
     }
   }

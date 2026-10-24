@@ -55,34 +55,45 @@ class SystemClientRepository implements RegisteredClientRepository {
   }
 
   private static RegisteredClient adapt(IntegrationApi.SystemFact system, boolean directory) {
+    // 停用系统不可参与协议登录；员工客户端还必须配置登录回调。
     if (!system.active() || (!directory && system.redirectUri() == null)) {
       return null;
     }
+    // 从接入模块事实构建框架客户端，内部编号与公开标识分别赋值。
     var builder =
         RegisteredClient.withId(directory ? "directory-" + system.id() : system.id().toString())
             .clientId(system.key() + (directory ? "-directory" : ""))
+            // 选择对应身份的哈希，并限定为后端 HTTP Basic 客户端认证。
             .clientSecret(directory ? system.directorySecret() : system.clientSecret())
             .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+            // 令牌设置随客户端生成，不另维护一套认证数据库记录。
             .tokenSettings(
                 TokenSettings.builder()
+                    // 授权码最多有效 60 秒，访问令牌使用不可自行解码的不透明格式。
                     .authorizationCodeTimeToLive(Duration.ofSeconds(60))
                     .accessTokenFormat(OAuth2TokenFormat.REFERENCE)
+                    // 目录令牌为五分钟；员工八小时上限还会在生成时收紧至会话剩余寿命。
                     .accessTokenTimeToLive(directory ? Duration.ofMinutes(5) : Duration.ofHours(8))
                     .build());
     // 只声明本期支持的授权类型与 scope，避免目录客户端拿到员工登录能力。
     if (directory) {
       builder
+          // 目录客户端只可用独立凭据申请上报范围，不具备员工授权码能力。
           .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
           .scope("directory.report");
     } else {
       builder
+          // 员工客户端使用授权码，并登记精确的登录回调目标。
           .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
           .redirectUri(system.redirectUri())
+          // 退出回调与登录回调分别登记，openid 范围启用标准身份协议。
           .postLogoutRedirectUri(system.logoutRedirectUri())
           .scope(OidcScopes.OPENID)
+          // profile 为身份资料范围；业务查看、编辑权限仍须实时鉴权。
           .scope(OidcScopes.PROFILE)
           .clientSettings(
               ClientSettings.builder()
+                  // 强制 PKCE；课程中已登记客户端无需再显示一次授权同意页面。
                   .requireProofKey(true)
                   .requireAuthorizationConsent(false)
                   .build());
