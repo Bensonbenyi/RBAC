@@ -9,7 +9,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-/** 为两个本机演示客户端登记精确回调；其余系统只加载目录数据. */
+/**
+ * 导入系统登记；只有 OA 和知识库初始化为可运行的 OIDC 演示客户端.
+ *
+ * <p>两个演示回调按环境配置，其他系统仅登记和加载目录。数据库只保存凭据哈希；本机课程默认后缀可复现演示，公网须使用私有随机配置。初始化只在空表执行，修改后缀不会自动轮换
+ * 已存凭据，后续变更应使用接入模块的显式凭据轮换用例.
+ */
 @Service
 public class IntegrationImportService implements IntegrationImportApi {
   private final JdbcTemplate jdbc;

@@ -3,9 +3,19 @@ package cn.edu.upms.integration.api;
 import java.util.List;
 import java.util.Set;
 
-/** 系统接入能力；客户端凭据与部门关联的持久化细节保留在模块内. */
+/**
+ * 登记外部系统、管理接入凭据和部门可用范围.
+ *
+ * <p>"部门可用该系统"只是授权的必要条件，仍须给员工分配该系统的部门角色。 OIDC 登录客户端与目录上报客户端使用不同身份和凭据，不能相互替代。
+ * 本模块保存登记事实，身份模块再把这些事实适配成安全框架的客户端配置.
+ */
 public interface IntegrationApi {
-  /** 系统事实；凭据仅供认证适配器读取，不作为后台响应直接返回. */
+  /**
+   * 仅供可信模块使用的完整系统登记事实.
+   *
+   * <p>clientSecret 与 directorySecret 的名称来自框架约定，内容是存储的凭据哈希。后台响应必须显式挑选安全字段，禁止直接序列化整个 SystemFact。
+   * directoryRevision 是外部目录内容版本，version 是 JPA 并发版本，二者不能互换.
+   */
   record SystemFact(
       Long id,
       String key,
@@ -55,7 +65,17 @@ public interface IntegrationApi {
   /** 最高管理员显式重新签发独立凭据；旧凭据不能再发起兑换或目录取令牌. */
   Credentials rotateCredentials(long actorId, long systemId, long version);
 
-  /** 原子替换系统可用部门；取消关联立即影响后续鉴权. */
+  /**
+   * 将系统可用部门替换为用户明确提交的集合.
+   *
+   * <p>空集合表示取消全部部门范围；不是给旧集合追加几个部门。关联取消后旧角色分配记录仍可保留，但有效权限判断会拒绝使用。可选权限快照仍受整体最多三秒生效要求约束.
+   *
+   * @param actorId 最高管理员编号
+   * @param systemId 要调整的系统编号
+   * @param departments 替换后的完整部门编号集合
+   * @param version 当前系统的 JPA 版本
+   * @return 更新后的系统事实
+   */
   SystemFact bind(long actorId, long systemId, Set<Long> departments, long version);
 
   /** 返回部门是否可用该系统；停用系统也返回 false. */

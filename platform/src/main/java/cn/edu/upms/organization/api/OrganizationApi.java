@@ -3,9 +3,21 @@ package cn.edu.upms.organization.api;
 import cn.edu.upms.shared.PageResult;
 import java.util.List;
 
-/** 组织与管理范围能力，实体留在模块内部. */
+/**
+ * 组织资料、员工身份和管理范围的公开契约.
+ *
+ * <p>actorId 是执行操作的管理员，employeeId 是被操作员工；不能因为两个参数都为 long 就混用。
+ * 除明确说明的可信事实读取外，管理能力会在服务端校验身份及部门范围。平台管理员身份与外部系统业务角色分别维护，任命管理员不会自动授予 OA 等系统的权限.
+ *
+ * <p>停用和调动涉及其他模块，入口在上层 EmployeeLifecycle；直接保存资料不能代替协调流程.
+ */
 public interface OrganizationApi {
-  /** 员工身份事实；手机号只用于资料维护与 Demo 登录，不写入审计. */
+  /**
+   * 供模块协作使用的员工事实副本.
+   *
+   * <p>departmentId 为 {@code null} 表示源数据中的待确认归属，不能据此授予部门角色。 superAdmin 和 departmentAdmin
+   * 表示平台管理身份；positionName 仅为岗位资料。 version 是当前持久化版本，更新时用于识别过时页面。手机号用于 Demo 登录，不写入审计.
+   */
   record Employee(
       Long id,
       String username,
@@ -39,13 +51,22 @@ public interface OrganizationApi {
   /** 按员工标识获取归属与状态，供可信模块调用. */
   Employee employee(long id);
 
-  /** 使用两个同时匹配的资料确认 Demo 身份. */
+  /**
+   * 用用户名和手机号同时匹配有效员工.
+   *
+   * <p>匹配失败和员工停用对外使用相同拒绝信息。手机号在这里是课程简化的校验资料，不具备密码、短信验证码或多因素认证的安全强度；本方法不创建统一会话.
+   */
   Employee authenticate(String username, String phone);
 
   /** 校验管理员身份；最高管理员具有全局范围. */
   Employee administrator(long actorId);
 
-  /** 管理写入先取得同一治理锁并重新读取管理员；课程单节点采用粗粒度写入隔离. */
+  /**
+   * 在调用者事务内取得管理写入共用的治理锁，并重新核验操作者.
+   *
+   * <p>先取得固定公司行锁，再校验最新管理员事实，使"取消管理员"和"管理员正在授权"按顺序发生。这是本课程为简化正确性采用的粗粒度方案，会限制管理写吞吐；普通鉴权读不取这把锁。
+   * 调用方必须已开启事务，锁在该事务结束时释放，不能由前端调用独立的"加锁接口".
+   */
   void lockManagement(long actorId);
 
   /** 校验操作者是否可维护指定员工. */
@@ -77,7 +98,11 @@ public interface OrganizationApi {
   Employee appoint(
       long actorId, long employeeId, boolean superAdmin, boolean departmentAdmin, long version);
 
-  /** 参加调用者事务并锁定员工；换角、停用及调动共同使用此竞争边界. */
+  /**
+   * 在已存在的事务内锁定员工，并返回从数据库重新读取的事实.
+   *
+   * <p>多个业务用例共同使用员工行作为竞争边界；返回后事务结束前其他冲突写入须等待。不能将返回的 record 当成可写实体，也不能在没有上层事务的情况下调用本方法.
+   */
   Employee lockEmployee(long employeeId);
 
   /** 在已锁定的员工上改变状态，保留最高管理员不变量. */

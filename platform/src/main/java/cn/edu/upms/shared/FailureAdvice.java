@@ -7,7 +7,12 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-/** 将服务端拒绝转为统一错误语义，保留业务拒绝和技术失败的区别. */
+/**
+ * 把进入 MVC Controller 后的已知异常转换成 HTTP ProblemDetail.
+ *
+ * <p>BusinessException 带稳定原因代码和中文提示，唯一键等约束冲突映射为 409，查无对象为 404。数据库堆栈和凭据不交给前端。安全过滤器发生在 Controller
+ * 之前，401/403 可能由安全链直接返回，不能假定所有错误都一定经过本类或拥有完全相同的响应结构.
+ */
 @RestControllerAdvice
 public class FailureAdvice {
   /** 不存在的业务对象是可识别的输入错误，不泄露底层查询信息. */

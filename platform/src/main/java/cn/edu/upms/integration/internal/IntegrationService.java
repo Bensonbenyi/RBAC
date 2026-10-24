@@ -15,7 +15,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-/** 校验接入边界与部门可用范围；不执行外部业务，也不向外部下发角色. */
+/**
+ * 管理系统登记、独立凭据与部门可用范围，为身份和权限模块提供事实.
+ *
+ * <p>save 和 bind 修改的是管理配置，directoryRevision 由目录上报推进；JPA version
+ * 用于发现并发修改。关联范围与系统启用状态只是有效权限判断的一部分，本模块不下发角色副本.
+ *
+ * <p>SystemFact 内含凭据哈希，只能在可信后端模块间使用；Controller 需要另外构造安全响应.
+ */
 @Service
 @Transactional(readOnly = true)
 public class IntegrationService implements IntegrationApi {
@@ -108,6 +115,8 @@ public class IntegrationService implements IntegrationApi {
     if (entity.getVersion() != version) {
       throw BusinessException.conflict("系统资料已变化，请刷新后重新确认");
     }
+    // 明文只在这次响应中返回，数据库保存编码结果；部署客户端须妥善接收并更新私有配置。
+    // 轮换阻止旧密钥进行新的客户端认证，不等同于自动撤销所有已发行员工访问令牌。
     String clientSecret = UUID.randomUUID().toString();
     String directorySecret = UUID.randomUUID().toString();
     var encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
@@ -134,6 +143,7 @@ public class IntegrationService implements IntegrationApi {
     }
     Set<Long> desired = Set.copyOf(departments);
     desired.forEach(organization::activeDepartment);
+    // 保留已有关系行并切换 active，重新绑定时复用它，避免历史引用及唯一关系被重复创建。
     List<SystemDepartment> existing = links.findBySystemId(systemId);
     Set<Long> seen = new HashSet<>();
     for (SystemDepartment link : existing) {
@@ -217,6 +227,11 @@ public class IntegrationService implements IntegrationApi {
             actorId, null, null, systemId, type, "system:" + systemId, "SUCCESS", detail));
   }
 
+  /**
+   * 限制登记回调为绝对 HTTPS 地址，本机 localhost 演示允许 HTTP.
+   *
+   * <p>这里只校验登记格式；运行时的精确 redirect_uri 匹配由授权服务器框架执行。禁止片段和 URI 用户信息，避免产生难以解释的回调或在地址中夹带凭据.
+   */
   private static void callback(String value) {
     if (value == null || value.isBlank()) {
       return;

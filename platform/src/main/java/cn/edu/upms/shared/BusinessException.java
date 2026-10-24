@@ -1,6 +1,11 @@
 package cn.edu.upms.shared;
 
-/** 可向调用者说明的业务失败，不携带登录凭据或内部堆栈. */
+/**
+ * 携带稳定错误代码、HTTP 状态和可公开提示的应用异常.
+ *
+ * <p>例如 403 表示范围拒绝，409 要求刷新旧状态，503 表示不能可靠完成受控操作。异常本身仍供服务端定位问题；HTTP 响应只取 code 与 message，不发送内部堆栈。继承
+ * RuntimeException 使 Spring 默认事务规则可以在异常向外传播时回滚.
+ */
 public class BusinessException extends RuntimeException {
   private final int status;
   private final String code;

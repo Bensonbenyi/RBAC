@@ -8,7 +8,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-/** 用分批写入导入课程事实；运行用例仍通过 JPA，SQL 不越出组织模块. */
+/**
+ * 用 JDBC 批处理装载组织来源事实，避免为一万名员工逐个创建完整 JPA 用例.
+ *
+ * <p>仅在启动初始化的外层事务中调用，MANDATORY 要求已有事务；每批 100 或 200 是提交给驱动的批量大小，不代表每批独立提交。先公司、后部门、再员工，遵守数据库外键依赖。 SQL
+ * 只访问本模块拥有的表，其他模块仍通过 import api 协作.
+ */
 @Service
 public class OrganizationImportService implements OrganizationImportApi {
   private final JdbcTemplate jdbc;

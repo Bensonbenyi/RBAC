@@ -15,7 +15,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-/** 集中处理目录版本、角色归属与显式权限选择；不依赖员工授权存储. */
+/**
+ * 保存权限目录、模板和部门角色，保证角色选择来自所属系统的目录.
+ *
+ * <p>目录上报属于系统身份操作，角色编辑属于管理员操作。两条写路径都先锁定系统，使目录停用与角色保存按顺序执行。角色逻辑删除前的员工分配检查由上层协调，本模块不反向访问授权模块
+ * Repository，避免形成循环依赖.
+ */
 @Service
 @Transactional(readOnly = true)
 public class CatalogService implements CatalogApi {
@@ -133,6 +138,8 @@ public class CatalogService implements CatalogApi {
     entity.template = change.template();
     entity.name = change.name().trim();
     entity.active = change.active();
+    // 请求表达完整选择集：先清空再加入，表示替换，不能误写成累计追加而留下旧权限。
+    // contentRevision 确保只改 ElementCollection 时也有实体字段变化，推动 JPA 版本更新。
     entity.permissions.clear();
     entity.permissions.addAll(desired);
     entity.contentRevision++;
@@ -161,6 +168,8 @@ public class CatalogService implements CatalogApi {
     if (!template.template() || !template.active()) {
       throw BusinessException.conflict("仅可复制有效全局模板");
     }
+    // 复制的是此刻模板的权限编号集合，新角色有独立身份，之后不会随模板自动变化。
+    // 同类调用不再经过事务代理，但 copy 已开启事务，save 的逻辑仍参加当前事务。
     return save(
         actorId,
         new RoleChange(
@@ -206,6 +215,7 @@ public class CatalogService implements CatalogApi {
         || items.size() > 10000) {
       throw BusinessException.conflict("系统状态、目录版本或规模不符合要求");
     }
+    // 1. 先把完整报文校验完再修改实体；重复 key、缺字段或漏报有效项都整单拒绝。
     Map<String, DirectoryItem> incoming = new HashMap<>();
     for (DirectoryItem item : items) {
       if (item == null
@@ -221,6 +231,7 @@ public class CatalogService implements CatalogApi {
     if (existing.stream().anyMatch(p -> p.active && !incoming.containsKey(p.permissionKey))) {
       throw new BusinessException(400, "INCOMPLETE_DIRECTORY", "有效历史项不能遗漏；停用须明确上报 active=false");
     }
+    // 2. 同版本重报只能确认等价内容；返回 false 表示无需更新，不表示上报失败。
     if (revision == system.directoryRevision()) {
       // 同版本仅接受等价重报；已遗漏而停用的历史项不算本次目录内容。
       boolean equal =
@@ -238,6 +249,7 @@ public class CatalogService implements CatalogApi {
       }
       return false;
     }
+    // 3. 新版本合并稳定标识，保留停用历史；数据库编号不随显示名称修改而变化。
     Set<String> seen = new HashSet<>();
     Set<Long> disabled = new HashSet<>();
     for (PermissionEntity entity : existing) {
@@ -273,6 +285,7 @@ public class CatalogService implements CatalogApi {
               });
       roles.flush();
     }
+    // 4. 目录、受影响角色、内容版本与成功审计同事务提交；任何一步失败都不能推进版本。
     integration.advanceDirectory(systemId, revision);
     audit.record(
         new AuditApi.Event(

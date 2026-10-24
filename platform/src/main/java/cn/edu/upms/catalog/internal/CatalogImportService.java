@@ -8,7 +8,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-/** 仅用于基础导入，采用目录已确认动作创建模板. */
+/**
+ * 在来源目录已经落库后，把五类初始模板的稳定权限 key 转成数据库编号.
+ *
+ * <p>模板只是角色选择的起点，departmentId 为空，不能直接分配给员工。未知 key 立即失败，并回滚外层基础导入事务；不能忽略未知项然后把缺权限的模板标成初始化成功.
+ */
 @Service
 public class CatalogImportService implements CatalogImportApi {
   private final PermissionRepository permissions;

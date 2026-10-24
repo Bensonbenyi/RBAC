@@ -17,7 +17,15 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-/** 维护组织事实与管理员范围；员工停用的副作用由上层协调. */
+/**
+ * 维护公司、末级部门、员工和平台管理员身份，并统一判断管理范围.
+ *
+ * <p>类级只读事务覆盖查询；写方法单独声明事务。Repository 只在模块内部使用，返回给其他模块的是不可变 record。员工停用、调动还有撤权等副作用，须由
+ * EmployeeLifecycle 协调调用.
+ *
+ * <p>学习时先看 administrator 和 requireEmployeeScope 理解范围，再看 lockManagement 与 lockRecord
+ * 理解为什么"查过有权"还要在写入锁内重新确认.
+ */
 @Service
 @Transactional(readOnly = true)
 public class OrganizationService implements OrganizationApi {
@@ -89,6 +97,8 @@ public class OrganizationService implements OrganizationApi {
     // 固定总公司行只作为治理锁点，不修改公司状态；读请求不取得这把锁。
     // 所有管理写入先取此锁，使管理员取消、组织停用与分配的范围检查不能交错。
     companyRepository.lock(1L).orElseThrow();
+    // JPA 一级缓存属于当前事务：同一编号再次 find 可能返回先前读取的对象。
+    // refresh 强制重读，防止等待治理锁期间管理员资格已被另一个事务取消。
     entityManager.refresh(find(actorId));
     administrator(actorId);
   }
@@ -112,6 +122,7 @@ public class OrganizationService implements OrganizationApi {
         employeeRepository.findAll(
             (root, cq, cb) -> {
               List<Predicate> clauses = new ArrayList<>();
+              // 隔离条件进入数据库查询，与用户筛选条件取 AND，不能只在前端隐藏其他部门。
               if (!actor.superAdmin()) {
                 clauses.add(cb.equal(root.get("departmentId"), actor.departmentId()));
               }
@@ -207,6 +218,7 @@ public class OrganizationService implements OrganizationApi {
   public OrganizationApi.Employee saveEmployee(long actorId, EmployeeChange change) {
     lockManagement(actorId);
     requireDepartmentScope(actorId, change.departmentId());
+    // 资料保存只改资料；停用与已有部门调动必须走协调入口，避免漏掉撤权或会话失效。
     EmployeeEntity entity = change.id() == null ? new EmployeeEntity() : lockRecord(change.id());
     if (change.id() != null) {
       requireEmployeeScope(actorId, change.id());
@@ -330,6 +342,11 @@ public class OrganizationService implements OrganizationApi {
         .orElseThrow(() -> new BusinessException(404, "NOT_FOUND", "员工不存在"));
   }
 
+  /**
+   * 在当前事务内取得员工排他行锁，并刷新事务一级缓存中的旧资料.
+   *
+   * <p>锁由数据库保持到事务结束。该方法是内部辅助方法，本身不会通过 Spring 代理新开事务，所以调用它的写用例或上层协调者必须已经开启事务.
+   */
   private EmployeeEntity lockRecord(long id) {
     EmployeeEntity entity = find(id);
     // refresh 同时取得行锁和最新版本，避免范围预读留下一级缓存中的旧状态。
@@ -337,6 +354,7 @@ public class OrganizationService implements OrganizationApi {
     return entity;
   }
 
+  /** 在调用方已持有治理锁时保护"至少一名有效最高管理员"的跨行不变量. */
   private void preserveLastAdministrator(EmployeeEntity employee, boolean remainsAdmin) {
     if (employee.superAdmin
         && employee.active
