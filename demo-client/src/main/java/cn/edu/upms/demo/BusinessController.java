@@ -18,7 +18,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
 
-/** 两个独立业务进程共享演示代码，以各自客户端身份逐次请求平台鉴权. */
+/**
+ * OA 与知识库共用的模拟业务代码，通过不同配置运行成两个独立进程.
+ *
+ * <p>OIDC 客户端框架在后端保存访问令牌，浏览器只持有本应用会话 Cookie。每次受控操作都调用平台鉴权，允许后才读写本系统记录。"本人"归属由业务记录 owner 与 OIDC sub
+ * 比较，平台既不保存这些业务记录，也不替外部系统做记录级筛选.
+ *
+ * <p>documents 使用线程安全列表、ids 使用原子计数器，因为 Controller 默认是共享单例。数据仅作少量演示，重启丢失；CopyOnWriteArrayList
+ * 每次写入复制数组，不适合真实大量业务写入.
+ */
 @Controller
 public class BusinessController {
   /** 业务数据只存在模拟系统，平台不存储内容或替它筛选本人记录. */
@@ -130,6 +138,11 @@ public class BusinessController {
     return home(user, model);
   }
 
+  /**
+   * 用后端保存的访问令牌逐次询问平台，只有明确 allowed=true 才执行受控业务.
+   *
+   * <p>空响应、业务拒绝、超时、连接失败及非成功 HTTP 响应都不能放行。身份或业务权限变化不靠页面按钮及时隐藏来保证，所有实际 POST 操作必须先经过本方法.
+   */
   private boolean authorize(OAuth2AuthorizedClient client, String permission, Model model) {
     try {
       Decision result =

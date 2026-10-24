@@ -12,7 +12,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
-/** 课程身份校验适配器；用户名与手机号同时匹配，不模拟密码认证强度. */
+/**
+ * 将登录表单交给组织模块校验，再为成功身份建立统一会话.
+ *
+ * <p>Spring 的 UsernamePasswordAuthenticationToken 在此只是"用户名与校验资料"的标准容器， credentials 实际是手机号。认证成功仅授予
+ * AUTHENTICATED_EMPLOYEE 标记；是否为管理员、是否能访问业务功能，都在后续用例中按当前事实另行判断.
+ */
 @Component
 class DemoAuthenticationProvider implements AuthenticationProvider {
   private final OrganizationApi organization;
@@ -48,6 +53,7 @@ class DemoAuthenticationProvider implements AuthenticationProvider {
                 "用户名与手机号校验失败或身份停用"));
         throw new BadCredentialsException("用户名、手机号不匹配或员工已停用");
       }
+      // 内存会话与数据库审计不共享事务；若审计失败，要主动删除刚建的会话以补偿。
       UnifiedPrincipal principal = sessions.open(employee.id());
       try {
         // 登录成功事件必须先可靠提交，才把认证结果交回安全框架。

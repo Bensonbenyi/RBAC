@@ -11,7 +11,12 @@ import org.springframework.security.oauth2.server.authorization.oidc.authenticat
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 
-/** 标准 RP 退出后的平台动作；即使审计故障也不能恢复已撤销会话. */
+/**
+ * 衔接框架已经验证的 RP 退出请求与平台统一会话撤销.
+ *
+ * <p>框架先校验 ID Token hint 和登记退出回调；这里通过 hint 找到原认证身份，撤销其统一会话。若当前平台浏览器身份也经过框架确认，再清理本地 SecurityContext
+ * 与 HttpSession。审计失败仅附加提示标记，不阻止已经发生的会话撤销.
+ */
 final class UnifiedOidcLogoutHandler implements LogoutHandler {
   private final OAuth2AuthorizationService authorizations;
   private final IdentityService identity;

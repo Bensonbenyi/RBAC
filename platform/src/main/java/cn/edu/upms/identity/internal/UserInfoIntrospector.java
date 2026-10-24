@@ -12,7 +12,12 @@ import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
 import org.springframework.security.oauth2.server.resource.introspection.BadOpaqueTokenException;
 import org.springframework.security.oauth2.server.resource.introspection.OpaqueTokenIntrospector;
 
-/** 将框架资源端点与当前会话事实衔接；无效令牌统一转换为标准 Bearer 拒绝. */
+/**
+ * 把不透明令牌适配成 UserInfo 资源链需要的 OAuth2AuthenticatedPrincipal.
+ *
+ * <p>校验服务端访问令牌状态，并对存在员工身份的授权结果复核统一会话。随后按 scope 生成框架权限，例如 openid 对应 SCOPE_openid，由资源链执行访问限制。scope
+ * 是协议能力，不等同于 OA 的查看、编辑等业务权限；此处不生成业务角色权限.
+ */
 final class UserInfoIntrospector implements OpaqueTokenIntrospector {
   private final OAuth2AuthorizationService authorizations;
   private final IdentityService identity;

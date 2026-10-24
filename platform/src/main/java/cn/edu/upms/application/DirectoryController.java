@@ -10,7 +10,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
-/** 独立目录身份只可上报自身系统；失败不会改变旧目录版本. */
+/**
+ * 接收业务系统的完整目录上报，系统身份只从目录访问令牌推导.
+ *
+ * <p>该调用使用独立 client_credentials 身份，不代表某个员工。Controller 本身不包住目录事务； CatalogApi.report 返回时已经提交或回滚，因此
+ * catch 中保存的失败事件不会随失败目录一起回滚。业务系统须保留未确认报文并修正或重报，不能把网络调用结束当成目录已更新.
+ */
 @RestController
 public class DirectoryController {
   /** 完整目录快照，版本必须递增或为等价重报. */

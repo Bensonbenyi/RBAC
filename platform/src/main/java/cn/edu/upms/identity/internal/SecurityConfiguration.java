@@ -40,7 +40,14 @@ import org.springframework.security.web.context.SecurityContextHolderFilter;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.security.web.util.matcher.MediaTypeRequestMatcher;
 
-/** 配置标准 OIDC、独立目录凭据与同源后台会话；协议校验采用成熟安全框架. */
+/**
+ * 配置身份模块的安全入口，将标准协议交给 Spring Security 与授权服务器框架处理.
+ *
+ * <p>一次请求只进入首个匹配的 SecurityFilterChain，按 Order 从小到大选择：0 为 UserInfo 资源端点，1 为 OIDC/OAuth 协议端点，2 为
+ * Bearer 业务调用，3 为浏览器与后台。分链后 Cookie 会话和 Bearer 令牌各有校验入口，不能因一处使用无状态策略就关闭后台 CSRF.
+ *
+ * <p>Bean 默认是单例，这里创建配置与线程安全协作对象；具体员工身份由每次请求的 SecurityContext 提供，不保存在配置类字段中。阅读时先看四条过滤链，再看令牌生成器.
+ */
 @Configuration
 public class SecurityConfiguration {
   /** 提供可替换时钟，绝对会话期限的测试无需等待八小时. */
@@ -61,7 +68,14 @@ public class SecurityConfiguration {
     return new HttpSessionEventPublisher();
   }
 
-  /** 启动节点的签名密钥；课程单节点重启后统一会话失效. */
+  /**
+   * 为当前进程创建 ID Token 签名密钥，并向框架提供 JWK 选择能力.
+   *
+   * <p>RSA 私钥只在内存中用于签名，公开 JWK 端点供客户端取得公钥验证。重启会换密钥，同时内存会话和授权存储清空；本期没有持久化密钥或跨节点共享密钥机制.
+   *
+   * @return 供框架签名及选择验证公钥的 JWK 来源
+   * @throws Exception 当前运行环境不能创建 RSA 密钥时启动失败
+   */
   @Bean
   public JWKSource<SecurityContext> jwkSource() throws Exception {
     KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
@@ -94,6 +108,8 @@ public class SecurityConfiguration {
   @Bean
   public OAuth2TokenGenerator<?> tokenGenerator(
       JWKSource<SecurityContext> source, IdentityService identity, AuditApi audit) {
+    // 访问令牌采用 REFERENCE 格式，客户端不能解码后离线推断权限，需向平台实时验证。
+    // 目录令牌没有员工 principal，沿用其独立五分钟寿命；员工令牌受固定八小时会话约束。
     OAuth2AccessTokenGenerator opaque = new OAuth2AccessTokenGenerator();
     opaque.setAccessTokenCustomizer(
         context -> {
@@ -104,6 +120,7 @@ public class SecurityConfiguration {
             context.getClaims().expiresAt(user.expiresAt());
           }
         });
+    // ID Token 仍按 OIDC 使用签名 JWT，作用是确认登录身份，不能当作业务授权快照。
     JwtGenerator jwt = new JwtGenerator(new NimbusJwtEncoder(source));
     jwt.setJwtCustomizer(
         context -> {
@@ -133,6 +150,8 @@ public class SecurityConfiguration {
     OidcLogoutAuthenticationSuccessHandler logout = new OidcLogoutAuthenticationSuccessHandler();
     var secretVerifier = new ClientSecretVerifier();
     logout.setLogoutHandler(new UnifiedOidcLogoutHandler(authorizations, identity));
+    // matcher 决定本链负责哪些路径；authorizeHttpRequests 决定这些路径的访问要求。
+    // 装饰框架 Provider 只补本项目约束，授权码、PKCE 和精确回调检查继续由框架完成。
     http.securityMatcher(server.getEndpointsMatcher())
         .with(
             server,
@@ -212,7 +231,12 @@ public class SecurityConfiguration {
     return http.build();
   }
 
-  /** Bearer 受控端点不使用浏览器会话；具体系统与范围由身份用例校验. */
+  /**
+   * 为运行鉴权与目录上报选择无状态的 Bearer 调用链.
+   *
+   * <p>这里的 permitAll 只让请求到达 Controller，绝不表示业务可匿名访问。RuntimeController 和 DirectoryController 必须调用
+   * IdentityApi 核验 Authorization 头；增加同前缀新端点时也须保持该边界。本链不依赖浏览器自动附带的 Cookie，因而局部关闭 CSRF；后台链仍开启.
+   */
   @Bean
   @Order(2)
   public SecurityFilterChain runtime(HttpSecurity http) throws Exception {
@@ -255,6 +279,7 @@ public class SecurityConfiguration {
                 login
                     .loginPage("/login")
                     .usernameParameter("username")
+                    // 复用表单过滤器的 credentials 槽位，Provider 实际匹配手机号，不执行密码验证。
                     .passwordParameter("phone")
                     .defaultSuccessUrl("/admin", false)
                     .failureHandler(
@@ -282,6 +307,7 @@ public class SecurityConfiguration {
                                 Boolean.TRUE.equals(request.getAttribute("auditGap"))
                                     ? "/login?audit=failed"
                                     : "/login?logout")))
+        // -1 不限制员工同时登录几个浏览器；各统一会话仍有独立 sid 与固定绝对期限。
         .sessionManagement(session -> session.maximumSessions(-1).sessionRegistry(sessions))
         .exceptionHandling(
             errors ->

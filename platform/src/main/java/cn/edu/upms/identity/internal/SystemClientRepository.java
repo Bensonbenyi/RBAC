@@ -13,7 +13,12 @@ import org.springframework.security.oauth2.server.authorization.settings.OAuth2T
 import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
 import org.springframework.stereotype.Component;
 
-/** 将系统登记适配为框架客户端，目录身份单独登记且只有上报范围. */
+/**
+ * 将接入模块的系统事实适配成框架 RegisteredClient，不另建一套客户端表.
+ *
+ * <p>同一系统映射两种客户端：员工登录客户端使用授权码和 PKCE，目录客户端使用独立凭据及 client_credentials。框架内部 id 采用系统数据库编号，公开 clientId
+ * 采用稳定 systemKey，目录身份分别带不同前后缀；读代码时不要把这两个编号混作同一种标识.
+ */
 @Component
 class SystemClientRepository implements RegisteredClientRepository {
   private final IntegrationApi integration;
@@ -64,6 +69,7 @@ class SystemClientRepository implements RegisteredClientRepository {
                     .accessTokenFormat(OAuth2TokenFormat.REFERENCE)
                     .accessTokenTimeToLive(directory ? Duration.ofMinutes(5) : Duration.ofHours(8))
                     .build());
+    // 只声明本期支持的授权类型与 scope，避免目录客户端拿到员工登录能力。
     if (directory) {
       builder
           .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)

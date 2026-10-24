@@ -9,7 +9,12 @@ import java.util.HexFormat;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-/** 复用重复的系统凭据校验；键含当前存储哈希，签发新凭据后旧结果自然不能命中. */
+/**
+ * 缓存系统客户端凭据的成功比较，降低频繁认证中的自适应哈希开销.
+ *
+ * <p>首次始终委托框架编码器验证；缓存键是"当前数据库哈希与输入凭据"的摘要，不保存明文。轮换使存储哈希改变，因此旧成功结果不能命中新组合。失败不缓存，缓存过期后重新校验。
+ * 这是客户端身份验证优化，与员工权限快照及其三秒生效期限分别管理.
+ */
 final class ClientSecretVerifier implements PasswordEncoder {
   private final PasswordEncoder delegate =
       PasswordEncoderFactories.createDelegatingPasswordEncoder();

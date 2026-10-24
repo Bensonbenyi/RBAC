@@ -9,7 +9,12 @@ import java.io.IOException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-/** 在安全上下文加载后检查绝对会话期限，阻止容器空闲期限造成滑动续期. */
+/**
+ * 在安全上下文加载后复核统一会话，落实固定八小时期限及停用失效.
+ *
+ * <p>容器 HttpSession 通常按空闲时间延长，不能单独满足固定绝对期限。身份无效时同时清理本应用会话与线程安全上下文，后续过滤器会按未登录处理；这里继续过滤链，不自行返回成功。
+ * getSession(false) 避免为本来没有会话的请求创建新会话.
+ */
 final class AbsoluteSessionFilter extends OncePerRequestFilter {
   private final IdentityService identity;
 

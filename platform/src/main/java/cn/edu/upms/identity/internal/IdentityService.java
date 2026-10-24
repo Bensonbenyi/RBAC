@@ -13,7 +13,14 @@ import org.springframework.security.oauth2.server.authorization.OAuth2Authorizat
 import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
 import org.springframework.stereotype.Service;
 
-/** 统一检查会话、员工状态及令牌所属系统，不接受 ID Token 中的业务授权. */
+/**
+ * 将框架保存的认证结果转换成业务可信身份，并复核当前会话与员工状态.
+ *
+ * <p>browser 处理平台 HttpSession 中的 principal；token 处理模拟系统后端提交的不透明访问令牌； directory
+ * 只处理独立系统凭据获得的目录令牌。三条入口互不替代，验证成功后也不代表有业务权限.
+ *
+ * <p>访问令牌虽未到期，所依赖会话仍可能因统一退出或员工停用而失效，因此不能只看令牌时间。这里只返回员工和系统事实，允许或拒绝具体动作由授权模块负责.
+ */
 @Service
 public class IdentityService implements IdentityApi {
   private final UnifiedSessions sessions;
@@ -47,11 +54,13 @@ public class IdentityService implements IdentityApi {
   public TokenIdentity token(String token, String expectedSystem) {
     audit.requireAvailable();
     OAuth2Authorization authorization = access(token);
+    // 员工令牌必须来自授权码流程，目录 client_credentials 令牌不能冒充某个员工。
     if (!AuthorizationGrantType.AUTHORIZATION_CODE.equals(
         authorization.getAuthorizationGrantType())) {
       throw rejected();
     }
     var system = integration.system(Long.parseLong(authorization.getRegisteredClientId()));
+    // expectedSystem 来自请求，但真实 systemId 来自令牌登记关系；两者必须相等。
     if (!system.active() || !system.key().equals(expectedSystem)) {
       throw BusinessException.forbidden();
     }
@@ -112,12 +121,18 @@ public class IdentityService implements IdentityApi {
     }
   }
 
+  /** 每次使用身份时复核内存会话和员工启用状态，防止旧认证结果继续通行. */
   void requireUser(UnifiedPrincipal user) {
     if (!sessions.valid(user) || !organization.employee(user.employeeId()).active()) {
       throw rejected();
     }
   }
 
+  /**
+   * 从服务端存储定位访问令牌，并检查它仍有效且确为 access token.
+   *
+   * <p>存储索引也可能按授权码或 ID Token 找到同一个授权对象，所以必须核对访问令牌原值，不能把"能查到授权对象"当成"提交的是有效访问令牌".
+   */
   private OAuth2Authorization access(String token) {
     OAuth2Authorization authorization =
         authorizations.findByToken(token, OAuth2TokenType.ACCESS_TOKEN);

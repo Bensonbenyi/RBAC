@@ -9,7 +9,12 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-/** 管理写请求进入用例事务前限流，避免大量治理锁等待者占满数据库连接而饿死鉴权. */
+/**
+ * 限制同时进入后台写用例的请求数量，为实时鉴权保留数据库连接.
+ *
+ * <p>管理写入会竞争粗粒度治理锁；若大量线程先拿连接再排队，会拖慢无需该锁的鉴权读。本过滤器在 Controller 及业务事务之前用公平 Semaphore 只放入四个写请求，最多等两秒。
+ * 它控制并发量，不负责鉴权，也不是每秒请求数限制；真正身份和范围仍由后续链路校验.
+ */
 final class ManagementWriteGateFilter extends OncePerRequestFilter {
   private final Semaphore writers = new Semaphore(4, true);
 
@@ -37,6 +42,7 @@ final class ManagementWriteGateFilter extends OncePerRequestFilter {
       }
       chain.doFilter(request, response);
     } catch (InterruptedException interrupted) {
+      // 恢复中断标记，让外层容器或执行器仍能感知取消；finally 仅归还实际取得的许可。
       Thread.currentThread().interrupt();
       response.sendError(503, "管理请求中断，请重试");
     } finally {

@@ -12,7 +12,14 @@ import org.springframework.security.oauth2.server.authorization.OAuth2Authorizat
 import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
 import org.springframework.stereotype.Component;
 
-/** 保存框架授权状态及令牌索引；有界且单节点，失去状态只会拒绝请求. */
+/**
+ * 适配框架 OAuth2AuthorizationService，保存授权对象及其查找索引.
+ *
+ * <p>authorizations 按授权编号保存完整状态，tokenIndex 按授权码、访问令牌、ID Token 或 state 找到所属授权编号。这里没有数据库表；Caffeine
+ * 有容量和到期限制，重启或淘汰后请求只能重新认证.
+ *
+ * <p>线程安全缓存不等于一次兑换流程原子完成，读取、检查、消耗授权码的整段竞争由 AtomicCodeExchange 另外串行化。本存储也不负责判断员工业务权限.
+ */
 @Component
 class AuthorizationStore implements OAuth2AuthorizationService {
   private final Cache<String, OAuth2Authorization> authorizations =
@@ -48,6 +55,8 @@ class AuthorizationStore implements OAuth2AuthorizationService {
     }
     OAuth2Authorization authorization = authorizations.getIfPresent(id);
     // 索引命中后再次确认真实内容；类型和有效性由框架及身份用例继续校验。
+    // 更新授权状态后，旧索引可暂留到淘汰；必须回到最新授权内容确认，不能只信索引存在。
+    // tokenType 由调用层进一步校验，本实现没有把参数当成已经完成的类型验证。
     return authorization != null && tokens(authorization).contains(token) ? authorization : null;
   }
 
