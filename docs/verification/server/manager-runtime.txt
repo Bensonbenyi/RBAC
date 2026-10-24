@@ -1,0 +1,9 @@
+notBefore=Oct 24 11:23:35 2026 GMT
+notAfter=Oct 31 03:23:34 2026 GMT
+issuer=C = US, O = Let's Encrypt, CN = YE2
+X509v3 Subject Alternative Name: critical
+    IP Address:113.44.144.119
+0 */6 * * * root /opt/upms/renew-certificate.sh >>/opt/upms/certificate-renewal.log 2>&1
+dcca8ea12c407ad7e8a1aeffb9ef707d05ee06d4703e8ff0b3c65dcef42b184d  /opt/upms/platform.jar
+upms-platform 306.8MiB / 1GiB
+upms-proxy 5.09MiB / 64MiB

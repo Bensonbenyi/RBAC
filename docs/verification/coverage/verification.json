@@ -1,0 +1,307 @@
+{
+  "exitCode": 0,
+  "measurementOnly": false,
+  "sourceCommit": "a12e0170012a3a31f313cf6939bbb1a3d9dd5a3c",
+  "sourceDiffSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "startedAt": "2026-10-24T12:52:25Z",
+  "jacocoVersion": "0.8.13",
+  "modules": {
+    "platform": {
+      "counters": {
+        "INSTRUCTION": {
+          "missed": 0,
+          "covered": 10395,
+          "percent": 100.0
+        },
+        "BRANCH": {
+          "missed": 0,
+          "covered": 893,
+          "percent": 100.0
+        },
+        "LINE": {
+          "missed": 0,
+          "covered": 2085,
+          "percent": 100.0
+        },
+        "COMPLEXITY": {
+          "missed": 0,
+          "covered": 884,
+          "percent": 100.0
+        },
+        "METHOD": {
+          "missed": 0,
+          "covered": 437,
+          "percent": 100.0
+        },
+        "CLASS": {
+          "missed": 0,
+          "covered": 102,
+          "percent": 100.0
+        }
+      },
+      "tests": [
+        {
+          "name": "cn.edu.upms.ModuleBoundaryTest",
+          "tests": "2",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "1.18"
+        },
+        {
+          "name": "cn.edu.upms.application.ControllerContractTest",
+          "tests": "4",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "0.206"
+        },
+        {
+          "name": "cn.edu.upms.application.DemonstrationSelectionTest",
+          "tests": "1",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "0.162"
+        },
+        {
+          "name": "cn.edu.upms.application.FoundationIntegrationTest",
+          "tests": "8",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "0.908"
+        },
+        {
+          "name": "cn.edu.upms.application.LifecycleAndFailureTest",
+          "tests": "2",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "0.007"
+        },
+        {
+          "name": "cn.edu.upms.application.LoadInitializerTest",
+          "tests": "1",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "0.04"
+        },
+        {
+          "name": "cn.edu.upms.application.SeedIntegrationTest",
+          "tests": "2",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "6.103"
+        },
+        {
+          "name": "cn.edu.upms.application.TeacherSourceReaderTest",
+          "tests": "3",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "10.133"
+        },
+        {
+          "name": "cn.edu.upms.audit.internal.AuditServiceTest",
+          "tests": "2",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "0.038"
+        },
+        {
+          "name": "cn.edu.upms.authorization.AssignmentConcurrencyTest",
+          "tests": "4",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "3.441"
+        },
+        {
+          "name": "cn.edu.upms.authorization.internal.AuthorizationImportServiceTest",
+          "tests": "1",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "0.055"
+        },
+        {
+          "name": "cn.edu.upms.authorization.internal.AuthorizationServiceTest",
+          "tests": "4",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "0.093"
+        },
+        {
+          "name": "cn.edu.upms.authorization.internal.BatchServiceTest",
+          "tests": "3",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "0.099"
+        },
+        {
+          "name": "cn.edu.upms.authorization.internal.EffectivePermissionRuleTest",
+          "tests": "1",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "0.0"
+        },
+        {
+          "name": "cn.edu.upms.catalog.internal.CatalogServiceTest",
+          "tests": "7",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "0.076"
+        },
+        {
+          "name": "cn.edu.upms.identity.internal.ClientAndIntrospectionTest",
+          "tests": "3",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "0.041"
+        },
+        {
+          "name": "cn.edu.upms.identity.internal.ClientSecretVerifierTest",
+          "tests": "1",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "0.357"
+        },
+        {
+          "name": "cn.edu.upms.identity.internal.IdentityContractTest",
+          "tests": "5",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "0.112"
+        },
+        {
+          "name": "cn.edu.upms.identity.internal.ManagementWriteGateFilterTest",
+          "tests": "2",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "2.006"
+        },
+        {
+          "name": "cn.edu.upms.identity.internal.OidcIntegrationTest",
+          "tests": "13",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "13.269"
+        },
+        {
+          "name": "cn.edu.upms.identity.internal.ProtocolAdaptersTest",
+          "tests": "3",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "0.054"
+        },
+        {
+          "name": "cn.edu.upms.identity.internal.TokenLifetimeTest",
+          "tests": "1",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "0.582"
+        },
+        {
+          "name": "cn.edu.upms.identity.internal.UnifiedSessionsTest",
+          "tests": "2",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "0.023"
+        },
+        {
+          "name": "cn.edu.upms.integration.internal.IntegrationServiceTest",
+          "tests": "3",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "0.858"
+        },
+        {
+          "name": "cn.edu.upms.organization.internal.OrganizationImportServiceTest",
+          "tests": "1",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "0.731"
+        },
+        {
+          "name": "cn.edu.upms.organization.internal.OrganizationServiceTest",
+          "tests": "4",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "0.277"
+        }
+      ]
+    },
+    "demo-client": {
+      "counters": {
+        "INSTRUCTION": {
+          "missed": 0,
+          "covered": 457,
+          "percent": 100.0
+        },
+        "BRANCH": {
+          "missed": 0,
+          "covered": 30,
+          "percent": 100.0
+        },
+        "LINE": {
+          "missed": 0,
+          "covered": 85,
+          "percent": 100.0
+        },
+        "COMPLEXITY": {
+          "missed": 0,
+          "covered": 34,
+          "percent": 100.0
+        },
+        "METHOD": {
+          "missed": 0,
+          "covered": 19,
+          "percent": 100.0
+        },
+        "CLASS": {
+          "missed": 0,
+          "covered": 5,
+          "percent": 100.0
+        }
+      },
+      "tests": [
+        {
+          "name": "cn.edu.upms.demo.BusinessBoundaryTest",
+          "tests": "4",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "1.854"
+        },
+        {
+          "name": "cn.edu.upms.demo.DemoSecurityTest",
+          "tests": "2",
+          "failures": "0",
+          "errors": "0",
+          "skipped": "0",
+          "time": "2.243"
+        }
+      ]
+    }
+  },
+  "accepted": true
+}

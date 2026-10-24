@@ -1,0 +1,4 @@
+08ad4cc17bdc5b893505b54f5abaf5e21e419f0a5ab940950f85ac27822fdc64  /opt/upms/demo-client.jar
+upms-mysql 256MiB / 512MiB
+upms-oa 169.7MiB / 384MiB
+upms-knowledge 170.9MiB / 384MiB

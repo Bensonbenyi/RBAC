@@ -1,0 +1,116 @@
+
+> upms-admin@1.0.0 test:e2e
+> playwright test
+
+
+Running 6 tests using 1 worker
+
+(node:95048) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 tests/management.spec.ts:67:1 › ACC-F-009、010 界面选择权限、预览替换、撤权并导出日志 (13.2s)
+  ✘  2 tests/management.spec.ts:143:1 › ACC-F-012 两个系统权限不同，本人记录校验留在业务系统 (2.0s)
+(node:95306) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  3 tests/management.spec.ts:164:1 › ACC-F-014 无授权拒绝、三秒撤权与停用结束现有会话 (8.2s)
+  ✓  4 tests/oidc.spec.ts:10:1 › ACC-F-003、005 标准跳转登录、跨系统复用与统一退出 (1.9s)
+  ✘  5 tests/oidc.spec.ts:31:1 › ACC-F-002 普通员工不能使用后台但可以统一确认身份 (5.4s)
+(node:95571) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✘  6 tests/oidc.spec.ts:37:1 › 后台中文功能导航及管理员身份 (5.5s)
+
+
+  1) tests/management.spec.ts:143:1 › ACC-F-012 两个系统权限不同，本人记录校验留在业务系统 ──────────────────────────────
+
+    Error: browserContext.close: ENOENT: no such file or directory, open '/Users/baakarshan/Developer/products/ooad/RBAC/frontend/test-results/.playwright-artifacts-0/traces/a9916703f81b98e496f1-51d2a2db342fbf69a8c8-recording2.trace'
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/management-ACC-F-012-两个系统权限不同，本人记录校验留在业务系统/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/management-ACC-F-012-两个系统权限不同，本人记录校验留在业务系统/error-context.md
+
+    Error Context: test-results/management-ACC-F-012-两个系统权限不同，本人记录校验留在业务系统/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/management-ACC-F-012-两个系统权限不同，本人记录校验留在业务系统/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/management-ACC-F-012-两个系统权限不同，本人记录校验留在业务系统/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) tests/oidc.spec.ts:31:1 › ACC-F-002 普通员工不能使用后台但可以统一确认身份 ───────────────────────────────────────
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('heading', { name: '无法进入管理后台' })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('heading', { name: '无法进入管理后台' }) with timeout 5000ms
+      - waiting for getByRole('heading', { name: '无法进入管理后台' })
+
+
+      32 |   await page.goto(platformUrl + '/admin');
+      33 |   await login(page, 'SG000020', '18921085097');
+    > 34 |   await expect(page.getByRole('heading', { name: '无法进入管理后台' })).toBeVisible();
+         |                                                                 ^
+      35 | });
+      36 |
+      37 | test('后台中文功能导航及管理员身份', async ({ page }) => {
+        at /Users/baakarshan/Developer/products/ooad/RBAC/frontend/tests/oidc.spec.ts:34:65
+
+    Error: apiRequestContext._wrapApiCall: ENOENT: no such file or directory, copyfile '/Users/baakarshan/Developer/products/ooad/RBAC/frontend/test-results/.playwright-artifacts-1/traces/94391b1be10cf7be5001-c91b128ea05629b8d2a7-recording7.network' -> '/Users/baakarshan/Developer/products/ooad/RBAC/frontend/test-results/.playwright-artifacts-1/traces/94391b1be10cf7be5001-c91b128ea05629b8d2a7-recording7-pwnetcopy-1.network'
+
+    Error: browserContext._wrapApiCall: ENOENT: no such file or directory, open '/Users/baakarshan/Developer/products/ooad/RBAC/frontend/test-results/.playwright-artifacts-1/traces/94391b1be10cf7be5001-c91b128ea05629b8d2a7-recording6.network'
+
+    Error: ENOENT: no such file or directory, open '/Users/baakarshan/Developer/products/ooad/RBAC/frontend/test-results/.playwright-artifacts-1/ef932d805e9567053f5a839355203570.zip'
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/oidc-ACC-F-002-普通员工不能使用后台但可以统一确认身份/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) tests/oidc.spec.ts:37:1 › 后台中文功能导航及管理员身份 ──────────────────────────────────────────────────────
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('heading', { name: '员工与授权' })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" getByRole('heading', { name: '员工与授权' }) with timeout 5000ms
+      - waiting for getByRole('heading', { name: '员工与授权' })
+
+
+      38 |   await page.goto(platformUrl + '/admin');
+      39 |   await login(page, 'SG000001', '13976537502');
+    > 40 |   await expect(page.getByRole('heading', { name: '员工与授权' })).toBeVisible();
+         |                                                              ^
+      41 |   for (const title of [
+      42 |     '组织管理',
+      43 |     '系统接入与目录',
+        at /Users/baakarshan/Developer/products/ooad/RBAC/frontend/tests/oidc.spec.ts:40:62
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/oidc-后台中文功能导航及管理员身份/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/oidc-后台中文功能导航及管理员身份/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/oidc-后台中文功能导航及管理员身份/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/oidc-后台中文功能导航及管理员身份/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3 failed
+    tests/management.spec.ts:143:1 › ACC-F-012 两个系统权限不同，本人记录校验留在业务系统 ───────────────────────────────
+    tests/oidc.spec.ts:31:1 › ACC-F-002 普通员工不能使用后台但可以统一确认身份 ────────────────────────────────────────
+    tests/oidc.spec.ts:37:1 › 后台中文功能导航及管理员身份 ───────────────────────────────────────────────────────
+  3 passed (37.6s)

@@ -1,0 +1,10 @@
+{
+  "checkedAt": "2026-10-24T13:10:12.911322+00:00",
+  "target": "https://113.44.144.119",
+  "platformRestarted": true,
+  "beforeRestartReadAllowed": true,
+  "oldClientTokenDeniedAfterRestart": true,
+  "newOidcLoginReadAllowed": true,
+  "persistentQueriesEqual": true,
+  "method": "真实浏览器操作加服务器只读 SQL 前后比较；不含 Cookie 或令牌"
+}

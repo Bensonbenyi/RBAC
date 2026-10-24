@@ -1,0 +1,335 @@
+ Container upms-course-mysql-1 Running 
+ Container upms-course-mysql-1 Waiting 
+ Container upms-course-mysql-1 Healthy 
+[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] upms                                                               [pom]
+[INFO] platform                                                           [jar]
+[INFO] demo-client                                                        [jar]
+[INFO] coverage-report                                                    [pom]
+[INFO] 
+[INFO] --------------------------< cn.edu.upms:upms >--------------------------
+[INFO] Building upms 1.0.0                                                [1/4]
+[INFO]   from pom.xml
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.4.1:clean (default-clean) @ upms ---
+[INFO] Deleting /Users/baakarshan/Developer/products/ooad/RBAC/target
+[INFO] 
+[INFO] ------------------------< cn.edu.upms:platform >------------------------
+[INFO] Building platform 1.0.0                                            [2/4]
+[INFO]   from platform/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.4.1:clean (default-clean) @ platform ---
+[INFO] Deleting /Users/baakarshan/Developer/products/ooad/RBAC/platform/target
+[INFO] 
+[INFO] ----------------------< cn.edu.upms:demo-client >-----------------------
+[INFO] Building demo-client 1.0.0                                         [3/4]
+[INFO]   from demo-client/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.4.1:clean (default-clean) @ demo-client ---
+[INFO] Deleting /Users/baakarshan/Developer/products/ooad/RBAC/demo-client/target
+[INFO] 
+[INFO] --------------------< cn.edu.upms:coverage-report >---------------------
+[INFO] Building coverage-report 1.0.0                                     [4/4]
+[INFO]   from coverage-report/pom.xml
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] 
+[INFO] --- clean:3.4.1:clean (default-clean) @ coverage-report ---
+[INFO] Deleting /Users/baakarshan/Developer/products/ooad/RBAC/coverage-report/target
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for upms 1.0.0:
+[INFO] 
+[INFO] upms ............................................... SUCCESS [  0.047 s]
+[INFO] platform ........................................... SUCCESS [  0.048 s]
+[INFO] demo-client ........................................ SUCCESS [  0.009 s]
+[INFO] coverage-report .................................... SUCCESS [  0.015 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  0.245 s
+[INFO] Finished at: 2026-10-24T20:52:27+08:00
+[INFO] ------------------------------------------------------------------------
+[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] upms                                                               [pom]
+[INFO] platform                                                           [jar]
+[INFO] demo-client                                                        [jar]
+[INFO] coverage-report                                                    [pom]
+[INFO] 
+[INFO] --------------------------< cn.edu.upms:upms >--------------------------
+[INFO] Building upms 1.0.0                                                [1/4]
+[INFO]   from pom.xml
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] 
+[INFO] --- spotless:2.44.3:check (default) @ upms ---
+[INFO] Index file does not exist. Fallback to an empty index
+[INFO] 
+[INFO] --- checkstyle:3.6.0:check (default) @ upms ---
+[INFO] 开始检查……
+检查完成。
+[INFO] You have 0 Checkstyle violations.
+[INFO] 
+[INFO] ------------------------< cn.edu.upms:platform >------------------------
+[INFO] Building platform 1.0.0                                            [2/4]
+[INFO]   from platform/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- spotless:2.44.3:check (default) @ platform ---
+[INFO] Index file does not exist. Fallback to an empty index
+[INFO] Spotless.Java is keeping 104 files clean - 0 needs changes to be clean, 104 were already clean, 0 were skipped because caching determined they were already clean
+[INFO] 
+[INFO] --- jacoco:0.8.13:prepare-agent (coverage-agent) @ platform ---
+[INFO] argLine set to -javaagent:/Users/baakarshan/.m2/repository/org/jacoco/org.jacoco.agent/0.8.13/org.jacoco.agent-0.8.13-runtime.jar=destfile=/Users/baakarshan/Developer/products/ooad/RBAC/platform/target/jacoco.exec
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ platform ---
+[INFO] Copying 2 resources from src/main/resources to target/classes
+[INFO] Copying 5 resources from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (default-compile) @ platform ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 78 source files with javac [debug parameters release 21] to target/classes
+[WARNING] /Users/baakarshan/Developer/products/ooad/RBAC/platform/src/main/java/cn/edu/upms/identity/internal/SecurityConfiguration.java:[291,70] org.springframework.security.web.util.matcher 中的 org.springframework.security.web.util.matcher.AntPathRequestMatcher 已过时, 且标记为待删除
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ platform ---
+[INFO] Copying 1 resource from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.14.1:testCompile (default-testCompile) @ platform ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 26 source files with javac [debug parameters release 21] to target/test-classes
+[INFO] /Users/baakarshan/Developer/products/ooad/RBAC/platform/src/test/java/cn/edu/upms/application/LoadInitializerTest.java: 某些输入文件使用了未经检查或不安全的操作。
+[INFO] /Users/baakarshan/Developer/products/ooad/RBAC/platform/src/test/java/cn/edu/upms/application/LoadInitializerTest.java: 有关详细信息, 请使用 -Xlint:unchecked 重新编译。
+[INFO] 
+[INFO] --- surefire:3.5.6:test (default-test) @ platform ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running cn.edu.upms.organization.internal.OrganizationImportServiceTest
+Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build as described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3
+WARNING: A Java agent has been loaded dynamically (/Users/baakarshan/.m2/repository/net/bytebuddy/byte-buddy-agent/1.17.8/byte-buddy-agent-1.17.8.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.731 s -- in cn.edu.upms.organization.internal.OrganizationImportServiceTest
+[INFO] Running cn.edu.upms.organization.internal.OrganizationServiceTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.277 s -- in cn.edu.upms.organization.internal.OrganizationServiceTest
+[INFO] Running cn.edu.upms.identity.internal.TokenLifetimeTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.582 s -- in cn.edu.upms.identity.internal.TokenLifetimeTest
+[INFO] Running cn.edu.upms.identity.internal.IdentityContractTest
+[INFO] Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.112 s -- in cn.edu.upms.identity.internal.IdentityContractTest
+[INFO] Running cn.edu.upms.identity.internal.ProtocolAdaptersTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.054 s -- in cn.edu.upms.identity.internal.ProtocolAdaptersTest
+[INFO] Running cn.edu.upms.identity.internal.OidcIntegrationTest
+20:52:34.566 [main] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [cn.edu.upms.identity.internal.OidcIntegrationTest]: OidcIntegrationTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+20:52:34.645 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration cn.edu.upms.UpmsApplication for test class cn.edu.upms.identity.internal.OidcIntegrationTest
+2026-10-24T20:52:36.165+08:00  WARN 90747 --- [upms-platform] [           main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: MySQL 8.4 is newer than this version of Flyway and support has not been tested. The latest supported version of MySQL is 8.1.
+2026-10-24T20:52:38.519+08:00  WARN 90747 --- [upms-platform] [           main] o.s.w.s.h.HandlerMappingIntrospector     : Cache miss for REQUEST dispatch to '/login' (previous null). Performing MatchableHandlerMapping lookup. This is logged once only at WARN level, and every time at TRACE.
+2026-10-24T20:52:39.051+08:00  WARN 90747 --- [upms-platform] [           main] 2AuthorizationCodeAuthenticationProvider : Invalidated authorization code used by registered client '3'
+2026-10-24T20:52:39.397+08:00  WARN 90747 --- [upms-platform] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 1146, SQLState: 42S02
+2026-10-24T20:52:39.398+08:00 ERROR 90747 --- [upms-platform] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : Table 'upms_test.audit_event' doesn't exist
+2026-10-24T20:52:39.413+08:00  WARN 90747 --- [upms-platform] [   scheduling-1] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 1146, SQLState: 42S02
+2026-10-24T20:52:39.414+08:00 ERROR 90747 --- [upms-platform] [   scheduling-1] o.h.engine.jdbc.spi.SqlExceptionHelper   : Table 'upms_test.audit_event' doesn't exist
+2026-10-24T20:52:47.725+08:00  WARN 90747 --- [upms-platform] [pool-3-thread-1] 2AuthorizationCodeAuthenticationProvider : Invalidated authorization token(s) previously issued to registered client '1'
+2026-10-24T20:52:47.731+08:00  WARN 90747 --- [upms-platform] [           main] 2AuthorizationCodeAuthenticationProvider : Invalidated authorization token(s) previously issued to registered client '1'
+[INFO] Tests run: 13, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 13.27 s -- in cn.edu.upms.identity.internal.OidcIntegrationTest
+[INFO] Running cn.edu.upms.identity.internal.ClientAndIntrospectionTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.041 s -- in cn.edu.upms.identity.internal.ClientAndIntrospectionTest
+[INFO] Running cn.edu.upms.identity.internal.ManagementWriteGateFilterTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.006 s -- in cn.edu.upms.identity.internal.ManagementWriteGateFilterTest
+[INFO] Running cn.edu.upms.identity.internal.ClientSecretVerifierTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.357 s -- in cn.edu.upms.identity.internal.ClientSecretVerifierTest
+[INFO] Running cn.edu.upms.identity.internal.UnifiedSessionsTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.023 s -- in cn.edu.upms.identity.internal.UnifiedSessionsTest
+[INFO] Running cn.edu.upms.integration.internal.IntegrationServiceTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.858 s -- in cn.edu.upms.integration.internal.IntegrationServiceTest
+[INFO] Running cn.edu.upms.catalog.internal.CatalogServiceTest
+[INFO] Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.076 s -- in cn.edu.upms.catalog.internal.CatalogServiceTest
+[INFO] Running cn.edu.upms.audit.internal.AuditServiceTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.038 s -- in cn.edu.upms.audit.internal.AuditServiceTest
+[INFO] Running cn.edu.upms.application.TeacherSourceReaderTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 10.13 s -- in cn.edu.upms.application.TeacherSourceReaderTest
+[INFO] Running cn.edu.upms.application.DemonstrationSelectionTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.162 s -- in cn.edu.upms.application.DemonstrationSelectionTest
+[INFO] Running cn.edu.upms.application.FoundationIntegrationTest
+2026-10-24T20:53:01.700+08:00  WARN 90747 --- [upms-platform] [           main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: MySQL 8.4 is newer than this version of Flyway and support has not been tested. The latest supported version of MySQL is 8.1.
+2026-10-24T20:53:02.165+08:00  WARN 90747 --- [upms-platform] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 1062, SQLState: 23000
+2026-10-24T20:53:02.165+08:00 ERROR 90747 --- [upms-platform] [           main] o.h.engine.jdbc.spi.SqlExceptionHelper   : Duplicate entry 'SG000001' for key 'employee.username'
+[INFO] Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.908 s -- in cn.edu.upms.application.FoundationIntegrationTest
+[INFO] Running cn.edu.upms.application.LoadInitializerTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.040 s -- in cn.edu.upms.application.LoadInitializerTest
+[INFO] Running cn.edu.upms.application.LifecycleAndFailureTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.007 s -- in cn.edu.upms.application.LifecycleAndFailureTest
+[INFO] Running cn.edu.upms.application.ControllerContractTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.206 s -- in cn.edu.upms.application.ControllerContractTest
+[INFO] Running cn.edu.upms.application.SeedIntegrationTest
+2026-10-24T20:53:02.813+08:00  WARN 90747 --- [upms-platform] [           main] o.f.c.internal.database.base.Database    : Flyway upgrade recommended: MySQL 8.4 is newer than this version of Flyway and support has not been tested. The latest supported version of MySQL is 8.1.
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 6.103 s -- in cn.edu.upms.application.SeedIntegrationTest
+[INFO] Running cn.edu.upms.authorization.internal.AuthorizationServiceTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.093 s -- in cn.edu.upms.authorization.internal.AuthorizationServiceTest
+[INFO] Running cn.edu.upms.authorization.internal.BatchServiceTest
+[INFO] Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.099 s -- in cn.edu.upms.authorization.internal.BatchServiceTest
+[INFO] Running cn.edu.upms.authorization.internal.EffectivePermissionRuleTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0 s -- in cn.edu.upms.authorization.internal.EffectivePermissionRuleTest
+[INFO] Running cn.edu.upms.authorization.internal.AuthorizationImportServiceTest
+[INFO] Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.055 s -- in cn.edu.upms.authorization.internal.AuthorizationImportServiceTest
+[INFO] Running cn.edu.upms.authorization.AssignmentConcurrencyTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.441 s -- in cn.edu.upms.authorization.AssignmentConcurrencyTest
+[INFO] Running cn.edu.upms.ModuleBoundaryTest
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.180 s -- in cn.edu.upms.ModuleBoundaryTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 83, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] 
+[INFO] --- jar:3.4.2:jar (default-jar) @ platform ---
+[INFO] Building jar: /Users/baakarshan/Developer/products/ooad/RBAC/platform/target/platform-1.0.0.jar
+[INFO] 
+[INFO] --- spring-boot:3.5.16:repackage (repackage) @ platform ---
+[INFO] Replacing main artifact /Users/baakarshan/Developer/products/ooad/RBAC/platform/target/platform-1.0.0.jar with repackaged archive, adding nested dependencies in BOOT-INF/.
+[INFO] The original artifact has been renamed to /Users/baakarshan/Developer/products/ooad/RBAC/platform/target/platform-1.0.0.jar.original
+[INFO] 
+[INFO] --- checkstyle:3.6.0:check (default) @ platform ---
+[INFO] 开始检查……
+检查完成。
+[INFO] You have 0 Checkstyle violations.
+[INFO] 
+[INFO] --- jacoco:0.8.13:report (coverage-report) @ platform ---
+[INFO] Loading execution data file /Users/baakarshan/Developer/products/ooad/RBAC/platform/target/jacoco.exec
+[INFO] Analyzed bundle 'platform' with 102 classes
+[INFO] 
+[INFO] --- jacoco:0.8.13:check (coverage-gate) @ platform ---
+[INFO] Loading execution data file /Users/baakarshan/Developer/products/ooad/RBAC/platform/target/jacoco.exec
+[INFO] Analyzed bundle 'platform' with 102 classes
+[INFO] All coverage checks have been met.
+[INFO] 
+[INFO] ----------------------< cn.edu.upms:demo-client >-----------------------
+[INFO] Building demo-client 1.0.0                                         [3/4]
+[INFO]   from demo-client/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- spotless:2.44.3:check (default) @ demo-client ---
+[INFO] Index file does not exist. Fallback to an empty index
+[INFO] Spotless.Java is keeping 5 files clean - 0 needs changes to be clean, 5 were already clean, 0 were skipped because caching determined they were already clean
+[INFO] 
+[INFO] --- jacoco:0.8.13:prepare-agent (coverage-agent) @ demo-client ---
+[INFO] argLine set to -javaagent:/Users/baakarshan/.m2/repository/org/jacoco/org.jacoco.agent/0.8.13/org.jacoco.agent-0.8.13-runtime.jar=destfile=/Users/baakarshan/Developer/products/ooad/RBAC/demo-client/target/jacoco.exec
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ demo-client ---
+[INFO] Copying 2 resources from src/main/resources to target/classes
+[INFO] Copying 1 resource from src/main/resources to target/classes
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (default-compile) @ demo-client ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 3 source files with javac [debug parameters release 21] to target/classes
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ demo-client ---
+[INFO] skip non existing resourceDirectory /Users/baakarshan/Developer/products/ooad/RBAC/demo-client/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.14.1:testCompile (default-testCompile) @ demo-client ---
+[INFO] Recompiling the module because of changed dependency.
+[INFO] Compiling 2 source files with javac [debug parameters release 21] to target/test-classes
+[INFO] 
+[INFO] --- surefire:3.5.6:test (default-test) @ demo-client ---
+[INFO] Using auto detected provider org.apache.maven.surefire.junitplatform.JUnitPlatformProvider
+[INFO] 
+[INFO] -------------------------------------------------------
+[INFO]  T E S T S
+[INFO] -------------------------------------------------------
+[INFO] Running cn.edu.upms.demo.DemoSecurityTest
+20:53:16.615 [main] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration cn.edu.upms.demo.DemoApplication for test class cn.edu.upms.demo.DemoSecurityTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::               (v3.5.16)
+
+2026-10-24T20:53:16.959+08:00  INFO 91282 --- [oa-demo] [           main] cn.edu.upms.demo.DemoSecurityTest        : Starting DemoSecurityTest using Java 21.0.11 with PID 91282 (started by baakarshan in /Users/baakarshan/Developer/products/ooad/RBAC/demo-client)
+2026-10-24T20:53:16.960+08:00  INFO 91282 --- [oa-demo] [           main] cn.edu.upms.demo.DemoSecurityTest        : No active profile set, falling back to 1 default profile: "default"
+2026-10-24T20:53:17.784+08:00  INFO 91282 --- [oa-demo] [           main] o.s.b.t.m.w.SpringBootMockServletContext : Initializing Spring TestDispatcherServlet ''
+2026-10-24T20:53:17.784+08:00  INFO 91282 --- [oa-demo] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Initializing Servlet ''
+2026-10-24T20:53:17.785+08:00  INFO 91282 --- [oa-demo] [           main] o.s.t.web.servlet.TestDispatcherServlet  : Completed initialization in 0 ms
+2026-10-24T20:53:17.799+08:00  INFO 91282 --- [oa-demo] [           main] cn.edu.upms.demo.DemoSecurityTest        : Started DemoSecurityTest in 1.077 seconds (process running for 1.838)
+Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build as described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3
+WARNING: A Java agent has been loaded dynamically (/Users/baakarshan/.m2/repository/net/bytebuddy/byte-buddy-agent/1.17.8/byte-buddy-agent-1.17.8.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+[INFO] Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 2.243 s -- in cn.edu.upms.demo.DemoSecurityTest
+[INFO] Running cn.edu.upms.demo.BusinessBoundaryTest
+[INFO] Tests run: 4, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 1.854 s -- in cn.edu.upms.demo.BusinessBoundaryTest
+[INFO] 
+[INFO] Results:
+[INFO] 
+[INFO] Tests run: 6, Failures: 0, Errors: 0, Skipped: 0
+[INFO] 
+[INFO] 
+[INFO] --- jar:3.4.2:jar (default-jar) @ demo-client ---
+[INFO] Building jar: /Users/baakarshan/Developer/products/ooad/RBAC/demo-client/target/demo-client-1.0.0.jar
+[INFO] 
+[INFO] --- spring-boot:3.5.16:repackage (repackage) @ demo-client ---
+[INFO] Replacing main artifact /Users/baakarshan/Developer/products/ooad/RBAC/demo-client/target/demo-client-1.0.0.jar with repackaged archive, adding nested dependencies in BOOT-INF/.
+[INFO] The original artifact has been renamed to /Users/baakarshan/Developer/products/ooad/RBAC/demo-client/target/demo-client-1.0.0.jar.original
+[INFO] 
+[INFO] --- checkstyle:3.6.0:check (default) @ demo-client ---
+[INFO] 开始检查……
+检查完成。
+[INFO] You have 0 Checkstyle violations.
+[INFO] 
+[INFO] --- jacoco:0.8.13:report (coverage-report) @ demo-client ---
+[INFO] Loading execution data file /Users/baakarshan/Developer/products/ooad/RBAC/demo-client/target/jacoco.exec
+[INFO] Analyzed bundle 'demo-client' with 5 classes
+[INFO] 
+[INFO] --- jacoco:0.8.13:check (coverage-gate) @ demo-client ---
+[INFO] Loading execution data file /Users/baakarshan/Developer/products/ooad/RBAC/demo-client/target/jacoco.exec
+[INFO] Analyzed bundle 'demo-client' with 5 classes
+[INFO] All coverage checks have been met.
+[INFO] 
+[INFO] --------------------< cn.edu.upms:coverage-report >---------------------
+[INFO] Building coverage-report 1.0.0                                     [4/4]
+[INFO]   from coverage-report/pom.xml
+[INFO] --------------------------------[ pom ]---------------------------------
+[INFO] 
+[INFO] --- spotless:2.44.3:check (default) @ coverage-report ---
+[INFO] Index file does not exist. Fallback to an empty index
+[INFO] 
+[INFO] --- checkstyle:3.6.0:check (default) @ coverage-report ---
+[INFO] 开始检查……
+检查完成。
+[INFO] You have 0 Checkstyle violations.
+[INFO] 
+[INFO] --- jacoco:0.8.13:report-aggregate (aggregate) @ coverage-report ---
+[INFO] Loading execution data file /Users/baakarshan/Developer/products/ooad/RBAC/platform/target/jacoco.exec
+[INFO] Loading execution data file /Users/baakarshan/Developer/products/ooad/RBAC/demo-client/target/jacoco.exec
+[INFO] Analyzed bundle 'platform' with 102 classes
+[INFO] Analyzed bundle 'demo-client' with 5 classes
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for upms 1.0.0:
+[INFO] 
+[INFO] upms ............................................... SUCCESS [  0.683 s]
+[INFO] platform ........................................... SUCCESS [ 45.954 s]
+[INFO] demo-client ........................................ SUCCESS [  5.461 s]
+[INFO] coverage-report .................................... SUCCESS [  0.165 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  52.398 s
+[INFO] Finished at: 2026-10-24T20:53:21+08:00
+[INFO] ------------------------------------------------------------------------
+platform: LINE=100.0% (未覆盖 0), BRANCH=100.0% (未覆盖 0)
+demo-client: LINE=100.0% (未覆盖 0), BRANCH=100.0% (未覆盖 0)
+覆盖率验收通过
