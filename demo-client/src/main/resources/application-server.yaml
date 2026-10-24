@@ -1,0 +1,12 @@
+# 仅接受可信反向代理流量，代理覆盖外部提供的转发头。
+server:
+  address: 0.0.0.0
+  forward-headers-strategy: framework
+  servlet:
+    session:
+      cookie:
+        secure: true
+
+demo:
+  oa-url: https://113.44.144.119:8443
+  knowledge-url: https://113.44.144.119:9443

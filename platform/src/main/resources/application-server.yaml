@@ -1,0 +1,21 @@
+# 服务器配置与本机配置分开；敏感值由部署目录中的私有环境文件提供。
+server:
+  address: 0.0.0.0
+  forward-headers-strategy: framework
+  servlet:
+    session:
+      cookie:
+        secure: true
+spring:
+  datasource:
+    url: ${UPMS_JDBC_URL}
+    hikari:
+      maximum-pool-size: 8
+      minimum-idle: 2
+upms:
+  issuer: ${UPMS_ISSUER}
+  source-directory: /app/source
+  demo-oa-url: ${UPMS_DEMO_OA_URL}
+  demo-knowledge-url: ${UPMS_DEMO_KNOWLEDGE_URL}
+  bootstrap-client-suffix: ${UPMS_BOOTSTRAP_CLIENT_SUFFIX}
+  bootstrap-directory-suffix: ${UPMS_BOOTSTRAP_DIRECTORY_SUFFIX}
