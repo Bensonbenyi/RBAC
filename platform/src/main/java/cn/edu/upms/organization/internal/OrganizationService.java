@@ -64,9 +64,11 @@ public class OrganizationService implements OrganizationApi {
     if (!actor.active || !(actor.superAdmin || actor.departmentAdmin)) {
       throw BusinessException.forbidden();
     }
-    if (!actor.superAdmin
-        && (actor.departmentId == null || !activeDepartment(actor.departmentId).active())) {
-      throw BusinessException.forbidden();
+    if (!actor.superAdmin) {
+      if (actor.departmentId == null) {
+        throw BusinessException.forbidden();
+      }
+      activeDepartment(actor.departmentId);
     }
     return view(actor);
   }
@@ -204,7 +206,6 @@ public class OrganizationService implements OrganizationApi {
   @Transactional(isolation = Isolation.READ_COMMITTED)
   public OrganizationApi.Employee saveEmployee(long actorId, EmployeeChange change) {
     lockManagement(actorId);
-    final var actor = administrator(actorId);
     requireDepartmentScope(actorId, change.departmentId());
     EmployeeEntity entity = change.id() == null ? new EmployeeEntity() : lockRecord(change.id());
     if (change.id() != null) {
@@ -225,9 +226,6 @@ public class OrganizationService implements OrganizationApi {
         && !Objects.equals(
             activeDepartment(change.departmentId()).companyId(), change.companyId())) {
       throw BusinessException.conflict("公司与部门不匹配");
-    }
-    if (change.departmentId() == null && !actor.superAdmin()) {
-      throw BusinessException.forbidden();
     }
     entity.username = required(change.username());
     entity.name = required(change.name());

@@ -27,6 +27,30 @@ import org.springframework.transaction.annotation.Transactional;
     })
 @Transactional
 class FoundationIntegrationTest {
+  @Test
+  @DisplayName("后台筛选在 SQL 中执行，审计时间与结果筛选不扩展管理范围")
+  void queryPredicates() {
+    assertThat(organization.employees(1, "SG000011", 1L, 0, 10).items()).hasSize(1);
+    assertThat(organization.employees(11, " ", 1L, 0, 10).items()).isNotEmpty();
+    var from = java.time.Instant.now().minusSeconds(1);
+    audit.record(
+        new AuditApi.Event(1L, 1L, null, 1L, "FILTER_EVENT", "employee:11", "SUCCESS", "筛选验证"));
+    assertThat(
+            audit
+                .query(
+                    1L,
+                    "FILTER_EVENT",
+                    "SUCCESS",
+                    "employee:11",
+                    from,
+                    java.time.Instant.now().plusSeconds(1),
+                    0,
+                    10)
+                .items())
+        .hasSize(1);
+    assertThat(audit.query(null, " ", " ", " ", null, null, 0, 10).items()).isNotEmpty();
+  }
+
   @Autowired private OrganizationApi organization;
   @Autowired private OrganizationImportApi importer;
   @Autowired private IntegrationApi integration;
