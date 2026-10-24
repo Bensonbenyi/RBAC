@@ -1,0 +1,33 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -----------------------< cn.edu.upms:load-test >------------------------
+[INFO] Building load-test 1.0.0
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] --- spotless:2.44.3:check (default) @ load-test ---
+[INFO] Spotless.Java is keeping 6 files clean - 0 needs changes to be clean, 0 were already clean, 6 were skipped because caching determined they were already clean
+[INFO] 
+[INFO] --- resources:3.3.1:resources (default-resources) @ load-test ---
+[INFO] skip non existing resourceDirectory /Users/baakarshan/Developer/products/ooad/RBAC/load-test/src/main/resources
+[INFO] skip non existing resourceDirectory /Users/baakarshan/Developer/products/ooad/RBAC/load-test/src/main/resources
+[INFO] 
+[INFO] --- compiler:3.14.1:compile (default-compile) @ load-test ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- resources:3.3.1:testResources (default-testResources) @ load-test ---
+[INFO] Copying 1 resource from src/test/resources to target/test-classes
+[INFO] 
+[INFO] --- compiler:3.14.1:testCompile (default-testCompile) @ load-test ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- checkstyle:3.6.0:check (default-cli) @ load-test ---
+[INFO] 开始检查……
+检查完成。
+[INFO] You have 0 Checkstyle violations.
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  1.127 s
+[INFO] Finished at: 2026-10-24T21:34:50+08:00
+[INFO] ------------------------------------------------------------------------

@@ -1,0 +1,55 @@
+[INFO] Scanning for projects...
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Build Order:
+[INFO] 
+[INFO] platform                                                           [jar]
+[INFO] demo-client                                                        [jar]
+[INFO] 
+[INFO] ------------------------< cn.edu.upms:platform >------------------------
+[INFO] Building platform 1.0.0                                            [1/2]
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> javadoc:3.11.3:javadoc (default-cli) > generate-sources @ platform >>>
+[INFO] 
+[INFO] --- spotless:2.44.3:check (default) @ platform ---
+[INFO] Spotless.Java is keeping 107 files clean - 0 needs changes to be clean, 0 were already clean, 107 were skipped because caching determined they were already clean
+[INFO] 
+[INFO] --- jacoco:0.8.13:prepare-agent (coverage-agent) @ platform ---
+[INFO] argLine set to -javaagent:/Users/baakarshan/.m2/repository/org/jacoco/org.jacoco.agent/0.8.13/org.jacoco.agent-0.8.13-runtime.jar=destfile=/Users/baakarshan/Developer/products/ooad/RBAC/platform/target/jacoco.exec
+[INFO] 
+[INFO] <<< javadoc:3.11.3:javadoc (default-cli) < generate-sources @ platform <<<
+[INFO] 
+[INFO] 
+[INFO] --- javadoc:3.11.3:javadoc (default-cli) @ platform ---
+[WARNING] Javadoc 1.4+ doesn't support the -1.1 switch anymore. Ignore this option.
+[INFO] 
+[INFO] ----------------------< cn.edu.upms:demo-client >-----------------------
+[INFO] Building demo-client 1.0.0                                         [2/2]
+[INFO]   from /Users/baakarshan/Developer/products/ooad/RBAC/demo-client/pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> javadoc:3.11.3:javadoc (default-cli) > generate-sources @ demo-client >>>
+[INFO] 
+[INFO] --- spotless:2.44.3:check (default) @ demo-client ---
+[INFO] Spotless.Java is keeping 6 files clean - 0 needs changes to be clean, 0 were already clean, 6 were skipped because caching determined they were already clean
+[INFO] 
+[INFO] --- jacoco:0.8.13:prepare-agent (coverage-agent) @ demo-client ---
+[INFO] argLine set to -javaagent:/Users/baakarshan/.m2/repository/org/jacoco/org.jacoco.agent/0.8.13/org.jacoco.agent-0.8.13-runtime.jar=destfile=/Users/baakarshan/Developer/products/ooad/RBAC/demo-client/target/jacoco.exec
+[INFO] 
+[INFO] <<< javadoc:3.11.3:javadoc (default-cli) < generate-sources @ demo-client <<<
+[INFO] 
+[INFO] 
+[INFO] --- javadoc:3.11.3:javadoc (default-cli) @ demo-client ---
+[WARNING] Javadoc 1.4+ doesn't support the -1.1 switch anymore. Ignore this option.
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for platform 1.0.0:
+[INFO] 
+[INFO] platform ........................................... SUCCESS [  1.595 s]
+[INFO] demo-client ........................................ SUCCESS [  0.581 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.319 s
+[INFO] Finished at: 2026-10-24T21:34:42+08:00
+[INFO] ------------------------------------------------------------------------

@@ -1,0 +1,51 @@
+{
+  "checkedAt": "2026-10-24T13:37:25.156808+00:00",
+  "testedSourceTreeCommit": "3442269d894315a2b7428b1787253c0803bd1142",
+  "commentOnlyComparedWith": "ade5dabb402d5fb4edde52a272a36ec485606b5d",
+  "changedJavaFiles": 79,
+  "newPackageDocumentationFiles": 4,
+  "nonCommentJavaTokensUnchanged": true,
+  "committedJavaMatchesTestedSources": true,
+  "coverageMetadataNote": "coverage-verification.json 保留测试启动时的旧 HEAD 与未提交差异摘要；本文件用源码摘要确认测试后的提交与所测源码一致。",
+  "checks": {
+    "googleJavaFormat": "1.25.2，Spotless 检查通过",
+    "checkstyle": "3.6.0，零违规",
+    "javadoc": "3.11.3，doclint=all,-missing 通过；未要求补齐全部普通存取方法的标签",
+    "realMySqlAndArchitectureTests": "通过",
+    "loadTestCompileAndStyle": "通过；本轮不运行性能负载"
+  },
+  "modules": {
+    "platform": {
+      "tests": 83,
+      "line": {
+        "missed": 0,
+        "covered": 2085,
+        "percent": 100.0
+      },
+      "branch": {
+        "missed": 0,
+        "covered": 893,
+        "percent": 100.0
+      }
+    },
+    "demo-client": {
+      "tests": 6,
+      "line": {
+        "missed": 0,
+        "covered": 85,
+        "percent": 100.0
+      },
+      "branch": {
+        "missed": 0,
+        "covered": 30,
+        "percent": 100.0
+      }
+    }
+  },
+  "commands": [
+    "./mvnw -B -pl platform,demo-client,load-test spotless:check",
+    "bash scripts/coverage.sh",
+    "./mvnw -B -pl platform,demo-client javadoc:javadoc -Ddoclint=all,-missing",
+    "./mvnw -B -pl load-test test-compile checkstyle:check"
+  ]
+}
