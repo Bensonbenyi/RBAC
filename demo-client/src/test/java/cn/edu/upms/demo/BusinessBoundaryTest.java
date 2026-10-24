@@ -22,6 +22,50 @@ import org.springframework.ui.ExtendedModelMap;
 /** 模拟系统通过真实 HTTP 调用边界，检查故障时不写入业务数据及本人范围由本系统执行. */
 class BusinessBoundaryTest {
   @Test
+  @DisplayName("ACC-F-012 写入检查长度，读取区分本人范围，空结果和业务拒绝均关闭操作")
+  void decisionsAndInputBoundaries() throws Exception {
+    for (String json : List.of("{\"allowed\":false,\"reason\":\"NO_ROLE\"}", "")) {
+      var denied = server(200, json, 0);
+      try {
+        var controller = controller(denied.getAddress().getPort());
+        var model = new ExtendedModelMap();
+        controller.read(user(), client(), model);
+        assertThat(model.get("documents")).isNull();
+        controller.own(user(), client(), 1, model);
+        assertThat(model.get("message").toString()).contains("权限拒绝");
+      } finally {
+        denied.stop(0);
+      }
+    }
+    var allowed = server(200, "{\"allowed\":true,\"reason\":\"ALLOW\"}", 0);
+    try {
+      var controller = controller(allowed.getAddress().getPort());
+      var model = new ExtendedModelMap();
+      for (String name : new String[] {null, " ", "长".repeat(121)}) {
+        controller.write(user(), client(), name, model);
+        assertThat(model.get("message")).isEqualTo("标题须为 1 至 120 字符");
+      }
+      controller.write(user(), client(), " 新记录 ", model);
+      controller.read(user(), client(), model);
+      assertThat((List<?>) model.get("documents")).hasSize(3);
+      assertThat(model.get("message")).isEqualTo("已允许查看业务记录");
+      var ownOnly =
+          new BusinessController(
+              "oa",
+              "本人读取",
+              "查看本人",
+              "新增",
+              "本人",
+              "http://127.0.0.1:" + allowed.getAddress().getPort());
+      ownOnly.read(user(), client(), model);
+      assertThat((List<?>) model.get("documents")).hasSize(1);
+      assertThat(model.get("message")).isEqualTo("已允许；业务系统只显示本人记录");
+    } finally {
+      allowed.stop(0);
+    }
+  }
+
+  @Test
   @DisplayName("ACC-F-016 断开鉴权服务时拒绝写入，恢复后重新判断")
   void unavailableDoesNotWrite() throws Exception {
     var server = server(200, "{\"allowed\":false,\"reason\":\"NO_ROLE\"}", 0);

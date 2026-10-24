@@ -26,6 +26,13 @@ public class BusinessController {
 
   private record Decision(boolean allowed, String reason) {}
 
+  @Value("${demo.oa-url:http://localhost:18081}")
+  private String oaUrl = "http://localhost:18081";
+
+  @Value("${demo.knowledge-url:http://localhost:18082}")
+  private String knowledgeUrl = "http://localhost:18082";
+
+  private final String platformUrl;
   private final String system;
   private final String title;
   private final String readPermission;
@@ -43,6 +50,7 @@ public class BusinessController {
       @Value("${demo.permission-write}") String writePermission,
       @Value("${demo.permission-own}") String ownPermission,
       @Value("${demo.platform}") String url) {
+    this.platformUrl = url;
     this.system = system;
     this.title = title;
     this.readPermission = readPermission;
@@ -60,6 +68,9 @@ public class BusinessController {
   /** 登录页只展示身份，每次受控操作都会另行实时判断权限. */
   @GetMapping("/")
   public String home(@AuthenticationPrincipal OidcUser user, Model model) {
+    model.addAttribute("oaUrl", oaUrl);
+    model.addAttribute("knowledgeUrl", knowledgeUrl);
+    model.addAttribute("platformUrl", platformUrl);
     model.addAttribute("title", title);
     model.addAttribute("system", system);
     model.addAttribute("user", user);
