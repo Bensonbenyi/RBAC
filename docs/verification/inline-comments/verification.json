@@ -1,0 +1,90 @@
+{
+  "checkedAt": "2026-10-24T13:56:07.249228+00:00",
+  "testedSourceTreeCommit": "2eed1183eb29c5c5cb5f4ebb419ad79040c54b4c",
+  "commentOnlyComparedWith": "ff80e0db83043f65e244a5cb0955b925064948bb",
+  "changedJavaFiles": 30,
+  "reviewedLongMethods": 49,
+  "longMethodDefinition": "方法体至少 20 个非空且非整行注释的物理行；含构造器及匿名类方法。",
+  "allLongMethodsHaveAdditionalBodyComments": true,
+  "scope": "补充方法体内部中文步骤、分支、数据转换、锁与事务说明；保留上一轮 Javadoc。",
+  "nonCommentJavaTokensUnchanged": true,
+  "committedJavaMatchesTestedSources": true,
+  "coverageStartedAt": "2026-10-24T13:54:25Z",
+  "coverageMetadataSourceCommit": "ff80e0db83043f65e244a5cb0955b925064948bb",
+  "coverageSourceDiffSha256": "06fffc8839e7ef1c9f315a555a517e4a7de726ab2ba3bf8d921969193038389e",
+  "coverageMetadataNote": "覆盖率启动时 HEAD 为上一轮提交；本记录以源码 SHA-256 核对四次注释提交与实际测试源码一致。",
+  "jacocoVersion": "0.8.13",
+  "checks": {
+    "googleJavaFormat": "Spotless 检查通过",
+    "checkstyle": "platform、demo-client、load-test 零违规",
+    "realMySqlAndArchitectureTests": "通过",
+    "loadTestCompile": "通过",
+    "performanceLoad": "本轮仅编译，不重复运行正式压测"
+  },
+  "modules": {
+    "platform": {
+      "tests": 83,
+      "line": {
+        "missed": 0,
+        "covered": 2085,
+        "percent": 100.0
+      },
+      "branch": {
+        "missed": 0,
+        "covered": 893,
+        "percent": 100.0
+      }
+    },
+    "demo-client": {
+      "tests": 6,
+      "line": {
+        "missed": 0,
+        "covered": 85,
+        "percent": 100.0
+      },
+      "branch": {
+        "missed": 0,
+        "covered": 30,
+        "percent": 100.0
+      }
+    }
+  },
+  "commands": [
+    "python3 .runtime/inline-review/check-tokens.py",
+    "bash scripts/coverage.sh",
+    "./mvnw -B -pl load-test test-compile checkstyle:check",
+    "./mvnw -B -pl platform,demo-client,load-test spotless:check"
+  ],
+  "sourceSha256": {
+    "platform/src/main/java/cn/edu/upms/application/AdminController.java": "6798c7f41fe4e43018012c89f4b2350a040105991632af094fbdb498816ee338",
+    "platform/src/main/java/cn/edu/upms/application/BaselineInitializer.java": "dcf78543e74014acc17a507b9b214cbe374a868081a79d6d1de081ab6fdc3edc",
+    "platform/src/main/java/cn/edu/upms/application/DemonstrationInitializer.java": "7891a178e9a3c954581180d489e3f772f11dcb8dcbeec34ecc9071dac1853395",
+    "platform/src/main/java/cn/edu/upms/application/DemonstrationPermissionInitializer.java": "cb00fc400ee548918bdeeba14cbca7708491560846cc0e5ec2574ef92220c7a5",
+    "platform/src/main/java/cn/edu/upms/application/EmployeeLifecycle.java": "57912efc98c0ac5e9c60c68b80088fc01fea431f154bf6e7fd5a9ca78c2dfa8a",
+    "platform/src/main/java/cn/edu/upms/application/LoadInitializer.java": "39e62588600163abe0042f5fbe5ed722eb1c22c030814cb82b5a583838e8fa23",
+    "platform/src/main/java/cn/edu/upms/application/RuntimeController.java": "4f7784a5afd13cfe41730a37a165f58e299f36f08ead54483cd6cb08bb7a6d93",
+    "platform/src/main/java/cn/edu/upms/application/TeacherSourceReader.java": "ea3cc5655abed3d7fe528e9552df447f0869f1c21d65f63fd025cbb52f605f4e",
+    "platform/src/main/java/cn/edu/upms/audit/internal/AuditService.java": "802f9d21a8a6a187e0233502f25962b6a65b76eb58e6209de44d4bd94254c685",
+    "platform/src/main/java/cn/edu/upms/authorization/internal/AuthorizationService.java": "b5e796d76b9d9e07c74e49603c72061b8e6d32c72d285fc904f4f8d16f6f6bc6",
+    "platform/src/main/java/cn/edu/upms/authorization/internal/BatchService.java": "e46d7be1ef4bae988ea75278e7858c9ffb48dd19e4fc6e8c8eb38e9062e5d19e",
+    "platform/src/main/java/cn/edu/upms/catalog/internal/CatalogImportService.java": "36726f9e418845d4253a9b7c9ec6295dffbddffdd080d6f8e24ce9440410578e",
+    "platform/src/main/java/cn/edu/upms/catalog/internal/CatalogService.java": "eecde036ffbe998fba1b23ed3bae01fabbe95809478f2093bc884b17cdcb3f3f",
+    "platform/src/main/java/cn/edu/upms/identity/internal/AuthorizationStore.java": "e889917f3353298fb76e12a6cea915e375689366c8de21c28fe5a9bc4f20872e",
+    "platform/src/main/java/cn/edu/upms/identity/internal/DemoAuthenticationProvider.java": "cffdf22b416929c3565a20ec1767db497e7fac50404313183bb177e26a67ebeb",
+    "platform/src/main/java/cn/edu/upms/identity/internal/IdentityService.java": "074bf5ada66d8a3b694c5a4f73ddc775626a65d9bbbcf91d5681150143eb7db5",
+    "platform/src/main/java/cn/edu/upms/identity/internal/ManagementWriteGateFilter.java": "dd4e8d6160770bff5440273c3672050398eeb7371289fbf969b6be51aedadf47",
+    "platform/src/main/java/cn/edu/upms/identity/internal/SecurityConfiguration.java": "5ebd41997c40cfe3bfd6a98ae4fe8a04afa9d90f3458b99bf31c2f888339d4a1",
+    "platform/src/main/java/cn/edu/upms/identity/internal/SystemClientRepository.java": "17478ba6913a9dd7c88587d904133f26442522b17133b13c7ca928ea09b8eb8b",
+    "platform/src/main/java/cn/edu/upms/identity/internal/UserInfoIntrospector.java": "a8a837a996542f01dfc08ad888a8adae5e5d0f37ada81c1366c83bce7018d809",
+    "platform/src/main/java/cn/edu/upms/integration/internal/IntegrationImportService.java": "949abb9c22978ed0b428173507710ac19e3a436d4106717feaf2322abb29be52",
+    "platform/src/main/java/cn/edu/upms/integration/internal/IntegrationService.java": "b0a5f251825685b4e4f036b23d366ef56aba5f6db44c0581b613883cbd658560",
+    "platform/src/main/java/cn/edu/upms/organization/internal/OrganizationImportService.java": "a9ffa82cca1300276655c4815b8a8430e95b9a166412114c6f6db8fe93224e70",
+    "platform/src/main/java/cn/edu/upms/organization/internal/OrganizationService.java": "72c9ac1d6b0c2b0cb97d2ef4fc01bb411473730423097d2946c8b17cbdba2f6d",
+    "demo-client/src/main/java/cn/edu/upms/demo/BusinessController.java": "d06754162dc8b0f9dc4f1bc775f0bed1d2604e7881b4ba1637d5808e67a51ebe",
+    "demo-client/src/main/java/cn/edu/upms/demo/DemoSecurity.java": "3d657c6a5bf930f04b0ff9e9cd72aecf551bd8bb0fef0aaba5fde45bcf56e496",
+    "load-test/src/test/java/cn/edu/upms/load/AdminSimulation.java": "79b0972186cfe4edb3a12d7fa12026d4bfc8249228ff7b93daddf74c90617582",
+    "load-test/src/test/java/cn/edu/upms/load/LoadSupport.java": "a418b1470f5fe1f4e106f8adfd838b6b44e2387d3250965df44c0a3fb2561708",
+    "load-test/src/test/java/cn/edu/upms/load/LoginSimulation.java": "2f978be24f2e1937910628c875e4bef53d79f51fdc7a511626a37c4b9f9c13b1",
+    "load-test/src/test/java/cn/edu/upms/load/MixedSimulation.java": "bcd37616f181947fe87658a48c9ea83827efdf93426ddf9deee6c254d3a192c5"
+  }
+}
