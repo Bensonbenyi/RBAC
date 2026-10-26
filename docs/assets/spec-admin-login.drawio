@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="Electron" version="32.4.1" type="device">
+  <diagram id="spec-admin-login" name="场景流程">
+    <mxGraphModel dx="1000" dy="600" grid="0" page="1" pageScale="1" pageWidth="1000" pageHeight="600" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="title" value="管理员登录与后台范围复核" style="text;html=0;align=center;verticalAlign=middle;fontFamily=PingFang SC,Microsoft YaHei,Noto Sans CJK SC,system-ui,sans-serif;fontSize=18;fontColor=#1e293b;" vertex="1" parent="1">
+          <mxGeometry x="25" y="20" width="950" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="note" value="箭头为运行请求；“通过”和“拒绝”是互斥结果。" style="text;html=0;align=center;verticalAlign=middle;fontFamily=PingFang SC,Microsoft YaHei,Noto Sans CJK SC,system-ui,sans-serif;fontSize=18;fontColor=#1e293b;" vertex="1" parent="1">
+          <mxGeometry x="25" y="540" width="950" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="s0" value="管理员浏览器&#10;GET /login；POST /login" style="rounded=1;arcSize=12;html=0;whiteSpace=wrap;fillColor=#dbeafe;strokeColor=#3b82f6;strokeWidth=1.4;fontColor=#1e293b;fontFamily=PingFang SC,Microsoft YaHei,Noto Sans CJK SC,system-ui,sans-serif;fontSize=16;spacing=8;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="35" y="100" width="250" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s1" value="Spring Security&#10;匹配用户名、手机号及员工状态" style="rounded=1;arcSize=12;html=0;whiteSpace=wrap;fillColor=#fef3c7;strokeColor=#f59e0b;strokeWidth=1.4;fontColor=#1e293b;fontFamily=PingFang SC,Microsoft YaHei,Noto Sans CJK SC,system-ui,sans-serif;fontSize=16;spacing=8;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="365" y="100" width="270" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s2" value="后台请求 GET /api/admin/me&#10;AdminController.me 读取可信身份" style="rounded=1;arcSize=12;html=0;whiteSpace=wrap;fillColor=#dbeafe;strokeColor=#3b82f6;strokeWidth=1.4;fontColor=#1e293b;fontFamily=PingFang SC,Microsoft YaHei,Noto Sans CJK SC,system-ui,sans-serif;fontSize=16;spacing=8;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="715" y="100" width="250" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s3" value="OrganizationApi.administrator&#10;重验员工与管理员资格" style="rounded=1;arcSize=12;html=0;whiteSpace=wrap;fillColor=#fef3c7;strokeColor=#f59e0b;strokeWidth=1.4;fontColor=#1e293b;fontFamily=PingFang SC,Microsoft YaHei,Noto Sans CJK SC,system-ui,sans-serif;fontSize=16;spacing=8;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="715" y="255" width="250" height="90" as="geometry" />
+        </mxCell>
+        <mxCell id="s4" value="后台显示管理入口&#10;按最高或部门管理员范围操作" style="rounded=1;arcSize=12;html=0;whiteSpace=wrap;fillColor=#d1fae5;strokeColor=#22c55e;strokeWidth=1.4;fontColor=#1e293b;fontFamily=PingFang SC,Microsoft YaHei,Noto Sans CJK SC,system-ui,sans-serif;fontSize=16;spacing=8;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="715" y="420" width="250" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s5" value="后台访问拒绝&#10;普通员工或管理员身份已取消" style="rounded=1;arcSize=12;html=0;whiteSpace=wrap;fillColor=#fce7f3;strokeColor=#ec4899;strokeWidth=1.4;fontColor=#1e293b;fontFamily=PingFang SC,Microsoft YaHei,Noto Sans CJK SC,system-ui,sans-serif;fontSize=16;spacing=8;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="365" y="260" width="270" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="s6" value="认证拒绝或技术故障&#10;不建立成功登录状态" style="rounded=1;arcSize=12;html=0;whiteSpace=wrap;fillColor=#fce7f3;strokeColor=#ec4899;strokeWidth=1.4;fontColor=#1e293b;fontFamily=PingFang SC,Microsoft YaHei,Noto Sans CJK SC,system-ui,sans-serif;fontSize=16;spacing=8;align=center;verticalAlign=middle;" vertex="1" parent="1">
+          <mxGeometry x="35" y="260" width="250" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="e0" value="" style="edgeStyle=none;curved=1;html=0;strokeColor=#64748b;strokeWidth=1.4;endArrow=classic;endFill=1;fontFamily=PingFang SC,Microsoft YaHei,Noto Sans CJK SC,system-ui,sans-serif;fontSize=14;fontColor=#475569;labelBackgroundColor=#ffffff;sourcePerimeterSpacing=5;targetPerimeterSpacing=8;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="s0" target="s1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" value="通过" style="edgeStyle=none;curved=1;html=0;strokeColor=#64748b;strokeWidth=1.4;endArrow=classic;endFill=1;fontFamily=PingFang SC,Microsoft YaHei,Noto Sans CJK SC,system-ui,sans-serif;fontSize=14;fontColor=#475569;labelBackgroundColor=#ffffff;sourcePerimeterSpacing=5;targetPerimeterSpacing=8;exitX=1;exitY=0.5;entryX=0;entryY=0.5;" edge="1" parent="1" source="s1" target="s2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" value="资料无效／故障" style="edgeStyle=none;curved=1;html=0;strokeColor=#64748b;strokeWidth=1.4;endArrow=classic;endFill=1;fontFamily=PingFang SC,Microsoft YaHei,Noto Sans CJK SC,system-ui,sans-serif;fontSize=14;fontColor=#475569;labelBackgroundColor=#ffffff;sourcePerimeterSpacing=5;targetPerimeterSpacing=8;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="s1" target="s6">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="500" y="225" />
+              <mxPoint x="160" y="225" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="e3" value="" style="edgeStyle=none;curved=1;html=0;strokeColor=#64748b;strokeWidth=1.4;endArrow=classic;endFill=1;fontFamily=PingFang SC,Microsoft YaHei,Noto Sans CJK SC,system-ui,sans-serif;fontSize=14;fontColor=#475569;labelBackgroundColor=#ffffff;sourcePerimeterSpacing=5;targetPerimeterSpacing=8;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="s2" target="s3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" value="资格有效" style="edgeStyle=none;curved=1;html=0;strokeColor=#64748b;strokeWidth=1.4;endArrow=classic;endFill=1;fontFamily=PingFang SC,Microsoft YaHei,Noto Sans CJK SC,system-ui,sans-serif;fontSize=14;fontColor=#475569;labelBackgroundColor=#ffffff;sourcePerimeterSpacing=5;targetPerimeterSpacing=8;exitX=0.5;exitY=1;entryX=0.5;entryY=0;" edge="1" parent="1" source="s3" target="s4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" value="资格无效" style="edgeStyle=none;curved=1;html=0;strokeColor=#64748b;strokeWidth=1.4;endArrow=classic;endFill=1;fontFamily=PingFang SC,Microsoft YaHei,Noto Sans CJK SC,system-ui,sans-serif;fontSize=14;fontColor=#475569;labelBackgroundColor=#ffffff;sourcePerimeterSpacing=5;targetPerimeterSpacing=8;exitX=0;exitY=0.5;entryX=1;entryY=0.5;" edge="1" parent="1" source="s3" target="s5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
