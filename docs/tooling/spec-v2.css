@@ -26,8 +26,8 @@
   @bottom-center { content: none; }
 }
 @page schema {
-  size: A4 landscape;
-  margin: 18mm 20mm 17mm;
+  size: A4 portrait;
+  margin: 18mm 12mm 17mm;
   @top-center { margin-bottom: 3mm; }
 }
 * { box-sizing: border-box; }
@@ -152,8 +152,8 @@ table.use-case tr.scene-band td { background: #bfbfbf; color: #000; }
   .imageblock > .title { break-after: avoid; }
   .schema-plate { page: schema; break-before: page; break-after: page; }
   .schema-plate .imageblock { margin: 0; }
-  .schema-plate .imageblock img { width: auto; max-height: 162mm; max-width: 100%; }
+  .schema-plate .imageblock img { width: 100%; max-height: 252mm; max-width: 100%; }
   .schema-plate h4 { margin: 0 0 6pt; }
-  .schema-plate h4 + .imageblock img { max-height: 154mm; }
+  .schema-plate h4 + .imageblock img { max-height: 243mm; }
   a[href]::after { content: none !important; }
 }

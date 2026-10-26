@@ -12,7 +12,7 @@ const { chromium } = require('@playwright/test');
 const chrome = process.env.PDF_CHROME_PATH || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const browser = await chromium.launch(fs.existsSync(chrome) ? { executablePath: chrome } : {});
 const htmlPath = path.join(root, '.runtime/design/index.html');
-const pdfPath = path.join(root, 'docs/pdf/统一权限管理系统需求与详细设计说明书-v2.pdf');
+const pdfPath = path.join(root, 'docs/统一权限管理系统需求与详细设计说明书-v2.pdf');
 fs.mkdirSync(path.dirname(pdfPath), { recursive: true });
 
 try {
@@ -62,9 +62,21 @@ print(json.dumps({unquote(name.lstrip('/')): pdf.get_destination_page_number(tar
     previous = current;
   }
   if (!stable) throw new Error('目录页码四次排版后仍未稳定，请检查分页。');
+  // 所有页面必须是竖向 A4，防止局部 CSS 再引入横向图纸。
+  const verifyPaper = `
+import sys
+from pypdf import PdfReader
+pdf = PdfReader(sys.argv[1])
+for number, page in enumerate(pdf.pages, 1):
+    width, height = float(page.mediabox.width), float(page.mediabox.height)
+    if abs(width - 595.28) > 1 or abs(height - 841.89) > 1 or page.rotation % 180:
+        raise SystemExit(f"第 {number} 页不是竖向 A4：{width} × {height}，旋转 {page.rotation}")
+print(len(pdf.pages))
+`;
+  const pageCount = execFileSync('python3', ['-c', verifyPaper, pdfPath], { encoding: 'utf8' }).trim();
   // 保留回填后的 HTML；PDF 与浏览器版使用相同内容和样式。
   fs.writeFileSync(htmlPath, await page.content());
-  console.log(`已生成 ${pdfPath}；目录页码已收敛并校验`);
+  console.log(`已生成 ${pdfPath}；${pageCount} 页均为竖向 A4，目录页码已收敛并校验`);
 } finally {
   await browser.close();
 }

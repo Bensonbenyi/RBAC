@@ -18,7 +18,7 @@ const images = [...fs.readFileSync(source, 'utf8').matchAll(/image::?([^\[]+)\[/
 for (const [, filename] of images) {
   const origin = path.join(root, 'docs/assets', filename);
   if (!fs.existsSync(origin)) throw new Error(`图片不存在：${filename}`);
-  // 正式稿使用黑白图形主题；原始 SVG 和 draw.io 图形及其配色保持可编辑。
+  // 正式稿图形统一使用黑白导出主题。
   const theme = `<style>
     text, foreignObject * { fill: #000 !important; color: #000 !important; }
     rect:not([fill="none"]), ellipse:not([fill="none"]), polygon:not([fill="none"]) {
@@ -27,7 +27,8 @@ for (const [, filename] of images) {
     [stroke]:not([stroke="none"]) { stroke: #000 !important; }
     path:not([fill="none"])[fill] { fill: #fff !important; }
   </style>`;
-  const graphic = fs.readFileSync(origin, 'utf8').replace('</svg>', `${theme}</svg>`);
+  const original = fs.readFileSync(origin, 'utf8');
+  const graphic = original.replace('</svg>', `${theme}</svg>`);
   fs.writeFileSync(path.join(destination, 'assets', filename), graphic);
 }
 // HTML 独立发布时源码链接指向同一仓库，避免 /design/ 下的相对链接失效。
@@ -58,7 +59,7 @@ html = html
   .replace(/(<h[234][^>]*>|<a href="#[^"]+">)(\d+(?:\.\d+)*)\. /g, '$1$2 ')
   .replace(/<tr>\s*<td[^>]*>\s*<p class="tableblock"><strong>(主成功场景：|扩展场景：)/g,
     '<tr class="scene-band"><td><p class="tableblock"><strong>$1');
-// 逻辑关系标题随第一张横向图换页，避免孤立在上一页末尾。
+// 逻辑关系标题随第一张竖向表关系图换页，避免孤立在上一页末尾。
 html = html.replace(
   /(<h4 id="_逻辑关系">[^<]+<\/h4>)\s*(<div class="openblock schema-plate">\s*<div class="content">)/,
   '$2$1');
