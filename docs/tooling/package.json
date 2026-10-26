@@ -2,6 +2,9 @@
   "name": "upms-design-docs",
   "private": true,
   "type": "module",
-  "scripts": { "build": "node ../../scripts/render-design.mjs" },
+  "scripts": {
+    "build": "node ../../scripts/render-design.mjs",
+    "pdf": "node ../../scripts/export-design-pdf.mjs"
+  },
   "dependencies": { "@asciidoctor/core": "3.0.4" }
 }

@@ -10,7 +10,7 @@ OOAD 课程项目。平台管理身份、统一会话和 RBAC0 权限，OA 与�
 
 [公网后台](https://113.44.144.119/admin) · [OA](https://113.44.144.119:8443) · [知识库](https://113.44.144.119:9443) · [公开 API](https://3wq8lbigke.apifox.cn/) · [JaCoCo 报告](https://113.44.144.119/reports/) · [七章设计 HTML](https://113.44.144.119/design/)
 
-课程提交源文件为[需求与详细设计说明书.adoc](docs/统一权限管理系统需求与详细设计说明书.adoc)，含数据库设计和详细设计。最新结果及 Gitee 导入清单见[口试交付报告](docs/口试交付验收报告.md)，服务器运行与恢复见[部署说明](infra/server/README.md)。
+课程提交使用[需求与详细设计说明书 v2 源文件](docs/统一权限管理系统需求与详细设计说明书.adoc)及[正式 PDF](docs/pdf/统一权限管理系统需求与详细设计说明书-v2.pdf)，含数据库设计和详细设计；[导出方法](docs/tooling/README.md)说明排版与重建命令。最新结果及 Gitee 导入清单见[口试交付报告](docs/口试交付验收报告.md)，服务器运行与恢复见[部署说明](infra/server/README.md)。
 
 两个后端 89 项测试通过，行、分支覆盖率分别达到 100%。现场重跑 `bash scripts/coverage.sh`，本地打开 `coverage-report/target/site/jacoco-aggregate/index.html`；公开网页是本机测试报告副本。当前课程服务器未重跑万人容量实验。
 
