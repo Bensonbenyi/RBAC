@@ -306,17 +306,25 @@ image::learning-concept-er.svg[核心业务概念 ER 图,width=100%]
 
 [.schema-plate]
 --
-.图 3-6(a) 数据库逻辑关系：组织、系统、目录与角色
-image::spec-database-schema.svg[数据库逻辑关系图上篇]
+.图 3-6(a) 数据库表关系：组织与员工
+image::spec-database-schema.svg[组织与员工的中文含义、字段、类型及主外键]
 --
 
 [.schema-plate]
 --
-.图 3-6(b) 数据库逻辑关系：分配、批量、审计与初始化
-image::spec-database-lifecycle.svg[数据库逻辑关系图下篇]
+.图 3-6(b) 数据库表关系：系统、部门范围、目录与角色
+image::spec-database-catalog.svg[系统、部门范围、目录与角色的中文含义、字段、类型及主外键]
 --
 
-当前共 13 张业务及支撑表。PK 为主键、FK 为实际外键、UK 为唯一约束，? 表示可空。实线为物理外键，虚线为业务语义引用；参照框重复出现不增加表数量。统一会话、OIDC 授权与令牌在内存中，未建立认证数据库表，进程重启后失效。
+[.schema-plate]
+--
+.图 3-6(c) 数据库表关系：分配、批量、审计与初始化
+image::spec-database-lifecycle.svg[分配、批量与支撑表的中文含义、字段、类型及主外键]
+--
+
+图 3-6 按竖向页面分三页展示当前 13 张表的全部 90 个字段，每个字段依次列出中文含义、字段名、类型和键约束，类型依据 Flyway V1 至 V4；BOOLEAN 为迁移使用的 MySQL 布尔类型别名。PK 为主键，FK 为实际外键，U1／U2 为各表内分别编号的唯一键，同号字段共同组成一个唯一键，? 表示可空；未标 ? 的字段均不可空。实线箭头从引用表指向被引用表；REF 表示仅由应用维护的编号引用，不是外键；虚线边框为跨页参照，不增加表数量。
+
+例如，role_assignment 的 employee_id 与 system_id 同标 U1，表示二者组合唯一；role_id 标 FK 且可空，撤权后仍保留分配行。审计中的 actor_id 标 REF，因此不应把历史操作者引用误读为物理外键。统一会话、OIDC 授权与令牌在内存中，未建立认证数据库表，进程重启后失效。
 
 [cols="3,5,5",options="header"]
 |===
