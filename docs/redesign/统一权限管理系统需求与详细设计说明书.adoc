@@ -23,7 +23,7 @@ v{VERSION}, 2026-11-12
 
 本文规定统一权限管理系统的需求、数据模型、接口、两套服务设计和验收条件，供课程评审、开发及测试使用。系统以 RBAC 为授权模型，通过配置选择结构化或 DDD 服务实现。
 
-本文为重做后的设计基线，版本为 3.2.0。文档沿用原说明书的七章结构、用例表和图表组织方式，业务内容按第一轮检查意见及本次确认结果重新设计。设计中的接口与类是待实现规格，验收结果由实现阶段的测试报告记录。
+本文为重做后的设计基线，版本为 3.2.1。文档沿用原说明书的七章结构、用例表和图表组织方式，业务内容按第一轮检查意见及本次确认结果重新设计。设计中的接口与类是待实现规格，验收结果由实现阶段的测试报告记录。
 
 === 项目背景
 
@@ -1273,16 +1273,11 @@ image::spec/class-role-ddd.svg[角色模块 DDD 类图,width=100%]
 
 [.diagram.plate]
 --
-[[domain-identity]]
-.DDD 领域对象 用户、角色、部门 类图
-image::spec/domain-identity.svg[DDD 领域对象 用户、角色、部门 类图,width=100%]
---
+[[domain-model]]
+.DDD 领域对象完整类图
+image::spec/domain-model.svg[DDD 领域对象完整类图,width=100%]
 
-[.diagram.plate]
---
-[[domain-catalog]]
-.DDD 领域对象 业务系统、权限 类图
-image::spec/domain-catalog.svg[DDD 领域对象 业务系统、权限 类图,width=100%]
+五类领域对象的属性、行为与编号引用集中展示。
 --
 
 ===== 共享持久化与适配器
@@ -1329,6 +1324,34 @@ image::spec/packages-full-structured.svg[系统完整结构化 UML Package Diagr
 [[packages-full-ddd]]
 .系统完整 DDD UML Package Diagram
 image::spec/packages-full-ddd.svg[系统完整 DDD UML Package Diagram,width=100%]
+--
+
+[.diagram.plate]
+--
+[[packages-structured-entry]]
+.结构化 包图 入口与用例契约
+image::spec/packages-structured-entry.svg[结构化 包图 入口与用例契约,width=100%]
+--
+
+[.diagram.plate]
+--
+[[packages-structured-implementation]]
+.结构化 包图 服务与基础设施
+image::spec/packages-structured-implementation.svg[结构化 包图 服务与基础设施,width=100%]
+--
+
+[.diagram.plate]
+--
+[[packages-ddd-entry]]
+.DDD 包图 入口与用例契约
+image::spec/packages-ddd-entry.svg[DDD 包图 入口与用例契约,width=100%]
+--
+
+[.diagram.plate]
+--
+[[packages-ddd-implementation]]
+.DDD 包图 服务与基础设施
+image::spec/packages-ddd-implementation.svg[DDD 包图 服务与基础设施,width=100%]
 --
 
 [.diagram.plate]

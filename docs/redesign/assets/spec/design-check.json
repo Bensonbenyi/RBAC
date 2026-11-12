@@ -1,7 +1,9 @@
 {
   "interfaces": 34,
-  "figures": 87,
+  "figures": 90,
   "signatureBoundCalls": 226,
   "references": "resolved",
-  "endpointCoverage": "complete"
+  "endpointCoverage": "complete",
+  "moduleClassChains": 10,
+  "domainObjects": 5
 }

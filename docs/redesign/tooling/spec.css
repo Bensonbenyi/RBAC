@@ -188,3 +188,10 @@ table.use-case tr.scene-band td { background: #bfbfbf; color: #000; }
 }
 
 @media print { .domain-state { break-before: page; } }
+
+/* Detailed class and package plates use the available portrait height. */
+@media print {
+ .diagram img[src*="spec/class-"],
+ .diagram img[src*="spec/domain-model"],
+ .diagram img[src*="spec/packages-"] { max-height: 210mm; }
+}

@@ -33,8 +33,7 @@ API 按最终资源划分 Controller。UserRoleController 和 RolePermissionCont
   s+=plate(f'class-{m.key}-structured',m.title+'模块 结构化类图')
   s+=plate(f'class-{m.key}-ddd',m.title+'模块 DDD 类图')
  s+='\n===== 领域对象类图\n'
- s+=plate('domain-identity','DDD 领域对象 用户、角色、部门 类图')
- s+=plate('domain-catalog','DDD 领域对象 业务系统、权限 类图')
+ s+=plate('domain-model','DDD 领域对象完整类图','五类领域对象的属性、行为与编号引用集中展示。')
  s+='\n===== 共享持久化与适配器\n'
  s+=plate('class-persistence','共享持久化适配器 类图')
  s+=plate('adapter-insert','JPA 用户适配器 新建顺序图')
@@ -43,6 +42,9 @@ API 按最终资源划分 Controller。UserRoleController 和 RolePermissionCont
  s+='\n===== 完整包图与文件组织\n'
  s+=plate('packages-full-structured','系统完整结构化 UML Package Diagram')
  s+=plate('packages-full-ddd','系统完整 DDD UML Package Diagram')
+ for mode,caption in [('structured','结构化'),('ddd','DDD')]:
+  s+=plate('packages-'+mode+'-entry',caption+' 包图 入口与用例契约')
+  s+=plate('packages-'+mode+'-implementation',caption+' 包图 服务与基础设施')
  s+=plate('packages-files','源文件与配置文件组织')
  s+='\n===== 认证与会话\n'
  s+=plate('class-auth','认证与实时鉴权 类图')

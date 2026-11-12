@@ -158,7 +158,7 @@ def definitions():
  op('BackendConfiguration','select','strategy: String','UseCaseBeans')
 
 
-def compact_class(d,name,x,y,w=380,methods=None,attrs=True):
+def compact_class(d,name,x,y,w=380,methods=None,attrs=True,short=False):
  m=u.CLASSES[name];ops=[o for o in m['operations'] if methods is None or o['name'] in methods]
  rows=[]
  if attrs:
@@ -167,11 +167,12 @@ def compact_class(d,name,x,y,w=380,methods=None,attrs=True):
   args=[p['name']+': '+p['type'] for p in o['parameters'] if p['direction']!='return'];ret=next((p['type'] for p in o['parameters'] if p['direction']=='return'),'void')
   rows.append(('op',o,'+ '+o['name']+'('+', '.join(args)+')'+('' if o['name']==name else ': '+ret)))
  header=66 if m['_type']=='UMLInterface' else 44
+ if short: rows=[(kind,el,'+ '+el['name']+'()' if kind=='op' else t) for kind,el,t in rows]
  wrapped=[(kind,el,wrap(t,w-22,20)) for kind,el,t in rows]
  attrh=sum(len(ss)*28+8 for kind,_,ss in wrapped if kind=='attr') or 14
  oph=sum(len(ss)*28+8 for kind,_,ss in wrapped if kind=='op') or 14
  h=header+attrh+oph
- v=d.view('UMLInterfaceView' if m['_type']=='UMLInterface' else 'UMLClassView',m,left=x,top=y,width=w,height=h,subViews=[],showOperationSignature=True,showVisibility=True,showType=True)
+ v=d.view('UMLInterfaceView' if m['_type']=='UMLInterface' else 'UMLClassView',m,left=x,top=y,width=w,height=h,subViews=[],showOperationSignature=not short,showVisibility=True,showType=True)
  c=u.nc(v,m,x,y,w,header);v['subViews'].append(c);v['nameCompartment']=ref(c)
  d.rect(x,y,w,h)
  if header==66:d.text(x+w/2,y+22,'«interface»',17,True,native=False)
@@ -402,6 +403,8 @@ def generate():
  from draw_supplement import generate as supplement
  import sys
  supplement(sys.modules[__name__])
+ from draw_revision import generate as revision
+ revision(sys.modules[__name__])
  # Current diagrams replace earlier wide plates while retaining their source files
  # only in Git history. The document now references the portrait catalog.
  u.finish()
