@@ -1,6 +1,6 @@
 = 统一权限管理系统需求与详细设计说明书
 OOAD 课程项目组
-v3.0.0, 2026-11-12
+v3.1.0, 2026-11-12
 :doctype: book
 :lang: zh-CN
 :toc:
@@ -23,7 +23,7 @@ v3.0.0, 2026-11-12
 
 本文规定统一权限管理系统的需求、数据模型、接口、两套服务设计和验收条件，供课程评审、开发及测试使用。系统以 RBAC 为授权模型，通过配置选择结构化或 DDD 服务实现。
 
-本文为重做后的设计基线，版本为 3.0.0。文档沿用原说明书的七章结构、用例表和图表组织方式，业务内容按第一轮检查意见及本次确认结果重新设计。设计中的接口与类是待实现规格，验收结果由实现阶段的测试报告记录。
+本文为重做后的设计基线，版本为 3.1.0。文档沿用原说明书的七章结构、用例表和图表组织方式，业务内容按第一轮检查意见及本次确认结果重新设计。设计中的接口与类是待实现规格，验收结果由实现阶段的测试报告记录。
 
 === 项目背景
 
@@ -298,6 +298,8 @@ image::spec/10-login-activity.svg[登录活动图,width=100%]
 |===
 --
 
+对应顺序图：<<flow-csrf,取得 CSRF 凭据>>、<<flow-login,账号与登录资格校验>>、<<flow-session,建立会话>>。
+
 ==== 查看当前用户与退出
 
 [cols="1,1",frame=all,grid=all,role="use-case"]
@@ -329,6 +331,8 @@ image::spec/10-login-activity.svg[登录活动图,width=100%]
 |`AuthController.logout` |`POST /api/auth/logout` |校验 CSRF 后销毁当前会话，重复退出返回成功。
 |===
 --
+
+对应顺序图：<<flow-me,查看当前用户>>、<<flow-logout,退出当前会话>>。
 
 ==== 用户维护
 
@@ -370,6 +374,8 @@ image::spec/10-login-activity.svg[登录活动图,width=100%]
 |===
 --
 
+对应顺序图：<<flow-query-user,用户列表与详情>>、<<flow-query-user-detail,用户详情>>、<<flow-user-create-structured,新建用户 结构化>>、<<flow-user-create-ddd,新建用户 DDD>>、<<flow-user-update-structured,修改用户 结构化>>、<<flow-user-update-ddd,修改用户 DDD>>、<<flow-user-delete-structured,删除用户 结构化>>、<<flow-user-delete-ddd,删除用户 DDD>>、<<flow-self-update-structured,修改本人资料 结构化>>、<<flow-self-update-ddd,修改本人资料 DDD>>。
+
 ==== 部门维护
 
 [cols="1,1",frame=all,grid=all,role="use-case"]
@@ -401,10 +407,12 @@ image::spec/10-login-activity.svg[登录活动图,width=100%]
 |图中处理／实际方法 |调用说明 URL |功能
 |`DepartmentController.list / create` |`GET /api/departments` +
 `POST /api/departments` |查询部门树，或在指定父部门下创建部门。
-|`DepartmentController.rename / delete` |`PATCH /api/departments/{id}` +
+|`DepartmentController.update / delete` |`PATCH /api/departments/{id}` +
 `DELETE /api/departments/{id}` |修改部门名称；存在子部门、成员或角色时拒绝删除。
 |===
 --
+
+对应顺序图：<<flow-query-department,部门树查询>>、<<flow-department-create-structured,新建部门 结构化>>、<<flow-department-create-ddd,新建部门 DDD>>、<<flow-department-update-structured,修改部门 结构化>>、<<flow-department-update-ddd,修改部门 DDD>>、<<flow-department-delete-structured,删除部门 结构化>>、<<flow-department-delete-ddd,删除部门 DDD>>。
 
 ==== 业务系统维护
 
@@ -437,10 +445,12 @@ image::spec/10-login-activity.svg[登录活动图,width=100%]
 |图中处理／实际方法 |调用说明 URL |功能
 |`SystemController.list / create` |`GET /api/systems` +
 `POST /api/systems` |查询及登记业务系统。
-|`SystemController.rename / delete` |`PATCH /api/systems/{id}` +
+|`SystemController.update / delete` |`PATCH /api/systems/{id}` +
 `DELETE /api/systems/{id}` |修改系统名称；存在权限引用时拒绝删除。
 |===
 --
+
+对应顺序图：<<flow-query-system,业务系统查询>>、<<flow-system-create-structured,新建业务系统 结构化>>、<<flow-system-create-ddd,新建业务系统 DDD>>、<<flow-system-update-structured,修改业务系统 结构化>>、<<flow-system-update-ddd,修改业务系统 DDD>>、<<flow-system-delete-structured,删除业务系统 结构化>>、<<flow-system-delete-ddd,删除业务系统 DDD>>。
 
 ==== 操作权限维护
 
@@ -473,10 +483,12 @@ image::spec/10-login-activity.svg[登录活动图,width=100%]
 |图中处理／实际方法 |调用说明 URL |功能
 |`PermissionController.list / create` |`GET /api/systems/{id}/permissions` +
 `POST /api/systems/{id}/permissions` |查询或登记指定系统内的权限。
-|`PermissionController.rename / delete` |`PATCH /api/permissions/{id}` +
+|`PermissionController.update / delete` |`PATCH /api/permissions/{id}` +
 `DELETE /api/permissions/{id}` |修改权限名称；存在角色权限引用时拒绝删除。
 |===
 --
+
+对应顺序图：<<flow-query-permission,系统权限查询>>、<<flow-permission-create-structured,新建权限 结构化>>、<<flow-permission-create-ddd,新建权限 DDD>>、<<flow-permission-update-structured,修改权限 结构化>>、<<flow-permission-update-ddd,修改权限 DDD>>、<<flow-permission-delete-structured,删除权限 结构化>>、<<flow-permission-delete-ddd,删除权限 DDD>>。
 
 ==== 角色维护与权限配置
 
@@ -511,13 +523,15 @@ image::spec/10-login-activity.svg[登录活动图,width=100%]
 |`RoleController.list / get / create` |`GET /api/roles` +
 `GET /api/roles/{id}` +
 `POST /api/roles` |查询本部门角色及详情，或创建本部门角色。
-|`RoleController.rename / delete` |`PATCH /api/roles/{id}` +
+|`RoleController.update / delete` |`PATCH /api/roles/{id}` +
 `DELETE /api/roles/{id}` |修改角色名称；存在用户或权限关联时拒绝删除。
 |`RolePermissionController.list / grant / revoke` |`GET /api/roles/{id}/permissions` +
 `PUT /api/roles/{id}/permissions/{permissionId}` +
 `DELETE /api/roles/{id}/permissions/{permissionId}` |读取、授予或撤销本部门角色的单项权限。
 |===
 --
+
+对应顺序图：<<flow-query-role,角色列表与详情>>、<<flow-query-role-detail,角色详情>>、<<flow-role-create-structured,新建角色 结构化>>、<<flow-role-create-ddd,新建角色 DDD>>、<<flow-role-update-structured,修改角色 结构化>>、<<flow-role-update-ddd,修改角色 DDD>>、<<flow-role-delete-structured,删除角色 结构化>>、<<flow-role-delete-ddd,删除角色 DDD>>、<<flow-query-role-permissions,角色已有权限查询>>、<<flow-role-grant-structured,授予角色权限 结构化>>、<<flow-role-grant-ddd,授予角色权限 DDD>>、<<flow-role-revoke-structured,撤销角色权限 结构化>>、<<flow-role-revoke-ddd,撤销角色权限 DDD>>。
 
 ==== 分配用户角色
 
@@ -557,6 +571,8 @@ image::spec/11-assign-activity.svg[分配用户角色活动图,width=100%]
 |===
 --
 
+对应顺序图：<<flow-query-user-roles,用户已分配角色查询>>、<<flow-user-assign-structured,分配用户角色 结构化>>、<<flow-user-assign-ddd,分配用户角色 DDD>>。
+
 ==== 撤销用户角色
 
 [cols="1,1",frame=all,grid=all,role="use-case"]
@@ -587,6 +603,8 @@ image::spec/11-assign-activity.svg[分配用户角色活动图,width=100%]
 |`UserRoleController.revoke` |`DELETE /api/users/{id}/roles/{roleId}` |撤销本部门用户的一条角色关联，后续鉴权读取剩余角色。
 |===
 --
+
+对应顺序图：<<flow-user-revoke-structured,撤销用户角色 结构化>>、<<flow-user-revoke-ddd,撤销用户角色 DDD>>。
 
 ==== 当前操作鉴权
 
@@ -622,160 +640,732 @@ image::spec/11-assign-activity.svg[分配用户角色活动图,width=100%]
 |===
 --
 
+对应顺序图：<<flow-authorize,当前权限判断>>。
+
 === 两套架构设计
 
-==== 结构化设计
+==== 分层与运行装配
 
-结构化版采用 API、Service Port、事务脚本服务、Infrastructure 的分层。Controller 接收输入并读取当前身份；事务脚本依次检查操作权限、资源存在性、部门归属和重复关系，通过持久化端口完成修改。
+两套设计共用 API、Service Port、基础设施及数据库。结构化版以事务脚本组织用例；DDD 版由应用服务编排，领域对象执行资料和授权规则。用例端口的输入输出是 Command、Result 和 Data，JPA PO 保留在基础设施内。
 
 [.diagram.plate]
 --
+[[01-structured-packages]]
 .结构化设计 包图
-image::spec/01-structured-packages.svg[结构化包图,width=100%]
-
-UserRoleUseCase 定义分配入口。StructuredUserRoleService 实现该接口，持有 UserStore、RoleReader 和 RbacReader。requireSameDepartment 与 requireUnassigned 为服务内部规则方法，分别检查部门和重复分配。
+image::spec/01-structured-packages.svg[结构化设计 包图,width=100%]
 --
 
 [.diagram.plate]
 --
-.结构化设计 用户角色分配类图
-image::spec/04-structured-classes.svg[结构化角色分配类图,width=100%]
---
-
-==== DDD 设计
-
-DDD 版由 API、应用层、领域层和基础设施层组成。Service Port 提供共享契约。应用服务取得当前权限、加载数据、建立领域对象并开启事务；User 聚合管理已分配角色编号，assignRole 维护角色分配规则。
-
-角色以编号和所属部门参与分配规则，聚合间使用编号引用。持久化适配器返回共享 UserData 和 RoleData；应用服务以其值构造领域对象，完成规则校验后通过端口新增关联记录。基础设施保持对领域对象的隔离。
-
-[.diagram.plate]
---
+[[02-ddd-packages]]
 .DDD 设计 包图
-image::spec/02-ddd-packages.svg[DDD 包图,width=100%]
+image::spec/02-ddd-packages.svg[DDD 设计 包图,width=100%]
 --
 
 [.diagram.plate]
 --
-.DDD 设计 用户角色分配类图
-image::spec/05-ddd-classes.svg[DDD 角色分配类图,width=100%]
+[[architecture-runtime]]
+.运行装配与依赖结构
+image::spec/architecture-runtime.svg[运行装配与依赖结构,width=100%]
 
-User.assignRole(role, actorDept) 要求 actorDept、当前用户 departmentId 和 role.departmentId 非空且一致，随后检查 roleIds 中不存在该角色，再把角色编号加入集合。跨部门抛出 ForbiddenException，重复分配抛出 ConflictException。应用服务在领域校验成功后持久化本次关系变化。
+虚线开箭头指向被依赖包。配置在启动时选择服务实现，基础设施实现持久化端口。
 --
-
-角色权限配置由角色用例校验所属部门和权限存在性，再通过端口维护 role_permission。此处按单次关联操作划分事务。用户、角色、部门、系统与权限的单项资料维护保持相同 API 和字段白名单。
-
-==== 共同契约与配置装配
-
-[cols="20,40,40",options="header"]
-|===
-|责任 |结构化实现 |DDD 实现
-|认证 |StructuredAuthService 校验账号数据与登录权限。 |DddAuthService 编排凭据校验及登录权限读取。
-|角色分配 |StructuredUserRoleService 执行校验顺序并写关联。 |DddUserRoleService 加载 User、Role，调用领域行为并写关联。
-|角色权限 |事务脚本检查本部门角色、权限存在性并写关系。 |应用服务校验本部门角色与权限存在性，通过端口保存单条关系变化。
-|事务 |事务脚本公开用例方法。 |应用服务公开用例方法。
-|持久化 |共享端口与 JPA 适配器。 |共享端口与 JPA 适配器。
-|HTTP 契约 |共享 Controller、DTO、VO、异常映射。 |相同契约。
-|===
-
-所有用例接口放在 service.port 对应模块，Command 与 Result 为普通业务数据。UserStore 等端口提供数据读写能力，接口不携带 JPA Entity 或 Spring MVC 类型。控制器按 auth、user、department、system、permission、role、user-role、role-permission 资源划分。
-
 [source,yaml]
 ----
 app:
   backend-strategy: structured
 ----
 
-配置值为 structured 或 ddd，默认 structured。配置类以 @ConditionalOnProperty 注册对应服务，每个用例接口在启动后恰有一个服务 Bean；值非法时启动失败。服务内部按用例执行，选型在启动装配阶段完成。
+app.backend-strategy 接受 structured 或 ddd，默认 structured。@ConditionalOnProperty 分别注册两套服务，每个用例端口恰有一个实现 Bean；非法值启动失败。配置切换后 HTTP、表结构和业务结果相同。
 
-==== 登录与会话详细设计
+==== 对象职责与模块类图
 
-[.diagram.plate]
---
-.共享登录契约与实现类图
-image::spec/03-auth-classes.svg[登录契约类图,width=100%]
---
+API 按最终资源划分 Controller。UserRoleController 和 RolePermissionController 分别处理两类授权关系；AuthController 处理当前身份与本人资料。每个资源的 UseCase 提供共享接口，两套 Service 实现该接口，Store 隔离持久化技术。
 
-[source,json]
-----
-{
-  "username": "zhangsan",
-  "password": "13800138000",
-  "systems": ["rbac"]
-}
-----
+图中实线关联表示持有对象引用，虚线开箭头表示依赖，虚线空心三角表示接口实现。模块图展示写操作签名，查询与授权操作在相应顺序图和授权类图中展开。结构化服务内部的 validateChange 按操作分支执行业务规则。DDD 应用服务从共享 Data 建立领域对象，调用领域行为后将变更写回。
 
-Controller 将唯一 systems 元素映射为 LoginCommand.systemKey。服务按用户名查找用户，比较输入 password 与 app_user.phone，随后检查系统 login 权限。成功返回 LoginResult(userId, systemKey)。Controller 调用 getSession 和 changeSessionId，保存身份并返回 LoginVO。
+===== 用户模块
 
 [.diagram.plate]
 --
-.登录成功 顺序图
-image::spec/06-login-sequence.svg[登录成功顺序图,width=100%]
-
-登录失败清理先前身份，统一返回错误；账号不存在与手机号错误均为 401。目标系统不匹配或缺少 login 权限返回 403。失败路径见登录活动图。退出销毁会话，重复退出返回 204。
---
-
-Session 的业务身份保存 userId 和 systemKey。框架维护会话及 CSRF 数据。后续请求读取当前用户和当前权限，用户删除后返回 401，目标系统 login 权限撤销后返回 403。每次成功登录替换本次目标系统；用户需要切换系统时重新提交登录资料。
-
-==== 角色分配详细设计
-
-[.diagram.plate]
---
-.结构化设计 分配角色顺序图
-image::spec/07-structured-assign.svg[结构化分配角色顺序图,width=100%]
-
-结构化版依次调用 RbacReader.hasPermission、UserStore.findById、RoleReader.findById 和内部校验方法，再调用 UserStore.addRole。方法正常返回前事务提交；异常向上抛出，由 Controller 异常处理器映射。
+[[class-user-structured]]
+.用户模块 结构化类图
+image::spec/class-user-structured.svg[用户模块 结构化类图,width=100%]
 --
 
 [.diagram.plate]
 --
-.DDD 设计 分配角色顺序图
-image::spec/08-ddd-assign.svg[DDD 分配角色顺序图,width=100%]
-
-DDD 版读取相同数据，以构造消息建立 User 与 Role 对象，调用 User.assignRole，再持久化本次分配。类图、顺序图和接口使用相同方法名。两图中的 break 表示失败时终止该用例后续交互；内部规则异常沿调用链返回并回滚事务。
+[[class-user-ddd]]
+.用户模块 DDD 类图
+image::spec/class-user-ddd.svg[用户模块 DDD 类图,width=100%]
 --
 
-==== 当前权限判断
+===== 部门模块
 
 [.diagram.plate]
 --
-.当前权限查询 顺序图
-image::spec/09-authorization.svg[鉴权顺序图,width=100%]
-
-RbacReader.hasPermission 以 userId、systemKey、code 作为查询条件，执行 EXISTS 关系查询。逻辑如下，参数通过预编译绑定：
+[[class-department-structured]]
+.部门模块 结构化类图
+image::spec/class-department-structured.svg[部门模块 结构化类图,width=100%]
 --
 
-[source,sql]
-----
-SELECT EXISTS (
-  SELECT 1
-  FROM user_role ur
-  JOIN role_permission rp ON rp.role_id = ur.role_id
-  JOIN permission p ON p.id = rp.permission_id
-  JOIN business_system s ON s.id = p.system_id
-  WHERE ur.user_id = :userId
-    AND s.system_key = :systemKey
-    AND p.code = :code
-);
-----
+[.diagram.plate]
+--
+[[class-department-ddd]]
+.部门模块 DDD 类图
+image::spec/class-department-ddd.svg[部门模块 DDD 类图,width=100%]
+--
 
-平台管理操作先确认会话目标系统为 rbac、账号仍存在并具有 rbac 的 login 权限，再检查对应操作权限及资源范围。业务系统查询目标系统从 Session 取得，查询结果采用当前数据库关系。撤销一个角色后，用户仍可能通过其他角色拥有相同权限。
+===== 业务系统模块
+
+[.diagram.plate]
+--
+[[class-system-structured]]
+.业务系统模块 结构化类图
+image::spec/class-system-structured.svg[业务系统模块 结构化类图,width=100%]
+--
+
+[.diagram.plate]
+--
+[[class-system-ddd]]
+.业务系统模块 DDD 类图
+image::spec/class-system-ddd.svg[业务系统模块 DDD 类图,width=100%]
+--
+
+===== 权限模块
+
+[.diagram.plate]
+--
+[[class-permission-structured]]
+.权限模块 结构化类图
+image::spec/class-permission-structured.svg[权限模块 结构化类图,width=100%]
+--
+
+[.diagram.plate]
+--
+[[class-permission-ddd]]
+.权限模块 DDD 类图
+image::spec/class-permission-ddd.svg[权限模块 DDD 类图,width=100%]
+--
+
+===== 角色模块
+
+[.diagram.plate]
+--
+[[class-role-structured]]
+.角色模块 结构化类图
+image::spec/class-role-structured.svg[角色模块 结构化类图,width=100%]
+--
+
+[.diagram.plate]
+--
+[[class-role-ddd]]
+.角色模块 DDD 类图
+image::spec/class-role-ddd.svg[角色模块 DDD 类图,width=100%]
+--
+
+===== 认证与会话
+
+[.diagram.plate]
+--
+[[class-auth]]
+.认证与实时鉴权 类图
+image::spec/class-auth.svg[认证与实时鉴权 类图,width=100%]
+--
+
+===== 授权关系
+
+[.diagram.plate]
+--
+[[class-relations-structured]]
+.授权关系 结构化类图
+image::spec/class-relations-structured.svg[授权关系 结构化类图,width=100%]
+--
+
+[.diagram.plate]
+--
+[[class-relations-ddd]]
+.授权关系 DDD 类图
+image::spec/class-relations-ddd.svg[授权关系 DDD 类图,width=100%]
+--
+[cols="23,35,42",options="header"]
+|===
+|领域对象 |持有状态 |领域规则
+|User |id、username、name、phone、departmentId、roleIds |changeProfile 仅改姓名与手机号；assignRole 要求同部门且尚未分配；revokeRole 幂等撤销。
+|Department |id、name、parentId |改名保持 parentId；引用检查通过后可删除。
+|BusinessSystem |id、systemKey、name |创建后 systemKey 固定；有权限时拒绝删除。
+|Permission |id、systemId、code、name |名称可改；系统与 code 固定；被角色引用时拒绝删除。
+|Role |id、departmentId、name、permissionIds |部门固定；grantPermission 与 revokePermission 幂等变更集合。
+|===
+
+以上是五类已有业务实体的对象职责。用户角色和角色权限仍由原有两张关联表保存。跨聚合引用采用编号，应用服务查询必要数据并验证对象范围。唯一性和引用完整性同时由数据库约束保证；并发写入冲突按统一映射处理。
+
+==== 公共请求、拷贝与事务边界
+
+客户端写请求先取得 CSRF 凭据，再提交 Cookie 和指定请求头。Controller 校验输入格式、字段白名单和路径编号，通过 CloneFactory 将 DTO 转为 Command。操作者编号取自服务端会话。受保护请求检查当前账号与目标系统 login 权限，管理操作还要求 rbac 目标系统及相应操作权限。
+
+[.diagram.plate]
+--
+[[flow-preflight]]
+.受保护请求 校验顺序图
+image::spec/flow-preflight.svg[受保护请求 校验顺序图,width=100%]
+
+公共流程适用于受保护查询和写操作。登录、匿名 CSRF 获取与幂等退出采用各自流程。服务在事务内复核操作资格和数据范围。
+--
+
+[.diagram.plate]
+--
+[[flow-copy]]
+.API 边界对象拷贝 顺序图
+image::spec/flow-copy.svg[API 边界对象拷贝 顺序图,width=100%]
+
+以新建用户为例；其余 DTO 与 VO 使用相同边界转换，分别声明允许拷贝的字段。
+--
+
+[.diagram.plate]
+--
+[[flow-adapter]]
+.持久化读取与对象拷贝 顺序图
+image::spec/flow-adapter.svg[持久化读取与对象拷贝 顺序图,width=100%]
+
+适配器返回共享 Data；DDD 领域对象由应用服务以 Data 构造。集合关联通过专用持久化操作维护。
+--
+写操作的服务公开方法是事务边界。图中的加载包含本次需要的对象、归属、现有关系或引用计数；按具体用例读取所需字段。事务脚本 validateChange 逐条校验规则，DDD 构造与行为维护对象不变量，应用服务负责操作权限、跨对象存在性和范围校验。
+
+break 框的守卫为校验失败，成立时终止该用例后续交互。不存在返回 404，范围或操作权限拒绝返回 403，唯一性与引用冲突返回 409。数据库在写入或提交时仍可因并发发生约束冲突，整个事务回滚；数据库不可用返回 503，未预期异常返回 500。正常 HTTP 响应在事务提交成功后发送。
 
 ==== 对象拷贝与运行日志
 
-CloneFactory 依赖使用老师提供的 cn.edu.xmu:clonefactory:0.0.1-SNAPSHOT，并在 Maven 编译插件中配置注解处理器路径。使用 @CopyFrom、@CopyTo 及字段排除注解声明转换，编译生成 cn.edu.xmu.clonefactory.util.CloneFactory。
+对象拷贝依赖老师的 cn.edu.xmu:clonefactory:0.0.1-SNAPSHOT，在 Maven 编译插件中配置注解处理器路径。@CopyFrom、@CopyTo 和字段排除注解声明转换，编译生成 cn.edu.xmu.clonefactory.util.CloneFactory。调用 copy(target, source) 返回目标对象。请求 DTO 至 Command、Result 至 VO、持久化 PO 至 Data 均使用生成的转换代码。
 
-对象转换点为请求 DTO 至 Command、Result 至 VO、持久化 PO 至共享数据。id、departmentId 和授权关系由专用操作设置。领域聚合通过构造和行为维护规则，边界数据拷贝使用生成代码。
-
-[cols="20,50,30",options="header"]
+[cols="22,55,23",options="header"]
 |===
 |可执行层 |日志内容 |级别
-|API |请求方法、路由模板、结果和耗时。 |正常 DEBUG；失败按类型记录。
-|结构化服务 / DDD 应用服务 |用例、操作者编号、目标编号和业务结果。 |正常 DEBUG；规则拒绝 WARN。
-|DDD 领域行为 |规则结果由应用服务统一记录。 |按业务结果记录，领域代码保持框架无关。
-|Infrastructure |持久化操作名称、耗时及失败类型。 |正常 DEBUG；不可恢复异常 ERROR。
+|API |请求方法、路由模板、结果、耗时。 |DEBUG；规则拒绝 WARN。
+|结构化服务 |用例、操作者与目标编号、分支结果。 |DEBUG / WARN。
+|DDD 应用服务 |用例编排、领域行为结果和事务失败。 |DEBUG / WARN。
+|DDD 领域规则 |由调用方记录规则结果，领域保持框架无关。 |应用服务记录。
+|Infrastructure |查询与写操作名称、耗时和异常类型。 |DEBUG；故障 ERROR。
 |===
 
-日志通过 SLF4J 调用，Logback 输出控制台与滚动文件，同一异常的完整堆栈在统一边界记录一次。输入凭据、完整手机号、Cookie、Session ID 和 CSRF 凭据从日志中排除。接口声明和数据类无需日志方法。
+各执行层通过 SLF4J 使用 Logback 输出控制台与滚动文件。统一异常边界记录一次完整堆栈；日志排除输入凭据、完整手机号、Cookie、Session 标识和 CSRF 凭据。接口与普通数据类保持数据和契约职责。
+
+=== 各功能详细交互
+
+所有已定义的 HTTP 方法与路径均登记在流程配图覆盖清单。查询图通过 UseCase 表示选定实现，两套查询使用相同协作。每个业务写操作分别给出结构化与 DDD 图，授权关系的新增与撤销分别展开。用例后的调用表保留实际方法、URL 与功能的对应关系。
+
+==== 取得 CSRF 凭据
+
+[.diagram.plate]
+--
+[[flow-csrf]]
+.取得 CSRF 凭据 顺序图
+image::spec/flow-csrf.svg[取得 CSRF 凭据 顺序图,width=100%]
+--
+
+==== 账号与登录资格校验
+
+[.diagram.plate]
+--
+[[flow-login]]
+.账号与登录资格校验 顺序图
+image::spec/flow-login.svg[账号与登录资格校验 顺序图,width=100%]
+
+用户名和 password 严格匹配，password 的内容为手机号；systems 恰含一个标识。无目标系统 login 权限返回 403。
+--
+
+==== 登录成功建立会话
+
+[.diagram.plate]
+--
+[[flow-session]]
+.登录成功建立会话 顺序图
+image::spec/flow-session.svg[登录成功建立会话 顺序图,width=100%]
+
+凭据与登录资格均通过后取得 Session，更换 Session 标识并保存 userId 与 systemKey。随后返回 LoginVO 与 Cookie。
+--
+
+==== 查看当前用户
+
+[.diagram.plate]
+--
+[[flow-me]]
+.查看当前用户 顺序图
+image::spec/flow-me.svg[查看当前用户 顺序图,width=100%]
+--
+
+==== 退出当前会话
+
+[.diagram.plate]
+--
+[[flow-logout]]
+.退出当前会话 顺序图
+image::spec/flow-logout.svg[退出当前会话 顺序图,width=100%]
+
+退出允许无身份重复调用，均返回 204；写请求仍需有效 CSRF。
+--
+
+==== 当前操作鉴权
+
+[.diagram.plate]
+--
+[[flow-authorize]]
+.当前操作鉴权 顺序图
+image::spec/flow-authorize.svg[当前操作鉴权 顺序图,width=100%]
+
+查询实时连接 user_role、role_permission、permission 和 business_system。多个角色取并集，撤销部分关系后重新计算；未命中返回 allowed=false。
+--
+
+==== 用户管理流程
+
+[.diagram.plate]
+--
+[[flow-query-user-detail]]
+.用户详情 顺序图
+image::spec/flow-query-user-detail.svg[用户详情 顺序图,width=100%]
+
+目标用户存在且属于本部门，否则 404 或 403。
+--
+
+[.diagram.plate]
+--
+[[flow-query-user]]
+.用户列表与详情 顺序图
+image::spec/flow-query-user.svg[用户列表与详情 顺序图,width=100%]
+
+列表强制按操作者部门过滤；详情校验同部门。
+--
+
+[.diagram.plate]
+--
+[[flow-query-user-roles]]
+.用户已分配角色查询 顺序图
+image::spec/flow-query-user-roles.svg[用户已分配角色查询 顺序图,width=100%]
+
+先校验用户存在与同部门，再读取角色。
+--
+
+===== 新建用户
+
+部门由操作者确定；用户名全局唯一。
+
+[.diagram.plate]
+--
+[[flow-user-create-structured]]
+.新建用户 结构化顺序图
+image::spec/flow-user-create-structured.svg[新建用户 结构化顺序图,width=100%]
+--
+
+[.diagram.plate]
+--
+[[flow-user-create-ddd]]
+.新建用户 DDD顺序图
+image::spec/flow-user-create-ddd.svg[新建用户 DDD顺序图,width=100%]
+--
+
+===== 修改用户
+
+仅修改 name、phone；校验本部门范围。
+
+[.diagram.plate]
+--
+[[flow-user-update-structured]]
+.修改用户 结构化顺序图
+image::spec/flow-user-update-structured.svg[修改用户 结构化顺序图,width=100%]
+--
+
+[.diagram.plate]
+--
+[[flow-user-update-ddd]]
+.修改用户 DDD顺序图
+image::spec/flow-user-update-ddd.svg[修改用户 DDD顺序图,width=100%]
+--
+
+===== 删除用户
+
+同事务删除 user_role 与用户。
+
+[.diagram.plate]
+--
+[[flow-user-delete-structured]]
+.删除用户 结构化顺序图
+image::spec/flow-user-delete-structured.svg[删除用户 结构化顺序图,width=100%]
+--
+
+[.diagram.plate]
+--
+[[flow-user-delete-ddd]]
+.删除用户 DDD顺序图
+image::spec/flow-user-delete-ddd.svg[删除用户 DDD顺序图,width=100%]
+--
+
+===== 修改本人资料
+
+目标编号从 Session 取得；仅修改 name、phone。
+
+[.diagram.plate]
+--
+[[flow-self-update-structured]]
+.修改本人资料 结构化顺序图
+image::spec/flow-self-update-structured.svg[修改本人资料 结构化顺序图,width=100%]
+--
+
+[.diagram.plate]
+--
+[[flow-self-update-ddd]]
+.修改本人资料 DDD顺序图
+image::spec/flow-self-update-ddd.svg[修改本人资料 DDD顺序图,width=100%]
+--
+
+===== 分配用户角色
+
+操作者、目标用户、角色同一非空部门；重复分配返回 409。
+
+[.diagram.plate]
+--
+[[flow-user-assign-structured]]
+.分配用户角色 结构化顺序图
+image::spec/flow-user-assign-structured.svg[分配用户角色 结构化顺序图,width=100%]
+--
+
+[.diagram.plate]
+--
+[[flow-user-assign-ddd]]
+.分配用户角色 DDD顺序图
+image::spec/flow-user-assign-ddd.svg[分配用户角色 DDD顺序图,width=100%]
+--
+
+===== 撤销用户角色
+
+操作者、目标用户、角色同部门；关联已撤销时返回 204。
+
+[.diagram.plate]
+--
+[[flow-user-revoke-structured]]
+.撤销用户角色 结构化顺序图
+image::spec/flow-user-revoke-structured.svg[撤销用户角色 结构化顺序图,width=100%]
+--
+
+[.diagram.plate]
+--
+[[flow-user-revoke-ddd]]
+.撤销用户角色 DDD顺序图
+image::spec/flow-user-revoke-ddd.svg[撤销用户角色 DDD顺序图,width=100%]
+--
+
+==== 部门管理流程
+
+[.diagram.plate]
+--
+[[flow-query-department]]
+.部门树查询 顺序图
+image::spec/flow-query-department.svg[部门树查询 顺序图,width=100%]
+
+读取节点后按 parentId 组织为树。
+--
+
+===== 新建部门
+
+父部门存在或为空；创建新节点。
+
+[.diagram.plate]
+--
+[[flow-department-create-structured]]
+.新建部门 结构化顺序图
+image::spec/flow-department-create-structured.svg[新建部门 结构化顺序图,width=100%]
+--
+
+[.diagram.plate]
+--
+[[flow-department-create-ddd]]
+.新建部门 DDD顺序图
+image::spec/flow-department-create-ddd.svg[新建部门 DDD顺序图,width=100%]
+--
+
+===== 修改部门
+
+仅修改 name；parentId 固定。
+
+[.diagram.plate]
+--
+[[flow-department-update-structured]]
+.修改部门 结构化顺序图
+image::spec/flow-department-update-structured.svg[修改部门 结构化顺序图,width=100%]
+--
+
+[.diagram.plate]
+--
+[[flow-department-update-ddd]]
+.修改部门 DDD顺序图
+image::spec/flow-department-update-ddd.svg[修改部门 DDD顺序图,width=100%]
+--
+
+===== 删除部门
+
+有子部门、用户或角色时拒绝删除。
+
+[.diagram.plate]
+--
+[[flow-department-delete-structured]]
+.删除部门 结构化顺序图
+image::spec/flow-department-delete-structured.svg[删除部门 结构化顺序图,width=100%]
+--
+
+[.diagram.plate]
+--
+[[flow-department-delete-ddd]]
+.删除部门 DDD顺序图
+image::spec/flow-department-delete-ddd.svg[删除部门 DDD顺序图,width=100%]
+--
+
+==== 业务系统管理流程
+
+[.diagram.plate]
+--
+[[flow-query-system]]
+.业务系统查询 顺序图
+image::spec/flow-query-system.svg[业务系统查询 顺序图,width=100%]
+
+分页读取系统目录。
+--
+
+===== 新建业务系统
+
+systemKey 全局唯一。
+
+[.diagram.plate]
+--
+[[flow-system-create-structured]]
+.新建业务系统 结构化顺序图
+image::spec/flow-system-create-structured.svg[新建业务系统 结构化顺序图,width=100%]
+--
+
+[.diagram.plate]
+--
+[[flow-system-create-ddd]]
+.新建业务系统 DDD顺序图
+image::spec/flow-system-create-ddd.svg[新建业务系统 DDD顺序图,width=100%]
+--
+
+===== 修改业务系统
+
+仅修改 name；systemKey 固定。
+
+[.diagram.plate]
+--
+[[flow-system-update-structured]]
+.修改业务系统 结构化顺序图
+image::spec/flow-system-update-structured.svg[修改业务系统 结构化顺序图,width=100%]
+--
+
+[.diagram.plate]
+--
+[[flow-system-update-ddd]]
+.修改业务系统 DDD顺序图
+image::spec/flow-system-update-ddd.svg[修改业务系统 DDD顺序图,width=100%]
+--
+
+===== 删除业务系统
+
+系统仍有权限定义时拒绝删除。
+
+[.diagram.plate]
+--
+[[flow-system-delete-structured]]
+.删除业务系统 结构化顺序图
+image::spec/flow-system-delete-structured.svg[删除业务系统 结构化顺序图,width=100%]
+--
+
+[.diagram.plate]
+--
+[[flow-system-delete-ddd]]
+.删除业务系统 DDD顺序图
+image::spec/flow-system-delete-ddd.svg[删除业务系统 DDD顺序图,width=100%]
+--
+
+==== 权限管理流程
+
+[.diagram.plate]
+--
+[[flow-query-permission]]
+.系统权限查询 顺序图
+image::spec/flow-query-permission.svg[系统权限查询 顺序图,width=100%]
+
+先校验系统存在，再按 systemId 分页。
+--
+
+===== 新建权限
+
+路径系统存在；code 在系统内唯一。
+
+[.diagram.plate]
+--
+[[flow-permission-create-structured]]
+.新建权限 结构化顺序图
+image::spec/flow-permission-create-structured.svg[新建权限 结构化顺序图,width=100%]
+--
+
+[.diagram.plate]
+--
+[[flow-permission-create-ddd]]
+.新建权限 DDD顺序图
+image::spec/flow-permission-create-ddd.svg[新建权限 DDD顺序图,width=100%]
+--
+
+===== 修改权限
+
+仅修改 name；systemId、code 固定。
+
+[.diagram.plate]
+--
+[[flow-permission-update-structured]]
+.修改权限 结构化顺序图
+image::spec/flow-permission-update-structured.svg[修改权限 结构化顺序图,width=100%]
+--
+
+[.diagram.plate]
+--
+[[flow-permission-update-ddd]]
+.修改权限 DDD顺序图
+image::spec/flow-permission-update-ddd.svg[修改权限 DDD顺序图,width=100%]
+--
+
+===== 删除权限
+
+被角色引用时拒绝删除。
+
+[.diagram.plate]
+--
+[[flow-permission-delete-structured]]
+.删除权限 结构化顺序图
+image::spec/flow-permission-delete-structured.svg[删除权限 结构化顺序图,width=100%]
+--
+
+[.diagram.plate]
+--
+[[flow-permission-delete-ddd]]
+.删除权限 DDD顺序图
+image::spec/flow-permission-delete-ddd.svg[删除权限 DDD顺序图,width=100%]
+--
+
+==== 角色管理流程
+
+[.diagram.plate]
+--
+[[flow-query-role-detail]]
+.角色详情 顺序图
+image::spec/flow-query-role-detail.svg[角色详情 顺序图,width=100%]
+
+目标角色存在且属于本部门，否则 404 或 403。
+--
+
+[.diagram.plate]
+--
+[[flow-query-role]]
+.角色列表与详情 顺序图
+image::spec/flow-query-role.svg[角色列表与详情 顺序图,width=100%]
+
+列表与详情限定本部门。
+--
+
+[.diagram.plate]
+--
+[[flow-query-role-permissions]]
+.角色已有权限查询 顺序图
+image::spec/flow-query-role-permissions.svg[角色已有权限查询 顺序图,width=100%]
+
+先校验角色存在与同部门，再读取权限。
+--
+
+===== 新建角色
+
+部门取操作者部门；名称部门内唯一。
+
+[.diagram.plate]
+--
+[[flow-role-create-structured]]
+.新建角色 结构化顺序图
+image::spec/flow-role-create-structured.svg[新建角色 结构化顺序图,width=100%]
+--
+
+[.diagram.plate]
+--
+[[flow-role-create-ddd]]
+.新建角色 DDD顺序图
+image::spec/flow-role-create-ddd.svg[新建角色 DDD顺序图,width=100%]
+--
+
+===== 修改角色
+
+校验本部门；仅修改 name。
+
+[.diagram.plate]
+--
+[[flow-role-update-structured]]
+.修改角色 结构化顺序图
+image::spec/flow-role-update-structured.svg[修改角色 结构化顺序图,width=100%]
+--
+
+[.diagram.plate]
+--
+[[flow-role-update-ddd]]
+.修改角色 DDD顺序图
+image::spec/flow-role-update-ddd.svg[修改角色 DDD顺序图,width=100%]
+--
+
+===== 删除角色
+
+有用户或权限关联时拒绝删除。
+
+[.diagram.plate]
+--
+[[flow-role-delete-structured]]
+.删除角色 结构化顺序图
+image::spec/flow-role-delete-structured.svg[删除角色 结构化顺序图,width=100%]
+--
+
+[.diagram.plate]
+--
+[[flow-role-delete-ddd]]
+.删除角色 DDD顺序图
+image::spec/flow-role-delete-ddd.svg[删除角色 DDD顺序图,width=100%]
+--
+
+===== 授予角色权限
+
+本部门角色；权限存在；已授予时幂等返回 204。
+
+[.diagram.plate]
+--
+[[flow-role-grant-structured]]
+.授予角色权限 结构化顺序图
+image::spec/flow-role-grant-structured.svg[授予角色权限 结构化顺序图,width=100%]
+--
+
+[.diagram.plate]
+--
+[[flow-role-grant-ddd]]
+.授予角色权限 DDD顺序图
+image::spec/flow-role-grant-ddd.svg[授予角色权限 DDD顺序图,width=100%]
+--
+
+===== 撤销角色权限
+
+本部门角色；权限存在；已撤销时幂等返回 204。
+
+[.diagram.plate]
+--
+[[flow-role-revoke-structured]]
+.撤销角色权限 结构化顺序图
+image::spec/flow-role-revoke-structured.svg[撤销角色权限 结构化顺序图,width=100%]
+--
+
+[.diagram.plate]
+--
+[[flow-role-revoke-ddd]]
+.撤销角色权限 DDD顺序图
+image::spec/flow-role-revoke-ddd.svg[撤销角色权限 DDD顺序图,width=100%]
+--
 
 === 接口与输入设计
 

@@ -1,6 +1,7 @@
 """Author the complete AsciiDoc specification and repeated use-case tables."""
 from pathlib import Path
 import re
+from spec_plates import architecture, usecase_mapping
 R=Path(__file__).resolve().parents[1]
 VERSION=(R/'VERSION').read_text().strip()
 parts=[]
@@ -283,10 +284,10 @@ CALLS={
 'AUTH-001': [('AuthController.csrf','GET /api/auth/csrf','取得写请求所需的 CSRF 凭据及请求头名称。'),('AuthController.login','POST /api/auth/login','校验用户名、手机号和目标系统登录权限，建立当前系统会话。')],
 'AUTH-002': [('AuthController.me','GET /api/auth/me','读取当前登录用户的编号、用户名、姓名和部门。'),('AuthController.logout','POST /api/auth/logout','校验 CSRF 后销毁当前会话，重复退出返回成功。')],
 'USER-001': [('UserController.list / get','GET /api/users；GET /api/users/{id}','按本部门范围查询用户列表及详情。'),('UserController.create / update / delete','POST /api/users；PATCH /api/users/{id}；DELETE /api/users/{id}','创建本部门用户、修改姓名及手机号，或删除用户及其角色关联。'),('AuthController.updateMe','PATCH /api/auth/me','修改本人姓名及手机号。')],
-'DEPT-001': [('DepartmentController.list / create','GET /api/departments；POST /api/departments','查询部门树，或在指定父部门下创建部门。'),('DepartmentController.rename / delete','PATCH /api/departments/{id}；DELETE /api/departments/{id}','修改部门名称；存在子部门、成员或角色时拒绝删除。')],
-'SYS-001': [('SystemController.list / create','GET /api/systems；POST /api/systems','查询及登记业务系统。'),('SystemController.rename / delete','PATCH /api/systems/{id}；DELETE /api/systems/{id}','修改系统名称；存在权限引用时拒绝删除。')],
-'PERM-001': [('PermissionController.list / create','GET /api/systems/{id}/permissions；POST /api/systems/{id}/permissions','查询或登记指定系统内的权限。'),('PermissionController.rename / delete','PATCH /api/permissions/{id}；DELETE /api/permissions/{id}','修改权限名称；存在角色权限引用时拒绝删除。')],
-'ROLE-001': [('RoleController.list / get / create','GET /api/roles；GET /api/roles/{id}；POST /api/roles','查询本部门角色及详情，或创建本部门角色。'),('RoleController.rename / delete','PATCH /api/roles/{id}；DELETE /api/roles/{id}','修改角色名称；存在用户或权限关联时拒绝删除。'),('RolePermissionController.list / grant / revoke','GET /api/roles/{id}/permissions；PUT /api/roles/{id}/permissions/{permissionId}；DELETE /api/roles/{id}/permissions/{permissionId}','读取、授予或撤销本部门角色的单项权限。')],
+'DEPT-001': [('DepartmentController.list / create','GET /api/departments；POST /api/departments','查询部门树，或在指定父部门下创建部门。'),('DepartmentController.update / delete','PATCH /api/departments/{id}；DELETE /api/departments/{id}','修改部门名称；存在子部门、成员或角色时拒绝删除。')],
+'SYS-001': [('SystemController.list / create','GET /api/systems；POST /api/systems','查询及登记业务系统。'),('SystemController.update / delete','PATCH /api/systems/{id}；DELETE /api/systems/{id}','修改系统名称；存在权限引用时拒绝删除。')],
+'PERM-001': [('PermissionController.list / create','GET /api/systems/{id}/permissions；POST /api/systems/{id}/permissions','查询或登记指定系统内的权限。'),('PermissionController.update / delete','PATCH /api/permissions/{id}；DELETE /api/permissions/{id}','修改权限名称；存在角色权限引用时拒绝删除。')],
+'ROLE-001': [('RoleController.list / get / create','GET /api/roles；GET /api/roles/{id}；POST /api/roles','查询本部门角色及详情，或创建本部门角色。'),('RoleController.update / delete','PATCH /api/roles/{id}；DELETE /api/roles/{id}','修改角色名称；存在用户或权限关联时拒绝删除。'),('RolePermissionController.list / grant / revoke','GET /api/roles/{id}/permissions；PUT /api/roles/{id}/permissions/{permissionId}；DELETE /api/roles/{id}/permissions/{permissionId}','读取、授予或撤销本部门角色的单项权限。')],
 'GRANT-001': [('UserRoleController.list','GET /api/users/{id}/roles','查询本部门用户已持有的角色。'),('UserRoleController.assign','POST /api/users/{id}/roles','校验操作权限与部门归属，新增一条用户角色关联。')],
 'GRANT-002': [('UserRoleController.revoke','DELETE /api/users/{id}/roles/{roleId}','撤销本部门用户的一条角色关联，后续鉴权读取剩余角色。')],
 'AUTHZ-001': [('AuthorizationController.check','GET /api/auth/permissions/{code}','从会话取得用户和系统，查询当前 RBAC 关系并返回 allowed。')]
@@ -324,162 +325,9 @@ for cid,title,actor,trigger,pre,steps,errors,post,url,controller,fig in cases:
  details+='备注：'+NOTES[cid]+'\n\n[cols="3,4,3",options="header",frame=all,grid=all]\n|===\n|图中处理／实际方法 |调用说明 URL |功能\n'
  details+='\n'.join('|`'+method+'` |'+ ' +\n'.join('`'+u.strip()+'`' for u in urls.split('；'))+' |'+function for method,urls,function in CALLS[cid])+'\n|===\n--'
  add(details)
+ add(usecase_mapping(cid))
+add(architecture())
 add('''
-=== 两套架构设计
-
-==== 结构化设计
-
-结构化版采用 API、Service Port、事务脚本服务、Infrastructure 的分层。Controller 接收输入并读取当前身份；事务脚本依次检查操作权限、资源存在性、部门归属和重复关系，通过持久化端口完成修改。
-
-[.diagram.plate]
---
-.结构化设计 包图
-image::spec/01-structured-packages.svg[结构化包图,width=100%]
---
-
-UserRoleUseCase 定义分配入口。StructuredUserRoleService 实现该接口，持有 UserStore、RoleReader 和 RbacReader。requireSameDepartment 与 requireUnassigned 为服务内部规则方法，分别检查部门和重复分配。
-
-[.diagram.plate]
---
-.结构化设计 用户角色分配类图
-image::spec/04-structured-classes.svg[结构化角色分配类图,width=100%]
---
-
-==== DDD 设计
-
-DDD 版由 API、应用层、领域层和基础设施层组成。Service Port 提供共享契约。应用服务取得当前权限、加载数据、建立领域对象并开启事务；User 聚合管理已分配角色编号，assignRole 维护角色分配规则。
-
-角色以编号和所属部门参与分配规则，聚合间使用编号引用。持久化适配器返回共享 UserData 和 RoleData；应用服务以其值构造领域对象，完成规则校验后通过端口新增关联记录。基础设施保持对领域对象的隔离。
-
-[.diagram.plate]
---
-.DDD 设计 包图
-image::spec/02-ddd-packages.svg[DDD 包图,width=100%]
---
-
-[.diagram.plate]
---
-.DDD 设计 用户角色分配类图
-image::spec/05-ddd-classes.svg[DDD 角色分配类图,width=100%]
---
-
-User.assignRole(role, actorDept) 要求 actorDept、当前用户 departmentId 和 role.departmentId 非空且一致，随后检查 roleIds 中不存在该角色，再把角色编号加入集合。跨部门抛出 ForbiddenException，重复分配抛出 ConflictException。应用服务在领域校验成功后持久化本次关系变化。
-
-角色权限配置由角色用例校验所属部门和权限存在性，再通过端口维护 role_permission。此处按单次关联操作划分事务。用户、角色、部门、系统与权限的单项资料维护保持相同 API 和字段白名单。
-
-==== 共同契约与配置装配
-
-[cols="20,40,40",options="header"]
-|===
-|责任 |结构化实现 |DDD 实现
-|认证 |StructuredAuthService 校验账号数据与登录权限。 |DddAuthService 编排凭据校验及登录权限读取。
-|角色分配 |StructuredUserRoleService 执行校验顺序并写关联。 |DddUserRoleService 加载 User、Role，调用领域行为并写关联。
-|角色权限 |事务脚本检查本部门角色、权限存在性并写关系。 |应用服务校验本部门角色与权限存在性，通过端口保存单条关系变化。
-|事务 |事务脚本公开用例方法。 |应用服务公开用例方法。
-|持久化 |共享端口与 JPA 适配器。 |共享端口与 JPA 适配器。
-|HTTP 契约 |共享 Controller、DTO、VO、异常映射。 |相同契约。
-|===
-
-所有用例接口放在 service.port 对应模块，Command 与 Result 为普通业务数据。UserStore 等端口提供数据读写能力，接口不携带 JPA Entity 或 Spring MVC 类型。控制器按 auth、user、department、system、permission、role、user-role、role-permission 资源划分。
-
-[source,yaml]
-----
-app:
-  backend-strategy: structured
-----
-
-配置值为 structured 或 ddd，默认 structured。配置类以 @ConditionalOnProperty 注册对应服务，每个用例接口在启动后恰有一个服务 Bean；值非法时启动失败。服务内部按用例执行，选型在启动装配阶段完成。
-
-==== 登录与会话详细设计
-
-[.diagram.plate]
---
-.共享登录契约与实现类图
-image::spec/03-auth-classes.svg[登录契约类图,width=100%]
---
-
-[source,json]
-----
-{
-  "username": "zhangsan",
-  "password": "13800138000",
-  "systems": ["rbac"]
-}
-----
-
-Controller 将唯一 systems 元素映射为 LoginCommand.systemKey。服务按用户名查找用户，比较输入 password 与 app_user.phone，随后检查系统 login 权限。成功返回 LoginResult(userId, systemKey)。Controller 调用 getSession 和 changeSessionId，保存身份并返回 LoginVO。
-
-[.diagram.plate]
---
-.登录成功 顺序图
-image::spec/06-login-sequence.svg[登录成功顺序图,width=100%]
---
-
-登录失败清理先前身份，统一返回错误；账号不存在与手机号错误均为 401。目标系统不匹配或缺少 login 权限返回 403。失败路径见登录活动图。退出销毁会话，重复退出返回 204。
-
-Session 的业务身份保存 userId 和 systemKey。框架维护会话及 CSRF 数据。后续请求读取当前用户和当前权限，用户删除后返回 401，目标系统 login 权限撤销后返回 403。每次成功登录替换本次目标系统；用户需要切换系统时重新提交登录资料。
-
-==== 角色分配详细设计
-
-[.diagram.plate]
---
-.结构化设计 分配角色顺序图
-image::spec/07-structured-assign.svg[结构化分配角色顺序图,width=100%]
---
-
-结构化版依次调用 RbacReader.hasPermission、UserStore.findById、RoleReader.findById 和内部校验方法，再调用 UserStore.addRole。方法正常返回前事务提交；异常向上抛出，由 Controller 异常处理器映射。
-
-[.diagram.plate]
---
-.DDD 设计 分配角色顺序图
-image::spec/08-ddd-assign.svg[DDD 分配角色顺序图,width=100%]
---
-
-DDD 版读取相同数据，以构造消息建立 User 与 Role 对象，调用 User.assignRole，再持久化本次分配。类图、顺序图和接口使用相同方法名。两图中的 break 表示失败时终止该用例后续交互；内部规则异常沿调用链返回并回滚事务。
-
-==== 当前权限判断
-
-[.diagram.plate]
---
-.当前权限查询 顺序图
-image::spec/09-authorization.svg[鉴权顺序图,width=100%]
---
-
-RbacReader.hasPermission 以 userId、systemKey、code 作为查询条件，执行 EXISTS 关系查询。逻辑如下，参数通过预编译绑定：
-
-[source,sql]
-----
-SELECT EXISTS (
-  SELECT 1
-  FROM user_role ur
-  JOIN role_permission rp ON rp.role_id = ur.role_id
-  JOIN permission p ON p.id = rp.permission_id
-  JOIN business_system s ON s.id = p.system_id
-  WHERE ur.user_id = :userId
-    AND s.system_key = :systemKey
-    AND p.code = :code
-);
-----
-
-平台管理操作先确认会话目标系统为 rbac、账号仍存在并具有 rbac 的 login 权限，再检查对应操作权限及资源范围。业务系统查询目标系统从 Session 取得，查询结果采用当前数据库关系。撤销一个角色后，用户仍可能通过其他角色拥有相同权限。
-
-==== 对象拷贝与运行日志
-
-CloneFactory 依赖使用老师提供的 cn.edu.xmu:clonefactory:0.0.1-SNAPSHOT，并在 Maven 编译插件中配置注解处理器路径。使用 @CopyFrom、@CopyTo 及字段排除注解声明转换，编译生成 cn.edu.xmu.clonefactory.util.CloneFactory。
-
-对象转换点为请求 DTO 至 Command、Result 至 VO、持久化 PO 至共享数据。id、departmentId 和授权关系由专用操作设置。领域聚合通过构造和行为维护规则，边界数据拷贝使用生成代码。
-
-[cols="20,50,30",options="header"]
-|===
-|可执行层 |日志内容 |级别
-|API |请求方法、路由模板、结果和耗时。 |正常 DEBUG；失败按类型记录。
-|结构化服务 / DDD 应用服务 |用例、操作者编号、目标编号和业务结果。 |正常 DEBUG；规则拒绝 WARN。
-|DDD 领域行为 |规则结果由应用服务统一记录。 |按业务结果记录，领域代码保持框架无关。
-|Infrastructure |持久化操作名称、耗时及失败类型。 |正常 DEBUG；不可恢复异常 ERROR。
-|===
-
-日志通过 SLF4J 调用，Logback 输出控制台与滚动文件，同一异常的完整堆栈在统一边界记录一次。输入凭据、完整手机号、Cookie、Session ID 和 CSRF 凭据从日志中排除。接口声明和数据类无需日志方法。
-
 === 接口与输入设计
 
 ==== 公共约定

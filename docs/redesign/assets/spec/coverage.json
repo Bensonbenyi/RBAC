@@ -1,0 +1,294 @@
+[
+  {
+    "endpoint": "POST /api/users",
+    "flow": "user-create",
+    "title": "新建用户",
+    "figures": [
+      "flow-user-create-structured",
+      "flow-user-create-ddd"
+    ]
+  },
+  {
+    "endpoint": "PATCH /api/users/{id}",
+    "flow": "user-update",
+    "title": "修改用户",
+    "figures": [
+      "flow-user-update-structured",
+      "flow-user-update-ddd"
+    ]
+  },
+  {
+    "endpoint": "DELETE /api/users/{id}",
+    "flow": "user-delete",
+    "title": "删除用户",
+    "figures": [
+      "flow-user-delete-structured",
+      "flow-user-delete-ddd"
+    ]
+  },
+  {
+    "endpoint": "POST /api/departments",
+    "flow": "department-create",
+    "title": "新建部门",
+    "figures": [
+      "flow-department-create-structured",
+      "flow-department-create-ddd"
+    ]
+  },
+  {
+    "endpoint": "PATCH /api/departments/{id}",
+    "flow": "department-update",
+    "title": "修改部门",
+    "figures": [
+      "flow-department-update-structured",
+      "flow-department-update-ddd"
+    ]
+  },
+  {
+    "endpoint": "DELETE /api/departments/{id}",
+    "flow": "department-delete",
+    "title": "删除部门",
+    "figures": [
+      "flow-department-delete-structured",
+      "flow-department-delete-ddd"
+    ]
+  },
+  {
+    "endpoint": "POST /api/systems",
+    "flow": "system-create",
+    "title": "新建业务系统",
+    "figures": [
+      "flow-system-create-structured",
+      "flow-system-create-ddd"
+    ]
+  },
+  {
+    "endpoint": "PATCH /api/systems/{id}",
+    "flow": "system-update",
+    "title": "修改业务系统",
+    "figures": [
+      "flow-system-update-structured",
+      "flow-system-update-ddd"
+    ]
+  },
+  {
+    "endpoint": "DELETE /api/systems/{id}",
+    "flow": "system-delete",
+    "title": "删除业务系统",
+    "figures": [
+      "flow-system-delete-structured",
+      "flow-system-delete-ddd"
+    ]
+  },
+  {
+    "endpoint": "POST /api/systems/{id}/permissions",
+    "flow": "permission-create",
+    "title": "新建权限",
+    "figures": [
+      "flow-permission-create-structured",
+      "flow-permission-create-ddd"
+    ]
+  },
+  {
+    "endpoint": "PATCH /api/permissions/{id}",
+    "flow": "permission-update",
+    "title": "修改权限",
+    "figures": [
+      "flow-permission-update-structured",
+      "flow-permission-update-ddd"
+    ]
+  },
+  {
+    "endpoint": "DELETE /api/permissions/{id}",
+    "flow": "permission-delete",
+    "title": "删除权限",
+    "figures": [
+      "flow-permission-delete-structured",
+      "flow-permission-delete-ddd"
+    ]
+  },
+  {
+    "endpoint": "POST /api/roles",
+    "flow": "role-create",
+    "title": "新建角色",
+    "figures": [
+      "flow-role-create-structured",
+      "flow-role-create-ddd"
+    ]
+  },
+  {
+    "endpoint": "PATCH /api/roles/{id}",
+    "flow": "role-update",
+    "title": "修改角色",
+    "figures": [
+      "flow-role-update-structured",
+      "flow-role-update-ddd"
+    ]
+  },
+  {
+    "endpoint": "DELETE /api/roles/{id}",
+    "flow": "role-delete",
+    "title": "删除角色",
+    "figures": [
+      "flow-role-delete-structured",
+      "flow-role-delete-ddd"
+    ]
+  },
+  {
+    "endpoint": "PATCH /api/auth/me",
+    "flow": "self-update",
+    "title": "修改本人资料",
+    "figures": [
+      "flow-self-update-structured",
+      "flow-self-update-ddd"
+    ]
+  },
+  {
+    "endpoint": "POST /api/users/{id}/roles",
+    "flow": "user-assign",
+    "title": "分配用户角色",
+    "figures": [
+      "flow-user-assign-structured",
+      "flow-user-assign-ddd"
+    ]
+  },
+  {
+    "endpoint": "DELETE /api/users/{id}/roles/{roleId}",
+    "flow": "user-revoke",
+    "title": "撤销用户角色",
+    "figures": [
+      "flow-user-revoke-structured",
+      "flow-user-revoke-ddd"
+    ]
+  },
+  {
+    "endpoint": "PUT /api/roles/{id}/permissions/{permissionId}",
+    "flow": "role-grant",
+    "title": "授予角色权限",
+    "figures": [
+      "flow-role-grant-structured",
+      "flow-role-grant-ddd"
+    ]
+  },
+  {
+    "endpoint": "DELETE /api/roles/{id}/permissions/{permissionId}",
+    "flow": "role-revoke",
+    "title": "撤销角色权限",
+    "figures": [
+      "flow-role-revoke-structured",
+      "flow-role-revoke-ddd"
+    ]
+  },
+  {
+    "endpoint": "GET /api/users/{id}",
+    "flow": "query-user-detail",
+    "title": "用户详情",
+    "figures": [
+      "flow-query-user-detail"
+    ]
+  },
+  {
+    "endpoint": "GET /api/roles/{id}",
+    "flow": "query-role-detail",
+    "title": "角色详情",
+    "figures": [
+      "flow-query-role-detail"
+    ]
+  },
+  {
+    "endpoint": "GET /api/users",
+    "flow": "query-user",
+    "title": "用户列表与详情",
+    "figures": [
+      "flow-query-user"
+    ]
+  },
+  {
+    "endpoint": "GET /api/departments",
+    "flow": "query-department",
+    "title": "部门树查询",
+    "figures": [
+      "flow-query-department"
+    ]
+  },
+  {
+    "endpoint": "GET /api/systems",
+    "flow": "query-system",
+    "title": "业务系统查询",
+    "figures": [
+      "flow-query-system"
+    ]
+  },
+  {
+    "endpoint": "GET /api/systems/{id}/permissions",
+    "flow": "query-permission",
+    "title": "系统权限查询",
+    "figures": [
+      "flow-query-permission"
+    ]
+  },
+  {
+    "endpoint": "GET /api/roles",
+    "flow": "query-role",
+    "title": "角色列表与详情",
+    "figures": [
+      "flow-query-role"
+    ]
+  },
+  {
+    "endpoint": "GET /api/users/{id}/roles",
+    "flow": "query-user-roles",
+    "title": "用户已分配角色查询",
+    "figures": [
+      "flow-query-user-roles"
+    ]
+  },
+  {
+    "endpoint": "GET /api/roles/{id}/permissions",
+    "flow": "query-role-permissions",
+    "title": "角色已有权限查询",
+    "figures": [
+      "flow-query-role-permissions"
+    ]
+  },
+  {
+    "endpoint": "GET /api/auth/csrf",
+    "flow": "csrf",
+    "title": "取得 CSRF 凭据",
+    "figures": [
+      "flow-csrf"
+    ]
+  },
+  {
+    "endpoint": "POST /api/auth/login",
+    "flow": "login",
+    "title": "账号与登录资格校验",
+    "figures": [
+      "flow-login"
+    ]
+  },
+  {
+    "endpoint": "GET /api/auth/me",
+    "flow": "me",
+    "title": "查看当前用户",
+    "figures": [
+      "flow-me"
+    ]
+  },
+  {
+    "endpoint": "POST /api/auth/logout",
+    "flow": "logout",
+    "title": "退出当前会话",
+    "figures": [
+      "flow-logout"
+    ]
+  },
+  {
+    "endpoint": "GET /api/auth/permissions/{code}",
+    "flow": "authorize",
+    "title": "当前权限判断",
+    "figures": [
+      "flow-authorize"
+    ]
+  }
+]
