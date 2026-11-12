@@ -1,7 +1,7 @@
 """Author the complete AsciiDoc specification and repeated use-case tables."""
 from pathlib import Path
 import re
-from spec_plates import architecture, usecase_mapping
+from spec_plates import architecture, usecase_mapping, interactions
 R=Path(__file__).resolve().parents[1]
 VERSION=(R/'VERSION').read_text().strip()
 parts=[]
@@ -322,9 +322,10 @@ for cid,title,actor,trigger,pre,steps,errors,post,url,controller,fig in cases:
  add('==== '+title+'\n\n[cols="1,1",frame=all,grid=all,role="use-case"]\n|===\n'+f'|*用例编号：* UPMS-{cid} |*用例名称：* {title}\n2+|*级别：* 用户目标\n2+|*包：* {package}\n2+|*参与者：* {actor}\n2+|*描述：* {DESCRIPTIONS[cid]}\n2+|*触发事件：* {trigger}。\n2+|*前置条件：* {pre}。\n|*主成功场景：* |*信息*\n'+'\n'.join(f'|{i}. {a} |{b}' for i,(a,b) in enumerate(steps,1))+'\n|*扩展场景：* |*处理及信息*\n'+'\n'.join(f'|{a} |{b}' for a,b in errors)+f'\n2+|*后置条件：* {post}\n|===')
  details='[.scene-detail]\n--\n'
  if fig:details+=f'.{title} 活动图\nimage::spec/{fig}.svg[{title}活动图,width=100%]\n\n'
- details+='备注：'+NOTES[cid]+' '+usecase_mapping(cid)+'\n\n[cols="3,4,3",options="header",frame=all,grid=all]\n|===\n|图中处理／实际方法 |调用说明 URL |功能\n'
+ details+='备注：'+NOTES[cid]+' 详细交互见本功能下列各项。'+'\n\n[cols="3,4,3",options="header",frame=all,grid=all]\n|===\n|图中处理／实际方法 |调用说明 URL |功能\n'
  details+='\n'.join('|`'+method+'` |'+ ' +\n'.join('`'+u.strip()+'`' for u in urls.split('；'))+' |'+function for method,urls,function in CALLS[cid])+'\n|===\n--'
  add(details)
+ add(interactions(cid))
 add(architecture())
 add('''
 === 接口与输入设计

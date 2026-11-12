@@ -77,30 +77,33 @@ break 框的守卫为校验失败，成立时终止该用例后续交互。不�
 
 各执行层通过 SLF4J 使用 Logback 输出控制台与滚动文件。统一异常边界记录一次完整堆栈；日志排除输入凭据、完整手机号、Cookie、Session 标识和 CSRF 凭据。接口与普通数据类保持数据和契约职责。
 
-=== 各功能详细交互
-
-所有已定义的 HTTP 方法与路径均登记在流程配图覆盖清单。查询图通过 UseCase 表示选定实现，两套查询使用相同协作。每个业务写操作分别给出结构化与 DDD 图，授权关系的新增与撤销分别展开。用例后的调用表保留实际方法、URL 与功能的对应关系。
 '''
- # Authentication is shared; each state change has a separate plate.
- auth_titles={'csrf':'取得 CSRF 凭据','login':'账号与登录资格校验','session':'登录成功建立会话','me':'查看当前用户','logout':'退出当前会话','authorize':'当前操作鉴权'}
- for slug in ['csrf','login','session','me','logout','authorize']:
-  s+='\n==== '+auth_titles[slug]+'\n'
-  desc={'login':'用户名和 password 严格匹配，password 的内容为手机号；systems 恰含一个标识。无目标系统 login 权限返回 403。',
-  'session':'凭据与登录资格均通过后取得 Session，更换 Session 标识并保存 userId 与 systemKey。随后返回 LoginVO 与 Cookie。',
-  'logout':'退出允许无身份重复调用，均返回 204；写请求仍需有效 CSRF。',
-  'authorize':'查询实时连接 user_role、role_permission、permission 和 business_system。多个角色取并集，撤销部分关系后重新计算；未命中返回 allowed=false。'}.get(slug,'')
-  s+=plate('flow-'+slug,auth_titles[slug]+' 顺序图',desc)
- for m in MODULES:
-  s+='\n==== '+m.title+'管理流程\n'
-  for slug,title,key,eps,method,rule in READS:
-   if key==m.key:s+=plate('flow-'+slug,title+' 顺序图',rule+'。')
-  for f in WRITES:
-   if f['module']!=m.key:continue
-   s+='\n===== '+f['title']+'\n\n'+f['rule']+'。\n'
-   for mode in ['structured','ddd']:s+=plate('flow-'+f['slug']+'-'+mode,f['title']+' '+('结构化' if mode=='structured' else 'DDD')+'顺序图')
  return s
+
 
 def usecase_mapping(cid):
  titles={slug:title for slug,title,_,_ in entries()};titles['session']='建立会话'
  slug=CASE_GROUPS[cid][0];stem=figures(slug)[0]
  return '顺序图：<<'+stem+',查看对应交互>>。'
+
+
+def interactions(cid):
+ """Place each interaction directly beneath its owning functional description."""
+ writes={f['slug']:f for f in WRITES}
+ reads={slug:(title,rule) for slug,title,_,_,_,rule in READS}
+ auth={'csrf':('取得 CSRF 凭据','允许匿名取得；写请求携带 Cookie 与指定请求头。'),
+ 'login':('校验账号与登录资格','password 内容为手机号；systems 恰有一个系统标识。账号或凭据错误返回 401，无目标系统 login 权限返回 403。'),
+ 'session':('建立登录会话','校验通过后更换 Session 标识，保存 userId 与 systemKey，返回 Cookie。'),
+ 'me':('查看当前用户','返回本人编号、用户名、姓名及部门；已删除账号返回 401。'),
+ 'logout':('退出当前会话','校验 CSRF 后销毁已有 Session 并清理 Cookie；重复退出返回 204。'),
+ 'authorize':('查询当前操作权限','实时连接用户角色与角色权限，多个角色取并集；未命中返回 allowed=false。')}
+ s=''
+ for slug in CASE_GROUPS[cid]:
+  if slug in writes:
+   f=writes[slug];s+='\n===== '+f['title']+'\n\n'+f['rule']+'。\n'
+   for mode in ['structured','ddd']:s+=plate('flow-'+slug+'-'+mode,f['title']+' '+('结构化' if mode=='structured' else 'DDD')+'顺序图')
+  else:
+   title,rule=reads.get(slug,auth.get(slug,('', '')))
+   s+='\n===== '+title+'\n\n'+rule.rstrip('。')+'。\n'
+   s+=plate('flow-'+slug,title+' 顺序图')
+ return s
