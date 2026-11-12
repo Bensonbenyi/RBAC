@@ -9,7 +9,7 @@ def add(s):parts.append(s.strip()+'\n')
 add('''
 = 统一权限管理系统需求与详细设计说明书
 OOAD 课程项目组
-v3.0, 2026-11-12
+v{VERSION}, 2026-11-12
 :doctype: book
 :lang: zh-CN
 :toc:
@@ -32,7 +32,7 @@ v3.0, 2026-11-12
 
 本文规定统一权限管理系统的需求、数据模型、接口、两套服务设计和验收条件，供课程评审、开发及测试使用。系统以 RBAC 为授权模型，通过配置选择结构化或 DDD 服务实现。
 
-本文为重做后的设计基线，版本为 3.0。文档沿用原说明书的七章结构、用例表和图表组织方式，业务内容按第一轮检查意见及本次确认结果重新设计。设计中的接口与类是待实现规格，验收结果由实现阶段的测试报告记录。
+本文为重做后的设计基线，版本为 {VERSION}。文档沿用原说明书的七章结构、用例表和图表组织方式，业务内容按第一轮检查意见及本次确认结果重新设计。设计中的接口与类是待实现规格，验收结果由实现阶段的测试报告记录。
 
 === 项目背景
 
@@ -537,6 +537,6 @@ AsciiDoc 为说明书正文源文件，PDF 从该源文件和本目录图片生�
 text='\n'.join(parts)
 # Keep explanations with their full-page diagram instead of creating a short text page.
 text=re.sub(r'(\[\.diagram\.plate\]\n--\n(?:(?!\n--\n).)*?)(\n--\n\n)([^\n\[=|.][^\n]*)(\n\n)', r'\1\n\n\3\n--\n\n', text, flags=re.S)
-text=text.replace('v3.0,',f'v{VERSION},').replace('版本为 3.0。',f'版本为 {VERSION}。')
+text=text.replace('v3.0,',f'v{VERSION},').replace('版本为 {VERSION}。',f'版本为 {VERSION}。')
 (R/'统一权限管理系统需求与详细设计说明书.adoc').write_text(text)
 print('Written complete 7-chapter specification with',len(cases),'use cases and',len(TABLES),'table dictionaries.')

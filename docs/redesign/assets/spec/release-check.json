@@ -1,6 +1,6 @@
 {
-  "version": "3.1.0",
-  "pages": 110,
+  "version": "3.2.0",
+  "pages": 119,
   "pageSizesPt": [
     [
       594.96,
@@ -9,9 +9,9 @@
   ],
   "portrait": true,
   "emptyPages": 0,
-  "images": 78,
+  "images": 87,
   "interfaces": 34,
   "diagramTextClipping": 0,
   "diagramTextCollisions": 0,
-  "signatureBoundCalls": 217
+  "signatureBoundCalls": 226
 }

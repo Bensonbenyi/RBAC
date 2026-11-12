@@ -1,6 +1,6 @@
 = 统一权限管理系统需求与详细设计说明书
 OOAD 课程项目组
-v3.1.0, 2026-11-12
+v{VERSION}, 2026-11-12
 :doctype: book
 :lang: zh-CN
 :toc:
@@ -23,7 +23,7 @@ v3.1.0, 2026-11-12
 
 本文规定统一权限管理系统的需求、数据模型、接口、两套服务设计和验收条件，供课程评审、开发及测试使用。系统以 RBAC 为授权模型，通过配置选择结构化或 DDD 服务实现。
 
-本文为重做后的设计基线，版本为 3.1.0。文档沿用原说明书的七章结构、用例表和图表组织方式，业务内容按第一轮检查意见及本次确认结果重新设计。设计中的接口与类是待实现规格，验收结果由实现阶段的测试报告记录。
+本文为重做后的设计基线，版本为 3.2.0。文档沿用原说明书的七章结构、用例表和图表组织方式，业务内容按第一轮检查意见及本次确认结果重新设计。设计中的接口与类是待实现规格，验收结果由实现阶段的测试报告记录。
 
 === 项目背景
 
@@ -1267,6 +1267,75 @@ image::spec/class-role-structured.svg[角色模块 结构化类图,width=100%]
 [[class-role-ddd]]
 .角色模块 DDD 类图
 image::spec/class-role-ddd.svg[角色模块 DDD 类图,width=100%]
+--
+
+===== 领域对象类图
+
+[.diagram.plate]
+--
+[[domain-identity]]
+.DDD 领域对象 用户、角色、部门 类图
+image::spec/domain-identity.svg[DDD 领域对象 用户、角色、部门 类图,width=100%]
+--
+
+[.diagram.plate]
+--
+[[domain-catalog]]
+.DDD 领域对象 业务系统、权限 类图
+image::spec/domain-catalog.svg[DDD 领域对象 业务系统、权限 类图,width=100%]
+--
+
+===== 共享持久化与适配器
+
+[.diagram.plate]
+--
+[[class-persistence]]
+.共享持久化适配器 类图
+image::spec/class-persistence.svg[共享持久化适配器 类图,width=100%]
+--
+
+[.diagram.plate]
+--
+[[adapter-insert]]
+.JPA 用户适配器 新建顺序图
+image::spec/adapter-insert.svg[JPA 用户适配器 新建顺序图,width=100%]
+--
+
+[.diagram.plate]
+--
+[[adapter-update]]
+.JPA 用户适配器 更新顺序图
+image::spec/adapter-update.svg[JPA 用户适配器 更新顺序图,width=100%]
+--
+
+[.diagram.plate]
+--
+[[adapter-delete]]
+.JPA 用户关联清理与删除 顺序图
+image::spec/adapter-delete.svg[JPA 用户关联清理与删除 顺序图,width=100%]
+--
+
+===== 完整包图与文件组织
+
+[.diagram.plate]
+--
+[[packages-full-structured]]
+.系统完整结构化 UML Package Diagram
+image::spec/packages-full-structured.svg[系统完整结构化 UML Package Diagram,width=100%]
+--
+
+[.diagram.plate]
+--
+[[packages-full-ddd]]
+.系统完整 DDD UML Package Diagram
+image::spec/packages-full-ddd.svg[系统完整 DDD UML Package Diagram,width=100%]
+--
+
+[.diagram.plate]
+--
+[[packages-files]]
+.源文件与配置文件组织
+image::spec/packages-files.svg[源文件与配置文件组织,width=100%]
 --
 
 ===== 认证与会话

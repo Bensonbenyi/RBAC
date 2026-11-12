@@ -399,6 +399,9 @@ def architecture():
 
 def generate():
  definitions();package_plates();u.activities();module_classes();auth_classes();write_flows();reads();shared();architecture()
+ from draw_supplement import generate as supplement
+ import sys
+ supplement(sys.modules[__name__])
  # Current diagrams replace earlier wide plates while retaining their source files
  # only in Git history. The document now references the portrait catalog.
  u.finish()

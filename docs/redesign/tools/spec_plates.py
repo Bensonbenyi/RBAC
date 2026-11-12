@@ -32,6 +32,18 @@ API 按最终资源划分 Controller。UserRoleController 和 RolePermissionCont
   s+='\n===== '+m.title+'模块\n'
   s+=plate(f'class-{m.key}-structured',m.title+'模块 结构化类图')
   s+=plate(f'class-{m.key}-ddd',m.title+'模块 DDD 类图')
+ s+='\n===== 领域对象类图\n'
+ s+=plate('domain-identity','DDD 领域对象 用户、角色、部门 类图')
+ s+=plate('domain-catalog','DDD 领域对象 业务系统、权限 类图')
+ s+='\n===== 共享持久化与适配器\n'
+ s+=plate('class-persistence','共享持久化适配器 类图')
+ s+=plate('adapter-insert','JPA 用户适配器 新建顺序图')
+ s+=plate('adapter-update','JPA 用户适配器 更新顺序图')
+ s+=plate('adapter-delete','JPA 用户关联清理与删除 顺序图')
+ s+='\n===== 完整包图与文件组织\n'
+ s+=plate('packages-full-structured','系统完整结构化 UML Package Diagram')
+ s+=plate('packages-full-ddd','系统完整 DDD UML Package Diagram')
+ s+=plate('packages-files','源文件与配置文件组织')
  s+='\n===== 认证与会话\n'
  s+=plate('class-auth','认证与实时鉴权 类图')
  s+='\n===== 授权关系\n'
