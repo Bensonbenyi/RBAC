@@ -1,0 +1,7 @@
+{
+  "interfaces": 34,
+  "figures": 78,
+  "signatureBoundCalls": 217,
+  "references": "resolved",
+  "endpointCoverage": "complete"
+}

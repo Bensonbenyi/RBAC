@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "pdf": "node export.mjs",
-    "diagrams": "python3 ../tools/draw_spec.py"
+    "audit:diagrams": "node audit-diagrams.mjs",
+    "diagrams": "python3 ../tools/draw_complete.py"
   },
   "dependencies": {
     "@asciidoctor/core": "3.0.4",

@@ -32,7 +32,7 @@ try{
  await page.evaluate(async()=>{
   await document.fonts.ready;await Promise.all([...document.images].map(i=>i.decode()));
   // Keep section introductions with the first figure.
-  for(const section of document.querySelectorAll('.sect2,.sect3')) {
+  for(const section of document.querySelectorAll('.sect2,.sect3,.sect4')) {
    const first=[...section.children].find(n=>n.classList.contains('diagram'));
    if(!first) continue;
    const group=document.createElement('div');group.className='plate-intro';
@@ -48,9 +48,9 @@ try{
    const first=section.querySelector(':scope > .sect3 > .plate-intro');
    if(h && first) first.prepend(h);
   }
-  for(const section of document.querySelectorAll('.sect2,.sect3')) {
+  for(const section of document.querySelectorAll('.sect2,.sect3,.sect4')) {
    const h=section.querySelector(':scope > h3,:scope > h4');
-   if(h && /共同契约与配置装配|错误与异常映射|故障处理/.test(h.textContent)) section.classList.add('keep-section');
+   if(h && /共同契约与配置装配|错误与异常映射|故障处理|对象拷贝与运行日志/.test(h.textContent)) section.classList.add('keep-section');
   }
   for(const table of document.querySelectorAll('.sect3 > table')) {
    if(table.rows[0]?.textContent.includes('字段') || table.rows[0]?.textContent.includes('输入对象')) table.classList.add('keep-table');
@@ -67,6 +67,9 @@ try{
   }
   for(const row of document.querySelectorAll('table.use-case tr')) {
    if(/^(主成功场景|扩展场景)/.test(row.cells[0]?.textContent.trim())) row.classList.add('scene-band');
+  }
+  for(const table of document.querySelectorAll('table')) {
+   if(table.rows[0]?.textContent.includes('领域对象')) table.classList.add('domain-state');
   }
   for(const a of document.querySelectorAll('#toc a')){
    const label=document.createElement('span');label.className='toc-label';label.textContent=a.textContent;
@@ -90,7 +93,8 @@ try{
  }
  if(!stable)throw Error('TOC pagination did not converge');
  const audit=await page.evaluate(()=>({images:document.images.length,broken:[...document.images].filter(i=>!i.naturalWidth).map(i=>i.src),headings:document.querySelectorAll('h2,h3,h4').length}));
- if(audit.broken.length)throw Error(JSON.stringify(audit));
+ const expectedFigures=(fs.readFileSync(source,'utf8').match(/^image::/gm)||[]).length;
+ if(audit.broken.length || audit.images!==expectedFigures)throw Error(JSON.stringify({expectedFigures,...audit}));
  fs.writeFileSync(htmlPath,await page.content());fs.writeFileSync(path.join(out,'export-check.json'),JSON.stringify(audit,null,2));
  console.log(`Exported ${pdf}; ${audit.images} figures; TOC converged.`);
 }finally{await browser.close();}

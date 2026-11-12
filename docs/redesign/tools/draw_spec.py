@@ -77,9 +77,9 @@ class D:
   marker={'dep':'open','call':'filled','reply':'open','real':'triangle','flow':'open','self':'filled'}.get(kind)
   self.svg.append(f'<path d="{p}" fill="none" stroke="black" stroke-width="1.4"'+(' stroke-dasharray="7 5"' if dash else '')+(f' marker-end="url(#{marker})"' if marker else '')+'/>')
  def note(self,x,y,w,lines):
-  h=24+len(lines)*25;self.rect(x,y,w,h)
-  for i,s in enumerate(lines):self.text(x+15,y+27+25*i,s,17,native=False)
-  v=self.view('UMLNoteView',left=x,top=y,width=w,height=h,text='\n'.join(lines),wordWrap=True)
+  h=24+len(lines)*29;self.rect(x,y,w,h)
+  for i,s in enumerate(lines):self.text(x+15,y+29+29*i,s,20,native=False)
+  v=self.view('UMLNoteView',left=x,top=y,width=w,height=h,text='\n'.join(lines),wordWrap=True,font='PingFang SC;20;0')
  def node(self,name,x,y,w,h,typ='UMLClass',ops=None,body=None):
   m=self.model(typ,name=name)
   v=self.view({'UMLClass':'UMLClassView','UMLInterface':'UMLInterfaceView','UMLPackage':'UMLPackageView'}[typ],m,left=x,top=y,width=w,height=h,subViews=[],stereotypeDisplay='label')
@@ -399,15 +399,22 @@ class Activity:
    v=self.d.view('UMLActionView',m,left=x-w/2,top=y-h/2,width=w,height=h,wordWrap=True,subViews=[])
    c=nc(v,m,x-w/2,y-h/2,w,h);v['subViews']=[c];v['nameCompartment']=ref(c)
    self.d.rect(x-w/2,y-h/2,w,h,14)
-   lines=text.split('\n')
-   for i,s in enumerate(lines):self.d.text(x,y-(len(lines)-1)*12+6+i*24,s,18,True,native=False)
+   lines=[]
+   for part in text.split('\n'):
+    current='';width=0
+    for char in part:
+     cw=22 if ord(char)>255 else 12
+     if width+cw>w-24:lines.append(current);current='';width=0
+     current+=char;width+=cw
+    if current:lines.append(current)
+   for i,s in enumerate(lines):self.d.text(x,y-(len(lines)-1)*14+7+i*28,s,22,True,native=False)
   else:
    v=self.d.view('UMLControlNodeView',m,left=x-w/2,top=y-h/2,width=w,height=h)
    if typ=='UMLDecisionNode':
     self.d.svg.append(f'<path d="M{x-w/2},{y} L{x},{y-h/2} L{x+w/2},{y} L{x},{y+h/2} Z" fill="white" stroke="black" stroke-width="1.4"/>')
-    self.d.text(x,y+6,text,17,True,native=False)
+    self.d.text(x,y+7,text,22,True,native=False)
     # ControlNodeView does not display a name; add separate editable text.
-    self.d.text(x,y+6,text,17,True);self.d.svg.pop()
+    self.d.text(x,y+7,text,22,True);self.d.svg.pop()
    else:
     if typ=='UMLActivityFinalNode':self.d.svg.append(f'<circle cx="{x}" cy="{y}" r="15" fill="white" stroke="black" stroke-width="1.4"/>')
     self.d.svg.append(f'<circle cx="{x}" cy="{y}" r="10" fill="black"/>')
@@ -470,4 +477,5 @@ def finish():
  print(f'{len(DIAGRAMS)} diagrams, {len(ids)} elements, {len(OPS)} operations; references resolved.')
 
 if __name__=='__main__':
- define_classes();packages();classes();sequences();activities();finish()
+ from draw_complete import generate
+ generate()

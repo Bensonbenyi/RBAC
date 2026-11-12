@@ -38,6 +38,8 @@ def lines(d,s,x,y,width,size=20,mid=False,gap=25):
 
 class Sequence:
  def __init__(self,stem,title,parts,height=1000,created=None):
+  height+=35
+  created={i:y+35 for i,y in (created or {}).items()}
   self.owner=obj('UMLInteraction',u.MODEL,name=title,ownedElements=[],participants=[],messages=[],fragments=[])
   u.MODEL['ownedElements'].append(self.owner)
   self.d=D(stem,title,900,height,'UMLSequenceDiagram',self.owner)
@@ -48,21 +50,23 @@ class Sequence:
    attr=obj('UMLAttribute',self.owner,name=name,type=ref(u.CLASSES[typ]));self.owner['ownedElements'].append(attr)
    m=obj('UMLLifeline',self.owner,name=name,represent=ref(attr));self.owner['participants'].append(m)
    v=self.d.view('UMLSeqLifelineView',m,left=x-95,top=top,width=190,height=height-top-35,subViews=[],stereotypeDisplay='label')
-   c=u.nc(v,m,x-95,top,190,90)
-   lp=obj('UMLLinePartView',v,model=ref(m),left=x,top=top+90,width=1,height=height-top-125,parentStyle=False,lineColor='#000000')
+   c=u.nc(v,m,x-95,top,190,125)
+   lp=obj('UMLLinePartView',v,model=ref(m),left=x,top=top+125,width=1,height=height-top-160,parentStyle=False,lineColor='#000000')
    v['subViews']=[c,lp];v['nameCompartment']=ref(c);v['linePart']=ref(lp)
-   self.d.rect(x-95,top,190,90)
-   self.d.text(x,top+24,name+':',18,True,native=False)
+   self.d.rect(x-95,top,190,125)
+   self.d.text(x,top+22,name+':',20,True,native=False)
    words=re.findall('[A-Z][a-z0-9]*|[A-Z]+(?=[A-Z]|$)',typ) or [typ]
    header=[];s=''
    for word in words:
-    if tw(s+word,17)>175:header.append(s);s=word
+    if tw(s+word,20)>175:header.append(s);s=word
     else:s+=word
    if s:header.append(s)
-   for j,t in enumerate(header):self.d.text(x,top+47+j*24,t,17,True,native=False)
-   self.d.line([(x,top+90),(x,height-35)],dash=True)
+   for j,t in enumerate(header):self.d.text(x,top+54+j*28,t,20,True,native=False)
+   self.d.line([(x,top+125),(x,height-35)],dash=True)
    self.parts.append((m,v,lp,x,typ))
  def msg(self,a,b,y,text,method=None,reply=False,end=None,create=False):
+  y+=35
+  if end is not None:end+=35
   self.n+=1;p,q=self.parts[a],self.parts[b];x,z=p[3],q[3]
   if end and not reply and not create:self.d.rect(z-5,y,10,end-y)
   pts=[(x,y),(z-95 if create else z,y)] if a!=b else [(x+5,y),(x+65,y),(x+65,y+32),(x+10,y+32)]
@@ -85,9 +89,11 @@ class Sequence:
   v['subViews'].append(activation);v['activation']=ref(activation)
  def frame(self,y,h,kind,guard):
   # Reuse the semantic CombinedFragment implementation with fixed local width.
+  y+=35
   proxy=object.__new__(u.Seq);proxy.d=self.d;proxy.owner=self.owner
   u.Seq.fragment(proxy,y,h,kind,guard)
  def note(self,y,text):
+  y+=35
   ss=wrap(text,800,20);h=len(ss)*25+28
   self.d.rect(35,y,830,h)
   for i,t in enumerate(ss):self.d.text(50,y+29+i*25,t,20,native=False)
@@ -115,6 +121,11 @@ def definitions():
    ret=m.domain+'Result' if action in ['create','get'] else 'PageResult' if action=='list' else 'void'
    for cls in [m.port,'Structured'+m.domain+'Service','Ddd'+m.domain+'Service']:op(cls,action,args,ret)
    op(m.controller,action,'request: '+m.domain+'DTO','HttpResponse')
+  dto_names={'user':('CreateUserDTO','UpdateUserDTO'),'department':('CreateDepartmentDTO','RenameDepartmentDTO'),'system':('CreateSystemDTO','RenameSystemDTO'),'permission':('CreatePermissionDTO','RenamePermissionDTO'),'role':('CreateRoleDTO','RenameRoleDTO')}
+  for action in ['create','update','delete']:
+   o=u.OPS[(m.controller,action)]
+   params=[('dto',dto_names[m.key][0])] if action=='create' else [('id','Long'),('dto',dto_names[m.key][1])] if action=='update' else [('id','Long')]
+   o['parameters']=[obj('UMLParameter',o,name=n,type=t,direction='in') for n,t in params]+[obj('UMLParameter',o,name='',type='HttpResponse',direction='return')]
   for name,args,ret in [('loadForChange','actorId: Long;cmd: ChangeCommand','ChangeData'),('insert','data: '+m.domain+'Data','Long'),('update','data: '+m.domain+'Data','void'),('delete','id: Long','void'),('query','actorId: Long;query: Query','QueryResult')]:op(m.store,name,args,ret)
   op(m.domain,m.domain,'data: '+m.domain+'Data','')
   for name,args in [('change','cmd: UpdateCommand'),('requireDeletable','references: ReferenceData')]:op(m.domain,name,args,m.domain if name=='create' else 'void',name=='create')
@@ -127,7 +138,7 @@ def definitions():
   for m in [MOD['user']] if name=='roles' else [MOD['role']]:
    for cls in [m.port,'Structured'+m.domain+'Service','Ddd'+m.domain+'Service']:op(cls,name,'actorId: Long;id: Long','QueryResult')
  for cls,names in [('UserStore',['removeRoles','removeRole']),('RoleStore',['grantPermission','removePermission'])]:
-  for name in names:op(cls,name,'cmd: RelationCommand')
+  for name in names:op(cls,name,'userId: Long' if name=='removeRoles' else 'cmd: RelationCommand')
  for name in ['changeProfile','revokeRole']:op('User',name,'cmd: UserChangeCommand')
  for name in ['grantPermission','revokePermission']:op('Role',name,'permissionId: Long')
  op('ScopePolicy','requireScope','data: ChangeData;actorId: Long')
@@ -154,11 +165,11 @@ def compact_class(d,name,x,y,w=380,methods=None,attrs=True):
   for a in m.get('attributes',[]):rows.append(('attr',a,'- '+a['name']+': '+str(a['type'])))
  for o in ops:
   args=[p['name']+': '+p['type'] for p in o['parameters'] if p['direction']!='return'];ret=next((p['type'] for p in o['parameters'] if p['direction']=='return'),'void')
-  rows.append(('op',o,'+ '+o['name']+'('+', '.join(args)+'): '+ret))
+  rows.append(('op',o,'+ '+o['name']+'('+', '.join(args)+')'+('' if o['name']==name else ': '+ret)))
  header=66 if m['_type']=='UMLInterface' else 44
- wrapped=[(kind,el,wrap(t,w-22,18)) for kind,el,t in rows]
- attrh=sum(len(ss)*23+8 for kind,_,ss in wrapped if kind=='attr') or 14
- oph=sum(len(ss)*23+8 for kind,_,ss in wrapped if kind=='op') or 14
+ wrapped=[(kind,el,wrap(t,w-22,20)) for kind,el,t in rows]
+ attrh=sum(len(ss)*28+8 for kind,_,ss in wrapped if kind=='attr') or 14
+ oph=sum(len(ss)*28+8 for kind,_,ss in wrapped if kind=='op') or 14
  h=header+attrh+oph
  v=d.view('UMLInterfaceView' if m['_type']=='UMLInterface' else 'UMLClassView',m,left=x,top=y,width=w,height=h,subViews=[],showOperationSignature=True,showVisibility=True,showType=True)
  c=u.nc(v,m,x,y,w,header);v['subViews'].append(c);v['nameCompartment']=ref(c)
@@ -169,12 +180,12 @@ def compact_class(d,name,x,y,w=380,methods=None,attrs=True):
  pos=y+header
  for kind,field,ct,sz in [('attr','attributeCompartment','UMLAttributeCompartmentView',attrh),('op','operationCompartment','UMLOperationCompartmentView',oph)]:
   cp=obj(ct,v,model=ref(m),left=x,top=pos,width=w,height=sz,subViews=[],parentStyle=True)
-  yp=pos+23
+  yp=pos+26
   for k,el,ss in wrapped:
    if k!=kind:continue
-   for j,t in enumerate(ss):d.text(x+10,yp+j*23,t,18,native=False)
-   lab=u.label(cp,'\n'.join(ss),x+8,yp-18,w-16,len(ss)*23+8,typ='UMLAttributeView' if kind=='attr' else 'UMLOperationView',model=ref(el),horizontalAlignment=0)
-   lab['font']='PingFang SC;18;0';lab['wordWrap']=True;cp['subViews'].append(lab);yp+=len(ss)*23+8
+   for j,t in enumerate(ss):d.text(x+10,yp+j*28,t,20,native=False)
+   lab=u.label(cp,'\n'.join(ss),x+8,yp-21,w-16,len(ss)*28+8,typ='UMLAttributeView' if kind=='attr' else 'UMLOperationView',model=ref(el),horizontalAlignment=0)
+   lab['font']='PingFang SC;20;0';lab['wordWrap']=True;cp['subViews'].append(lab);yp+=len(ss)*28+8
   v['subViews'].append(cp);v[field]=ref(cp);pos+=sz
   if kind=='attr':d.line([(x,pos),(x+w,pos)])
  for field,ct in [('receptionCompartment','UMLReceptionCompartmentView'),('templateParameterCompartment','UMLTemplateParameterCompartmentView')]:
@@ -192,7 +203,8 @@ def module_classes():
    svc=compact_class(d,prefix+m.domain+'Service',25,520,390,methods=['create','update','delete']+(['validateChange'] if mode=='structured' else []),attrs=False)
    store=compact_class(d,m.store,485,520,390,methods=['loadForChange','insert','update','delete'],attrs=False)
    d.edge(ctrl,port,[(415,240),(485,240)])
-   d.edge(svc,port,[(415,610),(452,610),(452,420),(680,420),(680,port[1]['top']+port[1]['height'])],True)
+   pb=port[1]['top']+port[1]['height']
+   d.edge(svc,port,[(415,610),(452,610),(452,pb+45),(680,pb+45),(680,pb)],True)
    d.edge(svc,store,[(415,725),(485,725)])
    if mode=='ddd':
     dm=compact_class(d,m.domain,25,925,650,methods=[m.domain,'change','requireDeletable'],attrs=False)
@@ -342,6 +354,33 @@ def shared():
  s.note(675,'PO 仅在 infrastructure 内使用；适配器以共享 Data 返回。日志记录操作与耗时，排除凭据。')
 
 
+def package_plates():
+ def box(d,name,x,y,w,h,body):
+  val=d.node(name,x,y,w,h,'UMLPackage')
+  for i,t in enumerate(body):d.text(x+w/2,y+72+i*29,t,20,True)
+  return val
+ d=D('01-structured-packages','结构化设计 包图',900,970,'UMLPackageDiagram')
+ api=box(d,'api',35,120,370,170,['Controller / DTO / VO','输入校验与身份读取'])
+ port=box(d,'service.port',495,120,370,190,['用例接口 / Command / Result','资源 Store 与 RbacReader','共享数据契约'])
+ svc=box(d,'service.structured',35,520,370,180,['按资源组织的事务脚本','业务校验与持久化编排'])
+ infra=box(d,'infrastructure',495,520,370,180,['JPA / PO / 端口适配器','security / logging / config'])
+ d.edge(api,port,[(405,205),(495,205)])
+ d.edge(svc,port,[(405,590),(450,590),(450,260),(495,260)])
+ d.edge(infra,port,[(680,502),(680,310)])
+ d.note(40,810,820,['API 与事务脚本均依赖共享契约，基础设施实现数据端口。','结构化服务在事务内执行操作权限、对象范围及业务规则校验。','选择 structured 时装配本套服务。'])
+ d=D('02-ddd-packages','DDD 设计 包图',900,1160,'UMLPackageDiagram')
+ api=box(d,'api',35,120,370,150,['Controller / DTO / VO'])
+ port=box(d,'service.port',505,120,360,190,['用例接口与输入输出','共享数据与持久化端口'])
+ app=box(d,'service.ddd.application',35,460,400,160,['事务边界与用例编排','权限及跨对象范围校验'])
+ domain=box(d,'service.ddd.domain',35,850,400,150,['实体状态与领域行为','对象不变量及授权规则'])
+ infra=box(d,'infrastructure',505,650,360,170,['persistence / security','logging / config'])
+ d.edge(api,port,[(405,200),(505,200)])
+ d.edge(app,port,[(435,530),(470,530),(470,260),(505,260)])
+ d.edge(app,domain,[(235,620),(235,832)])
+ d.edge(infra,port,[(685,632),(685,310)])
+ d.note(40,1040,820,['应用服务使用共享端口加载数据，以值构造领域对象并调用其行为。','领域层保持框架无关；选择 ddd 时装配应用服务。'])
+
+
 def architecture():
  # Same class contracts, selected beans; a package dependency diagram is more
  # accurate than inventing infrastructure nodes for a single-process deployment.
@@ -359,7 +398,7 @@ def architecture():
 
 
 def generate():
- definitions();u.packages();u.activities();module_classes();auth_classes();write_flows();reads();shared();architecture()
+ definitions();package_plates();u.activities();module_classes();auth_classes();write_flows();reads();shared();architecture()
  # Current diagrams replace earlier wide plates while retaining their source files
  # only in Git history. The document now references the portrait catalog.
  u.finish()

@@ -2,7 +2,7 @@
 from flow_catalog import MODULES, WRITES, READS, CASE_GROUPS, figures, entries
 
 def plate(stem,title,description=''):
- return f'\n[.diagram.plate]\n--\n[[{stem}]]\n.{title}\nimage::spec/{stem}.svg[{title},width=100%]\n'+(f'\n{description}\n' if description else '')+'--\n'
+ return f'\n[.diagram.plate]\n--\n[[{'uml-'+stem if stem[0].isdigit() else stem}]]\n.{title}\nimage::spec/{stem}.svg[{title},width=100%]\n'+(f'\n{description}\n' if description else '')+'--\n'
 
 def architecture():
  s='''=== 两套架构设计
@@ -37,7 +37,8 @@ API 按最终资源划分 Controller。UserRoleController 和 RolePermissionCont
  s+='\n===== 授权关系\n'
  s+=plate('class-relations-structured','授权关系 结构化类图')
  s+=plate('class-relations-ddd','授权关系 DDD 类图')
- s+='''[cols="23,35,42",options="header"]
+ s+='''[.keep-table]
+[cols="23,35,42",options="header"]
 |===
 |领域对象 |持有状态 |领域规则
 |User |id、username、name、phone、departmentId、roleIds |changeProfile 仅改姓名与手机号；assignRole 要求同部门且尚未分配；revokeRole 幂等撤销。
@@ -56,7 +57,7 @@ API 按最终资源划分 Controller。UserRoleController 和 RolePermissionCont
  s+=plate('flow-preflight','受保护请求 校验顺序图','公共流程适用于受保护查询和写操作。登录、匿名 CSRF 获取与幂等退出采用各自流程。服务在事务内复核操作资格和数据范围。')
  s+=plate('flow-copy','API 边界对象拷贝 顺序图','以新建用户为例；其余 DTO 与 VO 使用相同边界转换，分别声明允许拷贝的字段。')
  s+=plate('flow-adapter','持久化读取与对象拷贝 顺序图','适配器返回共享 Data；DDD 领域对象由应用服务以 Data 构造。集合关联通过专用持久化操作维护。')
- s+='''写操作的服务公开方法是事务边界。图中的加载包含本次需要的对象、归属、现有关系或引用计数；按具体用例读取所需字段。事务脚本 validateChange 逐条校验规则，DDD 构造与行为维护对象不变量，应用服务负责操作权限、跨对象存在性和范围校验。
+ s+='''写操作的服务公开方法是事务边界。图中的加载包含本次需要的对象、归属、现有关系或引用计数；按具体用例读取所需字段。新建时 data 的候选资料来自 Command，读取父节点、归属及唯一性信息；修改时领域对象从当前 Data 构造，changedData 取其更新后的状态。事务脚本 validateChange 逐条校验规则，DDD 构造与行为维护对象不变量，应用服务负责操作权限、跨对象存在性和范围校验。
 
 break 框的守卫为校验失败，成立时终止该用例后续交互。不存在返回 404，范围或操作权限拒绝返回 403，唯一性与引用冲突返回 409。数据库在写入或提交时仍可因并发发生约束冲突，整个事务回滚；数据库不可用返回 503，未预期异常返回 500。正常 HTTP 响应在事务提交成功后发送。
 
@@ -101,9 +102,5 @@ break 框的守卫为校验失败，成立时终止该用例后续交互。不�
 
 def usecase_mapping(cid):
  titles={slug:title for slug,title,_,_ in entries()};titles['session']='建立会话'
- rows=[]
- for slug in CASE_GROUPS[cid]:
-  for stem in figures(slug):
-   mode=' 结构化' if stem.endswith('-structured') else ' DDD' if stem.endswith('-ddd') else ''
-   rows.append('<<'+stem+','+titles[slug]+mode+'>>')
- return '对应顺序图：'+ '、'.join(rows)+'。'
+ slug=CASE_GROUPS[cid][0];stem=figures(slug)[0]
+ return '顺序图：<<'+stem+',查看对应交互>>。'

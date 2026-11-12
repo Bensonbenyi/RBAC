@@ -7,7 +7,7 @@ files=[R/n for n in ['README.md','VERSION','CHANGELOG.md','.gitignore','统一�
 for folder in ['assets/spec','sql']:
     files.extend(p for p in (R/folder).glob('*') if p.is_file())
 for stem in ['rbac-chen-v1','rbac-schema-v1']:files.extend((R/'assets').glob(stem+'.*'))
-files.extend((R/'tooling'/n) for n in ['package.json','package-lock.json','export.mjs','spec.css'])
+files.extend((R/'tooling'/n) for n in ['package.json','package-lock.json','export.mjs','audit-diagrams.mjs','spec.css'])
 files.extend((R/'tools').glob('*.py'))
 for name in ['流程配图覆盖清单.md','绘图规范与参考.md']:
     if (R/name).exists():files.append(R/name)

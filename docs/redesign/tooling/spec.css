@@ -181,3 +181,10 @@ table.use-case tr.scene-band td { background: #bfbfbf; color: #000; }
 @media print {
  .sect3:has(> .plate-intro) { break-before: page; }
 }
+
+@media print {
+ .sect4:has(> .plate-intro) { break-before: page; }
+ .plate-intro > h5:first-child { margin-top: 8pt; }
+}
+
+@media print { .domain-state { break-before: page; } }
