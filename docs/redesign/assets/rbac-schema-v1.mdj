@@ -1,0 +1,4182 @@
+{
+  "_type": "Project",
+  "_id": "schema-v3-project",
+  "name": "rbac-schema-v1",
+  "ownedElements": [
+    {
+      "_type": "UMLModel",
+      "_id": "schema-v3-model",
+      "_parent": {
+        "$ref": "schema-v3-project"
+      },
+      "name": "人工布局图元",
+      "ownedElements": [
+        {
+          "_type": "UMLClassDiagram",
+          "_id": "schema-v3",
+          "_parent": {
+            "$ref": "schema-v3-model"
+          },
+          "name": "可编辑基本图元",
+          "defaultDiagram": true,
+          "ownedViews": [
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-0",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;30;1",
+              "left": 645.0,
+              "top": 12,
+              "width": 510,
+              "height": 38,
+              "text": "统一权限管理系统  数据库表关系图",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-1",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;19;0",
+              "left": 577.0,
+              "top": 57,
+              "width": 646,
+              "height": 27,
+              "text": "7 张表  MySQL 8.4 / InnoDB  角色属于一个部门",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-2",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "510:285;680:285",
+              "lineStyle": 1,
+              "lineMode": 2
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-3",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "519.0:277.0;519.0:293.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "EllipseView",
+              "_id": "schema-v3-4",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 532.0,
+              "top": 280.0,
+              "width": 10,
+              "height": 10
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-5",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "680.0:294.0;661.0:285.0;680.0:276.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "EllipseView",
+              "_id": "schema-v3-6",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 643.0,
+              "top": 280.0,
+              "width": 10,
+              "height": 10
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-7",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;17;0",
+              "left": 561.0,
+              "top": 243,
+              "width": 68,
+              "height": 25,
+              "text": "部门归属",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-8",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "1120:285;1290:285",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-9",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "1129.0:277.0;1129.0:293.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-10",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "1139.0:277.0;1139.0:293.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-11",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "1290.0:294.0;1271.0:285.0;1290.0:276.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "EllipseView",
+              "_id": "schema-v3-12",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 1253.0,
+              "top": 280.0,
+              "width": 10,
+              "height": 10
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-13",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;17;0",
+              "left": 1145.5,
+              "top": 243,
+              "width": 119,
+              "height": 25,
+              "text": "user_id",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-14",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "220:364;220:660",
+              "lineStyle": 1,
+              "lineMode": 2
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-15",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "228.0:373.0;212.0:373.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-16",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "228.0:383.0;212.0:383.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-17",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "211.0:660.0;220.0:641.0;229.0:660.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "EllipseView",
+              "_id": "schema-v3-18",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 215.0,
+              "top": 623.0,
+              "width": 10,
+              "height": 10
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-19",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 245,
+              "top": 502,
+              "width": 234,
+              "height": 26,
+              "text": "department_id",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-20",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "1510:330;1510:520;400:520;400:660",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-21",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "1519.0:330.0;1510.0:349.0;1501.0:330.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "EllipseView",
+              "_id": "schema-v3-22",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 1505.0,
+              "top": 357.0,
+              "width": 10,
+              "height": 10
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-23",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "392.0:651.0;408.0:651.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-24",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "392.0:641.0;408.0:641.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-25",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 917.0,
+              "top": 477,
+              "width": 126,
+              "height": 26,
+              "text": "role_id",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-26",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "510:775;680:775",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-27",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "519.0:767.0;519.0:783.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-28",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "529.0:767.0;529.0:783.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-29",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "680.0:784.0;661.0:775.0;680.0:766.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "EllipseView",
+              "_id": "schema-v3-30",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 643.0,
+              "top": 770.0,
+              "width": 10,
+              "height": 10
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-31",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;17;0",
+              "left": 535.5,
+              "top": 733,
+              "width": 119,
+              "height": 25,
+              "text": "role_id",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-32",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "1120:775;1290:775",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-33",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "1120.0:766.0;1139.0:775.0;1120.0:784.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "EllipseView",
+              "_id": "schema-v3-34",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 1147.0,
+              "top": 770.0,
+              "width": 10,
+              "height": 10
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-35",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "1281.0:783.0;1281.0:767.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-36",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "1271.0:783.0;1271.0:767.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-37",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;0",
+              "left": 1101.0,
+              "top": 734,
+              "width": 208,
+              "height": 24,
+              "text": "permission_id",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-38",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "1510:922;1510:1030",
+              "lineStyle": 1,
+              "lineMode": 2
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-39",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "1519.0:922.0;1510.0:941.0;1501.0:922.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "EllipseView",
+              "_id": "schema-v3-40",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 1505.0,
+              "top": 949.0,
+              "width": 10,
+              "height": 10
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-41",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "1502.0:1021.0;1518.0:1021.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-42",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "1502.0:1011.0;1518.0:1011.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-43",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;17;0",
+              "left": 1540,
+              "top": 963,
+              "width": 153,
+              "height": 25,
+              "text": "system_id",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-44",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "160:170;160:120;35:120;35:310;70:310",
+              "lineStyle": 1,
+              "lineMode": 2
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-45",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "152.0:161.0;168.0:161.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "EllipseView",
+              "_id": "schema-v3-46",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 155.0,
+              "top": 138.0,
+              "width": 10,
+              "height": 10
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-47",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "70.0:319.0;51.0:310.0;70.0:301.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "EllipseView",
+              "_id": "schema-v3-48",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 33.0,
+              "top": 305.0,
+              "width": 10,
+              "height": 10
+            },
+            {
+              "_type": "RectangleView",
+              "_id": "schema-v3-49",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 70,
+              "top": 170,
+              "width": 440,
+              "height": 194
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-50",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "70:230;510:230",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-51",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;21;1",
+              "left": 84,
+              "top": 174,
+              "width": 60,
+              "height": 29,
+              "text": "部门",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-52",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 84,
+              "top": 201,
+              "width": 180,
+              "height": 26,
+              "text": "department",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-53",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;1",
+              "left": 82,
+              "top": 237,
+              "width": 60,
+              "height": 24,
+              "text": "字段名",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-54",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;1",
+              "left": 280,
+              "top": 237,
+              "width": 64,
+              "height": 24,
+              "text": "数据类型",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-55",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;1",
+              "left": 420,
+              "top": 237,
+              "width": 60,
+              "height": 24,
+              "text": "约束",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-56",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "70:262;510:262",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-57",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;1",
+              "left": 82,
+              "top": 268,
+              "width": 60,
+              "height": 26,
+              "text": "id",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-58",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;0",
+              "left": 280,
+              "top": 270,
+              "width": 96,
+              "height": 24,
+              "text": "BIGINT",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-59",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;14;0",
+              "left": 420,
+              "top": 272,
+              "width": 84,
+              "height": 22,
+              "text": "PK, NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-60",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "70:296;510:296",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-61",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 82,
+              "top": 302,
+              "width": 72,
+              "height": 26,
+              "text": "name",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-62",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;0",
+              "left": 280,
+              "top": 304,
+              "width": 192,
+              "height": 24,
+              "text": "VARCHAR(100)",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-63",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;14;0",
+              "left": 420,
+              "top": 306,
+              "width": 60,
+              "height": 22,
+              "text": "NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-64",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "70:330;510:330",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-65",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 82,
+              "top": 336,
+              "width": 162,
+              "height": 26,
+              "text": "parent_id",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-66",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;0",
+              "left": 280,
+              "top": 338,
+              "width": 96,
+              "height": 24,
+              "text": "BIGINT",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-67",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;14;0",
+              "left": 420,
+              "top": 340,
+              "width": 60,
+              "height": 22,
+              "text": "FK",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-68",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "268:230;268:364",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-69",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "408:230;408:364",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "RectangleView",
+              "_id": "schema-v3-70",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 680,
+              "top": 170,
+              "width": 440,
+              "height": 296
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-71",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "680:230;1120:230",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-72",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;21;1",
+              "left": 694,
+              "top": 174,
+              "width": 60,
+              "height": 29,
+              "text": "用户",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-73",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 694,
+              "top": 201,
+              "width": 144,
+              "height": 26,
+              "text": "app_user",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-74",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;1",
+              "left": 692,
+              "top": 237,
+              "width": 60,
+              "height": 24,
+              "text": "字段名",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-75",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;1",
+              "left": 890,
+              "top": 237,
+              "width": 64,
+              "height": 24,
+              "text": "数据类型",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-76",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;1",
+              "left": 1030,
+              "top": 237,
+              "width": 60,
+              "height": 24,
+              "text": "约束",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-77",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "680:262;1120:262",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-78",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;1",
+              "left": 692,
+              "top": 268,
+              "width": 60,
+              "height": 26,
+              "text": "id",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-79",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;0",
+              "left": 890,
+              "top": 270,
+              "width": 96,
+              "height": 24,
+              "text": "BIGINT",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-80",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;14;0",
+              "left": 1030,
+              "top": 272,
+              "width": 84,
+              "height": 22,
+              "text": "PK, NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-81",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "680:296;1120:296",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-82",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 692,
+              "top": 302,
+              "width": 144,
+              "height": 26,
+              "text": "username",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-83",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;0",
+              "left": 890,
+              "top": 304,
+              "width": 176,
+              "height": 24,
+              "text": "VARCHAR(64)",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-84",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;14;0",
+              "left": 1030,
+              "top": 306,
+              "width": 60,
+              "height": 22,
+              "text": "NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-85",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "680:330;1120:330",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-86",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 692,
+              "top": 336,
+              "width": 72,
+              "height": 26,
+              "text": "name",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-87",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;0",
+              "left": 890,
+              "top": 338,
+              "width": 192,
+              "height": 24,
+              "text": "VARCHAR(100)",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-88",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;14;0",
+              "left": 1030,
+              "top": 340,
+              "width": 60,
+              "height": 22,
+              "text": "NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-89",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "680:364;1120:364",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-90",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 692,
+              "top": 370,
+              "width": 90,
+              "height": 26,
+              "text": "phone",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-91",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;0",
+              "left": 890,
+              "top": 372,
+              "width": 176,
+              "height": 24,
+              "text": "VARCHAR(20)",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-92",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;14;0",
+              "left": 1030,
+              "top": 374,
+              "width": 60,
+              "height": 22,
+              "text": "NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-93",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "680:398;1120:398",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-94",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 692,
+              "top": 404,
+              "width": 234,
+              "height": 26,
+              "text": "department_id",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-95",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;0",
+              "left": 890,
+              "top": 406,
+              "width": 96,
+              "height": 24,
+              "text": "BIGINT",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-96",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;14;0",
+              "left": 1030,
+              "top": 408,
+              "width": 60,
+              "height": 22,
+              "text": "FK",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-97",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "878:230;878:432",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-98",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "1018:230;1018:432",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-99",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "680:432;1120:432",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-100",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;17;0",
+              "left": 692,
+              "top": 439,
+              "width": 187,
+              "height": 25,
+              "text": "唯一：username",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "RectangleView",
+              "_id": "schema-v3-101",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 1290,
+              "top": 170,
+              "width": 440,
+              "height": 160
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-102",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "1290:230;1730:230",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-103",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;21;1",
+              "left": 1304,
+              "top": 174,
+              "width": 126,
+              "height": 29,
+              "text": "用户角色关联",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-104",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 1304,
+              "top": 201,
+              "width": 162,
+              "height": 26,
+              "text": "user_role",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-105",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;1",
+              "left": 1302,
+              "top": 237,
+              "width": 60,
+              "height": 24,
+              "text": "字段名",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-106",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;1",
+              "left": 1500,
+              "top": 237,
+              "width": 64,
+              "height": 24,
+              "text": "数据类型",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-107",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;1",
+              "left": 1640,
+              "top": 237,
+              "width": 60,
+              "height": 24,
+              "text": "约束",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-108",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "1290:262;1730:262",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-109",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;1",
+              "left": 1302,
+              "top": 268,
+              "width": 126,
+              "height": 26,
+              "text": "user_id",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-110",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;0",
+              "left": 1500,
+              "top": 270,
+              "width": 96,
+              "height": 24,
+              "text": "BIGINT",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-111",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;14;0",
+              "left": 1640,
+              "top": 272,
+              "width": 140,
+              "height": 22,
+              "text": "PK, FK, NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-112",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "1290:296;1730:296",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-113",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;1",
+              "left": 1302,
+              "top": 302,
+              "width": 126,
+              "height": 26,
+              "text": "role_id",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-114",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;0",
+              "left": 1500,
+              "top": 304,
+              "width": 96,
+              "height": 24,
+              "text": "BIGINT",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-115",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;14;0",
+              "left": 1640,
+              "top": 306,
+              "width": 140,
+              "height": 22,
+              "text": "PK, FK, NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-116",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "1488:230;1488:330",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-117",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "1628:230;1628:330",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "RectangleView",
+              "_id": "schema-v3-118",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 70,
+              "top": 660,
+              "width": 440,
+              "height": 228
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-119",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "70:720;510:720",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-120",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;21;1",
+              "left": 84,
+              "top": 664,
+              "width": 60,
+              "height": 29,
+              "text": "角色",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-121",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 84,
+              "top": 691,
+              "width": 72,
+              "height": 26,
+              "text": "role",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-122",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;1",
+              "left": 82,
+              "top": 727,
+              "width": 60,
+              "height": 24,
+              "text": "字段名",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-123",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;1",
+              "left": 280,
+              "top": 727,
+              "width": 64,
+              "height": 24,
+              "text": "数据类型",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-124",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;1",
+              "left": 420,
+              "top": 727,
+              "width": 60,
+              "height": 24,
+              "text": "约束",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-125",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "70:752;510:752",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-126",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;1",
+              "left": 82,
+              "top": 758,
+              "width": 60,
+              "height": 26,
+              "text": "id",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-127",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;0",
+              "left": 280,
+              "top": 760,
+              "width": 96,
+              "height": 24,
+              "text": "BIGINT",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-128",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;14;0",
+              "left": 420,
+              "top": 762,
+              "width": 84,
+              "height": 22,
+              "text": "PK, NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-129",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "70:786;510:786",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-130",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 82,
+              "top": 792,
+              "width": 72,
+              "height": 26,
+              "text": "name",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-131",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;0",
+              "left": 280,
+              "top": 794,
+              "width": 192,
+              "height": 24,
+              "text": "VARCHAR(100)",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-132",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;14;0",
+              "left": 420,
+              "top": 796,
+              "width": 60,
+              "height": 22,
+              "text": "NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-133",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "70:820;510:820",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-134",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 82,
+              "top": 826,
+              "width": 234,
+              "height": 26,
+              "text": "department_id",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-135",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;0",
+              "left": 280,
+              "top": 828,
+              "width": 96,
+              "height": 24,
+              "text": "BIGINT",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-136",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;14;0",
+              "left": 420,
+              "top": 830,
+              "width": 84,
+              "height": 22,
+              "text": "FK, NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-137",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "268:720;268:854",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-138",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "408:720;408:854",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-139",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "70:854;510:854",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-140",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;17;0",
+              "left": 82,
+              "top": 861,
+              "width": 408,
+              "height": 25,
+              "text": "唯一：(department_id, name)",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "RectangleView",
+              "_id": "schema-v3-141",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 680,
+              "top": 660,
+              "width": 440,
+              "height": 160
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-142",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "680:720;1120:720",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-143",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;21;1",
+              "left": 694,
+              "top": 664,
+              "width": 126,
+              "height": 29,
+              "text": "角色权限关联",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-144",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 694,
+              "top": 691,
+              "width": 270,
+              "height": 26,
+              "text": "role_permission",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-145",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;1",
+              "left": 692,
+              "top": 727,
+              "width": 60,
+              "height": 24,
+              "text": "字段名",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-146",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;1",
+              "left": 890,
+              "top": 727,
+              "width": 64,
+              "height": 24,
+              "text": "数据类型",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-147",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;1",
+              "left": 1030,
+              "top": 727,
+              "width": 60,
+              "height": 24,
+              "text": "约束",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-148",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "680:752;1120:752",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-149",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;1",
+              "left": 692,
+              "top": 758,
+              "width": 126,
+              "height": 26,
+              "text": "role_id",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-150",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;0",
+              "left": 890,
+              "top": 760,
+              "width": 96,
+              "height": 24,
+              "text": "BIGINT",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-151",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;14;0",
+              "left": 1030,
+              "top": 762,
+              "width": 140,
+              "height": 22,
+              "text": "PK, FK, NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-152",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "680:786;1120:786",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-153",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;1",
+              "left": 692,
+              "top": 792,
+              "width": 234,
+              "height": 26,
+              "text": "permission_id",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-154",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;0",
+              "left": 890,
+              "top": 794,
+              "width": 96,
+              "height": 24,
+              "text": "BIGINT",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-155",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;14;0",
+              "left": 1030,
+              "top": 796,
+              "width": 140,
+              "height": 22,
+              "text": "PK, FK, NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-156",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "878:720;878:820",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-157",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "1018:720;1018:820",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "RectangleView",
+              "_id": "schema-v3-158",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 1290,
+              "top": 660,
+              "width": 440,
+              "height": 262
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-159",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "1290:720;1730:720",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-160",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;21;1",
+              "left": 1304,
+              "top": 664,
+              "width": 60,
+              "height": 29,
+              "text": "权限",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-161",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 1304,
+              "top": 691,
+              "width": 180,
+              "height": 26,
+              "text": "permission",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-162",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;1",
+              "left": 1302,
+              "top": 727,
+              "width": 60,
+              "height": 24,
+              "text": "字段名",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-163",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;1",
+              "left": 1500,
+              "top": 727,
+              "width": 64,
+              "height": 24,
+              "text": "数据类型",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-164",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;1",
+              "left": 1640,
+              "top": 727,
+              "width": 60,
+              "height": 24,
+              "text": "约束",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-165",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "1290:752;1730:752",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-166",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;1",
+              "left": 1302,
+              "top": 758,
+              "width": 60,
+              "height": 26,
+              "text": "id",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-167",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;0",
+              "left": 1500,
+              "top": 760,
+              "width": 96,
+              "height": 24,
+              "text": "BIGINT",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-168",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;14;0",
+              "left": 1640,
+              "top": 762,
+              "width": 84,
+              "height": 22,
+              "text": "PK, NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-169",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "1290:786;1730:786",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-170",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 1302,
+              "top": 792,
+              "width": 162,
+              "height": 26,
+              "text": "system_id",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-171",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;0",
+              "left": 1500,
+              "top": 794,
+              "width": 96,
+              "height": 24,
+              "text": "BIGINT",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-172",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;14;0",
+              "left": 1640,
+              "top": 796,
+              "width": 84,
+              "height": 22,
+              "text": "FK, NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-173",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "1290:820;1730:820",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-174",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 1302,
+              "top": 826,
+              "width": 72,
+              "height": 26,
+              "text": "code",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-175",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;0",
+              "left": 1500,
+              "top": 828,
+              "width": 192,
+              "height": 24,
+              "text": "VARCHAR(100)",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-176",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;14;0",
+              "left": 1640,
+              "top": 830,
+              "width": 60,
+              "height": 22,
+              "text": "NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-177",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "1290:854;1730:854",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-178",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 1302,
+              "top": 860,
+              "width": 72,
+              "height": 26,
+              "text": "name",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-179",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;0",
+              "left": 1500,
+              "top": 862,
+              "width": 192,
+              "height": 24,
+              "text": "VARCHAR(100)",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-180",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;14;0",
+              "left": 1640,
+              "top": 864,
+              "width": 60,
+              "height": 22,
+              "text": "NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-181",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "1488:720;1488:888",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-182",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "1628:720;1628:888",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-183",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "1290:888;1730:888",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-184",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;17;0",
+              "left": 1302,
+              "top": 895,
+              "width": 340,
+              "height": 25,
+              "text": "唯一：(system_id, code)",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "RectangleView",
+              "_id": "schema-v3-185",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 1290,
+              "top": 1030,
+              "width": 440,
+              "height": 228
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-186",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "1290:1090;1730:1090",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-187",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;21;1",
+              "left": 1304,
+              "top": 1034,
+              "width": 84,
+              "height": 29,
+              "text": "业务系统",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-188",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 1304,
+              "top": 1061,
+              "width": 270,
+              "height": 26,
+              "text": "business_system",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-189",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;1",
+              "left": 1302,
+              "top": 1097,
+              "width": 60,
+              "height": 24,
+              "text": "字段名",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-190",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;1",
+              "left": 1500,
+              "top": 1097,
+              "width": 64,
+              "height": 24,
+              "text": "数据类型",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-191",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;1",
+              "left": 1640,
+              "top": 1097,
+              "width": 60,
+              "height": 24,
+              "text": "约束",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-192",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "1290:1122;1730:1122",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-193",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;1",
+              "left": 1302,
+              "top": 1128,
+              "width": 60,
+              "height": 26,
+              "text": "id",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-194",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;0",
+              "left": 1500,
+              "top": 1130,
+              "width": 96,
+              "height": 24,
+              "text": "BIGINT",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-195",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;14;0",
+              "left": 1640,
+              "top": 1132,
+              "width": 84,
+              "height": 22,
+              "text": "PK, NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-196",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "1290:1156;1730:1156",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-197",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 1302,
+              "top": 1162,
+              "width": 180,
+              "height": 26,
+              "text": "system_key",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-198",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;0",
+              "left": 1500,
+              "top": 1164,
+              "width": 176,
+              "height": 24,
+              "text": "VARCHAR(64)",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-199",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;14;0",
+              "left": 1640,
+              "top": 1166,
+              "width": 60,
+              "height": 22,
+              "text": "NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-200",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "1290:1190;1730:1190",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-201",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 1302,
+              "top": 1196,
+              "width": 72,
+              "height": 26,
+              "text": "name",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-202",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;0",
+              "left": 1500,
+              "top": 1198,
+              "width": 192,
+              "height": 24,
+              "text": "VARCHAR(100)",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-203",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;14;0",
+              "left": 1640,
+              "top": 1200,
+              "width": 60,
+              "height": 22,
+              "text": "NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-204",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "1488:1090;1488:1224",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-205",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "1628:1090;1628:1224",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-206",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "1290:1224;1730:1224",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-207",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;17;0",
+              "left": 1302,
+              "top": 1231,
+              "width": 221,
+              "height": 25,
+              "text": "唯一：system_key",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-208",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 70,
+              "top": 1092,
+              "width": 522,
+              "height": 26,
+              "text": "PK：主键　FK：外键　NN：非空；未标 NN 的列可空。",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-209",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 70,
+              "top": 1127,
+              "width": 576,
+              "height": 26,
+              "text": "两个关联表均以两列共同组成主键；五张实体表的 id 为自增主键。",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-210",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "80:1200;220:1200",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-211",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "89.0:1192.0;89.0:1208.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-212",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "99.0:1192.0;99.0:1208.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-213",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "220.0:1209.0;201.0:1200.0;220.0:1191.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "EllipseView",
+              "_id": "schema-v3-214",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 183.0,
+              "top": 1195.0,
+              "width": 10,
+              "height": 10
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-215",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 250,
+              "top": 1188,
+              "width": 90,
+              "height": 26,
+              "text": "一对零或多",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-216",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "70:1250;140:1250",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-217",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;17;0",
+              "left": 160,
+              "top": 1239,
+              "width": 187,
+              "height": 25,
+              "text": "实线：外键参与子表主键",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "schema-v3-218",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "650:1250;720:1250",
+              "lineStyle": 1,
+              "lineMode": 2
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-219",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;17;0",
+              "left": 740,
+              "top": 1239,
+              "width": 204,
+              "height": 25,
+              "text": "虚线：外键不参与子表主键",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "schema-v3-220",
+              "_parent": {
+                "$ref": "schema-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 70,
+              "top": 1282,
+              "width": 630,
+              "height": 26,
+              "text": "角色分配需同时检查操作权限、操作者与目标用户的部门，以及角色所属部门。",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

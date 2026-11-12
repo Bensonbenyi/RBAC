@@ -1,0 +1,1815 @@
+{
+  "_type": "Project",
+  "_id": "chen-v3-project",
+  "name": "rbac-chen-v1",
+  "ownedElements": [
+    {
+      "_type": "UMLModel",
+      "_id": "chen-v3-model",
+      "_parent": {
+        "$ref": "chen-v3-project"
+      },
+      "name": "人工布局图元",
+      "ownedElements": [
+        {
+          "_type": "UMLClassDiagram",
+          "_id": "chen-v3",
+          "_parent": {
+            "$ref": "chen-v3-model"
+          },
+          "name": "可编辑基本图元",
+          "defaultDiagram": true,
+          "ownedViews": [
+            {
+              "_type": "UMLTextView",
+              "_id": "chen-v3-0",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;30;1",
+              "left": 665.0,
+              "top": 14,
+              "width": 510,
+              "height": 38,
+              "text": "统一权限管理系统  陈氏 ER 图",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            },
+            {
+              "_type": "RectangleView",
+              "_id": "chen-v3-1",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 177,
+              "top": 238,
+              "width": 166,
+              "height": 64
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "chen-v3-2",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;25;0",
+              "left": 230.0,
+              "top": 253,
+              "width": 60,
+              "height": 33,
+              "text": "部门",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            },
+            {
+              "_type": "RectangleView",
+              "_id": "chen-v3-3",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 817,
+              "top": 238,
+              "width": 166,
+              "height": 64
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "chen-v3-4",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;25;0",
+              "left": 870.0,
+              "top": 253,
+              "width": 60,
+              "height": 33,
+              "text": "用户",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            },
+            {
+              "_type": "RectangleView",
+              "_id": "chen-v3-5",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 177,
+              "top": 698,
+              "width": 166,
+              "height": 64
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "chen-v3-6",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;25;0",
+              "left": 230.0,
+              "top": 713,
+              "width": 60,
+              "height": 33,
+              "text": "角色",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            },
+            {
+              "_type": "RectangleView",
+              "_id": "chen-v3-7",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 1167,
+              "top": 698,
+              "width": 166,
+              "height": 64
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "chen-v3-8",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;25;0",
+              "left": 1220.0,
+              "top": 713,
+              "width": 60,
+              "height": 33,
+              "text": "权限",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            },
+            {
+              "_type": "RectangleView",
+              "_id": "chen-v3-9",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 1517,
+              "top": 238,
+              "width": 166,
+              "height": 64
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "chen-v3-10",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;25;0",
+              "left": 1550.0,
+              "top": 253,
+              "width": 100,
+              "height": 33,
+              "text": "业务系统",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "chen-v3-11",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "218.15384615384616:238.0;121.13272790533496:163.8073801629032",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "EllipseView",
+              "_id": "chen-v3-12",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 24,
+              "top": 113,
+              "width": 132,
+              "height": 54
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "chen-v3-13",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;20;0",
+              "left": 50.0,
+              "top": 127,
+              "width": 80,
+              "height": 28,
+              "text": "部门编号",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "chen-v3-14",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "50.0:151;130.0:151",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "chen-v3-15",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "214.66666666666666:302.0;123.09396963928965:366.63955084285436",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "EllipseView",
+              "_id": "chen-v3-16",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 24,
+              "top": 363,
+              "width": 132,
+              "height": 54
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "chen-v3-17",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;20;0",
+              "left": 50.0,
+              "top": 377,
+              "width": 80,
+              "height": 28,
+              "text": "部门名称",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "chen-v3-18",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "858.1538461538462:238.0;761.132727905335:163.8073801629032",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "EllipseView",
+              "_id": "chen-v3-19",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 664,
+              "top": 113,
+              "width": 132,
+              "height": 54
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "chen-v3-20",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;20;0",
+              "left": 690.0,
+              "top": 127,
+              "width": 80,
+              "height": 28,
+              "text": "用户编号",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "chen-v3-21",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "690.0:151;770.0:151",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "chen-v3-22",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "901.939393939394:238.0;908.3641390781514:131.99170521050215",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "EllipseView",
+              "_id": "chen-v3-23",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 844,
+              "top": 78,
+              "width": 132,
+              "height": 54
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "chen-v3-24",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;20;0",
+              "left": 880.0,
+              "top": 92,
+              "width": 60,
+              "height": 28,
+              "text": "用户名",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "chen-v3-25",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "945.5384615384615:238.0;1051.794125237776:163.33385794102227",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "EllipseView",
+              "_id": "chen-v3-26",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 1019,
+              "top": 113,
+              "width": 132,
+              "height": 54
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "chen-v3-27",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;20;0",
+              "left": 1055.0,
+              "top": 127,
+              "width": 60,
+              "height": 28,
+              "text": "姓名",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "chen-v3-28",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "983.0:301.6190476190476;1061.699392877884:331.5997687153844",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "EllipseView",
+              "_id": "chen-v3-29",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 1044,
+              "top": 323,
+              "width": 132,
+              "height": 54
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "chen-v3-30",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;20;0",
+              "left": 1080.0,
+              "top": 337,
+              "width": 60,
+              "height": 28,
+              "text": "手机号",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "chen-v3-31",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "237.41176470588235:762.0;158.310662151404:874.0598952855111",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "EllipseView",
+              "_id": "chen-v3-32",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 74,
+              "top": 873,
+              "width": 132,
+              "height": 54
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "chen-v3-33",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;20;0",
+              "left": 100.0,
+              "top": 887,
+              "width": 80,
+              "height": 28,
+              "text": "角色编号",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "chen-v3-34",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "100.0:911;180.0:911",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "chen-v3-35",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "282.5882352941176:762.0;361.689337848596:874.0598952855111",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "EllipseView",
+              "_id": "chen-v3-36",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 314,
+              "top": 873,
+              "width": 132,
+              "height": 54
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "chen-v3-37",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;20;0",
+              "left": 340.0,
+              "top": 887,
+              "width": 80,
+              "height": 28,
+              "text": "角色名称",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "chen-v3-38",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "1214.235294117647:762.0;1087.4439369521176:875.4448985165265",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "EllipseView",
+              "_id": "chen-v3-39",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 994,
+              "top": 873,
+              "width": 132,
+              "height": 54
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "chen-v3-40",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;20;0",
+              "left": 1020.0,
+              "top": 887,
+              "width": 80,
+              "height": 28,
+              "text": "权限编号",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "chen-v3-41",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "1020.0:911;1100.0:911",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "chen-v3-42",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "1250.0:762.0;1250.0:953.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "EllipseView",
+              "_id": "chen-v3-43",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 1184,
+              "top": 953,
+              "width": 132,
+              "height": 54
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "chen-v3-44",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;20;0",
+              "left": 1210.0,
+              "top": 967,
+              "width": 80,
+              "height": 28,
+              "text": "权限编码",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "chen-v3-45",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "1287.6470588235295:762.0;1421.3777315361936:875.6710718057645",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "EllipseView",
+              "_id": "chen-v3-46",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 1384,
+              "top": 873,
+              "width": 132,
+              "height": 54
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "chen-v3-47",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;20;0",
+              "left": 1410.0,
+              "top": 887,
+              "width": 80,
+              "height": 28,
+              "text": "权限名称",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "chen-v3-48",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "1563.7333333333333:238.0;1457.7613558392868:144.49531397584136",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "EllipseView",
+              "_id": "chen-v3-49",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 1364,
+              "top": 93,
+              "width": 132,
+              "height": 54
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "chen-v3-50",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;20;0",
+              "left": 1390.0,
+              "top": 107,
+              "width": 80,
+              "height": 28,
+              "text": "系统编号",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "chen-v3-51",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "1390.0:131;1470.0:131",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "chen-v3-52",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "1605.6470588235295:238.0;1625.2476620439509:126.92991508427808",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "EllipseView",
+              "_id": "chen-v3-53",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 1564,
+              "top": 73,
+              "width": 132,
+              "height": 54
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "chen-v3-54",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;20;0",
+              "left": 1590.0,
+              "top": 87,
+              "width": 80,
+              "height": 28,
+              "text": "系统标识",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "chen-v3-55",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "1624.0:302.0;1670.6407246683484:364.1876328911312",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "EllipseView",
+              "_id": "chen-v3-56",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 1624,
+              "top": 363,
+              "width": 132,
+              "height": 54
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "chen-v3-57",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;20;0",
+              "left": 1650.0,
+              "top": 377,
+              "width": 80,
+              "height": 28,
+              "text": "系统名称",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "chen-v3-58",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "504:270;580:224;656:270;580:316;504:270",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "chen-v3-59",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;21;0",
+              "left": 550.0,
+              "top": 256,
+              "width": 60,
+              "height": 29,
+              "text": "属于",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "chen-v3-60",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "343.0:270.0;504.0:270.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "chen-v3-61",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "656.0:270.0;817.0:270.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "chen-v3-62",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;21;0",
+              "left": 385.0,
+              "top": 284,
+              "width": 60,
+              "height": 29,
+              "text": "1",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "chen-v3-63",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;21;0",
+              "left": 730.0,
+              "top": 224,
+              "width": 60,
+              "height": 29,
+              "text": "N",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "chen-v3-64",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "184:490;260:444;336:490;260:536;184:490",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "chen-v3-65",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;21;0",
+              "left": 230.0,
+              "top": 476,
+              "width": 60,
+              "height": 29,
+              "text": "设有",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "chen-v3-66",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "260.0:302.0;260.0:444.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "chen-v3-67",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "263.0:534.1842105263157;263.0:698.0000000000001",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "chen-v3-68",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "257.0:534.1842105263157;257.0:698.0000000000001",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "chen-v3-69",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;21;0",
+              "left": 200.0,
+              "top": 359,
+              "width": 60,
+              "height": 29,
+              "text": "1",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "chen-v3-70",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;21;0",
+              "left": 200.0,
+              "top": 599,
+              "width": 60,
+              "height": 29,
+              "text": "N",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "chen-v3-71",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "574:500;650:454;726:500;650:546;574:500",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "chen-v3-72",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;21;0",
+              "left": 620.0,
+              "top": 486,
+              "width": 60,
+              "height": 29,
+              "text": "分配",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "chen-v3-73",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "865.2173913043479:302.0;680.1587301587301:472.25396825396825",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "chen-v3-74",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "611.5064935064935:522.7012987012987;314.2608695652174:698.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "chen-v3-75",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;21;0",
+              "left": 775.0,
+              "top": 389,
+              "width": 60,
+              "height": 29,
+              "text": "M",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "chen-v3-76",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;21;0",
+              "left": 405.0,
+              "top": 574,
+              "width": 60,
+              "height": 29,
+              "text": "N",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "chen-v3-77",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "684:730;760:684;836:730;760:776;684:730",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "chen-v3-78",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;21;0",
+              "left": 730.0,
+              "top": 716,
+              "width": 60,
+              "height": 29,
+              "text": "拥有",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "chen-v3-79",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "343.0:730.0;684.0:730.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "chen-v3-80",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "836.0:730.0;1167.0:730.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "chen-v3-81",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;21;0",
+              "left": 485.0,
+              "top": 684,
+              "width": 60,
+              "height": 29,
+              "text": "M",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "chen-v3-82",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;21;0",
+              "left": 970.0,
+              "top": 684,
+              "width": 60,
+              "height": 29,
+              "text": "N",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "chen-v3-83",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "1434:490;1510:444;1586:490;1510:536;1434:490",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "chen-v3-84",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;21;0",
+              "left": 1480.0,
+              "top": 476,
+              "width": 60,
+              "height": 29,
+              "text": "定义",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "chen-v3-85",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "1586.909090909091:302.0;1525.0834132310642:453.1294343240652",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "chen-v3-86",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "1482.5733322986448:519.3996484965479;1289.0896181699052:698.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "chen-v3-87",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "1477.2306412112891:516.1659144173592;1280.243715163428:698.0000000000002",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "chen-v3-88",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;21;0",
+              "left": 1560.0,
+              "top": 374,
+              "width": 60,
+              "height": 29,
+              "text": "1",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "chen-v3-89",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;21;0",
+              "left": 1370.0,
+              "top": 609,
+              "width": 60,
+              "height": 29,
+              "text": "N",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "chen-v3-90",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "379:185;455:139;531:185;455:231;379:185",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "chen-v3-91",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;21;0",
+              "left": 425.0,
+              "top": 171,
+              "width": 60,
+              "height": 29,
+              "text": "下设",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "chen-v3-92",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "343:250;379:185",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "chen-v3-93",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "455:139;455:80;260:80;260:238",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "chen-v3-94",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;19;0",
+              "left": 347.0,
+              "top": 206,
+              "width": 76,
+              "height": 27,
+              "text": "1（父）",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "chen-v3-95",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;19;0",
+              "left": 307.0,
+              "top": 48,
+              "width": 76,
+              "height": 27,
+              "text": "N（子）",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "chen-v3-96",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 515.0,
+              "top": 1037,
+              "width": 810,
+              "height": 26,
+              "text": "矩形：实体　菱形：联系　椭圆：属性　下划线：键　双线：全参与　1 / M / N：最大基数",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "chen-v3-97",
+              "_parent": {
+                "$ref": "chen-v3"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;19;0",
+              "left": 568.5,
+              "top": 1071,
+              "width": 703,
+              "height": 27,
+              "text": "角色必须属于一个部门；部门管理员仅可分配本部门角色。用户暂按至多一个部门。",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
