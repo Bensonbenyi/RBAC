@@ -14,6 +14,7 @@ const source=path.join(root,'统一权限管理系统需求与详细设计说明
 const out=path.join(root,'build');fs.mkdirSync(out,{recursive:true});
 const pdf=path.join(root,`统一权限管理系统需求与详细设计说明书-v${version}.pdf`);
 const doc=asciidoctor.loadFile(source,{safe:'safe',standalone:true});
+if(doc.getRevisionNumber()!==version)throw Error('Document revision does not match VERSION');
 if(doc.getSections().length!==7)throw Error('Expected seven chapters');
 let html=doc.convert();
 html=html.replace('<h1>统一权限管理系统需求与详细设计说明书</h1>','<h1>统一权限管理系统<br>需求与详细设计说明书</h1>')

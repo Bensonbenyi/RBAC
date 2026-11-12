@@ -1,5 +1,5 @@
 {
-  "version": "3.2.1",
+  "version": "3.2.2",
   "pages": 122,
   "pageSizesPt": [
     [
@@ -13,5 +13,7 @@
   "interfaces": 34,
   "diagramTextClipping": 0,
   "diagramTextCollisions": 0,
-  "signatureBoundCalls": 226
+  "signatureBoundCalls": 226,
+  "coverVersion": "3.2.2",
+  "unresolvedVersionPlaceholders": 0
 }

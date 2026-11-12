@@ -537,6 +537,7 @@ AsciiDoc 为说明书正文源文件，PDF 从该源文件和本目录图片生�
 text='\n'.join(parts)
 # Keep explanations with their full-page diagram instead of creating a short text page.
 text=re.sub(r'(\[\.diagram\.plate\]\n--\n(?:(?!\n--\n).)*?)(\n--\n\n)([^\n\[=|.][^\n]*)(\n\n)', r'\1\n\n\3\n--\n\n', text, flags=re.S)
-text=text.replace('v3.0,',f'v{VERSION},').replace('版本为 {VERSION}。',f'版本为 {VERSION}。')
+text=text.replace('{VERSION}',VERSION)
+assert '{VERSION}' not in text
 (R/'统一权限管理系统需求与详细设计说明书.adoc').write_text(text)
 print('Written complete 7-chapter specification with',len(cases),'use cases and',len(TABLES),'table dictionaries.')
