@@ -1,6 +1,6 @@
 -- RBAC 第一版评审草案；MySQL 8.4 LTS / InnoDB。
 -- 在选定的空数据库中执行；不创建数据库、不删除已有表、不预置管理员。
--- 暂按用户至多一个部门；每个角色必须属于一个部门。
+-- 用户与角色均属于一个部门。
 SET NAMES utf8mb4;
 
 CREATE TABLE department (
@@ -19,7 +19,7 @@ CREATE TABLE app_user (
     username VARCHAR(64) NOT NULL COMMENT '用户名；全局唯一且区分大小写',
     name VARCHAR(100) NOT NULL COMMENT '姓名',
     phone VARCHAR(20) CHARACTER SET ascii COLLATE ascii_bin NOT NULL COMMENT '手机号；格式由 API 校验',
-    department_id BIGINT NULL COMMENT '所属部门；暂允许未分配',
+    department_id BIGINT NOT NULL COMMENT '所属部门',
     PRIMARY KEY (id),
     UNIQUE KEY uk_app_user_username (username),
     KEY idx_app_user_department (department_id),
@@ -86,3 +86,13 @@ CREATE TABLE role_permission (
         REFERENCES permission (id) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_as_cs COMMENT='角色与权限关联';
 
+
+CREATE TABLE login_session (
+ id CHAR(36) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+ user_id BIGINT NOT NULL,
+ system_key VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
+ expires_at TIMESTAMP(6) NOT NULL,
+ revoked_at TIMESTAMP(6) NULL,
+ PRIMARY KEY(id), KEY idx_session_user(user_id), KEY idx_session_expiry(expires_at),
+ CONSTRAINT fk_session_user FOREIGN KEY(user_id) REFERENCES app_user(id) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_as_cs COMMENT='技术登录会话';

@@ -1,0 +1,92 @@
+diff --git a/backend/pom.xml b/backend/pom.xml
+index a4b84ed..31409fa 100644
+--- a/backend/pom.xml
++++ b/backend/pom.xml
+@@ -32,6 +32,7 @@
+ 		<clonefactory.version>0.0.2</clonefactory.version>
+ 	</properties>
+ 	<dependencies>
++ <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-security-oauth2-resource-server</artifactId></dependency>
+ 		<dependency>
+ 			<groupId>org.springframework.boot</groupId>
+ 			<artifactId>spring-boot-starter-actuator</artifactId>
+diff --git a/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/security/RbacIntegrationConfiguration.java b/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/security/RbacIntegrationConfiguration.java
+new file mode 100644
+index 0000000..0e6e3fa
+--- /dev/null
++++ b/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/security/RbacIntegrationConfiguration.java
+@@ -0,0 +1,24 @@
++package cn.edu.xmu.projectmgt.infrastructure.security;
++import cn.edu.xmu.projectmgt.infrastructure.identity.client.UnifiedIdentityClient;
++import org.springframework.beans.factory.annotation.Value;
++import org.springframework.context.annotation.*;
++import org.springframework.core.io.Resource;
++import org.springframework.security.converter.RsaKeyConverters;
++import org.springframework.security.oauth2.jwt.*;
++import org.springframework.security.web.SecurityFilterChain;
++import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
++import org.springframework.security.config.annotation.web.builders.HttpSecurity;
++import org.springframework.security.config.http.SessionCreationPolicy;
++import org.springframework.web.client.RestClient;
++@Configuration @Profile("rbac-integration")
++public class RbacIntegrationConfiguration {
++ @Bean JwtDecoder rbacJwtDecoder(@Value("${app.identity.public-key}") Resource resource)throws Exception{
++  java.security.interfaces.RSAPublicKey key;try(var in=resource.getInputStream()){key=RsaKeyConverters.x509().convert(in);}
++  var decoder=NimbusJwtDecoder.withPublicKey(key).build();decoder.setJwtValidator(JwtValidators.createDefaultWithIssuer("rbac"));return decoder;
++ }
++ @Bean SecurityFilterChain rbacSecurity(HttpSecurity http,JwtDecoder decoder,UnifiedIdentityClient identity,@Value("${app.identity.base-url}") String base)throws Exception{
++  var factory=new org.springframework.http.client.JdkClientHttpRequestFactory(java.net.http.HttpClient.newBuilder().connectTimeout(java.time.Duration.ofSeconds(3)).build());factory.setReadTimeout(java.time.Duration.ofSeconds(5));
++  var rest=RestClient.builder().baseUrl(base).requestFactory(factory).build();
++  return http.csrf(c->c.disable()).sessionManagement(c->c.sessionCreationPolicy(SessionCreationPolicy.STATELESS)).authorizeHttpRequests(c->c.anyRequest().permitAll()).addFilterBefore(new RbacIntegrationFilter(decoder,identity,rest),UsernamePasswordAuthenticationFilter.class).build();
++ }
++}
+diff --git a/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/security/RbacIntegrationFilter.java b/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/security/RbacIntegrationFilter.java
+new file mode 100644
+index 0000000..72d82d8
+--- /dev/null
++++ b/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/security/RbacIntegrationFilter.java
+@@ -0,0 +1,44 @@
++package cn.edu.xmu.projectmgt.infrastructure.security;
++import cn.edu.xmu.projectmgt.infrastructure.identity.client.UnifiedIdentityClient;
++import jakarta.servlet.*;import jakarta.servlet.http.*;
++import org.springframework.web.filter.OncePerRequestFilter;
++import org.springframework.web.client.*;
++import org.springframework.security.oauth2.jwt.*;
++import org.springframework.security.core.context.SecurityContextHolder;
++import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
++import org.springframework.security.core.authority.SimpleGrantedAuthority;
++import org.slf4j.Logger;import org.slf4j.LoggerFactory;
++import java.io.IOException;import java.time.Instant;
++/** Adapter for the selected integration routes; business services retain their own rules. */
++public class RbacIntegrationFilter extends OncePerRequestFilter {
++ private static final Logger log=LoggerFactory.getLogger(RbacIntegrationFilter.class);
++ private final JwtDecoder decoder;private final UnifiedIdentityClient identity;private final RestClient rest;
++ public RbacIntegrationFilter(JwtDecoder decoder,UnifiedIdentityClient identity,RestClient rest){this.decoder=decoder;this.identity=identity;this.rest=rest;}
++ public record Allowed(boolean allowed){}
++ @Override protected void doFilterInternal(HttpServletRequest request,HttpServletResponse response,FilterChain chain)throws ServletException,IOException{
++  long start=System.nanoTime();
++  try{
++   if(request.getRequestURI().equals("/actuator/health")){chain.doFilter(request,response);return;}
++   String auth=request.getHeader("Authorization");if(auth==null||!auth.startsWith("Bearer ")){error(response,401,"UNAUTHENTICATED");return;}
++   Jwt jwt=decoder.decode(auth.substring(7));if(jwt.getAudience().size()!=1 || !jwt.getAudience().contains("course-project-management") || jwt.getExpiresAt()==null || !Instant.now().isBefore(jwt.getExpiresAt())){error(response,401,"UNAUTHENTICATED");return;}
++   var me=identity.currentUser(auth);if(!jwt.getSubject().equals(me.subject())){error(response,401,"UNAUTHENTICATED");return;}
++   String operation=operation(request.getMethod(),request.getRequestURI());if(operation==null){error(response,403,"FORBIDDEN");return;}
++   var decision=rest.get().uri("/auth/api-permissions/{operation}",operation).header("Authorization",auth).retrieve().body(Allowed.class);
++   if(decision==null||!decision.allowed()){error(response,403,"FORBIDDEN");return;}
++   var authorities=me.permissions().stream().map(SimpleGrantedAuthority::new).toList();
++   SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(me.subject(),null,authorities));chain.doFilter(request,response);
++  }catch(JwtException e){error(response,401,"UNAUTHENTICATED");}
++  catch(HttpClientErrorException e){int status=e.getStatusCode().value();error(response,status==401||status==403?status:503,status==401?"UNAUTHENTICATED":status==403?"FORBIDDEN":"IDENTITY_SERVICE_UNAVAILABLE");}
++  catch(RestClientException e){error(response,503,"IDENTITY_SERVICE_UNAVAILABLE");}
++  finally{SecurityContextHolder.clearContext();log.debug("integration method={} path={} status={} elapsedMicros={}",request.getMethod(),request.getRequestURI(),response.getStatus(),(System.nanoTime()-start)/1000);}
++ }
++ static String operation(String method,String path){
++  if(path.equals("/terms"))return switch(method){case "GET"->"listTerms";case "POST"->"createTerm";default->null;};
++  if(path.matches("/terms/[1-9][0-9]*"))return switch(method){case "PATCH"->"updateTerm";case "DELETE"->"deleteTerm";default->null;};
++  if(path.equals("/admin/courses")&&method.equals("GET"))return "listAdminCourses";
++  if(path.matches("/courses/[1-9][0-9]*")&&method.equals("GET"))return "getCourse";
++  if(path.matches("/courses/[1-9][0-9]*/review")&&method.equals("POST"))return "reviewCourse";
++  return null;
++ }
++ private static void error(HttpServletResponse response,int status,String code)throws IOException{response.setStatus(status);response.setContentType("application/json;charset=UTF-8");response.getWriter().write("{\"code\":\""+code+"\",\"message\":\""+(status==503?"身份服务暂不可用":status==401?"请先登录":"无操作权限")+"\"}");}
++}

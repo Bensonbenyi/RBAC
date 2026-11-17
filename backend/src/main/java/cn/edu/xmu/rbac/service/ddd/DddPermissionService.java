@@ -1,0 +1,50 @@
+package cn.edu.xmu.rbac.service.ddd;
+
+import cn.edu.xmu.rbac.service.port.*;
+import cn.edu.xmu.rbac.service.security.AccessPolicy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+@Transactional
+@ConditionalOnProperty(name = "app.backend-strategy", havingValue = "ddd")
+public class DddPermissionService implements PermissionUseCase {
+  private static final Logger log = LoggerFactory.getLogger(DddPermissionService.class);
+  private final ManagementStore store;
+  private final AccessPolicy access;
+
+  public DddPermissionService(ManagementStore store, AccessPolicy access) {
+    this.store = store;
+    this.access = access;
+  }
+
+  public Data.Page<Data.Permission> list(Data.Identity actor, Long systemId, int page, int size) {
+    access.require(actor, "permission.manage");
+    return store.permissions(systemId, page, size);
+  }
+
+  public Data.Permission create(Data.Identity actor, Long systemId, Data.CreatePermission command) {
+    access.require(actor, "permission.manage");
+    store.system(systemId);
+    log.debug("createPermission actor={}", actor.userId());
+    return store.createPermission(systemId, command);
+  }
+
+  public void update(Data.Identity actor, Long id, Data.Name command) {
+    access.require(actor, "permission.manage");
+    var entity = new cn.edu.xmu.rbac.service.ddd.domain.Permission(store.permission(id));
+    entity.rename(command.name());
+    store.renamePermission(id, entity.name());
+    log.debug("renamePermission actor={} target={}", actor.userId(), id);
+  }
+
+  public void delete(Data.Identity actor, Long id) {
+    access.require(actor, "permission.manage");
+    store.permission(id);
+    store.deletePermission(id);
+    log.debug("deletePermission actor={} target={}", actor.userId(), id);
+  }
+}
