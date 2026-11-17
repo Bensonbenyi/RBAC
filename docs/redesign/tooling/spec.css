@@ -151,7 +151,7 @@ table.use-case tr.scene-band td { background: #bfbfbf; color: #000; }
 
 /* v3: every page uses the V2 A4 portrait text area. */
 @media print {
- .sect1 { break-before: page; }
+ .sect1, .page-section { break-before: page; }
  #content > .sect1:first-child { break-before: auto; }
  .diagram { break-inside: avoid; margin: 12pt 0; }
  .diagram .imageblock { margin: 0; }
@@ -204,4 +204,11 @@ table.use-case tr.scene-band td { background: #bfbfbf; color: #000; }
  .diagram img[src*="v33/sys-"], .diagram img[src*="v33/perm-"] { max-height: 146mm; }
  .plate-intro > h2:first-child { margin-top: 0; }
  table.use-case { break-inside: avoid; }
+}
+
+#toc a { line-height: 14pt; }
+caption.title { font-size:10.5pt; text-align:center; font-weight:400; padding:0 0 5pt; }
+
+@media print {
+ .sect3:has(> .use-case-body) { break-before: page; }
 }

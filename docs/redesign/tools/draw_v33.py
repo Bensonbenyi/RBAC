@@ -70,7 +70,7 @@ def core_classes():
  for mode,prefix in [('structured','Structured'),('ddd','Ddd')]:
   for name in ['UserController','UserUseCase','ManagementStore','User','Role']:u.CLASSES.pop(name,None)
   d=D('core-'+mode,('结构化' if mode=='structured' else 'DDD')+' 核心设计类图',900,1180)
-  specs=[('UserController',[],[('assign','user: Identifier;role: Identifier','void')],'boundary'),('UserUseCase',[],[('assign','actor: Identity;user: Identifier;role: Identifier','void')],''),(prefix+'UserService',[],[('assign','actor: Identity;user: Identifier;role: Identifier','void')],'control'),('ManagementStore',[],[('user','id: Identifier','UserData'),('assignRole','user: Identifier;role: Identifier','void')],''),('User',[('username','String'),('name','String'),('phone','String')],[('changeProfile','name: String;phone: String','void'),('assignRole','role: Identifier','void')] if mode=='ddd' else [],'entity'),('Role',[('code','String'),('name','String')],[('grantPermission','permission: Identifier','void')] if mode=='ddd' else [],'entity')]
+  specs=[('UserController',[],[('assign','user: Identifier;role: Identifier','void')],'boundary'),('UserUseCase',[],[('assign','actor: Identity;user: Identifier;role: Identifier','void')],''),(prefix+'UserService',[],[('assign','actor: Identity;user: Identifier;role: Identifier','void')],'control'),('ManagementStore',[],[('user','id: Identifier','UserData'),('assignRole','user: Identifier;role: Identifier','void')],''),('User',[('username','String'),('name','String'),('phone','String')],[('changeProfile','name: String;phone: String','void'),('assignRole','role: Identifier','void')] if mode=='ddd' else [],'entity'),('Role',[('name','String')],[('grantPermission','permission: Identifier','void')] if mode=='ddd' else [],'entity')]
   nodes={}
   # Short diagram method signatures keep prose at subsystem level elsewhere.
   for name,attrs,methods,stereo in specs:
@@ -91,6 +91,32 @@ def sequence_for(op,mode):
  label='共享' if shared else '结构化' if mode=='structured' else 'DDD'
  stem=op.key.lower()+('-shared' if shared else '-'+mode)
  prefix='Structured' if mode=='structured' else 'Ddd'
+ domain_changes={
+  'AUTH-04':('User','changeProfile(command)','user(actor.userId)','updateUser(本人, profile)'),
+  'USER-04':('User','changeProfile(command)','user(id)','updateUser(id, profile)'),
+  'USER-07':('User','assignRole(role, actorDepartment)','user / role；userRoles','assignRole(user, role)'),
+  'USER-08':('User','revokeRole(roleId)','user / role；userRoles','revokeRole(user, role)'),
+  'ROLE-04':('Role','rename(name)','role(id)','renameRole(id, name)'),
+  'ROLE-07':('Role','grantPermission(permission)','role / permission；rolePermissions','grantPermission(role, permission)'),
+  'ROLE-08':('Role','revokePermission(permissionId)','role / permission；rolePermissions','revokePermission(role, permission)'),
+  'DEPT-03':('Department','rename(name)','department(id)','renameDepartment(id, name)'),
+  'SYS-03':('System','rename(name)','system(id)','renameSystem(id, name)'),
+  'PERM-03':('Permission','rename(name)','permission(id)','renamePermission(id, name)')}
+ if mode=='ddd' and op.key in domain_changes:
+  entity,change,load,save=domain_changes[op.key]
+  module='User' if op.key=='AUTH-04' else op.module
+  s=Sequence(stem,f'{op.key} DDD {op.title}',[('api','AuthController' if op.key=='AUTH-04' else module+'Controller'),('app','Ddd'+module+'Service'),('domain',entity),('store','ManagementStore')],height=1280,created={2:560})
+  s.msg(0,1,300,op.function+'(actor, 校验后的输入)',end=1090)
+  s.msg(1,3,405,load,end=500)
+  s.msg(3,1,500,'当前对象及关联',reply=True)
+  s.msg(1,2,560,'构造领域对象',create=True)
+  s.msg(1,2,755,change,end=850)
+  s.msg(2,1,850,'更新后的领域状态 / 业务异常',reply=True)
+  s.msg(1,3,950,save,end=1020)
+  s.msg(3,1,1020,'持久化结果',reply=True)
+  s.msg(1,0,1090,op.result,reply=True)
+  s.note(1160,'应用服务先执行 AccessPolicy 权限与部门检查；本人资料使用当前身份。领域对象维护状态，存储端口保存变化；写失败回滚。')
+  return
  if shared:
   parts=[('client','Browser'),('api','IdentityUserController' if op.key=='AUTH-07' else 'AuthController'),('service','AuthService'),('store','SessionStore' if op.key=='AUTH-03' else 'ManagementStore')]
  elif op.key=='AUTH-04':parts=[('client','Browser'),('api','AuthController'),('service',prefix+'UserService'),('store','ManagementStore')]
@@ -169,7 +195,7 @@ def files_and_integration():
  for title,x,y,w,h,body in [
  ('backend/src/main/java/cn/edu/xmu/rbac',50,110,800,350,['api/auth user role department system permission identity','service/port 共享用例与存储端口','service/structured 五个事务脚本 Service','service/ddd 应用服务与 domain 领域对象','infrastructure/persistence security logging bootstrap']),
  ('backend/src/main/resources',50,520,800,160,['application.yaml 运行配置   logback-spring.xml 分层日志','db/migration/V1__rbac.sql 数据库迁移']),
- ('frontend/src',50,740,380,150,['App.vue 入口   auth.ts 凭据','views/ 页面   router.ts 路由']),
+ ('frontend/src',50,740,380,150,['App.vue 入口   auth.ts 凭据','views/ 页面   main.ts 路由']),
  ('deploy / tooling',480,740,370,150,['stack.yaml 容器编排','测试 构建 备份 部署脚本']),
  ('vendor / integrations / docs',50,950,800,150,['vendor/clonefactory 教师源码与许可','integrations/ 固定上游版本与适配补丁   docs/ 文档和图稿'])]:d.node(title,x,y,w,h,'UMLPackage',body=body)
  d=D('class-auth-shared','共享认证模块类图',900,1150)

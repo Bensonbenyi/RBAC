@@ -29,6 +29,7 @@ v3.3.0, 2026-11-17
 
 
 
+.术语定义
 [cols="2,6",options="header"]
 |===
 |术语 |定义
@@ -46,6 +47,7 @@ v3.3.0, 2026-11-17
 
 === 参考资料
 
+.参考资料及使用范围
 [cols="3,5",options="header"]
 |===
 |参考资料 |使用范围
@@ -69,6 +71,7 @@ v3.3.0, 2026-11-17
 
 
 
+.需求清单
 [cols="2,6",options="header"]
 |===
 |需求编号 |需求名称
@@ -89,6 +92,7 @@ v3.3.0, 2026-11-17
 
 === 业务约束
 
+.编号与约束
 [cols="1,7",options="header"]
 |===
 |编号 |约束
@@ -208,6 +212,7 @@ image::v33/session-table.svg[技术会话表关系,width=100%]
 
 === 数据字典
 
+.表名与职责
 [cols="2,2,5,4",options="header"]
 |===
 |表名 |职责 |主要字段与键 |约束
@@ -313,6 +318,7 @@ image::v33/domain.svg[DDD 领域对象关系,width=100%]
 ==== 认证与鉴权
 
 
+.功能用例概述
 [role="use-case",cols="2,7",options="header"]
 |===
 |项目 |内容
@@ -329,6 +335,7 @@ image::v33/domain.svg[DDD 领域对象关系,width=100%]
 ===== AUTH-01 登录
 
 
+.接口调用说明
 [cols="2,7",options="header"]
 |===
 |调用说明 |内容
@@ -353,6 +360,7 @@ image::v33/auth-01-shared.svg[AUTH-01 共享认证交互,width=100%]
 ===== AUTH-02 读取本人资料和权限
 
 
+.接口调用说明
 [cols="2,7",options="header"]
 |===
 |调用说明 |内容
@@ -377,6 +385,7 @@ image::v33/auth-02-shared.svg[AUTH-02 共享认证交互,width=100%]
 ===== AUTH-03 退出
 
 
+.接口调用说明
 [cols="2,7",options="header"]
 |===
 |调用说明 |内容
@@ -401,6 +410,7 @@ image::v33/auth-03-shared.svg[AUTH-03 共享认证交互,width=100%]
 ===== AUTH-04 修改本人资料
 
 
+.接口调用说明
 [cols="2,7",options="header"]
 |===
 |调用说明 |内容
@@ -434,6 +444,7 @@ image::v33/auth-04-ddd.svg[AUTH-04 DDD 详细交互,width=100%]
 ===== AUTH-05 检查操作权限
 
 
+.接口调用说明
 [cols="2,7",options="header"]
 |===
 |调用说明 |内容
@@ -458,6 +469,7 @@ image::v33/auth-05-shared.svg[AUTH-05 共享认证交互,width=100%]
 ===== AUTH-06 检查接入 API 权限
 
 
+.接口调用说明
 [cols="2,7",options="header"]
 |===
 |调用说明 |内容
@@ -482,6 +494,7 @@ image::v33/auth-06-shared.svg[AUTH-06 共享认证交互,width=100%]
 ===== AUTH-07 查询统一身份
 
 
+.接口调用说明
 [cols="2,7",options="header"]
 |===
 |调用说明 |内容
@@ -515,6 +528,7 @@ image::v33/class-auth-shared.svg[共享认证模块类图,width=100%]
 ==== 用户管理
 
 
+.功能用例概述
 [role="use-case",cols="2,7",options="header"]
 |===
 |项目 |内容
@@ -531,6 +545,7 @@ image::v33/class-auth-shared.svg[共享认证模块类图,width=100%]
 ===== USER-01 查询本部门用户
 
 
+.接口调用说明
 [cols="2,7",options="header"]
 |===
 |调用说明 |内容
@@ -564,6 +579,7 @@ image::v33/user-01-ddd.svg[USER-01 DDD 详细交互,width=100%]
 ===== USER-02 查询用户详情
 
 
+.接口调用说明
 [cols="2,7",options="header"]
 |===
 |调用说明 |内容
@@ -597,6 +613,7 @@ image::v33/user-02-ddd.svg[USER-02 DDD 详细交互,width=100%]
 ===== USER-03 新建用户
 
 
+.接口调用说明
 [cols="2,7",options="header"]
 |===
 |调用说明 |内容
@@ -630,6 +647,7 @@ image::v33/user-03-ddd.svg[USER-03 DDD 详细交互,width=100%]
 ===== USER-04 修改用户资料
 
 
+.接口调用说明
 [cols="2,7",options="header"]
 |===
 |调用说明 |内容
@@ -663,6 +681,7 @@ image::v33/user-04-ddd.svg[USER-04 DDD 详细交互,width=100%]
 ===== USER-05 删除用户
 
 
+.接口调用说明
 [cols="2,7",options="header"]
 |===
 |调用说明 |内容
@@ -696,6 +715,7 @@ image::v33/user-05-ddd.svg[USER-05 DDD 详细交互,width=100%]
 ===== USER-06 查询用户角色
 
 
+.接口调用说明
 [cols="2,7",options="header"]
 |===
 |调用说明 |内容
@@ -729,6 +749,7 @@ image::v33/user-06-ddd.svg[USER-06 DDD 详细交互,width=100%]
 ===== USER-07 分配用户角色
 
 
+.接口调用说明
 [cols="2,7",options="header"]
 |===
 |调用说明 |内容
@@ -762,6 +783,7 @@ image::v33/user-07-ddd.svg[USER-07 DDD 详细交互,width=100%]
 ===== USER-08 撤销用户角色
 
 
+.接口调用说明
 [cols="2,7",options="header"]
 |===
 |调用说明 |内容
@@ -815,6 +837,7 @@ image::v33/class-ddd-user.svg[用户管理 DDD 模块类图,width=100%]
 ==== 角色授权
 
 
+.功能用例概述
 [role="use-case",cols="2,7",options="header"]
 |===
 |项目 |内容
@@ -831,6 +854,7 @@ image::v33/class-ddd-user.svg[用户管理 DDD 模块类图,width=100%]
 ===== ROLE-01 查询本部门角色
 
 
+.接口调用说明
 [cols="2,7",options="header"]
 |===
 |调用说明 |内容
@@ -864,6 +888,7 @@ image::v33/role-01-ddd.svg[ROLE-01 DDD 详细交互,width=100%]
 ===== ROLE-02 查询角色详情
 
 
+.接口调用说明
 [cols="2,7",options="header"]
 |===
 |调用说明 |内容
@@ -897,6 +922,7 @@ image::v33/role-02-ddd.svg[ROLE-02 DDD 详细交互,width=100%]
 ===== ROLE-03 新建角色
 
 
+.接口调用说明
 [cols="2,7",options="header"]
 |===
 |调用说明 |内容
@@ -930,6 +956,7 @@ image::v33/role-03-ddd.svg[ROLE-03 DDD 详细交互,width=100%]
 ===== ROLE-04 重命名角色
 
 
+.接口调用说明
 [cols="2,7",options="header"]
 |===
 |调用说明 |内容
@@ -963,6 +990,7 @@ image::v33/role-04-ddd.svg[ROLE-04 DDD 详细交互,width=100%]
 ===== ROLE-05 删除角色
 
 
+.接口调用说明
 [cols="2,7",options="header"]
 |===
 |调用说明 |内容
@@ -996,6 +1024,7 @@ image::v33/role-05-ddd.svg[ROLE-05 DDD 详细交互,width=100%]
 ===== ROLE-06 查询角色权限
 
 
+.接口调用说明
 [cols="2,7",options="header"]
 |===
 |调用说明 |内容
@@ -1029,6 +1058,7 @@ image::v33/role-06-ddd.svg[ROLE-06 DDD 详细交互,width=100%]
 ===== ROLE-07 授予角色权限
 
 
+.接口调用说明
 [cols="2,7",options="header"]
 |===
 |调用说明 |内容
@@ -1062,6 +1092,7 @@ image::v33/role-07-ddd.svg[ROLE-07 DDD 详细交互,width=100%]
 ===== ROLE-08 撤销角色权限
 
 
+.接口调用说明
 [cols="2,7",options="header"]
 |===
 |调用说明 |内容
@@ -1115,6 +1146,7 @@ image::v33/class-ddd-role.svg[角色授权 DDD 模块类图,width=100%]
 ==== 部门目录
 
 
+.功能用例概述
 [role="use-case",cols="2,7",options="header"]
 |===
 |项目 |内容
@@ -1131,6 +1163,7 @@ image::v33/class-ddd-role.svg[角色授权 DDD 模块类图,width=100%]
 ===== DEPT-01 查询部门
 
 
+.接口调用说明
 [cols="2,7",options="header"]
 |===
 |调用说明 |内容
@@ -1164,6 +1197,7 @@ image::v33/dept-01-ddd.svg[DEPT-01 DDD 详细交互,width=100%]
 ===== DEPT-02 新建部门
 
 
+.接口调用说明
 [cols="2,7",options="header"]
 |===
 |调用说明 |内容
@@ -1197,6 +1231,7 @@ image::v33/dept-02-ddd.svg[DEPT-02 DDD 详细交互,width=100%]
 ===== DEPT-03 重命名部门
 
 
+.接口调用说明
 [cols="2,7",options="header"]
 |===
 |调用说明 |内容
@@ -1230,6 +1265,7 @@ image::v33/dept-03-ddd.svg[DEPT-03 DDD 详细交互,width=100%]
 ===== DEPT-04 删除部门
 
 
+.接口调用说明
 [cols="2,7",options="header"]
 |===
 |调用说明 |内容
@@ -1283,6 +1319,7 @@ image::v33/class-ddd-department.svg[部门目录 DDD 模块类图,width=100%]
 ==== 系统目录
 
 
+.功能用例概述
 [role="use-case",cols="2,7",options="header"]
 |===
 |项目 |内容
@@ -1299,6 +1336,7 @@ image::v33/class-ddd-department.svg[部门目录 DDD 模块类图,width=100%]
 ===== SYS-01 查询业务系统
 
 
+.接口调用说明
 [cols="2,7",options="header"]
 |===
 |调用说明 |内容
@@ -1332,6 +1370,7 @@ image::v33/sys-01-ddd.svg[SYS-01 DDD 详细交互,width=100%]
 ===== SYS-02 新建业务系统
 
 
+.接口调用说明
 [cols="2,7",options="header"]
 |===
 |调用说明 |内容
@@ -1365,6 +1404,7 @@ image::v33/sys-02-ddd.svg[SYS-02 DDD 详细交互,width=100%]
 ===== SYS-03 重命名业务系统
 
 
+.接口调用说明
 [cols="2,7",options="header"]
 |===
 |调用说明 |内容
@@ -1398,6 +1438,7 @@ image::v33/sys-03-ddd.svg[SYS-03 DDD 详细交互,width=100%]
 ===== SYS-04 删除业务系统
 
 
+.接口调用说明
 [cols="2,7",options="header"]
 |===
 |调用说明 |内容
@@ -1451,6 +1492,7 @@ image::v33/class-ddd-system.svg[系统目录 DDD 模块类图,width=100%]
 ==== 权限目录
 
 
+.功能用例概述
 [role="use-case",cols="2,7",options="header"]
 |===
 |项目 |内容
@@ -1467,6 +1509,7 @@ image::v33/class-ddd-system.svg[系统目录 DDD 模块类图,width=100%]
 ===== PERM-01 查询权限
 
 
+.接口调用说明
 [cols="2,7",options="header"]
 |===
 |调用说明 |内容
@@ -1500,6 +1543,7 @@ image::v33/perm-01-ddd.svg[PERM-01 DDD 详细交互,width=100%]
 ===== PERM-02 新建权限
 
 
+.接口调用说明
 [cols="2,7",options="header"]
 |===
 |调用说明 |内容
@@ -1533,6 +1577,7 @@ image::v33/perm-02-ddd.svg[PERM-02 DDD 详细交互,width=100%]
 ===== PERM-03 重命名权限
 
 
+.接口调用说明
 [cols="2,7",options="header"]
 |===
 |调用说明 |内容
@@ -1566,6 +1611,7 @@ image::v33/perm-03-ddd.svg[PERM-03 DDD 详细交互,width=100%]
 ===== PERM-04 删除权限
 
 
+.接口调用说明
 [cols="2,7",options="header"]
 |===
 |调用说明 |内容
@@ -1621,6 +1667,7 @@ image::v33/class-ddd-permission.svg[权限目录 DDD 模块类图,width=100%]
 需求 REQ-F-07。课程前端直接向平台 /auth/login 登录，携带 course-project-management audience 的令牌调用老师后端。反向代理把 /course-api/ 前缀剥离后转发。老师的业务规则保留，适配层完成验签、实时身份与 API 权限查询。
 
 
+.operationId与老师 API
 [cols="3,5,1,4",options="header"]
 |===
 |operationId |老师 API |权限码 |行为
@@ -1637,6 +1684,7 @@ image::v33/class-ddd-permission.svg[权限目录 DDD 模块类图,width=100%]
 ===== COURSE-01 listTerms
 
 
+.接口调用说明
 [cols="2,7",options="header"]
 |===
 |调用说明 |内容
@@ -1659,6 +1707,7 @@ image::v33/course-01.svg[listTerms 接入详细交互,width=100%]
 ===== COURSE-02 createTerm
 
 
+.接口调用说明
 [cols="2,7",options="header"]
 |===
 |调用说明 |内容
@@ -1681,6 +1730,7 @@ image::v33/course-02.svg[createTerm 接入详细交互,width=100%]
 ===== COURSE-03 updateTerm
 
 
+.接口调用说明
 [cols="2,7",options="header"]
 |===
 |调用说明 |内容
@@ -1703,6 +1753,7 @@ image::v33/course-03.svg[updateTerm 接入详细交互,width=100%]
 ===== COURSE-04 deleteTerm
 
 
+.接口调用说明
 [cols="2,7",options="header"]
 |===
 |调用说明 |内容
@@ -1725,6 +1776,7 @@ image::v33/course-04.svg[deleteTerm 接入详细交互,width=100%]
 ===== COURSE-05 listAdminCourses
 
 
+.接口调用说明
 [cols="2,7",options="header"]
 |===
 |调用说明 |内容
@@ -1747,6 +1799,7 @@ image::v33/course-05.svg[listAdminCourses 接入详细交互,width=100%]
 ===== COURSE-06 getCourse
 
 
+.接口调用说明
 [cols="2,7",options="header"]
 |===
 |调用说明 |内容
@@ -1769,6 +1822,7 @@ image::v33/course-06.svg[getCourse 接入详细交互,width=100%]
 ===== COURSE-07 reviewCourse
 
 
+.接口调用说明
 [cols="2,7",options="header"]
 |===
 |调用说明 |内容
@@ -1808,6 +1862,7 @@ JWT 使用 RS256，携带 iss、sub、aud、jti、iat 和 exp，默认有效期 
 
 
 
+.HTTP与业务码
 [cols="1,3,6",options="header"]
 |===
 |HTTP |业务码 |含义
@@ -1815,6 +1870,7 @@ JWT 使用 RS256，携带 iss、sub、aud、jti、iat 和 exp，默认有效期 
 |401 |UNAUTHENTICATED |账号凭据、签名、会话或有效期不通过。
 |403 |FORBIDDEN |目标系统登录许可、操作权限或部门边界不通过。
 |404 |NOT_FOUND |有操作权限后查找的对象不存在。
+|405 |METHOD_NOT_ALLOWED |HTTP 方法不符合接口定义；响应携带 Allow。
 |409 |CONFLICT |唯一约束、重复分配或引用关系冲突。
 |500 |INTERNAL_ERROR |未预期错误，写事务回滚。
 |503 |SERVICE_UNAVAILABLE |数据库不可用；课程端使用 IDENTITY_SERVICE_UNAVAILABLE 表达身份依赖故障。
@@ -1831,9 +1887,34 @@ API 记录方法、路由、结果和耗时；业务服务记录用例、操作�
 
 === 测量方法
 
-本版先建立实测基线。登录、用户列表、权限查询分别记录吞吐量、P50、P95、错误率与内存；两套实现使用相同数据、连接池、容器资源和负载。报告保存硬件、数据规模、测试日期和原始结果，回归时按同一条件比较。
+2026-11-17 在已部署环境建立实测基线。辅助节点通过公网 HTTP 发送混合负载，权限查询和本部门用户列表各占 50%。每轮预热 100 次，再测量 1,000 次；并发设为 1、4、8，8 并发分别重复三轮。两套实现使用相同数据、连接池、容器资源与 DEBUG 分层日志配置。登录在计时前完成。
 
-列表采用有界分页，数据库连接池限制为 5。实时授权查询使用关联表主键及反向索引，权限保存在数据库当前关系中。指标与验收结论见实施报告，历史版本中的高并发指标由本次基线替换。
+列表采用有界分页，数据库连接池限制为 5。实时授权查询使用关联表主键及反向索引，权限保存在数据库当前关系中。数据库测量时含 2 个部门、5 个用户、3 个角色、2 个系统、17 项权限、4 条用户角色和 26 条角色权限关联。本部门列表返回 4 个用户，每页上限为 20。本次结果对应上述数据规模与共享服务器环境。
+
+=== 实测结果
+
+
+
+.业务实现与并发
+[cols="3,1,1,2,2,1",options="header"]
+|===
+|业务实现 |并发 |轮次 |吞吐 req/s |P95 ms |错误数
+|structured |1 |1 |93.4 |13.37 |0
+|structured |4 |1 |328.14 |18.25 |0
+|structured |8 |1 |278.54 |52.61 |0
+|structured |8 |2 |352.19 |40.98 |0
+|structured |8 |3 |437.77 |36.67 |0
+|ddd |1 |1 |120.77 |10.96 |0
+|ddd |4 |1 |405.32 |14.39 |0
+|ddd |8 |1 |265.92 |55.83 |0
+|ddd |8 |2 |256.37 |41.68 |0
+|ddd |8 |3 |414.15 |36.9 |0
+|===
+
+
+两套实现共完成 10,000 次计时请求，全部返回 200，错误率为 0。8 并发三轮 P95 为结构化 36.67 至 52.61 ms、DDD 36.90 至 55.83 ms。结果存在 JVM 预热、共享节点和网络波动，适合作为当前部署的回归基线。
+
+连接复用调整前，一轮 1,000 次测试出现 2 次 504，错误率 0.2%；网关日志记录连接上游超时。启用 Nginx 上游 keepalive 后完成上表全部测量。原始结果、配置、资源快照和调查记录归档于 docs/implementation/实施报告.md。
 
 === 精度与一致性
 
@@ -1845,6 +1926,7 @@ API 记录方法、路由、结果和耗时；业务服务记录用例、操作�
 
 
 
+.配置项与用途
 [cols="3,5",options="header"]
 |===
 |配置项 |用途
@@ -1875,6 +1957,7 @@ API 记录方法、路由、结果和耗时；业务服务记录用例、操作�
 
 
 
+.编号与场景
 [cols="2,3,5",options="header"]
 |===
 |编号 |场景 |通过条件

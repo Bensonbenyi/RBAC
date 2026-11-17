@@ -1,0 +1,50 @@
+{
+  "date": "2026-11-17",
+  "documents": [
+    {
+      "document": "统一权限管理系统需求与详细设计说明书",
+      "pages": 116,
+      "pageSizes": [
+        [
+          0.0,
+          0.0,
+          594.96,
+          841.92
+        ]
+      ]
+    },
+    {
+      "document": "统一权限管理系统概要设计说明书",
+      "pages": 30,
+      "pageSizes": [
+        [
+          0.0,
+          0.0,
+          594.96,
+          841.92
+        ]
+      ]
+    }
+  ],
+  "figures": 102,
+  "umlDiagrams": 99,
+  "svgTextBounds": "passed",
+  "modelReferences": "resolved",
+  "toc": "converged",
+  "visualReview": {
+    "allPagesReviewed": true,
+    "detailChecks": [
+      "use-case tables intact",
+      "API descriptions beside their first interaction",
+      "DDD object creation and mutation",
+      "performance table"
+    ],
+    "overviewChecks": [
+      "correct document running header",
+      "section 6.2 starts with its table on page 25",
+      "section 7.2 starts with its table on page 27",
+      "class diagrams and deployment topology"
+    ],
+    "result": "passed"
+  }
+}

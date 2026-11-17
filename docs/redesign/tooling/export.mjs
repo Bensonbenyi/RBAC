@@ -26,6 +26,8 @@ html=html.replace(`<h1>${title}</h1>`,`<h1>统一权限管理系统<br>${title.r
 // Use the source folder as HTML base; AsciiDoc remains portable with relative images.
 html=html.replace('<head>',`<head><base href="${pathToFileURL(root+'/').href}">`);
 html=html.replace(/<link rel="stylesheet" href="tooling\/spec.css">/,`<style>${fs.readFileSync(path.join(root,'tooling/spec.css'),'utf8').replace('content: "统一权限管理系统需求与详细设计说明书"',`content: "${title}"`)}</style>`);
+// Asciidoctor may have already inlined the stylesheet.
+html=html.replace('content: "统一权限管理系统需求与详细设计说明书"',`content: "${title}"`);
 const htmlPath=path.join(out,title+'.html');fs.writeFileSync(htmlPath,html);
 const chrome=process.env.PDF_CHROME_PATH||'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const browser=await chromium.launch({executablePath:chrome});
@@ -35,6 +37,10 @@ try{
  await page.evaluate(async(isOutline)=>{
   if(isOutline)document.body.classList.add('outline');
   await document.fonts.ready;await Promise.all([...document.images].map(i=>i.decode()));
+  if(isOutline) for(const section of document.querySelectorAll('.sect2')) {
+   const heading=section.querySelector(':scope > h3');
+   if(heading && /概要级表结构|拓扑与资源说明/.test(heading.textContent))section.classList.add('page-section');
+  }
   // Keep section introductions with the first figure.
   for(const section of document.querySelectorAll('.sect2,.sect3,.sect4')) {
    const first=[...section.children].find(n=>n.classList.contains('diagram'));
@@ -78,6 +84,18 @@ try{
   }
   for(const table of document.querySelectorAll('table')) {
    if(table.rows[0]?.textContent.includes('领域对象')) table.classList.add('domain-state');
+   if(table.offsetHeight<600)table.classList.add('keep-table');
+  }
+  // Keep a short table with its own heading and introductory paragraphs.
+  for(const section of document.querySelectorAll('.sect2,.sect3,.sect4')) {
+   const children=[...section.children];
+   if(!children[0]?.matches('h3,h4,h5'))continue;
+   const firstTable=children.findIndex(n=>n.matches('table'));
+   if(firstTable<1 || children.slice(1,firstTable).some(n=>!n.matches('.paragraph')))continue;
+   const group=children.slice(0,firstTable+1);
+   if(group.reduce((sum,n)=>sum+n.offsetHeight,0)>600)continue;
+   const wrapper=document.createElement('div');wrapper.className='keep-section';
+   section.prepend(wrapper);for(const n of group)wrapper.append(n);
   }
   for(const section of document.querySelectorAll('.sect1')) {
    const h=section.querySelector(':scope > h2');

@@ -10,3 +10,8 @@ INSERT INTO course(term_id,code,name,description,work_mode,status,review_request
 SELECT id,'RBAC-REVIEW-02','权限模型课程审核','RBAC 接入演示','group',2,NOW(6),'seed',NOW(6),'seed',NOW(6)
 FROM term WHERE name='2026 秋季课程演示'
 AND NOT EXISTS (SELECT 1 FROM course WHERE code='RBAC-REVIEW-02');
+
+INSERT INTO course(term_id,code,name,description,work_mode,status,review_requested_at,creator,created_at,modifier,modi_at)
+SELECT id,'RBAC-REVIEW-03','分层架构课程审核','RBAC 接入演示','group',2,NOW(6),'seed',NOW(6),'seed',NOW(6)
+FROM term WHERE name='2026 秋季课程演示'
+AND NOT EXISTS (SELECT 1 FROM course WHERE code='RBAC-REVIEW-03');

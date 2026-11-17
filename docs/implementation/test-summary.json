@@ -1,0 +1,43 @@
+{
+  "date": "2026-11-17",
+  "suites": [
+    {
+      "name": "cn.edu.xmu.clonefactory.CloneFactoryTest",
+      "tests": "5",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.023"
+    },
+    {
+      "name": "cn.edu.xmu.rbac.DddContractTest",
+      "tests": "11",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "12.982"
+    },
+    {
+      "name": "cn.edu.xmu.rbac.StructuredContractTest",
+      "tests": "11",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "2.665"
+    },
+    {
+      "name": "cn.edu.xmu.rbac.DomainTest",
+      "tests": "3",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0",
+      "time": "0.001"
+    }
+  ],
+  "frontend": [
+    "vue-tsc --noEmit",
+    "vite build (platform)",
+    "vite build --base=/course/"
+  ],
+  "architecture": "passed; five shared ports with structured and DDD services"
+}

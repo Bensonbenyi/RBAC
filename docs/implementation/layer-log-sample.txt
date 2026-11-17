@@ -1,0 +1,16 @@
+2026-11-17T02:16:55.662Z DEBUG [http-nio-8080-exec-3] c.e.xmu.rbac.infrastructure.logging.LayerLogging layer operation=JdbcSessionStore.find(..) outcome=ok elapsedMicros=998
+2026-11-17T02:16:55.662Z DEBUG [http-nio-8080-exec-3] c.e.xmu.rbac.infrastructure.logging.LayerLogging layer operation=JdbcManagementStore.user(..) outcome=ok elapsedMicros=331
+2026-11-17T02:16:55.663Z DEBUG [http-nio-8080-exec-3] c.e.xmu.rbac.infrastructure.logging.LayerLogging layer operation=JdbcManagementStore.permissionsForUser(..) outcome=ok elapsedMicros=537
+2026-11-17T02:16:55.669Z DEBUG [http-nio-8080-exec-3] c.e.xmu.rbac.infrastructure.logging.LayerLogging layer operation=JdbcManagementStore.permissionsForUser(..) outcome=ok elapsedMicros=466
+2026-11-17T02:16:55.669Z DEBUG [http-nio-8080-exec-3] c.e.xmu.rbac.infrastructure.logging.LayerLogging layer operation=JdbcManagementStore.user(..) outcome=ok elapsedMicros=248
+2026-11-17T02:16:55.670Z DEBUG [http-nio-8080-exec-3] c.e.xmu.rbac.infrastructure.logging.LayerLogging layer operation=JdbcManagementStore.userRoles(..) outcome=ok elapsedMicros=407
+2026-11-17T02:16:55.670Z DEBUG [http-nio-8080-exec-3] c.e.xmu.rbac.infrastructure.logging.LayerLogging layer operation=StructuredUserService.roles(..) outcome=ok elapsedMicros=1793
+2026-11-17T02:16:55.673Z DEBUG [http-nio-8080-exec-3] c.e.x.rbac.infrastructure.security.BearerFilter request method=GET path=/api/users/5/roles status=200 elapsedMicros=12038
+2026-11-17T02:16:55.733Z DEBUG [http-nio-8080-exec-5] c.e.xmu.rbac.infrastructure.logging.LayerLogging layer operation=JdbcSessionStore.find(..) outcome=ok elapsedMicros=588
+2026-11-17T02:16:55.733Z DEBUG [http-nio-8080-exec-5] c.e.xmu.rbac.infrastructure.logging.LayerLogging layer operation=JdbcManagementStore.user(..) outcome=ok elapsedMicros=323
+2026-11-17T02:16:55.734Z DEBUG [http-nio-8080-exec-5] c.e.xmu.rbac.infrastructure.logging.LayerLogging layer operation=JdbcManagementStore.permissionsForUser(..) outcome=ok elapsedMicros=640
+2026-11-17T02:16:55.742Z DEBUG [http-nio-8080-exec-5] c.e.xmu.rbac.infrastructure.logging.LayerLogging layer operation=JdbcManagementStore.permissionsForUser(..) outcome=ok elapsedMicros=552
+2026-11-17T02:16:55.743Z DEBUG [http-nio-8080-exec-5] c.e.xmu.rbac.infrastructure.logging.LayerLogging layer operation=JdbcManagementStore.roles(..) outcome=ok elapsedMicros=718
+2026-11-17T02:16:55.743Z DEBUG [http-nio-8080-exec-5] c.e.xmu.rbac.infrastructure.logging.LayerLogging layer operation=StructuredRoleService.list(..) outcome=ok elapsedMicros=2441
+2026-11-17T02:16:55.745Z DEBUG [http-nio-8080-exec-5] c.e.x.rbac.infrastructure.security.BearerFilter request method=GET path=/api/roles status=200 elapsedMicros=12734
+2026-11-17T02:16:59.808Z DEBUG [http-nio-8080-exec-9] c.e.x.rbac.infrastructure.security.BearerFilter request method=GET path=/actuator/health status=200 elapsedMicros=2776

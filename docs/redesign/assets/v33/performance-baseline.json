@@ -1,0 +1,128 @@
+{
+  "date": "2026-11-17",
+  "warmupPerRun": 100,
+  "workloadMix": "50% permission query, 50% user list, page size 20",
+  "databaseCountsAtMeasurement": {
+    "department": 2,
+    "app_user": 5,
+    "role": 3,
+    "business_system": 2,
+    "permission": 17,
+    "user_role": 4,
+    "role_permission": 26,
+    "userListReturned": 4,
+    "note": "Counts after cleanup: app_user 4, user_role 3; all measured runs included the same browser_demo account with viewer role."
+  },
+  "rows": [
+    {
+      "strategy": "structured",
+      "trial": "c1",
+      "concurrency": 1,
+      "requests": 1000,
+      "requestsPerSecond": 93.4,
+      "p50Ms": 9.29,
+      "p95Ms": 13.37,
+      "maxMs": 1034.49,
+      "errors": 0
+    },
+    {
+      "strategy": "structured",
+      "trial": "c4",
+      "concurrency": 4,
+      "requests": 1000,
+      "requestsPerSecond": 328.14,
+      "p50Ms": 11.2,
+      "p95Ms": 18.25,
+      "maxMs": 109.02,
+      "errors": 0
+    },
+    {
+      "strategy": "structured",
+      "trial": "1",
+      "concurrency": 8,
+      "requests": 1000,
+      "requestsPerSecond": 278.54,
+      "p50Ms": 25.57,
+      "p95Ms": 52.61,
+      "maxMs": 151.66,
+      "errors": 0
+    },
+    {
+      "strategy": "structured",
+      "trial": "2",
+      "concurrency": 8,
+      "requests": 1000,
+      "requestsPerSecond": 352.19,
+      "p50Ms": 19.82,
+      "p95Ms": 40.98,
+      "maxMs": 140.21,
+      "errors": 0
+    },
+    {
+      "strategy": "structured",
+      "trial": "3",
+      "concurrency": 8,
+      "requests": 1000,
+      "requestsPerSecond": 437.77,
+      "p50Ms": 15.34,
+      "p95Ms": 36.67,
+      "maxMs": 62.01,
+      "errors": 0
+    },
+    {
+      "strategy": "ddd",
+      "trial": "c1",
+      "concurrency": 1,
+      "requests": 1000,
+      "requestsPerSecond": 120.77,
+      "p50Ms": 8.11,
+      "p95Ms": 10.96,
+      "maxMs": 88.81,
+      "errors": 0
+    },
+    {
+      "strategy": "ddd",
+      "trial": "c4",
+      "concurrency": 4,
+      "requests": 1000,
+      "requestsPerSecond": 405.32,
+      "p50Ms": 9.58,
+      "p95Ms": 14.39,
+      "maxMs": 26.35,
+      "errors": 0
+    },
+    {
+      "strategy": "ddd",
+      "trial": "1",
+      "concurrency": 8,
+      "requests": 1000,
+      "requestsPerSecond": 265.92,
+      "p50Ms": 27.07,
+      "p95Ms": 55.83,
+      "maxMs": 125.86,
+      "errors": 0
+    },
+    {
+      "strategy": "ddd",
+      "trial": "2",
+      "concurrency": 8,
+      "requests": 1000,
+      "requestsPerSecond": 256.37,
+      "p50Ms": 20.04,
+      "p95Ms": 41.68,
+      "maxMs": 1025.15,
+      "errors": 0
+    },
+    {
+      "strategy": "ddd",
+      "trial": "3",
+      "concurrency": 8,
+      "requests": 1000,
+      "requestsPerSecond": 414.15,
+      "p50Ms": 16.12,
+      "p95Ms": 36.9,
+      "maxMs": 154.5,
+      "errors": 0
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "sourceDataSha256": "887850ac07f30e2d0014e541ac35c17c9193bbef7b69e63f1460f6ba1f2b6819",
+  "restoredDataSha256": "887850ac07f30e2d0014e541ac35c17c9193bbef7b69e63f1460f6ba1f2b6819",
+  "result": "passed",
+  "network": "none",
+  "memoryLimitMiB": 384,
+  "date": "2026-11-17",
+  "backupSha256": "f27b57498f8353cd1df5d59ad5fcc01f5441d19be84dd18769bd4c95afe9d113",
+  "backupBytes": 7537,
+  "databases": [
+    "rbac",
+    "course_project"
+  ],
+  "sourceHost": "119.3.221.88",
+  "isolatedRestoreHost": "119.3.221.88",
+  "replicaHost": "1.92.106.198",
+  "replicaPath": "/opt/rbac-v33/backups/verified.sql.gz",
+  "method": "single-transaction dump; import into new network-none container; compare ordered data dumps; remove temporary container and volume",
+  "originalService": "kept running"
+}

@@ -1,0 +1,78 @@
+{
+  "date": "2026-11-17",
+  "stack": "rbac_v33",
+  "strategy": "structured",
+  "services": {
+    "rbac": {
+      "replicas": "1/1",
+      "health": "healthy",
+      "memoryMiB": 224.8,
+      "limitMiB": 384
+    },
+    "course": {
+      "replicas": "1/1",
+      "health": "healthy",
+      "memoryMiB": 401.9,
+      "limitMiB": 512
+    },
+    "web": {
+      "replicas": "1/1",
+      "health": "healthy",
+      "memoryMiB": 4.066,
+      "limitMiB": 64
+    },
+    "db": {
+      "replicas": "1/1",
+      "health": "healthy",
+      "memoryMiB": 241.4,
+      "limitMiB": 512
+    }
+  },
+  "nodes": [
+    {
+      "address": "113.44.144.119",
+      "role": "manager",
+      "cpus": 2,
+      "memoryMiB": 1800,
+      "availableMiB": 632,
+      "preservedContainers": [
+        "lab4-prometheus",
+        "lab4-node-exporter"
+      ]
+    },
+    {
+      "address": "119.3.221.88",
+      "role": "worker",
+      "cpus": 2,
+      "memoryMiB": 1800,
+      "availableMiB": 801,
+      "preservedContainers": [
+        "lab4-mongo",
+        "lab4-node-exporter"
+      ]
+    },
+    {
+      "address": "120.46.176.79",
+      "role": "worker",
+      "cpus": 2,
+      "memoryMiB": 792,
+      "availableMiB": 236,
+      "preservedContainers": [
+        "lab4-app",
+        "lab4-node-exporter"
+      ]
+    },
+    {
+      "address": "1.92.106.198",
+      "role": "auxiliary, outside Swarm",
+      "cpus": 2,
+      "memoryMiB": 792,
+      "availableMiB": 429,
+      "preservedContainers": [
+        "lab4-node-exporter"
+      ],
+      "preservedHostService": "python3 on 172.31.13.146:18090, confirmed after deployment"
+    }
+  ],
+  "sampling": "one post-load snapshot; not peak memory"
+}

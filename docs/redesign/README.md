@@ -27,3 +27,5 @@ npm ci --prefix docs/redesign/tooling
 `tools/v33_catalog.py` 维护 35 个平台 HTTP 操作；`draw_v33.py` 与 `draw_data_v33.py` 使用人工坐标生成黑白图稿和 StarUML 模型；`write_v33.py` 写入两份文档；`tooling/export.mjs` 导出 A4 纵向 PDF 并校验目录页码。旧版图稿及构建工具保留为修订记录，当前入口为 `build-design.sh`。
 
 如需课程提交文件名，执行 `python3 docs/redesign/tools/bundle.py --group 实际组号`。
+
+本次实测基线随图源保存在 `assets/v33/performance-baseline.json`，用于重建性能结果表；完整原始结果与部署证据见 `docs/implementation/实施报告.md`。
