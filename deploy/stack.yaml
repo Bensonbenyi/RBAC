@@ -1,0 +1,130 @@
+version: '3.8'
+services:
+  db:
+    image: rbac/mysql:8.4.13-amd64
+    command: ['--innodb-buffer-pool-size=128M','--max-connections=30','--performance-schema=OFF']
+    environment:
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mysql_root_password
+    secrets:
+      - mysql_root_password
+      - rbac_db_password
+      - course_db_password
+    configs:
+      - source: mysql_init
+        target: /docker-entrypoint-initdb.d/10-project-databases.sh
+        mode: 0555
+    volumes: ['mysql_data:/var/lib/mysql']
+    networks: [project]
+    healthcheck:
+      test: ['CMD','mysqladmin','ping','--silent']
+      interval: 20s
+      timeout: 5s
+      retries: 5
+    deploy:
+      placement:
+        constraints: ['node.labels.rbac.db == true']
+      resources:
+        limits: {memory: 512M}
+        reservations: {memory: 256M}
+      restart_policy: {condition: on-failure, delay: 5s}
+  rbac:
+    image: rbac/backend:3.3.0
+    environment:
+      DB_URL: jdbc:mysql://db:3306/rbac?serverTimezone=Asia/Shanghai
+      DB_USER: rbac
+      JWT_PRIVATE_KEY: file:/run/secrets/private_key
+      JWT_PUBLIC_KEY: file:/run/secrets/public_key
+      BACKEND_STRATEGY: ${BACKEND_STRATEGY:-structured}
+      APP_DEMO_ENABLED: 'true'
+      JAVA_TOOL_OPTIONS: '-Xmx192m -XX:MaxMetaspaceSize=128m -XX:ReservedCodeCacheSize=48m'
+      LOG_PATH: /logs
+    secrets:
+      - source: rbac_db_password
+        target: db_password
+      - private_key
+      - public_key
+      - demo_phone
+    volumes: ['rbac_logs:/logs']
+    networks: [project]
+    healthcheck:
+      test: ['CMD','/bin/bash','/app/healthcheck.sh']
+      interval: 20s
+      timeout: 5s
+      start_period: 90s
+      retries: 3
+    deploy:
+      placement:
+        constraints: ['node.role == manager']
+      resources:
+        limits: {memory: 384M}
+        reservations: {memory: 256M}
+      restart_policy: {condition: on-failure, delay: 5s}
+      update_config: {parallelism: 1, order: stop-first, failure_action: rollback}
+  course:
+    image: rbac/course:3.3.0
+    environment:
+      SPRING_PROFILES_ACTIVE: swarm,rbac-integration
+      DB_HOST: db
+      DB_NAME: course_project
+      DB_USER: course
+      IDENTITY_BASE_URL: http://rbac:8080
+      APP_IDENTITY_PUBLIC_KEY: file:/run/secrets/public_key
+      SPRING_DATASOURCE_HIKARI_MAXIMUM_POOL_SIZE: '5'
+      APP_BACKEND_STRATEGY: ${BACKEND_STRATEGY:-structured}
+      JAVA_TOOL_OPTIONS: '-Xmx256m -XX:MaxMetaspaceSize=160m -XX:ReservedCodeCacheSize=48m'
+      HEALTH_PORT: '8081'
+    secrets:
+      - source: course_db_password
+        target: db_password
+      - public_key
+    networks: [project]
+    healthcheck:
+      test: ['CMD','/bin/bash','/app/healthcheck.sh']
+      interval: 20s
+      timeout: 5s
+      start_period: 120s
+      retries: 3
+    deploy:
+      placement:
+        constraints: ['node.role == manager']
+      resources:
+        limits: {memory: 512M}
+        reservations: {memory: 384M}
+      restart_policy: {condition: on-failure, delay: 5s}
+      update_config: {parallelism: 1, order: stop-first, failure_action: rollback}
+  web:
+    image: rbac/web:3.3.0
+    ports:
+      - target: 80
+        published: 80
+        mode: host
+    networks: [project]
+    healthcheck:
+      test: ['CMD','wget','-q','-O','/dev/null','http://127.0.0.1/health']
+      interval: 20s
+      timeout: 5s
+      retries: 3
+    deploy:
+      placement:
+        constraints: ['node.role == manager']
+      resources:
+        limits: {memory: 64M}
+        reservations: {memory: 16M}
+      restart_policy: {condition: on-failure, delay: 5s}
+networks:
+  project:
+    driver: overlay
+    driver_opts: {encrypted: ''}
+volumes:
+  mysql_data:
+  rbac_logs:
+configs:
+  mysql_init:
+    file: ./mysql/10-project-databases.sh
+secrets:
+  mysql_root_password: {external: true, name: rbac_v33_mysql_root_password}
+  rbac_db_password: {external: true, name: rbac_v33_rbac_db_password}
+  course_db_password: {external: true, name: rbac_v33_course_db_password}
+  private_key: {external: true, name: rbac_v33_private_key}
+  public_key: {external: true, name: rbac_v33_public_key}
+  demo_phone: {external: true, name: rbac_v33_demo_phone}

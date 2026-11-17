@@ -1,0 +1,943 @@
+{
+  "_type": "Project",
+  "_id": "session-table-v33-project",
+  "name": "session-table",
+  "ownedElements": [
+    {
+      "_type": "UMLModel",
+      "_id": "session-table-v33-model",
+      "_parent": {
+        "$ref": "session-table-v33-project"
+      },
+      "name": "人工布局图元",
+      "ownedElements": [
+        {
+          "_type": "UMLClassDiagram",
+          "_id": "session-table-v33",
+          "_parent": {
+            "$ref": "session-table-v33-model"
+          },
+          "name": "可编辑基本图元",
+          "defaultDiagram": true,
+          "ownedViews": [
+            {
+              "_type": "UMLTextView",
+              "_id": "session-table-v33-0",
+              "_parent": {
+                "$ref": "session-table-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;26;1",
+              "left": 281.0,
+              "top": 14,
+              "width": 338,
+              "height": 34,
+              "text": "登录会话 技术表与用户关系",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            },
+            {
+              "_type": "RectangleView",
+              "_id": "session-table-v33-1",
+              "_parent": {
+                "$ref": "session-table-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 260,
+              "top": 110,
+              "width": 380,
+              "height": 120
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "session-table-v33-2",
+              "_parent": {
+                "$ref": "session-table-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;21;1",
+              "left": 272,
+              "top": 115,
+              "width": 84,
+              "height": 29,
+              "text": "用户账号",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "session-table-v33-3",
+              "_parent": {
+                "$ref": "session-table-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 272,
+              "top": 144,
+              "width": 144,
+              "height": 26,
+              "text": "app_user",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "session-table-v33-4",
+              "_parent": {
+                "$ref": "session-table-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "260:174;640:174",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "session-table-v33-5",
+              "_parent": {
+                "$ref": "session-table-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;1",
+              "left": 270,
+              "top": 179,
+              "width": 60,
+              "height": 24,
+              "text": "字段",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "session-table-v33-6",
+              "_parent": {
+                "$ref": "session-table-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;1",
+              "left": 435,
+              "top": 179,
+              "width": 60,
+              "height": 24,
+              "text": "类型",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "session-table-v33-7",
+              "_parent": {
+                "$ref": "session-table-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;1",
+              "left": 548,
+              "top": 179,
+              "width": 60,
+              "height": 24,
+              "text": "约束",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "session-table-v33-8",
+              "_parent": {
+                "$ref": "session-table-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "260:200;640:200",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "session-table-v33-9",
+              "_parent": {
+                "$ref": "session-table-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;17;0",
+              "left": 270,
+              "top": 205,
+              "width": 60,
+              "height": 25,
+              "text": "id",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "session-table-v33-10",
+              "_parent": {
+                "$ref": "session-table-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;15;0",
+              "left": 435,
+              "top": 207,
+              "width": 90,
+              "height": 23,
+              "text": "BIGINT",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "session-table-v33-11",
+              "_parent": {
+                "$ref": "session-table-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;14;0",
+              "left": 548,
+              "top": 208,
+              "width": 70,
+              "height": 22,
+              "text": "PK NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "session-table-v33-12",
+              "_parent": {
+                "$ref": "session-table-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "450:230;450:360",
+              "lineStyle": 1,
+              "lineMode": 2
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "session-table-v33-13",
+              "_parent": {
+                "$ref": "session-table-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "458.0:239.0;442.0:239.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "session-table-v33-14",
+              "_parent": {
+                "$ref": "session-table-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "458.0:249.0;442.0:249.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "session-table-v33-15",
+              "_parent": {
+                "$ref": "session-table-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "441.0:360.0;450.0:341.0;459.0:360.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "EllipseView",
+              "_id": "session-table-v33-16",
+              "_parent": {
+                "$ref": "session-table-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 445.0,
+              "top": 323.0,
+              "width": 10,
+              "height": 10
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "session-table-v33-17",
+              "_parent": {
+                "$ref": "session-table-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 480,
+              "top": 292,
+              "width": 126,
+              "height": 26,
+              "text": "user_id",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "RectangleView",
+              "_id": "session-table-v33-18",
+              "_parent": {
+                "$ref": "session-table-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 100,
+              "top": 360,
+              "width": 700,
+              "height": 240
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "session-table-v33-19",
+              "_parent": {
+                "$ref": "session-table-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;21;1",
+              "left": 112,
+              "top": 365,
+              "width": 126,
+              "height": 29,
+              "text": "技术登录会话",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "session-table-v33-20",
+              "_parent": {
+                "$ref": "session-table-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 112,
+              "top": 394,
+              "width": 234,
+              "height": 26,
+              "text": "login_session",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "session-table-v33-21",
+              "_parent": {
+                "$ref": "session-table-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "100:424;800:424",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "session-table-v33-22",
+              "_parent": {
+                "$ref": "session-table-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;1",
+              "left": 110,
+              "top": 429,
+              "width": 60,
+              "height": 24,
+              "text": "字段",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "session-table-v33-23",
+              "_parent": {
+                "$ref": "session-table-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;1",
+              "left": 275,
+              "top": 429,
+              "width": 60,
+              "height": 24,
+              "text": "类型",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "session-table-v33-24",
+              "_parent": {
+                "$ref": "session-table-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;1",
+              "left": 388,
+              "top": 429,
+              "width": 60,
+              "height": 24,
+              "text": "约束",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "session-table-v33-25",
+              "_parent": {
+                "$ref": "session-table-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "100:450;800:450",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "session-table-v33-26",
+              "_parent": {
+                "$ref": "session-table-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;17;0",
+              "left": 110,
+              "top": 455,
+              "width": 60,
+              "height": 25,
+              "text": "id",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "session-table-v33-27",
+              "_parent": {
+                "$ref": "session-table-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;15;0",
+              "left": 275,
+              "top": 457,
+              "width": 120,
+              "height": 23,
+              "text": "CHAR(36)",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "session-table-v33-28",
+              "_parent": {
+                "$ref": "session-table-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;14;0",
+              "left": 388,
+              "top": 458,
+              "width": 70,
+              "height": 22,
+              "text": "PK NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "session-table-v33-29",
+              "_parent": {
+                "$ref": "session-table-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "100:480;800:480",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "session-table-v33-30",
+              "_parent": {
+                "$ref": "session-table-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;17;0",
+              "left": 110,
+              "top": 485,
+              "width": 119,
+              "height": 25,
+              "text": "user_id",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "session-table-v33-31",
+              "_parent": {
+                "$ref": "session-table-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;15;0",
+              "left": 275,
+              "top": 487,
+              "width": 90,
+              "height": 23,
+              "text": "BIGINT",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "session-table-v33-32",
+              "_parent": {
+                "$ref": "session-table-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;14;0",
+              "left": 388,
+              "top": 488,
+              "width": 70,
+              "height": 22,
+              "text": "FK NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "session-table-v33-33",
+              "_parent": {
+                "$ref": "session-table-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "100:510;800:510",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "session-table-v33-34",
+              "_parent": {
+                "$ref": "session-table-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;17;0",
+              "left": 110,
+              "top": 515,
+              "width": 170,
+              "height": 25,
+              "text": "system_key",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "session-table-v33-35",
+              "_parent": {
+                "$ref": "session-table-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;15;0",
+              "left": 275,
+              "top": 517,
+              "width": 105,
+              "height": 23,
+              "text": "VARCHAR",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "session-table-v33-36",
+              "_parent": {
+                "$ref": "session-table-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;14;0",
+              "left": 388,
+              "top": 518,
+              "width": 60,
+              "height": 22,
+              "text": "NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "session-table-v33-37",
+              "_parent": {
+                "$ref": "session-table-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "100:540;800:540",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "session-table-v33-38",
+              "_parent": {
+                "$ref": "session-table-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;17;0",
+              "left": 110,
+              "top": 545,
+              "width": 170,
+              "height": 25,
+              "text": "expires_at",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "session-table-v33-39",
+              "_parent": {
+                "$ref": "session-table-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;15;0",
+              "left": 275,
+              "top": 547,
+              "width": 135,
+              "height": 23,
+              "text": "TIMESTAMP",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "session-table-v33-40",
+              "_parent": {
+                "$ref": "session-table-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;14;0",
+              "left": 388,
+              "top": 548,
+              "width": 60,
+              "height": 22,
+              "text": "NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "session-table-v33-41",
+              "_parent": {
+                "$ref": "session-table-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "100:570;800:570",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "session-table-v33-42",
+              "_parent": {
+                "$ref": "session-table-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;17;0",
+              "left": 110,
+              "top": 575,
+              "width": 170,
+              "height": 25,
+              "text": "revoked_at",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "session-table-v33-43",
+              "_parent": {
+                "$ref": "session-table-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;15;0",
+              "left": 275,
+              "top": 577,
+              "width": 135,
+              "height": 23,
+              "text": "TIMESTAMP",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "session-table-v33-44",
+              "_parent": {
+                "$ref": "session-table-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;14;0",
+              "left": 388,
+              "top": 578,
+              "width": 60,
+              "height": 22,
+              "text": "可空",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "session-table-v33-45",
+              "_parent": {
+                "$ref": "session-table-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;19;0",
+              "left": 100,
+              "top": 671,
+              "width": 475,
+              "height": 27,
+              "text": "用户删除时同事务清理会话。令牌只携带随机会话编号。",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "session-table-v33-46",
+              "_parent": {
+                "$ref": "session-table-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;19;0",
+              "left": 100,
+              "top": 716,
+              "width": 456,
+              "height": 27,
+              "text": "JWT 与会话的用户、目标系统和有效期共同校验。",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

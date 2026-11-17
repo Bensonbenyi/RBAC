@@ -1,0 +1,3760 @@
+{
+  "_type": "Project",
+  "_id": "relational-v33-project",
+  "name": "schema",
+  "ownedElements": [
+    {
+      "_type": "UMLModel",
+      "_id": "relational-v33-model",
+      "_parent": {
+        "$ref": "relational-v33-project"
+      },
+      "name": "人工布局图元",
+      "ownedElements": [
+        {
+          "_type": "UMLClassDiagram",
+          "_id": "relational-v33",
+          "_parent": {
+            "$ref": "relational-v33-model"
+          },
+          "name": "可编辑基本图元",
+          "defaultDiagram": true,
+          "ownedViews": [
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-0",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;26;1",
+              "left": 294.0,
+              "top": 14,
+              "width": 312,
+              "height": 34,
+              "text": "七张业务表 数据库关系图",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-1",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "410:220;490:220",
+              "lineStyle": 1,
+              "lineMode": 2
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-2",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "419.0:212.0;419.0:228.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-3",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "429.0:212.0;429.0:228.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-4",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "490.0:229.0;471.0:220.0;490.0:211.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "EllipseView",
+              "_id": "relational-v33-5",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 453.0,
+              "top": 215.0,
+              "width": 10,
+              "height": 10
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-6",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;0",
+              "left": 420.0,
+              "top": 179,
+              "width": 60,
+              "height": 24,
+              "text": "属于",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-7",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "210:300;210:460",
+              "lineStyle": 1,
+              "lineMode": 2
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-8",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "218.0:309.0;202.0:309.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-9",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "218.0:319.0;202.0:319.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-10",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "201.0:460.0;210.0:441.0;219.0:460.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "EllipseView",
+              "_id": "relational-v33-11",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 205.0,
+              "top": 423.0,
+              "width": 10,
+              "height": 10
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-12",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;0",
+              "left": 240,
+              "top": 389,
+              "width": 60,
+              "height": 24,
+              "text": "部门",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-13",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "680:396;680:460",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-14",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "688.0:405.0;672.0:405.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-15",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "688.0:415.0;672.0:415.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-16",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "671.0:460.0;680.0:441.0;689.0:460.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "EllipseView",
+              "_id": "relational-v33-17",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 675.0,
+              "top": 423.0,
+              "width": 10,
+              "height": 10
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-18",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "410:550;490:550",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-19",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "419.0:542.0;419.0:558.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-20",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "429.0:542.0;429.0:558.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-21",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "490.0:559.0;471.0:550.0;490.0:541.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "EllipseView",
+              "_id": "relational-v33-22",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 453.0,
+              "top": 545.0,
+              "width": 10,
+              "height": 10
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-23",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;0",
+              "left": 420.0,
+              "top": 509,
+              "width": 60,
+              "height": 24,
+              "text": "角色",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-24",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "210:676;210:790",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-25",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "218.0:685.0;202.0:685.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-26",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "218.0:695.0;202.0:695.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-27",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "201.0:790.0;210.0:771.0;219.0:790.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "EllipseView",
+              "_id": "relational-v33-28",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 205.0,
+              "top": 753.0,
+              "width": 10,
+              "height": 10
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-29",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "410:880;490:880",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-30",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "410.0:871.0;429.0:880.0;410.0:889.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "EllipseView",
+              "_id": "relational-v33-31",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 437.0,
+              "top": 875.0,
+              "width": 10,
+              "height": 10
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-32",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "481.0:888.0;481.0:872.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-33",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "471.0:888.0;471.0:872.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-34",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;0",
+              "left": 420.0,
+              "top": 839,
+              "width": 60,
+              "height": 24,
+              "text": "权限",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-35",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "680:1036;680:1170",
+              "lineStyle": 1,
+              "lineMode": 2
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-36",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "689.0:1036.0;680.0:1055.0;671.0:1036.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "EllipseView",
+              "_id": "relational-v33-37",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 675.0,
+              "top": 1063.0,
+              "width": 10,
+              "height": 10
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-38",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "672.0:1161.0;688.0:1161.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-39",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "672.0:1151.0;688.0:1151.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-40",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;0",
+              "left": 710,
+              "top": 1094,
+              "width": 60,
+              "height": 24,
+              "text": "系统",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-41",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "100:120;100:80;25:80;25:260;30:260",
+              "lineStyle": 1,
+              "lineMode": 2
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-42",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "92.0:111.0;108.0:111.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "EllipseView",
+              "_id": "relational-v33-43",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 95.0,
+              "top": 88.0,
+              "width": 10,
+              "height": 10
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-44",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "30.0:269.0;11.0:260.0;30.0:251.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "EllipseView",
+              "_id": "relational-v33-45",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": -7.0,
+              "top": 255.0,
+              "width": 10,
+              "height": 10
+            },
+            {
+              "_type": "RectangleView",
+              "_id": "relational-v33-46",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 30,
+              "top": 120,
+              "width": 380,
+              "height": 180
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-47",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;21;1",
+              "left": 42,
+              "top": 125,
+              "width": 60,
+              "height": 29,
+              "text": "部门",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-48",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 42,
+              "top": 154,
+              "width": 180,
+              "height": 26,
+              "text": "department",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-49",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "30:184;410:184",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-50",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;1",
+              "left": 40,
+              "top": 189,
+              "width": 60,
+              "height": 24,
+              "text": "字段",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-51",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;1",
+              "left": 205,
+              "top": 189,
+              "width": 60,
+              "height": 24,
+              "text": "类型",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-52",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;1",
+              "left": 318,
+              "top": 189,
+              "width": 60,
+              "height": 24,
+              "text": "约束",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-53",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "30:210;410:210",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-54",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;17;0",
+              "left": 40,
+              "top": 215,
+              "width": 60,
+              "height": 25,
+              "text": "id",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-55",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;15;0",
+              "left": 205,
+              "top": 217,
+              "width": 90,
+              "height": 23,
+              "text": "BIGINT",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-56",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;14;0",
+              "left": 318,
+              "top": 218,
+              "width": 70,
+              "height": 22,
+              "text": "PK NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-57",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "30:240;410:240",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-58",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;17;0",
+              "left": 40,
+              "top": 245,
+              "width": 68,
+              "height": 25,
+              "text": "name",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-59",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;15;0",
+              "left": 205,
+              "top": 247,
+              "width": 105,
+              "height": 23,
+              "text": "VARCHAR",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-60",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;14;0",
+              "left": 318,
+              "top": 248,
+              "width": 60,
+              "height": 22,
+              "text": "NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-61",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "30:270;410:270",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-62",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;17;0",
+              "left": 40,
+              "top": 275,
+              "width": 153,
+              "height": 25,
+              "text": "parent_id",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-63",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;15;0",
+              "left": 205,
+              "top": 277,
+              "width": 90,
+              "height": 23,
+              "text": "BIGINT",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-64",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;14;0",
+              "left": 318,
+              "top": 278,
+              "width": 60,
+              "height": 22,
+              "text": "FK",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "RectangleView",
+              "_id": "relational-v33-65",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 490,
+              "top": 120,
+              "width": 380,
+              "height": 276
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-66",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;21;1",
+              "left": 502,
+              "top": 125,
+              "width": 84,
+              "height": 29,
+              "text": "用户账号",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-67",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 502,
+              "top": 154,
+              "width": 144,
+              "height": 26,
+              "text": "app_user",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-68",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "490:184;870:184",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-69",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;1",
+              "left": 500,
+              "top": 189,
+              "width": 60,
+              "height": 24,
+              "text": "字段",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-70",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;1",
+              "left": 665,
+              "top": 189,
+              "width": 60,
+              "height": 24,
+              "text": "类型",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-71",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;1",
+              "left": 778,
+              "top": 189,
+              "width": 60,
+              "height": 24,
+              "text": "约束",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-72",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "490:210;870:210",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-73",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;17;0",
+              "left": 500,
+              "top": 215,
+              "width": 60,
+              "height": 25,
+              "text": "id",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-74",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;15;0",
+              "left": 665,
+              "top": 217,
+              "width": 90,
+              "height": 23,
+              "text": "BIGINT",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-75",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;14;0",
+              "left": 778,
+              "top": 218,
+              "width": 70,
+              "height": 22,
+              "text": "PK NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-76",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "490:240;870:240",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-77",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;17;0",
+              "left": 500,
+              "top": 245,
+              "width": 136,
+              "height": 25,
+              "text": "username",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-78",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;15;0",
+              "left": 665,
+              "top": 247,
+              "width": 105,
+              "height": 23,
+              "text": "VARCHAR",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-79",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;14;0",
+              "left": 778,
+              "top": 248,
+              "width": 60,
+              "height": 22,
+              "text": "NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-80",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "490:270;870:270",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-81",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;17;0",
+              "left": 500,
+              "top": 275,
+              "width": 68,
+              "height": 25,
+              "text": "name",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-82",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;15;0",
+              "left": 665,
+              "top": 277,
+              "width": 105,
+              "height": 23,
+              "text": "VARCHAR",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-83",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;14;0",
+              "left": 778,
+              "top": 278,
+              "width": 60,
+              "height": 22,
+              "text": "NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-84",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "490:300;870:300",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-85",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;17;0",
+              "left": 500,
+              "top": 305,
+              "width": 85,
+              "height": 25,
+              "text": "phone",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-86",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;15;0",
+              "left": 665,
+              "top": 307,
+              "width": 105,
+              "height": 23,
+              "text": "VARCHAR",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-87",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;14;0",
+              "left": 778,
+              "top": 308,
+              "width": 60,
+              "height": 22,
+              "text": "NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-88",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "490:330;870:330",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-89",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;17;0",
+              "left": 500,
+              "top": 335,
+              "width": 221,
+              "height": 25,
+              "text": "department_id",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-90",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;15;0",
+              "left": 665,
+              "top": 337,
+              "width": 90,
+              "height": 23,
+              "text": "BIGINT",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-91",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;14;0",
+              "left": 778,
+              "top": 338,
+              "width": 70,
+              "height": 22,
+              "text": "FK NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-92",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "490:360;870:360",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-93",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;15;0",
+              "left": 500,
+              "top": 369,
+              "width": 165,
+              "height": 23,
+              "text": "唯一：username",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "RectangleView",
+              "_id": "relational-v33-94",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 30,
+              "top": 460,
+              "width": 380,
+              "height": 216
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-95",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;21;1",
+              "left": 42,
+              "top": 465,
+              "width": 60,
+              "height": 29,
+              "text": "角色",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-96",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 42,
+              "top": 494,
+              "width": 72,
+              "height": 26,
+              "text": "role",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-97",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "30:524;410:524",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-98",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;1",
+              "left": 40,
+              "top": 529,
+              "width": 60,
+              "height": 24,
+              "text": "字段",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-99",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;1",
+              "left": 205,
+              "top": 529,
+              "width": 60,
+              "height": 24,
+              "text": "类型",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-100",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;1",
+              "left": 318,
+              "top": 529,
+              "width": 60,
+              "height": 24,
+              "text": "约束",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-101",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "30:550;410:550",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-102",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;17;0",
+              "left": 40,
+              "top": 555,
+              "width": 60,
+              "height": 25,
+              "text": "id",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-103",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;15;0",
+              "left": 205,
+              "top": 557,
+              "width": 90,
+              "height": 23,
+              "text": "BIGINT",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-104",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;14;0",
+              "left": 318,
+              "top": 558,
+              "width": 70,
+              "height": 22,
+              "text": "PK NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-105",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "30:580;410:580",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-106",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;17;0",
+              "left": 40,
+              "top": 585,
+              "width": 68,
+              "height": 25,
+              "text": "name",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-107",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;15;0",
+              "left": 205,
+              "top": 587,
+              "width": 105,
+              "height": 23,
+              "text": "VARCHAR",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-108",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;14;0",
+              "left": 318,
+              "top": 588,
+              "width": 60,
+              "height": 22,
+              "text": "NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-109",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "30:610;410:610",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-110",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;17;0",
+              "left": 40,
+              "top": 615,
+              "width": 221,
+              "height": 25,
+              "text": "department_id",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-111",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;15;0",
+              "left": 205,
+              "top": 617,
+              "width": 90,
+              "height": 23,
+              "text": "BIGINT",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-112",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;14;0",
+              "left": 318,
+              "top": 618,
+              "width": 70,
+              "height": 22,
+              "text": "FK NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-113",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "30:640;410:640",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-114",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;15;0",
+              "left": 40,
+              "top": 649,
+              "width": 345,
+              "height": 23,
+              "text": "唯一：department_id + name",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "RectangleView",
+              "_id": "relational-v33-115",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 490,
+              "top": 460,
+              "width": 380,
+              "height": 150
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-116",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;21;1",
+              "left": 502,
+              "top": 465,
+              "width": 84,
+              "height": 29,
+              "text": "用户角色",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-117",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 502,
+              "top": 494,
+              "width": 162,
+              "height": 26,
+              "text": "user_role",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-118",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "490:524;870:524",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-119",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;1",
+              "left": 500,
+              "top": 529,
+              "width": 60,
+              "height": 24,
+              "text": "字段",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-120",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;1",
+              "left": 665,
+              "top": 529,
+              "width": 60,
+              "height": 24,
+              "text": "类型",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-121",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;1",
+              "left": 778,
+              "top": 529,
+              "width": 60,
+              "height": 24,
+              "text": "约束",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-122",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "490:550;870:550",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-123",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;17;0",
+              "left": 500,
+              "top": 555,
+              "width": 119,
+              "height": 25,
+              "text": "user_id",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-124",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;15;0",
+              "left": 665,
+              "top": 557,
+              "width": 90,
+              "height": 23,
+              "text": "BIGINT",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-125",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;14;0",
+              "left": 778,
+              "top": 558,
+              "width": 112,
+              "height": 22,
+              "text": "PK FK NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-126",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "490:580;870:580",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-127",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;17;0",
+              "left": 500,
+              "top": 585,
+              "width": 119,
+              "height": 25,
+              "text": "role_id",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-128",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;15;0",
+              "left": 665,
+              "top": 587,
+              "width": 90,
+              "height": 23,
+              "text": "BIGINT",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-129",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;14;0",
+              "left": 778,
+              "top": 588,
+              "width": 112,
+              "height": 22,
+              "text": "PK FK NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "RectangleView",
+              "_id": "relational-v33-130",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 30,
+              "top": 790,
+              "width": 380,
+              "height": 150
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-131",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;21;1",
+              "left": 42,
+              "top": 795,
+              "width": 84,
+              "height": 29,
+              "text": "角色权限",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-132",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 42,
+              "top": 824,
+              "width": 270,
+              "height": 26,
+              "text": "role_permission",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-133",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "30:854;410:854",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-134",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;1",
+              "left": 40,
+              "top": 859,
+              "width": 60,
+              "height": 24,
+              "text": "字段",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-135",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;1",
+              "left": 205,
+              "top": 859,
+              "width": 60,
+              "height": 24,
+              "text": "类型",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-136",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;1",
+              "left": 318,
+              "top": 859,
+              "width": 60,
+              "height": 24,
+              "text": "约束",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-137",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "30:880;410:880",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-138",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;17;0",
+              "left": 40,
+              "top": 885,
+              "width": 119,
+              "height": 25,
+              "text": "role_id",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-139",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;15;0",
+              "left": 205,
+              "top": 887,
+              "width": 90,
+              "height": 23,
+              "text": "BIGINT",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-140",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;14;0",
+              "left": 318,
+              "top": 888,
+              "width": 112,
+              "height": 22,
+              "text": "PK FK NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-141",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "30:910;410:910",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-142",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;17;0",
+              "left": 40,
+              "top": 915,
+              "width": 221,
+              "height": 25,
+              "text": "permission_id",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-143",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;15;0",
+              "left": 205,
+              "top": 917,
+              "width": 90,
+              "height": 23,
+              "text": "BIGINT",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-144",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;14;0",
+              "left": 318,
+              "top": 918,
+              "width": 112,
+              "height": 22,
+              "text": "PK FK NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "RectangleView",
+              "_id": "relational-v33-145",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 490,
+              "top": 790,
+              "width": 380,
+              "height": 246
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-146",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;21;1",
+              "left": 502,
+              "top": 795,
+              "width": 84,
+              "height": 29,
+              "text": "操作权限",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-147",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 502,
+              "top": 824,
+              "width": 180,
+              "height": 26,
+              "text": "permission",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-148",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "490:854;870:854",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-149",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;1",
+              "left": 500,
+              "top": 859,
+              "width": 60,
+              "height": 24,
+              "text": "字段",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-150",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;1",
+              "left": 665,
+              "top": 859,
+              "width": 60,
+              "height": 24,
+              "text": "类型",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-151",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;1",
+              "left": 778,
+              "top": 859,
+              "width": 60,
+              "height": 24,
+              "text": "约束",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-152",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "490:880;870:880",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-153",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;17;0",
+              "left": 500,
+              "top": 885,
+              "width": 60,
+              "height": 25,
+              "text": "id",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-154",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;15;0",
+              "left": 665,
+              "top": 887,
+              "width": 90,
+              "height": 23,
+              "text": "BIGINT",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-155",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;14;0",
+              "left": 778,
+              "top": 888,
+              "width": 70,
+              "height": 22,
+              "text": "PK NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-156",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "490:910;870:910",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-157",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;17;0",
+              "left": 500,
+              "top": 915,
+              "width": 153,
+              "height": 25,
+              "text": "system_id",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-158",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;15;0",
+              "left": 665,
+              "top": 917,
+              "width": 90,
+              "height": 23,
+              "text": "BIGINT",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-159",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;14;0",
+              "left": 778,
+              "top": 918,
+              "width": 70,
+              "height": 22,
+              "text": "FK NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-160",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "490:940;870:940",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-161",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;17;0",
+              "left": 500,
+              "top": 945,
+              "width": 68,
+              "height": 25,
+              "text": "code",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-162",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;15;0",
+              "left": 665,
+              "top": 947,
+              "width": 105,
+              "height": 23,
+              "text": "VARCHAR",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-163",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;14;0",
+              "left": 778,
+              "top": 948,
+              "width": 60,
+              "height": 22,
+              "text": "NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-164",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "490:970;870:970",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-165",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;17;0",
+              "left": 500,
+              "top": 975,
+              "width": 68,
+              "height": 25,
+              "text": "name",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-166",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;15;0",
+              "left": 665,
+              "top": 977,
+              "width": 105,
+              "height": 23,
+              "text": "VARCHAR",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-167",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;14;0",
+              "left": 778,
+              "top": 978,
+              "width": 60,
+              "height": 22,
+              "text": "NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-168",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "490:1000;870:1000",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-169",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;15;0",
+              "left": 500,
+              "top": 1009,
+              "width": 285,
+              "height": 23,
+              "text": "唯一：system_id + code",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "RectangleView",
+              "_id": "relational-v33-170",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 490,
+              "top": 1170,
+              "width": 380,
+              "height": 216
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-171",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;21;1",
+              "left": 502,
+              "top": 1175,
+              "width": 84,
+              "height": 29,
+              "text": "业务系统",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-172",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 502,
+              "top": 1204,
+              "width": 270,
+              "height": 26,
+              "text": "business_system",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-173",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "490:1234;870:1234",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-174",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;1",
+              "left": 500,
+              "top": 1239,
+              "width": 60,
+              "height": 24,
+              "text": "字段",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-175",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;1",
+              "left": 665,
+              "top": 1239,
+              "width": 60,
+              "height": 24,
+              "text": "类型",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-176",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;1",
+              "left": 778,
+              "top": 1239,
+              "width": 60,
+              "height": 24,
+              "text": "约束",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-177",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "490:1260;870:1260",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-178",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;17;0",
+              "left": 500,
+              "top": 1265,
+              "width": 60,
+              "height": 25,
+              "text": "id",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-179",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;15;0",
+              "left": 665,
+              "top": 1267,
+              "width": 90,
+              "height": 23,
+              "text": "BIGINT",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-180",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;14;0",
+              "left": 778,
+              "top": 1268,
+              "width": 70,
+              "height": 22,
+              "text": "PK NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-181",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "490:1290;870:1290",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-182",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;17;0",
+              "left": 500,
+              "top": 1295,
+              "width": 170,
+              "height": 25,
+              "text": "system_key",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-183",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;15;0",
+              "left": 665,
+              "top": 1297,
+              "width": 105,
+              "height": 23,
+              "text": "VARCHAR",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-184",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;14;0",
+              "left": 778,
+              "top": 1298,
+              "width": 60,
+              "height": 22,
+              "text": "NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-185",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "490:1320;870:1320",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-186",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;17;0",
+              "left": 500,
+              "top": 1325,
+              "width": 68,
+              "height": 25,
+              "text": "name",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-187",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;15;0",
+              "left": 665,
+              "top": 1327,
+              "width": 105,
+              "height": 23,
+              "text": "VARCHAR",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-188",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;14;0",
+              "left": 778,
+              "top": 1328,
+              "width": 60,
+              "height": 22,
+              "text": "NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-189",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "490:1350;870:1350",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-190",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;15;0",
+              "left": 500,
+              "top": 1359,
+              "width": 195,
+              "height": 23,
+              "text": "唯一：system_key",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-191",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;17;0",
+              "left": 40,
+              "top": 1203,
+              "width": 323,
+              "height": 25,
+              "text": "PK 主键  FK 外键  NN 非空",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-192",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;17;0",
+              "left": 40,
+              "top": 1243,
+              "width": 187,
+              "height": 25,
+              "text": "联合主键防止关联重复。",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-193",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;17;0",
+              "left": 40,
+              "top": 1283,
+              "width": 221,
+              "height": 25,
+              "text": "实线：FK 属于子表主键。",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-194",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;17;0",
+              "left": 40,
+              "top": 1323,
+              "width": 238,
+              "height": 25,
+              "text": "虚线：FK 不属于子表主键。",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-195",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 40,
+              "top": 1417,
+              "width": 630,
+              "height": 26,
+              "text": "MySQL 8.4 InnoDB；七张业务表之外单列登录会话技术结构。",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

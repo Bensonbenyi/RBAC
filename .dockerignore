@@ -1,0 +1,10 @@
+.git
+.runtime
+docs
+vendor
+frontend/node_modules
+**/.git
+**/src
+**/node_modules
+.agents
+.arts

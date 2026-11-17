@@ -139,6 +139,13 @@ abstract class ContractSuite {
   }
 
   @Test
+  void preservesHttpRoutingErrors() {
+    expect(404, "GET", "/api/unknown-resource", null, token);
+    var response = expect(405, "PUT", "/api/users", "{}", token);
+    assertEquals("METHOD_NOT_ALLOWED", response.get("code").asText());
+  }
+
+  @Test
   void authenticatesAndRejectsBadCredentials() {
     expect(401, "GET", "/auth/me", null, null);
     expect(

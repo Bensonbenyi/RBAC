@@ -52,7 +52,6 @@ public class DddUserService implements UserUseCase {
     var user = new cn.edu.xmu.rbac.service.ddd.domain.User(store.user(id));
     user.changeProfile(command);
     store.updateUser(id, user.profile());
-    ;
     log.debug("updateUser actor={} target={}", actor.userId(), id);
   }
 
@@ -61,7 +60,6 @@ public class DddUserService implements UserUseCase {
     var user = new cn.edu.xmu.rbac.service.ddd.domain.User(store.user(id));
     user.changeProfile(command);
     store.updateUser(id, user.profile());
-    ;
     log.debug("updateMe actor={}", id);
   }
 

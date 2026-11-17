@@ -55,7 +55,6 @@ public class StructuredUserService implements UserUseCase {
         new Data.Profile(
             command.name() == null ? old.name() : command.name(),
             command.phone() == null ? old.phone() : command.phone()));
-    ;
     log.debug("updateUser actor={} target={}", actor.userId(), id);
   }
 
@@ -67,7 +66,6 @@ public class StructuredUserService implements UserUseCase {
         new Data.Profile(
             command.name() == null ? old.name() : command.name(),
             command.phone() == null ? old.phone() : command.phone()));
-    ;
     log.debug("updateMe actor={}", id);
   }
 

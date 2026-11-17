@@ -1,16 +1,18 @@
-"""Package the current design source, rendered PDF, models and build tools."""
+"""Package the current design and optionally apply the course group filename."""
+import argparse,shutil
 from pathlib import Path
-from zipfile import ZipFile, ZIP_DEFLATED
-R=Path(__file__).resolve().parents[1]
-version=(R/'VERSION').read_text().strip()
-files=[R/n for n in ['README.md','VERSION','CHANGELOG.md','.gitignore','统一权限管理系统需求与详细设计说明书.adoc',f'统一权限管理系统需求与详细设计说明书-v{version}.pdf','课件图例与绘图验收.md']]
-for folder in ['assets/spec','sql']:
-    files.extend(p for p in (R/folder).glob('*') if p.is_file())
-for stem in ['rbac-chen-v1','rbac-schema-v1']:files.extend((R/'assets').glob(stem+'.*'))
-files.extend((R/'tooling'/n) for n in ['package.json','package-lock.json','export.mjs','audit-diagrams.mjs','spec.css'])
-files.extend((R/'tools').glob('*.py'))
-for name in ['流程配图覆盖清单.md','绘图规范与参考.md','课件图稿对应清单.md']:
-    if (R/name).exists():files.append(R/name)
+from zipfile import ZipFile,ZIP_DEFLATED
+p=argparse.ArgumentParser();p.add_argument('--group');a=p.parse_args()
+R=Path(__file__).resolve().parents[1];version=(R/'VERSION').read_text().strip()
+files=[R/n for n in ['README.md','VERSION','CHANGELOG.md','.gitignore','课件图例与绘图验收.md','课件图稿对应清单.md','绘图规范与参考.md']]
+for title in ['统一权限管理系统需求与详细设计说明书','统一权限管理系统概要设计说明书']:
+ files += [R/(title+'.adoc'),R/(title+'-v'+version+'.pdf')]
+for folder in ['assets/v33','sql','tools']:
+ files.extend(p for p in (R/folder).glob('*') if p.is_file())
+for name in ['package.json','package-lock.json','export.mjs','audit-v33.mjs','spec.css']:files.append(R/'tooling'/name)
 with ZipFile(R/f'统一权限管理系统设计-v{version}.zip','w',ZIP_DEFLATED) as z:
-    for p in sorted(set(files)):z.write(p,Path(f'RBAC设计-v{version}')/p.relative_to(R))
+ for source in sorted(set(files)):z.write(source,Path('RBAC设计-v'+version)/source.relative_to(R))
+if a.group:
+ if not a.group.isalnum():raise SystemExit('Group identifier must contain letters or digits')
+ shutil.copyfile(R/f'统一权限管理系统概要设计说明书-v{version}.pdf',R/f'{a.group}_统一权限管理系统_概要设计说明书.pdf')
 print(f'Packaged v{version}: {len(set(files))} files')

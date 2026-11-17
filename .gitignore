@@ -9,3 +9,5 @@
 .integrations/
 *.log
 __pycache__/
+**/dist-course/
+*.iml

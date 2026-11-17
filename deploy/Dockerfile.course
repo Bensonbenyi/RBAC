@@ -1,0 +1,5 @@
+FROM docker.m.daocloud.io/library/eclipse-temurin:21-jre-jammy
+WORKDIR /app
+COPY .integrations/course-project-mgt/backend/target/course-project-backend-0.0.1-SNAPSHOT.jar /app/application.jar
+COPY deploy/java-entrypoint.sh deploy/healthcheck.sh /app/
+ENTRYPOINT ["/bin/bash","/app/java-entrypoint.sh"]

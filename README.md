@@ -35,3 +35,9 @@ mvn -f .integrations/course-project-mgt/backend/pom.xml -s .mvn/settings.xml pac
 老师仓库版本和补丁位于 `integrations/course-project-mgt/`。该集成启用 `rbac-integration` profile，提供学期维护与课程审核链路；登录请求直接访问 RBAC。前端使用相同技术栈，页面通过真实 API 读取和提交数据。
 
 设计文档、图及导出工具见 `docs/redesign/`，实施与测试记录见 `docs/implementation/`。
+
+## 部署与设计交付
+
+`deploy/stack.yaml` 将入口及两套应用部署在现有 Swarm Manager，MySQL 放在 Worker 1。使用独立 Overlay、Secret 和数据卷。`deploy/backup.sh` 在数据库节点生成一致性备份；恢复验证使用独立临时数据库。
+
+当前文档入口为 [设计交付目录](docs/redesign/README.md)，运行记录见 [实施报告](docs/implementation/实施报告.md)。`tooling/build-design.sh` 重建两份 PDF、AsciiDoc、102 张黑白图稿及 StarUML 模型。

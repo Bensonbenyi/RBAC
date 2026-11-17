@@ -1,0 +1,4 @@
+FROM docker.m.daocloud.io/library/nginx:1.28-alpine
+COPY frontend/dist/ /usr/share/nginx/html/platform/
+COPY frontend/dist-course/ /usr/share/nginx/html/course/
+COPY deploy/nginx.conf /etc/nginx/conf.d/default.conf

@@ -195,3 +195,13 @@ table.use-case tr.scene-band td { background: #bfbfbf; color: #000; }
  .diagram img[src*="spec/domain-model"],
  .diagram img[src*="spec/packages-"] { max-height: 210mm; }
 }
+
+/* A function's URL table and its first interaction fit on the same page. */
+@media print {
+ .outline .diagram img { max-height: 165mm; }
+ .diagram img[src*="v33/auth-"], .diagram img[src*="v33/user-"],
+ .diagram img[src*="v33/role-"], .diagram img[src*="v33/dept-"],
+ .diagram img[src*="v33/sys-"], .diagram img[src*="v33/perm-"] { max-height: 146mm; }
+ .plate-intro > h2:first-child { margin-top: 0; }
+ table.use-case { break-inside: avoid; }
+}

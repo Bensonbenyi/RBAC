@@ -49,6 +49,20 @@ public class ApiErrors {
     return error(503, "SERVICE_UNAVAILABLE", "数据服务暂不可用");
   }
 
+  @ExceptionHandler({
+    org.springframework.web.servlet.resource.NoResourceFoundException.class,
+    org.springframework.web.HttpRequestMethodNotSupportedException.class,
+    org.springframework.web.bind.MissingServletRequestParameterException.class
+  })
+  ResponseEntity<?> http(org.springframework.web.ErrorResponse e) {
+    int status = e.getStatusCode().value();
+    String code =
+        status == 404 ? "NOT_FOUND" : status == 405 ? "METHOD_NOT_ALLOWED" : "INVALID_ARGUMENT";
+    return ResponseEntity.status(status)
+        .headers(e.getHeaders())
+        .body(Map.of("code", code, "message", "请求路径、方法或必要参数不符合接口定义"));
+  }
+
   @ExceptionHandler(Exception.class)
   ResponseEntity<?> unexpected(Exception e) {
     log.error("unexpected request failure", e);

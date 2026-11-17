@@ -10,27 +10,30 @@ const require=createRequire(import.meta.url);
 const asciidoctor=require('@asciidoctor/core')();
 // Both dependencies are installed locally for reproducible export.
 const {chromium}=require('playwright');
-const source=path.join(root,'统一权限管理系统需求与详细设计说明书.adoc');
+const titles=['统一权限管理系统需求与详细设计说明书','统一权限管理系统概要设计说明书'];
+for(const title of titles){
+const source=path.join(root,title+'.adoc');
 const out=path.join(root,'build');fs.mkdirSync(out,{recursive:true});
-const pdf=path.join(root,`统一权限管理系统需求与详细设计说明书-v${version}.pdf`);
+const pdf=path.join(root,`${title}-v${version}.pdf`);
 const doc=asciidoctor.loadFile(source,{safe:'safe',standalone:true});
 if(doc.getRevisionNumber()!==version)throw Error('Document revision does not match VERSION');
-if(doc.getSections().length!==7)throw Error('Expected seven chapters');
+if(doc.getSections().length!==(title.includes('概要')?9:7))throw Error('Unexpected chapter count');
 let html=doc.convert();
-html=html.replace('<h1>统一权限管理系统需求与详细设计说明书</h1>','<h1>统一权限管理系统<br>需求与详细设计说明书</h1>')
+html=html.replace(`<h1>${title}</h1>`,`<h1>统一权限管理系统<br>${title.replace('统一权限管理系统','')}</h1>`)
  .replace(/version 3\.\d+\.\d+,?/,`版本 ${version}`)
- .replace('2026-11-12</span>','2026 年 11 月 12 日</span>')
+ .replace('2026-11-17</span>','2026 年 11 月 17 日</span>')
  .replace(/(<h[234][^>]*>|<a href="#[^"]+">)(\d+(?:\.\d+)*)\. /g,'$1$2 ');
 // Use the source folder as HTML base; AsciiDoc remains portable with relative images.
 html=html.replace('<head>',`<head><base href="${pathToFileURL(root+'/').href}">`);
-html=html.replace(/<link rel="stylesheet" href="tooling\/spec.css">/,`<style>${fs.readFileSync(path.join(root,'tooling/spec.css'),'utf8')}</style>`);
-const htmlPath=path.join(out,'index.html');fs.writeFileSync(htmlPath,html);
+html=html.replace(/<link rel="stylesheet" href="tooling\/spec.css">/,`<style>${fs.readFileSync(path.join(root,'tooling/spec.css'),'utf8').replace('content: "统一权限管理系统需求与详细设计说明书"',`content: "${title}"`)}</style>`);
+const htmlPath=path.join(out,title+'.html');fs.writeFileSync(htmlPath,html);
 const chrome=process.env.PDF_CHROME_PATH||'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 const browser=await chromium.launch({executablePath:chrome});
 try{
  const page=await browser.newPage();
  await page.goto(pathToFileURL(htmlPath).href,{waitUntil:'networkidle'});
- await page.evaluate(async()=>{
+ await page.evaluate(async(isOutline)=>{
+  if(isOutline)document.body.classList.add('outline');
   await document.fonts.ready;await Promise.all([...document.images].map(i=>i.decode()));
   // Keep section introductions with the first figure.
   for(const section of document.querySelectorAll('.sect2,.sect3,.sect4')) {
@@ -53,6 +56,10 @@ try{
    const h=section.querySelector(':scope > h3,:scope > h4');
    if(h && /共同契约与配置装配|错误与异常映射|故障处理|对象拷贝与运行日志/.test(h.textContent)) section.classList.add('keep-section');
   }
+  if(isOutline) for(const section of document.querySelectorAll('.sect3')) {
+   const heading=section.querySelector(':scope > h4');
+   if(heading && /S[1-4]/.test(heading.textContent))section.classList.add('keep-section');
+  }
   for(const table of document.querySelectorAll('.sect3 > table')) {
    if(table.rows[0]?.textContent.includes('字段') || table.rows[0]?.textContent.includes('输入对象')) table.classList.add('keep-table');
   }
@@ -62,7 +69,7 @@ try{
    section.prepend(body);
    for(const child of [...section.children]) {
     if(child===body) continue;
-    if(child.classList.contains('diagram')) break;
+    if(child.classList.contains('diagram') || child.classList.contains('sect4')) break;
     body.append(child);
    }
   }
@@ -72,13 +79,18 @@ try{
   for(const table of document.querySelectorAll('table')) {
    if(table.rows[0]?.textContent.includes('领域对象')) table.classList.add('domain-state');
   }
+  for(const section of document.querySelectorAll('.sect1')) {
+   const h=section.querySelector(':scope > h2');
+   const intro=section.querySelector(':scope > .sectionbody > .sect2:first-child .plate-intro');
+   if(h && intro)intro.prepend(h);
+  }
   for(const a of document.querySelectorAll('#toc a')){
    const label=document.createElement('span');label.className='toc-label';label.textContent=a.textContent;
    const dots=document.createElement('span');dots.className='toc-leader';
    const num=document.createElement('span');num.className='toc-page';num.textContent='00';
    a.replaceChildren(label,dots,num);
   }
- });
+ },title.includes('概要'));
  const readPages='import json,sys\nfrom urllib.parse import unquote\nfrom pypdf import PdfReader\np=PdfReader(sys.argv[1])\nprint(json.dumps({unquote(n.lstrip("/")):p.get_destination_page_number(d)+1 for n,d in p.named_destinations.items()}))';
  let prev='',stable=false;
  for(let pass=0;pass<5;pass++){
@@ -96,6 +108,8 @@ try{
  const audit=await page.evaluate(()=>({images:document.images.length,broken:[...document.images].filter(i=>!i.naturalWidth).map(i=>i.src),headings:document.querySelectorAll('h2,h3,h4').length}));
  const expectedFigures=(fs.readFileSync(source,'utf8').match(/^image::/gm)||[]).length;
  if(audit.broken.length || audit.images!==expectedFigures)throw Error(JSON.stringify({expectedFigures,...audit}));
- fs.writeFileSync(htmlPath,await page.content());fs.writeFileSync(path.join(out,'export-check.json'),JSON.stringify(audit,null,2));
+ fs.writeFileSync(htmlPath,await page.content());fs.writeFileSync(path.join(out,title+'-export-check.json'),JSON.stringify(audit,null,2));
  console.log(`Exported ${pdf}; ${audit.images} figures; TOC converged.`);
 }finally{await browser.close();}
+
+}
