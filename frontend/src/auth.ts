@@ -8,7 +8,8 @@ export function clearToken(){saveToken('');auth.me=null}
 export async function request<T>(path:string,method='GET',body?:unknown):Promise<T>{
  const response=await fetch(path,{method,headers:{...(body===undefined?{}:{'Content-Type':'application/json'}),...(auth.token?{Authorization:`Bearer ${auth.token}`}:{})},body:body===undefined?undefined:JSON.stringify(body)});
  if(!response.ok){if(response.status===401)clearToken();const problem=await response.json().catch(()=>({message:'服务暂不可用'}));throw new Error(`${response.status} ${problem.message||'请求失败'}`)}
- return response.status===204?undefined as T:await response.json() as T;
+ const text=await response.text();
+ return text ? JSON.parse(text) as T : undefined as T;
 }
 export async function refresh(){auth.me=await request<Me>('/auth/me')}
 export function allowed(code:string){return auth.me?.permissions.includes(code)||false}

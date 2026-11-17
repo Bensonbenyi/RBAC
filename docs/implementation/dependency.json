@@ -1,0 +1,370 @@
+{
+  "date": "2026-11-17",
+  "mode": "dependency",
+  "path": "/course-api/terms",
+  "previousTokenAccepted": true,
+  "firstFailureToRecoverySeconds": 39.365,
+  "observations": [
+    {
+      "afterSeconds": 0.143,
+      "status": 200
+    },
+    {
+      "afterSeconds": 0.805,
+      "status": 200
+    },
+    {
+      "afterSeconds": 1.498,
+      "status": 200
+    },
+    {
+      "afterSeconds": 2.147,
+      "status": 200
+    },
+    {
+      "afterSeconds": 2.804,
+      "status": 200
+    },
+    {
+      "afterSeconds": 4.465,
+      "status": 200
+    },
+    {
+      "afterSeconds": 6.121,
+      "status": 200
+    },
+    {
+      "afterSeconds": 6.772,
+      "status": 200
+    },
+    {
+      "afterSeconds": 8.416,
+      "status": 200
+    },
+    {
+      "afterSeconds": 9.07,
+      "status": 200
+    },
+    {
+      "afterSeconds": 10.723,
+      "status": 200
+    },
+    {
+      "afterSeconds": 11.385,
+      "status": 200
+    },
+    {
+      "afterSeconds": 12.037,
+      "status": 200
+    },
+    {
+      "afterSeconds": 12.685,
+      "status": 200
+    },
+    {
+      "afterSeconds": 13.345,
+      "status": 200
+    },
+    {
+      "afterSeconds": 14.244,
+      "status": 200
+    },
+    {
+      "afterSeconds": 14.898,
+      "status": 200
+    },
+    {
+      "afterSeconds": 15.55,
+      "status": 200
+    },
+    {
+      "afterSeconds": 16.225,
+      "status": 200
+    },
+    {
+      "afterSeconds": 16.871,
+      "status": 200
+    },
+    {
+      "afterSeconds": 17.529,
+      "status": 200
+    },
+    {
+      "afterSeconds": 18.176,
+      "status": 200
+    },
+    {
+      "afterSeconds": 18.821,
+      "status": 200
+    },
+    {
+      "afterSeconds": 19.478,
+      "status": 200
+    },
+    {
+      "afterSeconds": 20.129,
+      "status": 200
+    },
+    {
+      "afterSeconds": 20.772,
+      "status": 200
+    },
+    {
+      "afterSeconds": 21.405,
+      "status": 200
+    },
+    {
+      "afterSeconds": 22.056,
+      "status": 200
+    },
+    {
+      "afterSeconds": 22.705,
+      "status": 200
+    },
+    {
+      "afterSeconds": 23.406,
+      "status": 200
+    },
+    {
+      "afterSeconds": 24.053,
+      "status": 200
+    },
+    {
+      "afterSeconds": 24.7,
+      "status": 200
+    },
+    {
+      "afterSeconds": 25.35,
+      "status": 200
+    },
+    {
+      "afterSeconds": 26.101,
+      "status": 200
+    },
+    {
+      "afterSeconds": 26.745,
+      "status": 200
+    },
+    {
+      "afterSeconds": 27.393,
+      "status": 200
+    },
+    {
+      "afterSeconds": 28.049,
+      "status": 200
+    },
+    {
+      "afterSeconds": 28.705,
+      "status": 200
+    },
+    {
+      "afterSeconds": 29.36,
+      "status": 200
+    },
+    {
+      "afterSeconds": 30.118,
+      "status": 200
+    },
+    {
+      "afterSeconds": 30.774,
+      "status": 200
+    },
+    {
+      "afterSeconds": 31.409,
+      "status": 200
+    },
+    {
+      "afterSeconds": 32.048,
+      "status": 200
+    },
+    {
+      "afterSeconds": 32.708,
+      "status": 200
+    },
+    {
+      "afterSeconds": 33.347,
+      "status": 200
+    },
+    {
+      "afterSeconds": 33.99,
+      "status": 200
+    },
+    {
+      "afterSeconds": 34.647,
+      "status": 200
+    },
+    {
+      "afterSeconds": 35.39,
+      "status": 200
+    },
+    {
+      "afterSeconds": 36.043,
+      "status": 200
+    },
+    {
+      "afterSeconds": 36.691,
+      "status": 200
+    },
+    {
+      "afterSeconds": 37.335,
+      "status": 200
+    },
+    {
+      "afterSeconds": 41.074,
+      "status": 503
+    },
+    {
+      "afterSeconds": 44.759,
+      "status": 503
+    },
+    {
+      "afterSeconds": 48.412,
+      "status": 503
+    },
+    {
+      "afterSeconds": 52.042,
+      "status": 503
+    },
+    {
+      "afterSeconds": 55.716,
+      "status": 503
+    },
+    {
+      "afterSeconds": 59.403,
+      "status": 503
+    },
+    {
+      "afterSeconds": 60.035,
+      "status": 503
+    },
+    {
+      "afterSeconds": 60.667,
+      "status": 503
+    },
+    {
+      "afterSeconds": 61.308,
+      "status": 503
+    },
+    {
+      "afterSeconds": 61.945,
+      "status": 503
+    },
+    {
+      "afterSeconds": 62.578,
+      "status": 503
+    },
+    {
+      "afterSeconds": 63.203,
+      "status": 503
+    },
+    {
+      "afterSeconds": 63.834,
+      "status": 503
+    },
+    {
+      "afterSeconds": 64.479,
+      "status": 503
+    },
+    {
+      "afterSeconds": 65.116,
+      "status": 503
+    },
+    {
+      "afterSeconds": 65.752,
+      "status": 503
+    },
+    {
+      "afterSeconds": 66.395,
+      "status": 503
+    },
+    {
+      "afterSeconds": 67.023,
+      "status": 503
+    },
+    {
+      "afterSeconds": 67.647,
+      "status": 503
+    },
+    {
+      "afterSeconds": 68.287,
+      "status": 503
+    },
+    {
+      "afterSeconds": 68.936,
+      "status": 503
+    },
+    {
+      "afterSeconds": 69.566,
+      "status": 503
+    },
+    {
+      "afterSeconds": 70.199,
+      "status": 503
+    },
+    {
+      "afterSeconds": 70.823,
+      "status": 503
+    },
+    {
+      "afterSeconds": 71.439,
+      "status": 503
+    },
+    {
+      "afterSeconds": 72.063,
+      "status": 503
+    },
+    {
+      "afterSeconds": 72.692,
+      "status": 503
+    },
+    {
+      "afterSeconds": 73.328,
+      "status": 503
+    },
+    {
+      "afterSeconds": 73.96,
+      "status": 503
+    },
+    {
+      "afterSeconds": 74.595,
+      "status": 503
+    },
+    {
+      "afterSeconds": 75.226,
+      "status": 503
+    },
+    {
+      "afterSeconds": 75.857,
+      "status": 503
+    },
+    {
+      "afterSeconds": 76.495,
+      "status": 503
+    },
+    {
+      "afterSeconds": 77.12,
+      "status": 503
+    },
+    {
+      "afterSeconds": 77.752,
+      "status": 503
+    },
+    {
+      "afterSeconds": 78.374,
+      "status": 503
+    },
+    {
+      "afterSeconds": 79.012,
+      "status": 503
+    },
+    {
+      "afterSeconds": 79.648,
+      "status": 503
+    },
+    {
+      "afterSeconds": 80.438,
+      "status": 200
+    }
+  ],
+  "courseReturned503": true
+}

@@ -1,0 +1,23 @@
+{
+  "strategy": "structured",
+  "target": "http://113.44.144.119",
+  "workload": [
+    "GET /auth/permissions/user.view",
+    "GET /api/users?page=0&size=20"
+  ],
+  "requests": 1000,
+  "warmup": 100,
+  "concurrency": 1,
+  "elapsedSeconds": 10.707,
+  "requestsPerSecond": 93.4,
+  "p50Ms": 9.29,
+  "p95Ms": 13.37,
+  "maxMs": 1034.49,
+  "statusCounts": {
+    "200": 1000
+  },
+  "errors": 0,
+  "errorRate": 0.0,
+  "date": "2026-11-17",
+  "client": "auxiliary 1.92.106.198, Python urllib, one connection per request"
+}

@@ -1,0 +1,101 @@
+{
+  "date": "2026-11-17",
+  "checks": [
+    {
+      "method": "POST",
+      "path": "/auth/login",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/auth/login",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/auth/login",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/auth/me",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/users",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/terms",
+      "status": 403
+    },
+    {
+      "method": "POST",
+      "path": "/terms",
+      "status": 201
+    },
+    {
+      "method": "PATCH",
+      "path": "/terms/2",
+      "status": 200
+    },
+    {
+      "method": "DELETE",
+      "path": "/terms/2",
+      "status": 204
+    },
+    {
+      "method": "GET",
+      "path": "/admin/courses?page=1&pageSize=20",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/roles?size=100",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/roles/2/permissions",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/courses/1/review",
+      "status": 403
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/roles/2/permissions/16",
+      "status": 204
+    },
+    {
+      "method": "POST",
+      "path": "/courses/1/review",
+      "status": 403
+    },
+    {
+      "method": "PUT",
+      "path": "/api/roles/2/permissions/16",
+      "status": 204
+    },
+    {
+      "method": "POST",
+      "path": "/courses/1/review",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/auth/logout",
+      "status": 204
+    },
+    {
+      "method": "GET",
+      "path": "/terms",
+      "status": 401
+    }
+  ],
+  "result": "passed"
+}

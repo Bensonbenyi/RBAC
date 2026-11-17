@@ -2,13 +2,14 @@
 """Execute SSH operations; read the password once without storing or logging it."""
 import argparse,getpass,json,sys
 import pexpect
-p=argparse.ArgumentParser();p.add_argument('host',nargs='?');p.add_argument('--command');p.add_argument('--copy',nargs=2);p.add_argument('--batch');a=p.parse_args()
+p=argparse.ArgumentParser();p.add_argument('host',nargs='?');p.add_argument('--command');p.add_argument('--copy',nargs=2);p.add_argument('--download',nargs=2);p.add_argument('--batch');a=p.parse_args()
 password=getpass.getpass('SSH password: ')
 opts=['-o','StrictHostKeyChecking=accept-new','-o','ConnectTimeout=10','-o','ServerAliveInterval=15']
-operations=json.load(open(a.batch)) if a.batch else [{'host':a.host,'command':a.command,'copy':a.copy}]
+operations=json.load(open(a.batch)) if a.batch else [{'host':a.host,'command':a.command,'copy':a.copy,'download':a.download}]
 for operation in operations:
-    host=operation['host'];copy=operation.get('copy')
-    args=['scp','-q',*opts,copy[0],'root@'+host+':'+copy[1]] if copy else ['ssh',*opts,'root@'+host,operation['command']]
+    host=operation['host'];copy=operation.get('copy');download=operation.get('download')
+    args=['scp','-q',*opts,copy[0],'root@'+host+':'+copy[1]] if copy else ['ssh',*opts,'root@'+host,operation.get('command','true')]
+    if download:args=['scp','-q',*opts,'root@'+host+':'+download[0],download[1]]
     print('Copying files to' if copy else 'Running command on',host,flush=True)
     child=pexpect.spawn(args[0],args[1:],encoding='utf-8',timeout=3600,echo=False)
     child.expect(r'(?i)password:|$',timeout=2)

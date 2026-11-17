@@ -1,0 +1,23 @@
+{
+  "strategy": "ddd",
+  "target": "http://113.44.144.119",
+  "workload": [
+    "GET /auth/permissions/user.view",
+    "GET /api/users?page=0&size=20"
+  ],
+  "requests": 1000,
+  "warmup": 100,
+  "concurrency": 8,
+  "elapsedSeconds": 3.76,
+  "requestsPerSecond": 265.92,
+  "p50Ms": 27.07,
+  "p95Ms": 55.83,
+  "maxMs": 125.86,
+  "statusCounts": {
+    "200": 1000
+  },
+  "errors": 0,
+  "errorRate": 0.0,
+  "date": "2026-11-17",
+  "client": "auxiliary 1.92.106.198, Python urllib, one connection per request"
+}

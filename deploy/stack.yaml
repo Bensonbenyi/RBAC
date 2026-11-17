@@ -100,7 +100,7 @@ services:
         mode: host
     networks: [project]
     healthcheck:
-      test: ['CMD','wget','-q','-O','/dev/null','http://127.0.0.1/health']
+      test: ['CMD','wget','-q','-O','/dev/null','http://127.0.0.1/platform/']
       interval: 20s
       timeout: 5s
       retries: 3

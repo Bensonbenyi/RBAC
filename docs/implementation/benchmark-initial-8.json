@@ -1,0 +1,25 @@
+{
+  "strategy": "structured",
+  "target": "http://113.44.144.119",
+  "workload": [
+    "GET /auth/permissions/user.view",
+    "GET /api/users?page=0&size=20"
+  ],
+  "requests": 1000,
+  "warmup": 100,
+  "concurrency": 8,
+  "elapsedSeconds": 3.662,
+  "requestsPerSecond": 273.07,
+  "p50Ms": 15.48,
+  "p95Ms": 32.92,
+  "maxMs": 3006.46,
+  "errors": 2,
+  "errorRate": 0.002,
+  "date": "2026-11-17",
+  "client": "auxiliary 1.92.106.198, Python urllib, one connection per request",
+  "statusCounts": {
+    "200": 998,
+    "504": 2
+  },
+  "investigation": "Nginx recorded two upstream connection timeouts at 2026-11-17 02:00:45 UTC; corresponding backend requests were absent. Upstream HTTP keepalive was then enabled and the workload repeated."
+}
