@@ -1,0 +1,125 @@
+{
+  "date": "2026-11-17",
+  "version": "3.3.1",
+  "baseline": "v3.2.2",
+  "documents": [
+    {
+      "document": "统一权限管理系统需求与详细设计说明书",
+      "pages": 147,
+      "pageSizes": [
+        [
+          0.0,
+          0.0,
+          594.96,
+          841.92
+        ]
+      ],
+      "textSizeCounts": [
+        [
+          14.0,
+          22021
+        ],
+        [
+          11.4499998,
+          15154
+        ],
+        [
+          7.4200001,
+          5149
+        ],
+        [
+          12.0,
+          2960
+        ],
+        [
+          10.2299995,
+          2831
+        ],
+        [
+          13.3299999,
+          2574
+        ]
+      ],
+      "sha256": "271e7c407b4f7dbcf0db2af79100ef251d69a7c8d98e854283792eed7fa3bce0"
+    },
+    {
+      "document": "统一权限管理系统概要设计说明书",
+      "pages": 29,
+      "pageSizes": [
+        [
+          0.0,
+          0.0,
+          594.96,
+          841.92
+        ]
+      ],
+      "textSizeCounts": [
+        [
+          14.0,
+          9088
+        ],
+        [
+          9.1199999,
+          899
+        ],
+        [
+          11.6400003,
+          563
+        ],
+        [
+          12.0,
+          468
+        ],
+        [
+          21.33,
+          220
+        ],
+        [
+          10.1099997,
+          204
+        ]
+      ],
+      "sha256": "b4c68b29c2cb2a18c600bde44636481ba426004752bdbe558ae51f07fd46e81f"
+    }
+  ],
+  "figures": 125,
+  "umlDiagrams": 122,
+  "platformOperations": 35,
+  "courseOperations": 7,
+  "useCaseTables": 11,
+  "fieldDictionaryTables": 8,
+  "baselineCoverage": {
+    "baselineFigureCount": 90,
+    "coveredFigures": 89,
+    "scopeReplacements": 1,
+    "missingFigures": 0,
+    "originalStyleRetained": true
+  },
+  "svgTextBounds": "passed",
+  "modelReferences": "resolved",
+  "pdfTextInsidePage": "passed",
+  "toc": "converged",
+  "zipIntegrity": "passed",
+  "independentAsciiDocReconstruction": "passed",
+  "visualReview": {
+    "allPagesReviewed": true,
+    "detailChecks": [
+      "use-case tables and blue/gray cells",
+      "three-column method/URL/function tables",
+      "field dictionary",
+      "module and overall architecture classes",
+      "domain objects and package inventory",
+      "178 mm interaction plates",
+      "JDBC and CloneFactory interactions",
+      "no isolated introductions or trailing performance paragraph"
+    ],
+    "overviewChecks": [
+      "single-page contents",
+      "correct running header",
+      "state/dataflow/design model",
+      "architecture stories and ATAM",
+      "deployment and traceability"
+    ],
+    "result": "passed"
+  }
+}

@@ -1,0 +1,4 @@
+# Generated document and image artifacts retain their exact bytes.
+*.pdf binary
+*.png binary
+*.zip binary

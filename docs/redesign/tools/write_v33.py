@@ -2,6 +2,7 @@
 from pathlib import Path
 import re,json
 from v33_catalog import OPS,MODULES,REQS
+from v33_detail_content import FIELD_TABLES, CASES, case_table, calls_table, operation_input, architecture_details
 R=Path(__file__).resolve().parents[1];VERSION=(R/'VERSION').read_text().strip()
 HEADER='''= {title}
 OOAD 课程项目组
@@ -25,8 +26,7 @@ def table(headers, rows, cols=None, style=''):
  attrs = (style + ',' if style else '') + f'cols="{cols}",options="header"'
  heading = ' '.join('|' + x for x in headers)
  body = ''.join(' '.join('|' + str(x).replace('|', '\\|') for x in row) + '\n' for row in rows)
- title = {'项目':'功能用例概述','调用说明':'接口调用说明','参考资料':'参考资料及使用范围','术语':'术语定义','需求编号':'需求与设计追溯' if len(headers)>3 else '需求清单'}.get(headers[0], headers[0]+'与'+headers[1])
- return '\n.' + title + '\n[' + attrs + ']\n|===\n' + heading + '\n' + body + '|===\n'
+ return '\n[' + attrs + ']\n|===\n' + heading + '\n' + body + '|===\n'
 
 def fig(stem,title,anchor=None):return f'\n[.diagram.plate]\n--\n[[{anchor or "fig-"+stem}]]\n.{title}\nimage::v33/{stem}.svg[{title},width=100%]\n--\n'
 def refs():return table(['参考资料','使用范围'],[
@@ -105,9 +105,9 @@ def detail():
 五类业务实体为部门、用户、角色、权限和业务系统。用户角色与角色权限两组联系分别落为关联表。登录会话是实现认证撤销和恢复的技术结构，单列说明。关系模型见 <<fig-schema>> 与 <<fig-session-table>>。
 ''')
  add(fig('schema','业务数据库表关系'));add(fig('session-table','技术会话表关系'))
- add('=== 数据字典\n'+table(['表名','职责','主要字段与键','约束'],TABLES,'2,2,5,4'))
- fields=[('department','id BIGINT 自增；name VARCHAR(100)；parent_id BIGINT 可空。'),('app_user','id BIGINT 自增；username VARCHAR(64)；name VARCHAR(100)；phone VARCHAR(20)；department_id BIGINT 非空。'),('role','id BIGINT 自增；name VARCHAR(100)；department_id BIGINT 非空。'),('business_system','id BIGINT 自增；system_key VARCHAR(64)；name VARCHAR(100)。'),('permission','id BIGINT 自增；system_id BIGINT；code VARCHAR(100)；name VARCHAR(100)。'),('user_role','user_id BIGINT 与 role_id BIGINT 组成联合主键，各自为外键。'),('role_permission','role_id BIGINT 与 permission_id BIGINT 组成联合主键，各自为外键。'),('login_session','id CHAR(36)；user_id BIGINT；system_key VARCHAR(64)；expires_at TIMESTAMP(6)；revoked_at TIMESTAMP(6) 可空。')]
- for name,description in fields:add('==== '+name+'\n\n'+description)
+ add('=== 数据字典')
+ for title,rows in FIELD_TABLES:
+  add('==== '+title+'\n'+table(['字段','类型','可空','约束','含义'],rows,'18,23,10,29,32'))
  add('''=== 索引、事务与删除
 
 数据库采用 MySQL 8.4 InnoDB，文本使用区分大小写的排序规则。用户名和系统标识建立唯一索引，角色名及权限编码采用所属范围内的联合唯一索引。两个授权关联表使用联合主键，并为反向关联列建立索引。
@@ -122,35 +122,46 @@ def detail():
 
 系统总体分层见 <<fig-architecture>>，包依赖见 <<fig-packages>>。API 通过用例端口调用启动配置选中的服务；存储适配器使用 Spring JDBC，显式 SQL 集中在 Infrastructure。认证为共享装配。
 ''')
- add(fig('architecture','总体分层架构'));add(fig('packages','完整 UML 包图'));add(fig('packages-files','源文件与配置文件组织'));add(fig('domain','DDD 领域对象关系'))
+ add(fig('architecture','总体分层架构'));add(fig('packages','系统包依赖概览'))
  add('''=== 功能描述
 
 以下每项列出需求、调用说明与详细交互。写请求先校验输入并使用 CloneFactory 转为用例输入；操作者身份由 BearerFilter 和 CurrentIdentity 提供。DDD 的 User、Role 维护角色及权限标识集合，其他简单实体维护自身名称变化。
 ''')
- for module in ['Auth','User','Role','Department','System','Permission']:
-  title,req,entities=MODULES[module];add('==== '+title)
-  add(table(['项目','内容'],[('用例编号',req),('参与者','已登录管理用户；认证登录允许匿名提交凭据。' if module=='Auth' else '具有相应管理权限的本部门用户。'),('目标',title+'操作与当前授权一致。'),('前置条件','账号存在，目标系统及操作许可有效；目录和对象边界通过。'),('主成功场景','输入校验、认证与权限检查、对象加载、业务处理、提交及返回结果。'),('扩展场景','输入无效 400；未认证 401；越权 403；不存在 404；引用或重复 409；依赖故障 503。'),('相关数据',entities)],'2,7','role="use-case"'))
-  for op in [o for o in OPS if o.module==module]:
+ for case in CASES:
+  key,title,req,keys,package,actor,description,trigger,pre,steps,errors,post,activity,module=case
+  add('==== '+title)
+  add(case_table(case))
+  operations=[next(o for o in OPS if o.key==key) for key in keys]
+  add(calls_table(operations))
+  if activity:add(fig(activity,title+' 活动图',anchor='fig-function-'+activity))
+  for op in operations:
    add('===== '+op.key+' '+op.title)
-   add(table(['调用说明','内容'],[('调用 URL',op.method+' '+op.route),('功能',op.rule),('权限',op.permission),('结果',op.result),('输入','路径标识、分页或专用请求 DTO；只接收本功能声明字段。'),('失败处理','按统一异常表返回；数据库写失败回滚当前事务。')],'2,7'))
-   if module=='Auth' and op.function!='updateMe':add(fig(op.key.lower()+'-shared',op.key+' 共享认证交互'))
+   add(op.rule+'\n\n输入：'+operation_input(op)+'\n\n成功结果：'+op.result+'。权限：'+op.permission+'。')
+   if op.module=='Auth' and op.function!='updateMe':add(fig(op.key.lower()+'-shared',op.key+' 共享认证交互'))
    else:
     for mode,label in [('structured','结构化'),('ddd','DDD')]:add(fig(op.key.lower()+'-'+mode,op.key+' '+label+' 详细交互'))
-  if module=='Auth':add(fig('class-auth-shared','共享认证模块类图'))
-  if module!='Auth':
-   add('===== '+title+'模块类图')
-   for mode,label in [('structured','结构化'),('ddd','DDD')]:add(fig('class-'+mode+'-'+module.lower(),title+' '+label+' 模块类图'))
+   if op.key=='AUTH-01':add(fig('flow-login-session','建立登录会话与签发凭据'))
+  if module=='Auth':add(fig('class-auth-shared','共享认证与实时鉴权 类图'))
+  elif module:
+   add('===== '+MODULES[module][0]+'模块类图')
+   for mode,label in [('structured','结构化'),('ddd','DDD')]:add(fig('class-'+mode+'-'+module.lower(),MODULES[module][0]+' '+label+' 模块类图'))
  add('==== 课程管理系统接入\n\n需求 REQ-F-07。课程前端直接向平台 /auth/login 登录，携带 course-project-management audience 的令牌调用老师后端。反向代理把 /course-api/ 前缀剥离后转发。老师的业务规则保留，适配层完成验签、实时身份与 API 权限查询。')
- add(table(['operationId','老师 API','权限码','行为'],COURSE,'3,5,1,4'))
+ add(case_table(('COURSE-001','课程系统接入','REQ-F-07',[],'课程管理系统','具有对应课程权限的用户','通过统一登录执行学期维护和课程审核。','用户进入课程演示入口。','取得 course-project-management 的有效登录凭据。',[
+ ('读取当前身份与实时 API 权限。','未通过检查时课程后端拒绝执行。'),('调用老师的学期或课程业务接口。','保留上游输入、对象和课程状态规则。'),('返回老师的业务结果。','前端按权限显示维护和审核操作。')],[('无效登录或已退出','401。'),('无本次操作权限','403。'),('统一身份服务不可用','503，停止业务操作。')],'课程操作按上游规则持久化，后续每次操作重新检查平台许可。',None,None)))
+ add(table(['图中处理 / 实际方法','调用说明 URL','功能'],[(operation,route,behavior+'；权限 '+permission) for operation,route,permission,behavior in COURSE],'3,5,5'))
  for i,(operation,route,permission,behavior) in enumerate(COURSE,1):
   add('===== COURSE-'+str(i).zfill(2)+' '+operation)
-  add(table(['调用说明','内容'],[('调用 URL',route),('operationId',operation),('权限码',permission),('行为',behavior)],'2,7'))
+  add(behavior+'。调用 '+route+'，权限码 '+permission+'。')
   add(fig('course-'+str(i).zfill(2),operation+' 接入详细交互'))
  add('''课程列表 page 从 1 开始，courseStatus 为 1 申请、2 待审核、3 已开课。审核输入 decision 为 approved 或 rejected，驳回必须填写 comment。菜单来自当前权限，后端仍独立检查。该课程状态属于老师系统的课程对象。
 
 接口适配补丁固定到 c96efa2，保留 MIT 许可。其他老师项目路由在此演示装配中拒绝访问；选定业务服务仍使用老师原实现。
 
-=== 公共接口与输入规范
+''')
+ add(architecture_details(fig,table))
+ add('''=== 接口与输入设计
+
+==== 公共约定
 
 平台列表 page 从 0 开始，size 默认为 20、最大 100，page 最大 1000000。平台实体编号在 JSON 中为十进制字符串，避免前端精度损失。老师课程接口保留原分页及编号格式。
 
@@ -158,37 +169,42 @@ def detail():
 
 创建、资料修改、重命名和分配角色使用不同 DTO。未声明字段返回 400。普通资料修改只接受 name、phone，空修改返回 400；未提交字段保持原值。手机号变更后新登录使用新手机号，当前会话保留至撤销或到期。
 
-=== 认证与异常
+==== 认证与异常
 
 JWT 使用 RS256，携带 iss、sub、aud、jti、iat 和 exp，默认有效期 30 分钟。BearerFilter 校验签名、到期时间、单个目标系统、数据库会话、当前账号及 login 权限。目标系统和用户须与会话一致。
 
 /auth/me 返回 subject、username、name、departmentId、roles、permissions；/identity/users/{id} 返回 userId、no、name。角色名称用于显示，管理资格由权限集合确定。权限检查返回 allowed 布尔值。
 ''')
  add(table(['HTTP','业务码','含义'],ERRORS,'1,3,6'))
- add('''=== CloneFactory 与分层日志
+ add('==== 输入对象与字段白名单\n'+table(['输入对象','接收字段','固定或推导字段'],[
+ ('Requests.Login','username、password、systems','只接受一个目标系统。'),
+ ('Requests.CreateUser','username、name、phone','编号生成，departmentId 取当前身份。'),
+ ('Requests.Profile','name、phone，至少一项','用户编号、用户名、部门固定。'),
+ ('Requests.CreateDepartment','name、parentId','parentId 可空；创建后固定。'),
+ ('Requests.CreateSystem','systemKey、name','systemKey 创建后固定。'),
+ ('Requests.CreatePermission','code、name','systemId 来自路径；code 固定。'),
+ ('Requests.Name','name','用于角色创建及各目录重命名。'),
+ ('Requests.AssignRole','roleId','目标用户来自路径，操作者来自认证上下文。')],'3,4,4'))
+ add('==== 平台 HTTP 接口总表\n'+table(['编号','方法与路径','操作许可','成功响应'],[(o.key,o.method+' '+o.route,o.permission,o.result) for o in OPS],'2,5,3,3'))
 
-请求 record 使用 @CopyTo 声明 Command 目标类型，由老师 CloneFactory 注解处理器生成拷贝方法。编译检查生成方法，运行时直接调用生成代码。
-
-API 记录方法、路由、结果和耗时；业务服务记录用例、操作者与目标标识；存储适配记录操作名称、结果和耗时。DDD 领域对象保持框架无关，其结果由应用服务记录。SLF4J 统一输出到 Logback 控制台和滚动文件。异常边界仅对未预期故障记录完整堆栈。
-
-== 性能需求
+ add('''== 性能需求
 
 === 测量方法
 
-2026-11-17 在已部署环境建立实测基线。辅助节点通过公网 HTTP 发送混合负载，权限查询和本部门用户列表各占 50%。每轮预热 100 次，再测量 1,000 次；并发设为 1、4、8，8 并发分别重复三轮。两套实现使用相同数据、连接池、容器资源与 DEBUG 分层日志配置。登录在计时前完成。
+2026-11-17，辅助节点通过公网 HTTP 对两套实现执行同一负载：权限查询与本部门用户列表各占 50%。每轮预热 100 次，再计时 1,000 次；并发为 1、4、8，8 并发各测三轮。登录在计时前完成。数据、连接池、容器资源与 DEBUG 分层日志配置相同。
 
-列表采用有界分页，数据库连接池限制为 5。实时授权查询使用关联表主键及反向索引，权限保存在数据库当前关系中。数据库测量时含 2 个部门、5 个用户、3 个角色、2 个系统、17 项权限、4 条用户角色和 26 条角色权限关联。本部门列表返回 4 个用户，每页上限为 20。本次结果对应上述数据规模与共享服务器环境。
-
-=== 实测结果
-''')
- add(table(['业务实现','并发','轮次','吞吐 req/s','P95 ms','错误数'],measured_rows(),'3,1,1,2,2,1'))
- add('''两套实现共完成 10,000 次计时请求，全部返回 200，错误率为 0。8 并发三轮 P95 为结构化 36.67 至 52.61 ms、DDD 36.90 至 55.83 ms。结果存在 JVM 预热、共享节点和网络波动，适合作为当前部署的回归基线。
-
-连接复用调整前，一轮 1,000 次测试出现 2 次 504，错误率 0.2%；网关日志记录连接上游超时。启用 Nginx 上游 keepalive 后完成上表全部测量。原始结果、配置、资源快照和调查记录归档于 docs/implementation/实施报告.md。
+列表采用有界分页，数据库连接池上限为 5。数据库含 2 个部门、5 个用户、3 个角色、2 个系统、17 项权限、4 条用户角色和 26 条角色权限关联。测试页容量为 20，本部门列表返回 4 个用户。实时授权查询使用关联表主键及反向索引。
 
 === 精度与一致性
 
 手机号与系统标识按字符串处理，权限比较区分大小写。角色权限按集合取并集。JWT 不缓存权限；撤销提交后的新请求读取当前关系。写失败回滚，重复分配由数据库联合主键裁决。
+
+=== 实测结果
+''')
+ add(table(['业务实现','并发','轮次','吞吐 req/s','P95 ms','错误数'],measured_rows(),'3,1,1,2,2,1'))
+ add('''两套实现共完成 10,000 次计时请求，全部返回 200，错误率为 0。8 并发三轮 P95 为结构化 36.67 至 52.61 ms、DDD 36.90 至 55.83 ms。结果受 JVM 预热、共享节点和网络波动影响，作为上述数据规模与部署环境的回归基线。
+
+连接复用调整前，1,000 次测试中有 2 次 504（0.2%），网关日志记录上游连接超时。启用 Nginx keepalive 后完成表中全部测量。原始结果、配置、资源快照及调查记录见 docs/implementation/实施报告.md。
 
 == 运行需求
 
@@ -278,7 +294,7 @@ RBAC 表达全部操作许可，部门限定账号、角色及管理范围。结
 
 分析中的用户、角色和权限关系转换为 API 边界、用例控制与领域实体。结构化实现把业务编排放在 Service；DDD 实现把资料修改、角色分配、权限集合变化交给领域对象。核心类及关系见 <<OV-CLASS-01>>、<<OV-CLASS-02>> 和 <<OV-DOMAIN-01>>，不列数据库外键字段。
 ''')
- add(fig('core-structured','OV-CLASS-01 结构化核心设计类','OV-CLASS-01'));add(fig('core-ddd','OV-CLASS-02 DDD 核心设计类','OV-CLASS-02'));add(fig('domain','OV-DOMAIN-01 DDD 领域对象关系','OV-DOMAIN-01'))
+ add(fig('core-structured','OV-CLASS-01 结构化核心设计类','OV-CLASS-01'));add(fig('core-ddd','OV-CLASS-02 DDD 核心设计类','OV-CLASS-02'));add(fig('domain-relations','OV-DOMAIN-01 DDD 领域对象关系','OV-DOMAIN-01'))
  add('=== 关键类状态设计\n\n登录会话具有有效、已撤销、已过期三种状态。有效状态要求当前时间早于到期且未记录撤销时间；退出触发撤销，达到到期时间触发过期。图 <<OV-STATE-01>> 转换自需求模型 AN-ST-01。\n'+fig('session-state','OV-STATE-01 登录会话状态','OV-STATE-01'))
  add('=== 系统级数据流图\n\n图 <<OV-DFD-00>> 与 <<OV-DFD-01>> 保持相同外部请求与结果名称。D1 代表七张业务表，D2 代表技术登录会话。\n'+fig('dfd-0','OV-DFD-00 顶层数据流','OV-DFD-00')+fig('dfd-1','OV-DFD-01 第一层数据流','OV-DFD-01'))
  add(table(['加工','数据流到模块的映射','全局数据'],[('P1 认证会话','登录、退出、本人资料请求映射 AuthService 和 UserUseCase','用户与授权关系、登录会话'),('P2 目录维护','目录请求映射用户、部门、系统、权限用例模块','用户、部门、系统和权限'),('P3 角色授权','授权请求映射角色用例和用户角色用例','角色及两组关联'),('P4 身份鉴权','外部查询映射认证、AccessPolicy 与身份适配','用户、角色、权限、登录会话')],'2,5,4'))

@@ -41,8 +41,8 @@ for module,route,permission,label in [('Department','departments','department.ma
     collection='/api/systems/{systemId}/permissions' if module=='Permission' else '/api/'+route
     for number,method,path,function,title,result,rule in [
       (1,'GET',collection,'list','查询'+label,'200 Page','有界分页；权限按所属系统查询。' if module=='Permission' else '有界分页读取目录。'),
-      (2,'POST',collection,'create','新建'+label,'201','校验所属对象存在及唯一约束；业务系统标识固定。'),
-      (3,'PATCH','/api/'+route+'/{id}','update','重命名'+label,'204','仅修改名称，父部门、系统标识和权限编码固定。'),
+      (2,'POST',collection,'create','新建'+label,'201',{'Department':'校验名称及可选父部门，保存层级归属。','System':'系统标识全局唯一，创建后固定。','Permission':'校验所属系统存在，权限码在系统内唯一。'}[module]),
+      (3,'PATCH','/api/'+route+'/{id}','update','重命名'+label,'204',{'Department':'仅修改名称，父部门创建后固定。','System':'仅修改名称，系统标识创建后固定。','Permission':'仅修改名称，所属系统及权限码创建后固定。'}[module]),
       (4,'DELETE','/api/'+route+'/{id}','delete','删除'+label,'204','有引用时返回 409；不存在返回 404。')]:
         OPS.append(Operation(f'{prefix}-{number:02}',module,method,path,function,title,permission,result,rule))
 MODULES={'User':('用户管理','REQ-F-02','app_user、user_role、login_session'),'Role':('角色授权','REQ-F-03','role、role_permission'),'Department':('部门目录','REQ-F-04','department'),'System':('系统目录','REQ-F-05','business_system'),'Permission':('权限目录','REQ-F-06','permission'),'Auth':('认证与鉴权','REQ-F-01','app_user、login_session、两组授权关联')}

@@ -33,23 +33,8 @@ def architecture():
  d.edge(nodes['infra'],nodes['port'],[(825,825),(860,825),(860,365),(825,365)],real=False)
  d.note(80,960,740,['业务实现依赖存储端口；Infrastructure 实现该端口。','API 通过共享用例端口调用选中的业务实现。'])
 
-def classes():
- for module in ['User','Role','Department','System','Permission']:
-  ops=[o.function for o in OPS if o.module==module];ops=list(dict.fromkeys(ops))
-  for mode,prefix in [('structured','Structured'),('ddd','Ddd')]:
-   d=D(f'class-{mode}-{module.lower()}',f'{MODULES[module][0]} {"结构化" if mode=="structured" else "DDD"} 模块类图',900,1180)
-   ctrl=d.node(module+'Controller',40,110,390,200,ops=[(m,'') for m in ['list','create','update','delete']])
-   port=d.node(module+'UseCase',480,110,380,100+len(ops)*27,'UMLInterface',ops=[(m,'') for m in ops])
-   svc=d.node(prefix+module+'Service',40,400,390,100+len(ops)*27,ops=[(m,'') for m in ops])
-   store=d.node('ManagementStore',480,650,380,210,'UMLInterface',ops=[(module.lower(),''),('create'+module,''),('updateUser' if module=='User' else 'rename'+module,''),('delete'+module,'')])
-   d.edge(ctrl,port,[(435,165),(470,165)])
-   d.edge(svc,port,[(435,470),(455,470),(455,270),(475,270)],real=True)
-   d.edge(svc,store,[(435,710),(470,710)])
-   if mode=='ddd':
-    entity=d.node(module,40,900,390,190,ops=[(m,'') for m in (['changeProfile','assignRole','revokeRole'] if module=='User' else ['rename','grantPermission','revokePermission'] if module=='Role' else ['rename'])])
-    d.edge(svc,entity,[(235,400+100+len(ops)*27+5),(235,890)])
-   else:d.note(40,945,810,['Service 在事务内完成权限、边界和业务步骤，','存储适配器执行显式 SQL，约束异常转换为 HTTP 冲突。'])
- d=D('domain','DDD 领域对象类图',900,1100)
+def domain_relations():
+ d=D('domain-relations','DDD 领域对象类图',900,1100)
  items={}
  for name,x,y,ops in [('Department',40,120,[('rename','')]),('User',520,120,[('changeProfile',''),('assignRole',''),('revokeRole','')]),('Role',40,510,[('rename',''),('grantPermission',''),('revokePermission','')]),('Permission',520,510,[('rename','')]),('System',520,850,[('rename','')])]:items[name]=d.node(name,x,y,340,170 if name in ['User','Role'] else 140,ops=ops)
  def association(a,b,pts,ma,mb,label,labels):
@@ -202,7 +187,7 @@ def files_and_integration():
  ctrl=d.node('AuthController',40,110,380,220,ops=[('login',''),('me',''),('logout',''),('check',''),('api','')])
  svc=d.node('AuthService',480,110,380,250,ops=[('login',''),('me',''),('logout',''),('allowed',''),('lookup','')])
  store=d.node('ManagementStore',480,510,380,220,'UMLInterface',ops=[('userByUsername',''),('permissionsForUser',''),('rolesForUser','')])
- session=d.node('SessionStore',40,510,380,220,'UMLInterface',ops=[('save',''),('get',''),('revoke','')])
+ session=d.node('SessionStore',40,510,380,220,'UMLInterface',ops=[('save',''),('find',''),('revoke','')])
  encoder=d.node('JwtEncoder',480,890,380,130,'UMLInterface',ops=[('encode','')])
  d.edge(ctrl,svc,[(425,190),(470,190)])
  d.edge(svc,store,[(670,365),(670,500)])
@@ -295,7 +280,8 @@ def analysis():
   d.note(100,1040,700,['写入失败时事务回滚，异常按统一错误契约返回。'])
 
 if __name__=='__main__':
- architecture();classes();core_classes();overview_sequences();lifecycle();deployment();files_and_integration();utility();dataflow();analysis()
+ from draw_detail_v331 import classes as detailed_classes, supporting
+ architecture();detailed_classes();domain_relations();core_classes();supporting();overview_sequences();lifecycle();deployment();files_and_integration();utility();dataflow();analysis()
  for op in OPS:
   if op.module=='Auth' and op.function!='updateMe':sequence_for(op,'shared')
   else:

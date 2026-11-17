@@ -151,7 +151,7 @@ table.use-case tr.scene-band td { background: #bfbfbf; color: #000; }
 
 /* v3: every page uses the V2 A4 portrait text area. */
 @media print {
- .sect1, .page-section { break-before: page; }
+ .sect1 { break-before: page; }
  #content > .sect1:first-child { break-before: auto; }
  .diagram { break-inside: avoid; margin: 12pt 0; }
  .diagram .imageblock { margin: 0; }
@@ -196,19 +196,15 @@ table.use-case tr.scene-band td { background: #bfbfbf; color: #000; }
  .diagram img[src*="spec/packages-"] { max-height: 210mm; }
 }
 
-/* A function's URL table and its first interaction fit on the same page. */
+/* v3.3.1 retains the v3.2.2 typography and gives the new detailed plates
+   the same portrait height as the original class and package plates. */
 @media print {
- .outline .diagram img { max-height: 165mm; }
- .diagram img[src*="v33/auth-"], .diagram img[src*="v33/user-"],
- .diagram img[src*="v33/role-"], .diagram img[src*="v33/dept-"],
- .diagram img[src*="v33/sys-"], .diagram img[src*="v33/perm-"] { max-height: 146mm; }
- .plate-intro > h2:first-child { margin-top: 0; }
- table.use-case { break-inside: avoid; }
-}
-
-#toc a { line-height: 14pt; }
-caption.title { font-size:10.5pt; text-align:center; font-weight:400; padding:0 0 5pt; }
-
-@media print {
+ .page-section { break-before: page; }
+ .outline #toctitle { margin-bottom: 6pt; }
+ .diagram img[src*="v33/class-"],
+ .diagram img[src*="v33/domain.svg"],
+ .diagram img[src*="v33/packages-"],
+ .diagram img[src*="v33/architecture-classes-"] { max-height: 210mm; }
+ .use-case-body > h4 { margin-top: 0; }
  .sect3:has(> .use-case-body) { break-before: page; }
 }

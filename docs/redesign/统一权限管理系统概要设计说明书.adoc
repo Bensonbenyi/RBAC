@@ -1,6 +1,6 @@
 = 统一权限管理系统概要设计说明书
 OOAD 课程项目组
-v3.3.0, 2026-11-17
+v3.3.1, 2026-11-17
 :doctype: book
 :lang: zh-CN
 :toc:
@@ -29,7 +29,6 @@ v3.3.0, 2026-11-17
 
 
 
-.参考资料及使用范围
 [cols="3,5",options="header"]
 |===
 |参考资料 |使用范围
@@ -47,7 +46,6 @@ v3.3.0, 2026-11-17
 
 === 模板对应与需求概述
 
-.模板内容与本文章节
 [cols="3,5",options="header"]
 |===
 |模板内容 |本文章节
@@ -60,7 +58,6 @@ v3.3.0, 2026-11-17
 
 
 
-.编号与当前需求
 [cols="2,6",options="header"]
 |===
 |编号 |当前需求
@@ -105,7 +102,6 @@ image::v33/architecture.svg[OV-ARCH-01 系统总体分层结构,width=100%]
 
 ==== 关键架构决策
 
-.决策与内容
 [cols="1,4,3,3",options="header"]
 |===
 |决策 |内容 |需求依据 |质量目标
@@ -128,7 +124,6 @@ image::v33/architecture.svg[OV-ARCH-01 系统总体分层结构,width=100%]
 
 管理员撤销课程审核权限后，教师继续使用原登录令牌提交审核。平台依据已提交的 RBAC 关系拒绝该次操作，课程数据保持原值。 对应 REQ-N-01。
 
-.ATAM 要素与内容
 [cols="2,7",options="header"]
 |===
 |ATAM 要素 |内容
@@ -145,7 +140,6 @@ image::v33/architecture.svg[OV-ARCH-01 系统总体分层结构,width=100%]
 
 在相同用户与授权数据上逐级增加并发权限查询，平台通过连接池及索引执行查询，分别记录两套实现的响应分布和资源使用。 对应 REQ-N-02。
 
-.ATAM 要素与内容
 [cols="2,7",options="header"]
 |===
 |ATAM 要素 |内容
@@ -162,7 +156,6 @@ image::v33/architecture.svg[OV-ARCH-01 系统总体分层结构,width=100%]
 
 应用进程退出后，Swarm 重启应用。未过期且未撤销的令牌通过原签名密钥和数据库会话继续验证；依赖中断时拒绝受控操作。 对应 REQ-N-03。
 
-.ATAM 要素与内容
 [cols="2,7",options="header"]
 |===
 |ATAM 要素 |内容
@@ -179,7 +172,6 @@ image::v33/architecture.svg[OV-ARCH-01 系统总体分层结构,width=100%]
 
 开发者把业务配置从 structured 改为 ddd 并重启应用。管理前端、外部课程系统及数据库结构保持相同契约，重复执行既有验收。 对应 REQ-N-04。
 
-.ATAM 要素与内容
 [cols="2,7",options="header"]
 |===
 |ATAM 要素 |内容
@@ -208,7 +200,6 @@ image::v33/utility.svg[OV-UTILITY-01 质量属性效用树,width=100%]
 
 ==== 架构方法与高优先级场景
 
-.叶节点与架构方法
 [cols="2,4,5",options="header"]
 |===
 |叶节点 |架构方法 |效果及验证
@@ -221,7 +212,6 @@ image::v33/utility.svg[OV-UTILITY-01 质量属性效用树,width=100%]
 
 ==== 评估发现
 
-.类型与编号与决策、论证及质量影响
 [cols="2,7",options="header"]
 |===
 |类型与编号 |决策、论证及质量影响
@@ -239,7 +229,6 @@ image::v33/utility.svg[OV-UTILITY-01 质量属性效用树,width=100%]
 
 ==== 改进结论
 
-.改进与落实情况
 [cols="5,4",options="header"]
 |===
 |改进 |落实情况
@@ -265,7 +254,6 @@ image::v33/packages.svg[OV-PKG-01 系统包依赖,width=100%]
 
 === 模块职责与功能分配
 
-.模块与职责和核心输入输出
 [cols="2,5,3",options="header"]
 |===
 |模块 |职责和核心输入输出 |需求
@@ -282,7 +270,6 @@ image::v33/packages.svg[OV-PKG-01 系统包依赖,width=100%]
 
 === 模块间接口契约
 
-.接口编号与接口名称与职责
 [cols="2,4,5,2",options="header"]
 |===
 |接口编号 |接口名称与职责 |输入 / 输出大类 |协议
@@ -323,7 +310,7 @@ image::v33/core-ddd.svg[OV-CLASS-02 DDD 核心设计类,width=100%]
 --
 [[OV-DOMAIN-01]]
 .OV-DOMAIN-01 DDD 领域对象关系
-image::v33/domain.svg[OV-DOMAIN-01 DDD 领域对象关系,width=100%]
+image::v33/domain-relations.svg[OV-DOMAIN-01 DDD 领域对象关系,width=100%]
 --
 
 
@@ -359,7 +346,6 @@ image::v33/dfd-1.svg[OV-DFD-01 第一层数据流,width=100%]
 
 
 
-.加工与数据流到模块的映射
 [cols="2,5,4",options="header"]
 |===
 |加工 |数据流到模块的映射 |全局数据
@@ -413,7 +399,6 @@ image::v33/story-availability.svg[S3 / U-A1 应用恢复与会话,width=100%]
 
 
 
-.外部接口编号与路径
 [cols="2,5,3,3",options="header"]
 |===
 |外部接口编号 |路径 |核心输入 |核心输出
@@ -431,7 +416,6 @@ image::v33/story-availability.svg[S3 / U-A1 应用恢复与会话,width=100%]
 前后端使用 HTTP/JSON；平台管理请求要求 rbac audience 与相应操作权限。以下按模块列出路由和数据类别，具体字段见详细设计文档。
 
 
-.接口编号与路由范围
 [cols="2,5,4,2",options="header"]
 |===
 |接口编号 |路由范围 |核心输入 / 输出 |需求
@@ -460,7 +444,6 @@ image::v33/chen.svg[OV-ER-01 高层陈氏 ER 图,width=100%]
 
 === 概要级表结构
 
-.表与职责
 [cols="2,2,6",options="header"]
 |===
 |表 |职责 |主要字段及主外键
@@ -499,7 +482,6 @@ image::v33/deployment.svg[OV-DEPLOY-01 Docker Swarm 部署,width=100%]
 
 === 拓扑与资源说明
 
-.节点与资源与地址
 [cols="2,5,4",options="header"]
 |===
 |节点 |资源与地址 |当前项目部署
@@ -518,7 +500,6 @@ image::v33/deployment.svg[OV-DEPLOY-01 Docker Swarm 部署,width=100%]
 
 
 
-.需求与架构及模块落实
 [cols="3,6,4",options="header"]
 |===
 |需求 |架构及模块落实 |验证证据
@@ -534,7 +515,6 @@ image::v33/deployment.svg[OV-DEPLOY-01 Docker Swarm 部署,width=100%]
 
 2026-11-17 的真实部署验证对应四个架构故事，结果见下表。原始记录和复现条件保存在实施报告。
 
-.场景与实测结果与证据
 [cols="2,7",options="header"]
 |===
 |场景 |实测结果与证据
@@ -553,7 +533,6 @@ image::v33/deployment.svg[OV-DEPLOY-01 Docker Swarm 部署,width=100%]
 需求编号对应当前合订本第 2 章。所有决策、模块、接口和数据策略均在下表关联；硬件接口不适用原因保留在第 5 章。
 
 
-.需求与设计追溯
 [cols="2,2,3,3,3,3",options="header"]
 |===
 |需求编号 |需求名称 |故事 / 决策 |模块 / 类 |内部 / 外部接口 |全局数据实体
@@ -574,7 +553,6 @@ image::v33/deployment.svg[OV-DEPLOY-01 Docker Swarm 部署,width=100%]
 
 === 需求分析模型引用清单
 
-.图编号与模型
 [cols="3,4,5",options="header"]
 |===
 |图编号 |模型 |转换与使用

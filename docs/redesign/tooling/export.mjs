@@ -44,7 +44,7 @@ try{
   // Keep section introductions with the first figure.
   for(const section of document.querySelectorAll('.sect2,.sect3,.sect4')) {
    const first=[...section.children].find(n=>n.classList.contains('diagram'));
-   if(!first) continue;
+   if(!first || section.querySelector(':scope > table.use-case')) continue;
    const group=document.createElement('div');group.className='plate-intro';
    section.prepend(group);
    for(const child of [...section.children]) {
@@ -75,7 +75,7 @@ try{
    section.prepend(body);
    for(const child of [...section.children]) {
     if(child===body) continue;
-    if(child.classList.contains('diagram') || child.classList.contains('sect4')) break;
+    if(child.classList.contains('diagram') || child.classList.contains('scene-detail') || child.classList.contains('sect4')) break;
     body.append(child);
    }
   }
@@ -109,6 +109,19 @@ try{
    a.replaceChildren(label,dots,num);
   }
  },title.includes('概要'));
+ // Measure at the printed text width so an introduction and its first plate
+ // fit together. Preserve the original font sizes and figure maxima.
+ await page.emulateMedia({media:'print'});
+ await page.addStyleTag({content:'@media print { body { width:146.5mm; } }'});
+ await page.evaluate(()=>{
+  const maximum=240*96/25.4;
+  for(const group of document.querySelectorAll('.plate-intro')){
+   const figure=group.querySelector('.diagram img');
+   if(!figure)continue;
+   const excess=group.getBoundingClientRect().height-maximum;
+   if(excess>0)figure.style.maxHeight=Math.max(320,figure.getBoundingClientRect().height-excess-8)+'px';
+  }
+ });
  const readPages='import json,sys\nfrom urllib.parse import unquote\nfrom pypdf import PdfReader\np=PdfReader(sys.argv[1])\nprint(json.dumps({unquote(n.lstrip("/")):p.get_destination_page_number(d)+1 for n,d in p.named_destinations.items()}))';
  let prev='',stable=false;
  for(let pass=0;pass<5;pass++){
