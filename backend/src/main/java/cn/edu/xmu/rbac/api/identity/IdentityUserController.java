@@ -4,8 +4,11 @@ import cn.edu.xmu.rbac.infrastructure.security.CurrentIdentity;
 import cn.edu.xmu.rbac.service.auth.AuthService;
 import jakarta.validation.constraints.Positive;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
 
+/** IdentityUser 资源的 HTTP 输入与响应映射. */
 @RestController
 @Validated
 public class IdentityUserController {

@@ -1,6 +1,6 @@
 # 统一权限管理系统
 
-当前实现版本为 3.3.0。结构化和 DDD 业务实现共用 HTTP 接口、存储端口、认证及 MySQL 数据库，通过 `BACKEND_STRATEGY=structured` 或 `ddd` 选择。
+当前实现版本为 3.4.0。结构化和 DDD 业务实现共用 HTTP 接口、存储端口、认证及 MySQL 数据库，通过 `BACKEND_STRATEGY=structured` 或 `ddd` 选择。
 
 ## 本地检查
 
@@ -19,7 +19,7 @@
 设置 `DB_URL`、`DB_USER`、`DB_PASSWORD`、`JWT_PRIVATE_KEY`、`JWT_PUBLIC_KEY` 后启动：
 
 ```sh
-java -jar backend/target/rbac-backend-3.3.0.jar
+java -jar backend/target/rbac-backend-3.4.0.jar
 ```
 
 密钥参数使用 Spring Resource 路径，例如 `file:/绝对路径/private.pem`。默认令牌有效期为 30 分钟。空演示库可显式设置 `app.demo.enabled=true` 和 `app.demo.phone` 初始化合成账号；已有用户时跳过初始化。
@@ -40,4 +40,4 @@ mvn -f .integrations/course-project-mgt/backend/pom.xml -s .mvn/settings.xml pac
 
 `deploy/stack.yaml` 将入口及两套应用部署在现有 Swarm Manager，MySQL 放在 Worker 1。使用独立 Overlay、Secret 和数据卷。`deploy/backup.sh` 在数据库节点生成一致性备份；恢复验证使用独立临时数据库。
 
-当前文档入口为 [设计交付目录](docs/redesign/README.md)，运行记录见 [实施报告](docs/implementation/实施报告.md)。`tooling/build-design.sh` 重建两份 PDF、AsciiDoc、125 张黑白图稿及 StarUML 模型。
+当前文档入口为 [设计交付目录](docs/redesign/README.md)，本轮核查和验证见 [v3.4.0 整改报告](docs/implementation/整改报告-v3.4.0.md)，原部署记录见 [实施报告](docs/implementation/实施报告.md)。`tooling/build-design.sh` 重建两份 PDF、AsciiDoc、140 张黑白图稿及 StarUML 模型。

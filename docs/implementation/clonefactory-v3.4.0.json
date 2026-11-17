@@ -1,0 +1,97 @@
+{
+  "checkedAt": "2026-11-17",
+  "repository": "https://gitee.com/mingqcn/spring-fundamentals",
+  "commit": "40583ff94764d2e758bcb13be17f5c05ea4d6352",
+  "version": "0.0.2",
+  "files": [
+    {
+      "path": "clonefactory.iml",
+      "sha256": "85a52b781ac5e1c4f87f80bc436bf1557d04a4198eb0269e48402f84795e5285"
+    },
+    {
+      "path": "doc/CloneFactory.md",
+      "sha256": "c1c2765c5b7884e09615f41e3bd6e6b91d59207d5ee7b44f344ba4b2b2ac913f"
+    },
+    {
+      "path": "doc/ReadMe.md",
+      "sha256": "ef8381f549d2044ab0a4472f9c9c89a775461cebfa702201e119bd351b56d652"
+    },
+    {
+      "path": "doc/image1.png",
+      "sha256": "2a536b9bed3b2700fd62d87207b6f588218a4681c84ee0570d94f575e2cb3671"
+    },
+    {
+      "path": "doc/image2.png",
+      "sha256": "8dcb975af24ca6a33733a86b6d6f3991c16193ae1358cb75e10602745f749e60"
+    },
+    {
+      "path": "doc/image3.png",
+      "sha256": "cf0c81f9d67e89914859c9172fb44c57ef03b3d09199ae19d2a519c3b0231b72"
+    },
+    {
+      "path": "doc/image4.png",
+      "sha256": "88a0f31daeffd5938440bca4c07d155fc4a58cbc6037bfdf2a9072cf9f20efd1"
+    },
+    {
+      "path": "pom.xml",
+      "sha256": "3b66736587b9c94d8082834da43d2ca863b7bbf8f92b1267575cd6b50e078a86"
+    },
+    {
+      "path": "src/main/java/cn/edu/xmu/clonefactory/CopyFrom.java",
+      "sha256": "7c5cc6b396a4b95302663d469ea6324a7829e44ef0efc63169b07d9f86a4c828"
+    },
+    {
+      "path": "src/main/java/cn/edu/xmu/clonefactory/CopyNotNullFrom.java",
+      "sha256": "96354e72c76d9475e39f651365f2da410aab6260092e349f46010cf61631f13a"
+    },
+    {
+      "path": "src/main/java/cn/edu/xmu/clonefactory/CopyNotNullTo.java",
+      "sha256": "1f5a363623d3d60584a844a54c9ad7baa6dea804fd681926c3e18491ccdc4cda"
+    },
+    {
+      "path": "src/main/java/cn/edu/xmu/clonefactory/CopyProcessor.java",
+      "sha256": "60ee8327a248a96e1a9541cba4b9005f7f411d03c4f6f3af370c7df44285e831"
+    },
+    {
+      "path": "src/main/java/cn/edu/xmu/clonefactory/CopyTo.java",
+      "sha256": "0020ae9f3df0a3e9d1c532a7ccf920ea95b01c9b2d1e449754843d41f7de1526"
+    },
+    {
+      "path": "src/test/java/cn/edu/xmu/clonefactory/CloneFactoryTest.java",
+      "sha256": "2588e0f7e14750fb3bc819890b31fd0add0af5d71502a4e8654ab164ddc532d3"
+    },
+    {
+      "path": "src/test/java/cn/edu/xmu/clonefactory/fixture/FinalTarget.java",
+      "sha256": "e09ddee2e5b0ce7d25b1221ebc151f7db903c606c36a3391904818762f39aac3"
+    },
+    {
+      "path": "src/test/java/cn/edu/xmu/clonefactory/fixture/MutableTarget.java",
+      "sha256": "7ec7f97a7fbe321b53e3a88b0b302db53be35add07925ad016e023a14bf98ebf"
+    },
+    {
+      "path": "src/test/java/cn/edu/xmu/clonefactory/fixture/MutableTarget2.java",
+      "sha256": "65c6b20533e48bbe36cd067434e7eaf784359f0e5816dcfc8ffb935a07b9c38f"
+    },
+    {
+      "path": "src/test/java/cn/edu/xmu/clonefactory/fixture/NotNullRecordTarget.java",
+      "sha256": "4704fd8fca5c605641e12a2e0d14e58c8b45bd5247a20e99e7685eb5ab6b38f2"
+    },
+    {
+      "path": "src/test/java/cn/edu/xmu/clonefactory/fixture/PartialSource.java",
+      "sha256": "90ecb47c1003156a3c8982d072b80460a5246a87ed0e00f9b345d6ff30b49865"
+    },
+    {
+      "path": "src/test/java/cn/edu/xmu/clonefactory/fixture/RecordSource.java",
+      "sha256": "83a18f1924b67af24d5e1e196c1a18bb24cac7a28c4374dc1933e01fdccf3b2c"
+    },
+    {
+      "path": "src/test/java/cn/edu/xmu/clonefactory/fixture/RecordTarget.java",
+      "sha256": "88171f61d89441acfb17609264e1b85839df449b88fe32e65815ee9531c08550"
+    },
+    {
+      "path": "src/test/java/cn/edu/xmu/clonefactory/fixture/SourceBean.java",
+      "sha256": "abd2470855289023ee2a7d9e7ce9a6dc717de27247e464a617497f0faf57ddfc"
+    }
+  ],
+  "result": "identical to latest upstream"
+}

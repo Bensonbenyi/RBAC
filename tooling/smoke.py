@@ -15,6 +15,8 @@ def call(base,path,method='GET',body=None,token=None,status=200):
 def login(name,system):return call(a.base,'/auth/login','POST',{'username':name,'password':phone,'systems':[system]})['accessToken']
 admin=login('admin','rbac');reviewer=login('reviewer','course-project-management');viewer=login('viewer','course-project-management')
 call(a.base,'/auth/me',token=admin);call(a.base,'/api/users',token=admin)
+profile=call(a.course,'/me',token=viewer)
+assert 'MCO' in profile['permissions'] and 'CV' not in profile['permissions']
 term={'name':'联调学期 '+str(int(time.time())),'startDate':'2026-09-01','endDate':'2027-01-31'}
 call(a.course,'/terms','POST',term,viewer,403)
 created=call(a.course,'/terms','POST',term,reviewer,201)
@@ -23,6 +25,8 @@ call(a.course,'/terms/'+str(created['id']),'DELETE',token=reviewer,status=204)
 courses=call(a.course,'/admin/courses?page=1&pageSize=20',token=reviewer)
 pending=next((c for c in courses['items'] if c['courseStatus']==2),None)
 assert pending,'Seed a pending review course before the smoke test'
+detail=call(a.course,'/courses/'+str(pending['id']),token=reviewer)
+assert detail['id']==pending['id']
 roles=call(a.base,'/api/roles?size=100',token=admin)['items'];role=next(r for r in roles if r['name']=='reviewer')
 permissions=call(a.base,'/api/roles/'+role['id']+'/permissions',token=admin);permission=next(x for x in permissions if x['code']=='CR')
 path='/courses/'+str(pending['id'])+'/review';body={'decision':'approved','comment':None}

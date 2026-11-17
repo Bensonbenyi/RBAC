@@ -1,9 +1,11 @@
 package cn.edu.xmu.rbac.service.port;
 
+/** 业务失败状态与对外错误码. */
 public class BusinessException extends RuntimeException {
   private final int status;
   private final String code;
 
+  /** 装配BusinessException所需依赖. */
   public BusinessException(int status, String code, String message) {
     super(message);
     this.status = status;

@@ -1,9 +1,14 @@
 package cn.edu.xmu.rbac.infrastructure.security;
 
 import cn.edu.xmu.rbac.service.auth.AuthService;
-import cn.edu.xmu.rbac.service.port.*;
-import jakarta.servlet.*;
-import jakarta.servlet.http.*;
+import cn.edu.xmu.rbac.service.port.BusinessException;
+import cn.edu.xmu.rbac.service.port.Data;
+import cn.edu.xmu.rbac.service.port.ManagementStore;
+import cn.edu.xmu.rbac.service.port.SessionStore;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
@@ -13,15 +18,19 @@ import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.jwt.*;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+/** 校验令牌、会话绑定及目标系统登录许可. */
 public class BearerFilter extends OncePerRequestFilter {
   private static final Logger log = LoggerFactory.getLogger(BearerFilter.class);
   private final JwtDecoder decoder;
   private final SessionStore sessions;
   private final ManagementStore store;
 
+  /** 装配BearerFilter所需依赖. */
   public BearerFilter(JwtDecoder decoder, SessionStore sessions, ManagementStore store) {
     this.decoder = decoder;
     this.sessions = sessions;
@@ -40,27 +49,33 @@ public class BearerFilter extends OncePerRequestFilter {
         return;
       }
       String header = request.getHeader("Authorization");
-      if (header == null || !header.startsWith("Bearer ")) throw AuthService.unauthenticated();
+      if (header == null || !header.startsWith("Bearer ")) {
+        throw AuthService.unauthenticated();
+      }
       Jwt token = decoder.decode(header.substring(7));
       if (token.getAudience().size() != 1
           || token.getId() == null
           || token.getExpiresAt() == null
-          || !Instant.now().isBefore(token.getExpiresAt())) throw AuthService.unauthenticated();
+          || !Instant.now().isBefore(token.getExpiresAt())) {
+        throw AuthService.unauthenticated();
+      }
       var session = sessions.find(token.getId());
       if (session == null
           || session.revokedAt() != null
           || !Instant.now().isBefore(session.expiresAt())
           || !Objects.equals(session.userId().toString(), token.getSubject())
-          || !Objects.equals(session.systemKey(), token.getAudience().getFirst()))
+          || !Objects.equals(session.systemKey(), token.getAudience().getFirst())) {
         throw AuthService.unauthenticated();
+      }
       Data.User user;
       try {
         user = store.user(session.userId());
       } catch (BusinessException e) {
         throw AuthService.unauthenticated();
       }
-      if (!store.permissionsForUser(user.id(), session.systemKey()).contains("login"))
+      if (!store.permissionsForUser(user.id(), session.systemKey()).contains("login")) {
         throw BusinessException.forbidden();
+      }
       var identity =
           new Data.Identity(user.id(), user.departmentId(), session.systemKey(), session.id());
       SecurityContextHolder.getContext()

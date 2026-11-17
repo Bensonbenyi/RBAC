@@ -1,0 +1,33 @@
+{
+  "version": "3.4.0",
+  "documents": [
+    {
+      "document": "统一权限管理系统需求与详细设计说明书",
+      "pages": 166,
+      "pageSize": [
+        0.0,
+        0.0,
+        594.96,
+        841.92
+      ],
+      "figures": 134,
+      "expectedUiPermissionText": true
+    },
+    {
+      "document": "统一权限管理系统概要设计说明书",
+      "pages": 29,
+      "pageSize": [
+        0.0,
+        0.0,
+        594.96,
+        841.92
+      ],
+      "figures": 14,
+      "expectedUiPermissionText": true
+    }
+  ],
+  "figureAudit": {
+    "figures": 140,
+    "errors": []
+  }
+}

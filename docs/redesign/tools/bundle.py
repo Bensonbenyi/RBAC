@@ -9,9 +9,17 @@ for title in ['统一权限管理系统需求与详细设计说明书','统一�
  files += [R/(title+'.adoc'),R/(title+'-v'+version+'.pdf')]
 for folder in ['assets/v33','sql','tools']:
  files.extend(p for p in (R/folder).glob('*') if p.is_file())
+files.extend(source for source in (R.parent/'implementation').rglob('*') if source.is_file())
 for name in ['package.json','package-lock.json','export.mjs','audit-v33.mjs','spec.css']:files.append(R/'tooling'/name)
 with ZipFile(R/f'统一权限管理系统设计-v{version}.zip','w',ZIP_DEFLATED) as z:
- for source in sorted(set(files)):z.write(source,Path('RBAC设计-v'+version)/source.relative_to(R))
+ root=Path('RBAC设计-v'+version)
+ z.writestr(str(root/'README.md'),f'# RBAC 设计 v{version}\n\n[设计文档与图稿](redesign/README.md)\n\n[本轮整改与验证](implementation/整改报告-v{version}.md)\n')
+ for source in sorted(set(files)):
+  target=root/source.relative_to(R.parent)
+  if source==R/'README.md':
+   text=source.read_text().replace(f'[设计源文件包](统一权限管理系统设计-v{version}.zip)','设计源文件包（当前解压目录）')
+   z.writestr(str(target),text)
+  else:z.write(source,target)
 if a.group:
  if not a.group.isalnum():raise SystemExit('Group identifier must contain letters or digits')
  shutil.copyfile(R/f'统一权限管理系统概要设计说明书-v{version}.pdf',R/f'{a.group}_统一权限管理系统_概要设计说明书.pdf')

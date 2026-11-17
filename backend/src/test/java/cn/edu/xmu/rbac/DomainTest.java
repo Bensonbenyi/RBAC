@@ -1,9 +1,13 @@
 package cn.edu.xmu.rbac;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import cn.edu.xmu.rbac.service.ddd.domain.*;
-import cn.edu.xmu.rbac.service.port.*;
+import cn.edu.xmu.rbac.service.ddd.domain.Role;
+import cn.edu.xmu.rbac.service.ddd.domain.User;
+import cn.edu.xmu.rbac.service.port.BusinessException;
+import cn.edu.xmu.rbac.service.port.Data;
 import org.junit.jupiter.api.Test;
 
 class DomainTest {

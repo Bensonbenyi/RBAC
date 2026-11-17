@@ -1,0 +1,54 @@
+{
+  "version": "3.4.0",
+  "checkedAt": "2026-11-17",
+  "suites": [
+    {
+      "name": "cn.edu.xmu.clonefactory.CloneFactoryTest",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "cn.edu.xmu.rbac.CopyTest",
+      "tests": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "cn.edu.xmu.rbac.DddContractTest",
+      "tests": 13,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "cn.edu.xmu.rbac.DomainTest",
+      "tests": 3,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    {
+      "name": "cn.edu.xmu.rbac.StructuredContractTest",
+      "tests": 13,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  ],
+  "googleCheckstyleViolations": 0,
+  "spotless": "passed",
+  "architecture": "passed",
+  "runtimeCopyArtifact": "generated copier present; compiler libraries excluded",
+  "frontend": {
+    "tests": 3,
+    "failed": 0,
+    "prettier": "passed",
+    "typescript": "passed",
+    "platformBuild": "passed",
+    "courseBuild": "passed"
+  },
+  "courseUpstreamBuild": "passed; ca90f1cb7faa7d73b71b93a125460513f46b730e"
+}

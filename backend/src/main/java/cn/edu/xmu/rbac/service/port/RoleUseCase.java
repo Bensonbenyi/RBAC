@@ -2,6 +2,7 @@ package cn.edu.xmu.rbac.service.port;
 
 import java.util.List;
 
+/** Role 用例契约，结构化与 DDD 共享. */
 public interface RoleUseCase {
   Data.Page<Data.Role> list(Data.Identity actor, int page, int size);
 

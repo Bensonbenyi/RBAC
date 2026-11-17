@@ -1,0 +1,18 @@
+{
+  "version": "3.4.0",
+  "checks": [
+    {
+      "strategy": "structured",
+      "identityUnavailableStatus": 503,
+      "originalSessionAfterRestart": 200,
+      "courseStrategy": "structured"
+    },
+    {
+      "strategy": "ddd",
+      "identityUnavailableStatus": 503,
+      "originalSessionAfterRestart": 200,
+      "courseStrategy": "ddd"
+    }
+  ],
+  "result": "passed"
+}

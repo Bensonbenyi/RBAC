@@ -2,6 +2,7 @@ package cn.edu.xmu.rbac.service.port;
 
 import java.util.List;
 
+/** 业务持久化端口. */
 public interface ManagementStore {
   Data.User user(Long id);
 

@@ -1,13 +1,16 @@
 package cn.edu.xmu.rbac.infrastructure.security;
 
-import cn.edu.xmu.rbac.service.port.*;
-import org.springframework.context.annotation.*;
+import cn.edu.xmu.rbac.service.port.ManagementStore;
+import cn.edu.xmu.rbac.service.port.SessionStore;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+/** SecurityConfiguration 数据契约. */
 @Configuration
 public class SecurityConfiguration {
   @Bean

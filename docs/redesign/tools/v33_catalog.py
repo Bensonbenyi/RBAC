@@ -13,11 +13,11 @@ class Operation:
     rule:str
 OPS=[
  Operation('AUTH-01','Auth','POST','/auth/login','login','登录','目标系统 login','200 LoginResult','按用户名和手机号认证，校验单个系统 login，保存会话并签发 JWT。'),
- Operation('AUTH-02','Auth','GET','/auth/me','me','读取本人资料和权限','有效登录','200 Me','返回 subject、姓名、用户名、部门及当前系统权限；权限实时查询。'),
+ Operation('AUTH-02','Auth','GET','/auth/me','me','读取本人资料和权限','有效登录','200 Me','返回 subject、姓名、用户名、部门及当前系统界面权限；权限实时查询。'),
  Operation('AUTH-03','Auth','POST','/auth/logout','logout','退出','有效登录','204','更新当前会话 revoked_at；原令牌随后返回 401。'),
  Operation('AUTH-04','Auth','PATCH','/auth/me','updateMe','修改本人资料','有效登录','204','本人编号取自认证上下文，仅接收姓名和手机号。'),
- Operation('AUTH-05','Auth','GET','/auth/permissions/{permission}','check','检查操作权限','有效登录','200 allowed','系统标识取自 audience；按用户角色权限并集判断。'),
- Operation('AUTH-06','Auth','GET','/auth/api-permissions/{operationId}','api','检查接入 API 权限','有效登录','200 allowed','课程 operationId 在适配层映射到老师的权限码；未映射返回 false。'),
+ Operation('AUTH-05','Auth','GET','/auth/permissions/{permission}','check','检查界面权限','有效登录','200 allowed','系统标识取自 audience；仅检查已登记界面码；API 码在此接口返回 false。'),
+ Operation('AUTH-06','Auth','GET','/auth/api-permissions/{operationId}','api','检查接入 API 权限','有效登录','200 allowed','AuthService 将两系统 operationId 映射到 API 权限；未映射返回 false。'),
  Operation('AUTH-07','Auth','GET','/identity/users/{id}','get','查询统一身份','本人或 UL','200 IdentityUser','返回 userId、no、name；no 使用 username，查询他人要求当前系统 UL。'),
  Operation('USER-01','User','GET','/api/users','list','查询本部门用户','user.view','200 Page<User>','分页并限定本部门直接成员。'),
  Operation('USER-02','User','GET','/api/users/{id}','get','查询用户详情','user.view','200 User','校验对象部门等于操作者部门。'),
@@ -45,5 +45,9 @@ for module,route,permission,label in [('Department','departments','department.ma
       (3,'PATCH','/api/'+route+'/{id}','update','重命名'+label,'204',{'Department':'仅修改名称，父部门创建后固定。','System':'仅修改名称，系统标识创建后固定。','Permission':'仅修改名称，所属系统及权限码创建后固定。'}[module]),
       (4,'DELETE','/api/'+route+'/{id}','delete','删除'+label,'204','有引用时返回 409；不存在返回 404。')]:
         OPS.append(Operation(f'{prefix}-{number:02}',module,method,path,function,title,permission,result,rule))
+OPS.extend([
+ Operation('ROLE-09','Role','GET','/api/roles/options','options','查询可分配角色候选','user.role.assign','200 Page<Role>','仅返回本部门角色；不要求 role.manage，分页上限 100。'),
+ Operation('SYS-05','System','GET','/api/systems/options','options','查询授权系统候选','role.manage 或 permission.manage','200 Page<System>','仅开放授权任务所需的系统只读目录，不授予系统写权限。'),
+ Operation('PERM-05','Permission','GET','/api/permissions/options','options','查询可授予权限候选','role.manage','200 Page<Permission>','查询参数 systemId；返回该系统权限，分页上限 100。')])
 MODULES={'User':('用户管理','REQ-F-02','app_user、user_role、login_session'),'Role':('角色授权','REQ-F-03','role、role_permission'),'Department':('部门目录','REQ-F-04','department'),'System':('系统目录','REQ-F-05','business_system'),'Permission':('权限目录','REQ-F-06','permission'),'Auth':('认证与鉴权','REQ-F-01','app_user、login_session、两组授权关联')}
 REQS=[('REQ-F-01','登录、退出、身份及当前权限'),('REQ-F-02','本部门用户维护和用户角色分配'),('REQ-F-03','本部门角色维护和角色权限配置'),('REQ-F-04','多级部门目录维护'),('REQ-F-05','两个业务系统登记'),('REQ-F-06','各系统权限目录维护'),('REQ-F-07','课程系统学期维护与课程审核接入'),('REQ-N-01','安全与部门隔离'),('REQ-N-02','性能可测量与有界查询'),('REQ-N-03','应用恢复与数据可恢复性'),('REQ-N-04','双实现可切换与契约一致性'),('REQ-N-05','容器部署与可重复构建')]

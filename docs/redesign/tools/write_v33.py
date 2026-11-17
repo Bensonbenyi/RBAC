@@ -36,8 +36,8 @@ def refs():return table(['参考资料','使用范围'],[
  ('https://www.csc.lsu.edu/~chen/pdf/erd-5-pages.pdf[Chen ER 建模论文]','实体、联系、属性、键和参与约束。'),
  ('《5. 面向对象设计》课程课件','按用户提供的 142 页课件核对类图、分层与 DDD 职责。'),
  ('需求与详细设计说明书 v2','字体、字号、用例表配色、接口调用说明和分页形式。'),
- ('https://gitee.com/mingqcn/course-project-mgt[课程管理系统] c96efa2','四层组织、双实现、统一身份接口和权限码。'),
- ('https://gitee.com/mingqcn/spring-fundamentals[Spring 教学示例] 57c53ff','CloneFactory 0.0.2 编译期拷贝工具。'),
+ ('https://gitee.com/mingqcn/course-project-mgt[课程管理系统] ca90f1c','四层组织、双实现、统一身份接口和权限码。'),
+ ('https://gitee.com/mingqcn/spring-fundamentals[Spring 教学示例] 40583ff','CloneFactory 0.0.2 编译期拷贝工具。'),
  ('本项目 v3.2.2 与 2026-11-17 确认决定','当前修订基线；性能指标按本次实测建立。')],'3,5')
 CONSTRAINTS=[
  ('BR-01','用户通过角色获得权限；用户角色、角色权限均为多对多关系。'),
@@ -51,6 +51,7 @@ CONSTRAINTS=[
  ('BR-09','JWT 保存身份和目标系统，会话保存在 MySQL；权限按当前授权关系读取。'),
  ('BR-10','用户删除同时清理登录会话和用户角色；其他对象存在引用时先撤销关联再删除。'),
  ('BR-11','结构化与 DDD 共用输入输出、存储端口和数据库约束；切换配置保持外部行为一致。'),
+ ('BR-13','界面码与 API 码分别授予；界面展示和接口执行分别检查，统一复用 RBAC 表。'),
  ('BR-12','本版功能为单项维护和授权，范围按已确认的精简设计执行。')]
 TABLES=[('department','部门','id PK；name；parent_id FK 自关联','部门 0..1 父节点，0..* 子节点'),('app_user','用户账号','id PK；username 唯一；name；phone；department_id FK 非空','用户属于一个部门'),('role','角色','id PK；name；department_id FK 非空','部门内 name 唯一'),('business_system','业务系统','id PK；system_key 唯一；name','登记 rbac 和 course-project-management'),('permission','操作权限','id PK；system_id FK；code；name','system_id 与 code 联合唯一'),('user_role','用户角色','user_id PK/FK；role_id PK/FK','两列组成联合主键'),('role_permission','角色权限','role_id PK/FK；permission_id PK/FK','两列组成联合主键'),('login_session','技术会话','id PK；user_id FK；system_key；expires_at；revoked_at','会话有效性与撤销验证')]
 ERRORS=[('400','INVALID_ARGUMENT','字段、格式、分页或路径编号无效。'),('401','UNAUTHENTICATED','账号凭据、签名、会话或有效期不通过。'),('403','FORBIDDEN','目标系统登录许可、操作权限或部门边界不通过。'),('404','NOT_FOUND','有操作权限后查找的对象不存在。'),('405','METHOD_NOT_ALLOWED','HTTP 方法不符合接口定义；响应携带 Allow。'),('409','CONFLICT','唯一约束、重复分配或引用关系冲突。'),('500','INTERNAL_ERROR','未预期错误，写事务回滚。'),('503','SERVICE_UNAVAILABLE','数据库不可用；课程端使用 IDENTITY_SERVICE_UNAVAILABLE 表达身份依赖故障。')]
@@ -137,25 +138,30 @@ def detail():
   for op in operations:
    add('===== '+op.key+' '+op.title)
    add(op.rule+'\n\n输入：'+operation_input(op)+'\n\n成功结果：'+op.result+'。权限：'+op.permission+'。')
-   if op.module=='Auth' and op.function!='updateMe':add(fig(op.key.lower()+'-shared',op.key+' 共享认证交互'))
+   if (op.module=='Auth' and op.function!='updateMe') or op.function=='options':add(fig(op.key.lower()+'-shared',op.key+' 共享认证交互'))
    else:
-    for mode,label in [('structured','结构化'),('ddd','DDD')]:add(fig(op.key.lower()+'-'+mode,op.key+' '+label+' 详细交互'))
+    for mode,label in [('structured','结构化'),('ddd','DDD')]:
+     add(fig(op.key.lower()+'-'+mode,op.key+' '+label+' 详细交互'))
+     if mode=='ddd' and op.key in ['USER-04','USER-07','USER-08','ROLE-04','ROLE-07','ROLE-08','DEPT-03','SYS-03','PERM-03']:add(fig(op.key.lower()+'-ddd-domain',op.key+' DDD 聚合修改与保存'))
    if op.key=='AUTH-01':add(fig('flow-login-session','建立登录会话与签发凭据'))
   if module=='Auth':add(fig('class-auth-shared','共享认证与实时鉴权 类图'))
   elif module:
    add('===== '+MODULES[module][0]+'模块类图')
    for mode,label in [('structured','结构化'),('ddd','DDD')]:add(fig('class-'+mode+'-'+module.lower(),MODULES[module][0]+' '+label+' 模块类图'))
  add('==== 课程管理系统接入\n\n需求 REQ-F-07。课程前端直接向平台 /auth/login 登录，携带 course-project-management audience 的令牌调用老师后端。反向代理把 /course-api/ 前缀剥离后转发。老师的业务规则保留，适配层完成验签、实时身份与 API 权限查询。')
+ add('登录后先读取平台 /auth/me，再通过 /course-api/me 调用课程 GET /me，合并老师系统的本地教师资料与当前界面权限。课程 teacher.user_id 对应平台用户编号；未关联本地资料时老师接口返回 403。演示部署使用 integrations/course-project-mgt/link-demo-teachers.sql 按实际账号编号关联教师，正式账号按真实教师资料关联。')
  add(case_table(('COURSE-001','课程系统接入','REQ-F-07',[],'课程管理系统','具有对应课程权限的用户','通过统一登录执行学期维护和课程审核。','用户进入课程演示入口。','取得 course-project-management 的有效登录凭据。',[
- ('读取当前身份与实时 API 权限。','未通过检查时课程后端拒绝执行。'),('调用老师的学期或课程业务接口。','保留上游输入、对象和课程状态规则。'),('返回老师的业务结果。','前端按权限显示维护和审核操作。')],[('无效登录或已退出','401。'),('无本次操作权限','403。'),('统一身份服务不可用','503，停止业务操作。')],'课程操作按上游规则持久化，后续每次操作重新检查平台许可。',None,None)))
+ ('读取当前身份与实时 API 权限。','未通过检查时课程后端拒绝执行。'),('调用老师的学期或课程业务接口。','保留上游输入、对象和课程状态规则。'),('返回老师的业务结果。','前端按独立 UI 码启用控件，缺少权限时使用 disabled。')],[('无效登录或已退出','401。'),('无本次操作权限','403。'),('统一身份服务不可用','503，停止业务操作。')],'课程操作按上游规则持久化，后续每次操作重新检查平台许可。',None,None)))
  add(table(['图中处理 / 实际方法','调用说明 URL','功能'],[(operation,route,behavior+'；权限 '+permission) for operation,route,permission,behavior in COURSE],'3,5,5'))
  for i,(operation,route,permission,behavior) in enumerate(COURSE,1):
   add('===== COURSE-'+str(i).zfill(2)+' '+operation)
   add(behavior+'。调用 '+route+'，权限码 '+permission+'。')
   add(fig('course-'+str(i).zfill(2),operation+' 接入详细交互'))
+ add('===== COURSE-08 getCurrentUser 支撑接口\n\n调用 GET /me，operationId 为 getCurrentUser，平台映射到课程 login 权限。老师服务读取当前统一身份与本地资料，返回 userId、teacherId、studentId、no、name、roles、permissions。permissions 保留当前系统界面码；该接口支撑页面初始化和权限刷新。')
+ add(fig('course-08','getCurrentUser 本地资料与界面权限交互'))
  add('''课程列表 page 从 1 开始，courseStatus 为 1 申请、2 待审核、3 已开课。审核输入 decision 为 approved 或 rejected，驳回必须填写 comment。菜单来自当前权限，后端仍独立检查。该课程状态属于老师系统的课程对象。
 
-接口适配补丁固定到 c96efa2，保留 MIT 许可。其他老师项目路由在此演示装配中拒绝访问；选定业务服务仍使用老师原实现。
+接口适配补丁固定到 ca90f1c，保留 MIT 许可。其他老师项目路由在此演示装配中拒绝访问；选定业务服务仍使用老师原实现。
 
 ''')
  add(architecture_details(fig,table))
@@ -173,9 +179,23 @@ def detail():
 
 JWT 使用 RS256，携带 iss、sub、aud、jti、iat 和 exp，默认有效期 30 分钟。BearerFilter 校验签名、到期时间、单个目标系统、数据库会话、当前账号及 login 权限。目标系统和用户须与会话一致。
 
-/auth/me 返回 subject、username、name、departmentId、roles、permissions；/identity/users/{id} 返回 userId、no、name。角色名称用于显示，管理资格由权限集合确定。权限检查返回 allowed 布尔值。
+/auth/me 返回 subject、username、name、departmentId、roles、permissions，permissions 只含当前系统的界面码；/identity/users/{id} 返回 userId、no、name。角色名称用于显示，管理资格由权限集合确定。权限检查返回 allowed 布尔值。
 ''')
  add(table(['HTTP','业务码','含义'],ERRORS,'1,3,6'))
+ add('==== 独立界面权限与禁用规则\n\n权限实体同时保存界面码和 API 码，两者经同一用户角色、角色权限关系分别授予。数据库沿用现有七张业务表。GET /auth/me 的 permissions 及 GET /auth/permissions/{permission} 仅返回或判断已登记的界面码。GET /auth/api-permissions/{operationId} 在 AuthService 中映射到 API 码；平台使用 user.list、role.grant 等资源加操作编号，课程保留老师的 operationId。未知操作返回 false。')
+ add(table(['界面','菜单码','按钮码','后端 API 码'],[
+ ('课程管理','MCO','MCOR 审核','CV 查询/详情；CR 审核'),
+ ('学期维护','MTR','MTRC 新建；MTRE 修改；MTRD 删除','login 查询；TC 新建；TE 修改；TD 删除'),
+ ('用户','ui.users','ui.user.create/edit/delete/roles','user.view/create/edit/delete/role.assign'),
+ ('角色','ui.roles','ui.role.create/edit/delete/permissions','role.manage'),
+ ('部门','ui.departments','ui.department.create/edit/delete','department.manage'),
+ ('业务系统','ui.systems','ui.system.create/edit/delete','system.manage'),
+ ('权限目录','ui.permissions','ui.permission.create/edit/delete','permission.manage')],'2,2,5,4'))
+ add('同一管理分组中，拥有任一菜单码时显示全部菜单项；无对应码的菜单使用原生 button disabled。没有管理菜单码时收起管理分组。业务条件满足的操作按钮持续显示，无对应按钮码时 disabled，保存、授予和撤销同样检查。查询与翻页属于菜单基础能力。桌面与移动端共用组件。界面码有效且 API 码缺失时，控件可用，后端返回 403；只有 API 码时控件禁用。窗口重新获得焦点、手动刷新及 403 后重新读取界面码，路由检查菜单权限。')
+ add('===== 授权表单候选项\n\nGET /api/roles/options 由 user.role.assign 授权并限定本部门；GET /api/systems/options 允许 role.manage 或 permission.manage；GET /api/permissions/options?systemId=... 要求 role.manage。三个接口共用 SelectionService，只读分页，不扩大目录写权限。前端逐页读取，避免目录超过 100 项时遗漏。')
+ add(fig('class-selection','共享授权候选查询 类图'))
+ add(fig('flow-ui-api','界面码与 API 码独立检查 交互图'))
+ add('===== 数据库升级\n\nFlyway V2 在现有 permission 与 role_permission 中补齐旧版既有界面的独立码和对应演示授权，不增表。迁移只执行一次；之后撤销 UI 码与 API 码各自生效。空演示库由 DemoData 分别初始化两套码。')
  add('==== 输入对象与字段白名单\n'+table(['输入对象','接收字段','固定或推导字段'],[
  ('Requests.Login','username、password、systems','只接受一个目标系统。'),
  ('Requests.CreateUser','username、name、phone','编号生成，departmentId 取当前身份。'),
@@ -193,7 +213,7 @@ JWT 使用 RS256，携带 iss、sub、aud、jti、iat 和 exp，默认有效期 
 
 2026-11-17，辅助节点通过公网 HTTP 对两套实现执行同一负载：权限查询与本部门用户列表各占 50%。每轮预热 100 次，再计时 1,000 次；并发为 1、4、8，8 并发各测三轮。登录在计时前完成。数据、连接池、容器资源与 DEBUG 分层日志配置相同。
 
-列表采用有界分页，数据库连接池上限为 5。数据库含 2 个部门、5 个用户、3 个角色、2 个系统、17 项权限、4 条用户角色和 26 条角色权限关联。测试页容量为 20，本部门列表返回 4 个用户。实时授权查询使用关联表主键及反向索引。
+列表采用有界分页，数据库连接池上限为 5。历史基线数据库含 2 个部门、5 个用户、3 个角色、2 个系统、17 项权限、4 条用户角色和 26 条角色权限关联。v3.4.0 增加独立界面码，该组结果保留为 v3.3.0 部署实测记录；本轮验证见整改报告。测试页容量为 20，本部门列表返回 4 个用户。实时授权查询使用关联表主键及反向索引。
 
 === 精度与一致性
 
@@ -204,7 +224,7 @@ JWT 使用 RS256，携带 iss、sub、aud、jti、iat 和 exp，默认有效期 
  add(table(['业务实现','并发','轮次','吞吐 req/s','P95 ms','错误数'],measured_rows(),'3,1,1,2,2,1'))
  add('''两套实现共完成 10,000 次计时请求，全部返回 200，错误率为 0。8 并发三轮 P95 为结构化 36.67 至 52.61 ms、DDD 36.90 至 55.83 ms。结果受 JVM 预热、共享节点和网络波动影响，作为上述数据规模与部署环境的回归基线。
 
-连接复用调整前，1,000 次测试中有 2 次 504（0.2%），网关日志记录上游连接超时。启用 Nginx keepalive 后完成表中全部测量。原始结果、配置、资源快照及调查记录见 docs/implementation/实施报告.md。
+旧版连接复用调整前，1,000 次请求出现 2 次 504（0.2%），网关记录上游连接超时。Nginx 启用 keepalive 后，表中全部请求成功；原始结果及配置见原实施报告。
 
 == 运行需求
 
@@ -310,7 +330,8 @@ RBAC 表达全部操作许可，部门限定账号、角色及管理范围。结
 
 第三方软件接口为老师课程管理系统，使用 HTTP/JSON 和 Authorization Bearer。课程前端向平台申请目标系统令牌，课程后端验签并查询当前身份和操作许可。对应 REQ-F-07、AD-07。
 ''')
- add(table(['外部接口编号','路径','核心输入','核心输出'],[('EXT-01','POST /auth/login','用户名、手机号和目标系统','Bearer 凭据及有效期'),('EXT-02','GET /auth/me','Bearer','当前身份、角色、当前系统权限'),('EXT-03','GET /auth/permissions/{permission}','Bearer 与权限码','allowed'),('EXT-04','GET /auth/api-permissions/{operationId}','Bearer 与操作编号','allowed'),('EXT-05','GET /identity/users/{id}','Bearer 与用户标识','用户标识、工号和姓名'),('EXT-06','POST /auth/logout','Bearer','撤销结果')],'2,5,3,3'))
+ add('界面权限与 API 权限共用 RBAC 关系并分别授权。界面使用独立菜单和按钮码，无权限控件 disabled；接口按 operationId 对应的 API 码及对象规则决定是否执行。授权表单使用三个只读候选查询，避免依赖无关目录管理权限。课程页面初始化还调用 GET /course-api/me，读取与平台 userId 关联的本地教师资料和当前界面权限；未关联时返回 403。')
+ add(table(['外部接口编号','路径','核心输入','核心输出'],[('EXT-01','POST /auth/login','用户名、手机号和目标系统','Bearer 凭据及有效期'),('EXT-02','GET /auth/me','Bearer','当前身份、角色、当前系统界面码'),('EXT-03','GET /auth/permissions/{permission}','Bearer 与独立界面码','allowed'),('EXT-04','GET /auth/api-permissions/{operationId}','Bearer 与操作编号','allowed'),('EXT-05','GET /identity/users/{id}','Bearer 与用户标识','用户标识、工号和姓名'),('EXT-06','POST /auth/logout','Bearer','撤销结果')],'2,5,3,3'))
  add('=== 内部系统级接口\n\n前后端使用 HTTP/JSON；平台管理请求要求 rbac audience 与相应操作权限。以下按模块列出路由和数据类别，具体字段见详细设计文档。')
  add(table(['接口编号','路由范围','核心输入 / 输出','需求'],[('API-U','/api/users 及用户角色子资源','资料、用户角色标识 / 用户、角色或分页结果','REQ-F-02'),('API-R','/api/roles 及角色权限子资源','角色名称与权限标识 / 角色、权限或分页结果','REQ-F-03'),('API-D','/api/departments','名称和父节点 / 部门目录','REQ-F-04'),('API-S','/api/systems','系统标识和名称 / 系统目录','REQ-F-05'),('API-P','/api/systems/{id}/permissions 与 /api/permissions/{id}','编码、名称或权限标识 / 权限目录','REQ-F-06'),('API-C','/course-api/terms、/course-api/admin/courses、/course-api/courses/{id}/review','学期资料、分页或审核决定 / 老师业务结果','REQ-F-07')],'2,5,4,2'))
  add('''== 数据设计与存储策略

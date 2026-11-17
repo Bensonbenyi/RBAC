@@ -2,6 +2,7 @@ package cn.edu.xmu.rbac.service.port;
 
 import java.util.List;
 
+/** User 用例契约，结构化与 DDD 共享. */
 public interface UserUseCase {
   Data.Page<Data.User> list(Data.Identity actor, int page, int size);
 

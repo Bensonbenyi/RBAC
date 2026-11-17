@@ -1,12 +1,30 @@
-import {createApp} from 'vue';
-import {createRouter,createWebHistory} from 'vue-router';
+import { createApp } from 'vue';
+import { createRouter, createWebHistory } from 'vue-router';
 import App from './App.vue';
 import UsersView from './views/UsersView.vue';
 import RolesView from './views/RolesView.vue';
 import CatalogView from './views/CatalogView.vue';
 import ProfileView from './views/ProfileView.vue';
 import CourseView from './views/CourseView.vue';
-import {isCourse} from './auth';
+import { isCourse, auth, refresh } from './auth';
 import './style.css';
-const router=createRouter({history:createWebHistory(import.meta.env.BASE_URL),routes:[{path:'/',redirect:isCourse?'/course':'/profile'},{path:'/users',component:UsersView},{path:'/roles',component:RolesView},{path:'/departments',component:CatalogView,props:{kind:'departments'}},{path:'/systems',component:CatalogView,props:{kind:'systems'}},{path:'/permissions',component:CatalogView,props:{kind:'permissions'}},{path:'/profile',component:ProfileView},{path:'/course',component:CourseView}]});
+import { canEnter } from './permissions';
+const router = createRouter({
+  history: createWebHistory(import.meta.env.BASE_URL),
+  routes: [
+    { path: '/', redirect: isCourse ? '/course' : '/profile' },
+    { path: '/users', component: UsersView },
+    { path: '/roles', component: RolesView },
+    { path: '/departments', component: CatalogView, props: { kind: 'departments' } },
+    { path: '/systems', component: CatalogView, props: { kind: 'systems' } },
+    { path: '/permissions', component: CatalogView, props: { kind: 'permissions' } },
+    { path: '/profile', component: ProfileView },
+    { path: '/course', component: CourseView },
+  ],
+});
+router.beforeEach(async (to) => {
+  if (auth.token && !auth.me) await refresh().catch(() => {});
+  if (!isCourse && !canEnter(to.path)) return '/profile';
+  return true;
+});
 createApp(App).use(router).mount('#app');

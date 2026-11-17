@@ -1,14 +1,21 @@
 package cn.edu.xmu.rbac.infrastructure.persistence;
 
-import cn.edu.xmu.rbac.service.port.*;
-import java.sql.*;
-import java.util.*;
+import cn.edu.xmu.rbac.service.port.BusinessException;
+import cn.edu.xmu.rbac.service.port.Data;
+import cn.edu.xmu.rbac.service.port.ManagementStore;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.jdbc.core.*;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 
+/** JdbcManagementStore 的 JDBC 持久化实现. */
 @Repository
 public class JdbcManagementStore implements ManagementStore {
   private static final Logger log = LoggerFactory.getLogger(JdbcManagementStore.class);
@@ -41,7 +48,9 @@ public class JdbcManagementStore implements ManagementStore {
 
   private <T> T one(String sql, RowMapper<T> mapper, Object... args) {
     var rows = jdbc.query(sql, mapper, args);
-    if (rows.isEmpty()) throw BusinessException.missing();
+    if (rows.isEmpty()) {
+      throw BusinessException.missing();
+    }
     return rows.getFirst();
   }
 
@@ -68,7 +77,9 @@ public class JdbcManagementStore implements ManagementStore {
     jdbc.update(
         c -> {
           var p = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-          for (int i = 0; i < args.length; i++) p.setObject(i + 1, args[i]);
+          for (int i = 0; i < args.length; i++) {
+            p.setObject(i + 1, args[i]);
+          }
           return p;
         },
         keys);
@@ -87,6 +98,7 @@ public class JdbcManagementStore implements ManagementStore {
     return page("app_user", " WHERE department_id=?", USER, page, size, departmentId);
   }
 
+  /** createUser 的用例处理. */
   public Data.User createUser(Long departmentId, Data.CreateUser c) {
     return user(
         insert(
@@ -101,6 +113,7 @@ public class JdbcManagementStore implements ManagementStore {
     jdbc.update("UPDATE app_user SET name=?,phone=? WHERE id=?", c.name(), c.phone(), id);
   }
 
+  /** deleteUser 的用例处理. */
   public void deleteUser(Long id) {
     jdbc.update("DELETE FROM login_session WHERE user_id=?", id);
     jdbc.update("DELETE FROM user_role WHERE user_id=?", id);
@@ -140,6 +153,7 @@ public class JdbcManagementStore implements ManagementStore {
     return page("business_system", "", SYSTEM, page, size);
   }
 
+  /** createSystem 的用例处理. */
   public Data.System createSystem(Data.CreateSystem c) {
     return system(
         insert(
@@ -163,6 +177,7 @@ public class JdbcManagementStore implements ManagementStore {
     return page("permission", " WHERE system_id=?", PERMISSION, page, size, systemId);
   }
 
+  /** createPermission 的用例处理. */
   public Data.Permission createPermission(Long systemId, Data.CreatePermission c) {
     return permission(
         insert(
@@ -200,6 +215,7 @@ public class JdbcManagementStore implements ManagementStore {
     jdbc.update("DELETE FROM `role` WHERE id=?", id);
   }
 
+  /** userRoles 的用例处理. */
   public List<Data.Role> userRoles(Long userId) {
     return jdbc.query(
         "SELECT r.* FROM `role` r JOIN user_role ur ON ur.role_id=r.id WHERE ur.user_id=? ORDER BY"
@@ -208,6 +224,7 @@ public class JdbcManagementStore implements ManagementStore {
         userId);
   }
 
+  /** rolePermissions 的用例处理. */
   public List<Data.Permission> rolePermissions(Long roleId) {
     return jdbc.query(
         "SELECT p.* FROM permission p JOIN role_permission rp ON rp.permission_id=p.id WHERE"
@@ -216,6 +233,7 @@ public class JdbcManagementStore implements ManagementStore {
         roleId);
   }
 
+  /** hasRole 的用例处理. */
   public boolean hasRole(Long userId, Long roleId) {
     return jdbc.queryForObject(
             "SELECT COUNT(*) FROM user_role WHERE user_id=? AND role_id=?",
@@ -233,6 +251,7 @@ public class JdbcManagementStore implements ManagementStore {
     jdbc.update("DELETE FROM user_role WHERE user_id=? AND role_id=?", userId, roleId);
   }
 
+  /** grantPermission 的用例处理. */
   public void grantPermission(Long roleId, Long permissionId) {
     jdbc.update(
         "INSERT INTO role_permission(role_id,permission_id) VALUES(?,?) ON DUPLICATE KEY UPDATE"
@@ -246,6 +265,7 @@ public class JdbcManagementStore implements ManagementStore {
         "DELETE FROM role_permission WHERE role_id=? AND permission_id=?", roleId, permissionId);
   }
 
+  /** permissionsForUser 的用例处理. */
   public List<String> permissionsForUser(Long userId, String systemKey) {
     long start = System.nanoTime();
     var result =

@@ -48,8 +48,8 @@ FIELDS={
  'System':[('id','Long'),('systemKey','String'),('name','String')],
  'Permission':[('id','Long'),('systemId','Long'),('code','String'),('name','String')]}
 STORE={
- 'User':['users','user','createUser','updateUser','deleteUser'],
- 'Role':['roles','role','createRole','renameRole','deleteRole'],
+ 'User':['users','user','createUser','updateUser','deleteUser','userRoles','hasRole','assignRole','revokeRole'],
+ 'Role':['roles','role','createRole','renameRole','deleteRole','rolePermissions','grantPermission','revokePermission'],
  'Department':['departments','department','createDepartment','renameDepartment','deleteDepartment'],
  'System':['systems','system','createSystem','renameSystem','deleteSystem'],
  'Permission':['permissions','permission','createPermission','renamePermission','deletePermission']}
@@ -71,29 +71,32 @@ def classes():
   for mode,prefix in [('structured','Structured'),('ddd','Ddd')]:
    title=MODULES[module][0];label='结构化' if mode=='structured' else 'DDD'
    d=D(f'class-{mode}-{module.lower()}',f'{title}模块 {label} 类图',1180,1710)
-   methods=['list','get','create','update','delete'] if module in ['User','Role'] else ['list','create','update','delete']
+   methods=['list','get','create','update','delete','roles','assign','revoke'] if module=='User' else ['list','get','create','update','delete','permissions','grant','revoke'] if module=='Role' else ['list','create','update','delete']
    a=cls(d,module+'Controller',30,110,330,methods)
    b=cls(d,module+'UseCase',425,110,330,methods,interface=True)
    c=cls(d,prefix+module+'Service',820,110,330,methods)
-   dep(d,a,b,[(365,190),(415,190)]);d.text(391,175,'useCase',17,True,bg=True)
+   ref(d,a,b,[(360,190),(425,190)],'service')
    dep(d,c,b,[(815,245),(765,245)],True)
    request=cls(d,*((REQUEST[module][0],30,500,330)),attrs=REQUEST[module][1])
    data=cls(d,'Data.'+module,425,500,330,attrs=FIELDS[module],stereo='record')
    store=cls(d,'ManagementStore',820,500,330,STORE[module],interface=True)
    dep(d,c,data,[(850,bottom(c)+5),(850,440),(590,440),(590,490)])
    ref(d,c,store,[(985,bottom(c)+5),(985,490)],'store')
-   copy=cls(d,'CloneFactory',30,1010,330,['copy'],stereo='utility')
+   command_name={'User':'Data.CreateUser','Role':'Data.Name','Department':'Data.CreateDepartment','System':'Data.CreateSystem','Permission':'Data.CreatePermission'}[module]
+   command=cls(d,command_name,30,730,330,attrs=REQUEST[module][1],stereo='record')
+   copy=cls(d,'CloneFactory',30,1010,330,['copy','copyNotNull'] if module=='User' else ['copy'],stereo='utility')
    policy=cls(d,'AccessPolicy',425,1010,330,['require','scope','allowed'])
    adapter=cls(d,'JdbcManagementStore',820,1010,330,STORE[module])
    dep(d,adapter,store,[(985,1005),(985,bottom(store)+10)],True)
    dep(d,a,copy,[(30,285),(12,285),(12,1060),(25,1060)])
    dep(d,a,request,[(195,bottom(a)+5),(195,490)])
-   dep(d,copy,data,[(195,bottom(copy)+5),(195,1220),(790,1220),(790,785),(590,785),(590,bottom(data)+10)])
-   dep(d,c,policy,[(1155,280),(1168,280),(1168,940),(590,940),(590,1000)])
+   dep(d,copy,command,[(195,1005),(195,bottom(command)+10)])
+   ref(d,c,policy,[(1150,280),(1168,280),(1168,940),(590,940),(590,1010)],'access')
    if mode=='ddd':
     attrs,ops=DOMAIN[module]
     entity=cls(d,module,425,1290,330,ops,attrs)
-    dep(d,c,entity,[(1155,320),(1175,320),(1175,1250),(590,1250),(590,1280)])
+    if module=='User':dep(d,entity,copy,[(425,1400),(390,1400),(390,1080),(365,1080)])
+    dep(d,c,entity,[(1150,320),(1175,320),(1175,1400),(765,1400)])
    else:
     note(d,30,1310,725,['Service 在事务内编排权限、范围和存储调用。','Data 同时作为共享查询结果和持久化数据契约。','方法在本图省略参数及返回类型，契约见对应功能。'])
    jdbc=cls(d,'JdbcTemplate',820,1460,330,['query','queryForObject','update'])
@@ -131,76 +134,88 @@ def overall_classes():
    a=cls(d,module+'Controller',40,y,340,['list','create'])
    b=cls(d,module+'UseCase',430,y,340,['list','create'],interface=True)
    c=cls(d,prefix+module+'Service',820,y,340,['list','create'])
-   dep(d,a,b,[(385,y+80),(420,y+80)])
+   ref(d,a,b,[(380,y+80),(430,y+80)],'service')
    dep(d,c,b,[(815,y+120),(780,y+120)],True);svcs.append(c)
   policy=cls(d,'AccessPolicy',40,1320,340,['require','scope','allowed'])
   store=cls(d,'ManagementStore',430,1320,340,['users','roles','permissionsForUser'],interface=True)
   adapter=cls(d,'JdbcManagementStore',820,1320,340,['users','roles','permissionsForUser'])
   dep(d,adapter,store,[(815,1400),(780,1400)],True)
   # Shared dependencies are routed in the gutters, once for the service group.
-  for c in svcs:dep(d,c,store,[(1165,c[1]['top']+65),(1180,c[1]['top']+65),(1180,1260),(600,1260),(600,1310)])
-  dep(d,svcs[-1],policy,[(990,bottom(svcs[-1])+5),(990,1215),(210,1215),(210,1310)])
+  for c in svcs:ref(d,c,store,[(1165,c[1]['top']+65),(1180,c[1]['top']+65),(1180,1260),(600,1260),(600,1320)],'store')
+  ref(d,svcs[-1],policy,[(990,bottom(svcs[-1])),(990,1215),(210,1215),(210,1320)],'access')
   note(d,40,1540,1120,['每个用例端口按配置装配一套实现。共用认证服务、数据契约及存储适配器。',('DDD 应用服务进一步依赖五类领域对象，详情见各模块类图。' if mode=='ddd' else '事务脚本通过 AccessPolicy 检查操作许可及部门范围，再调用 ManagementStore。')])
 
 
 def package_diagrams():
- for mode,prefix in [('structured','Structured'),('ddd','Ddd')]:
+ for mode in ['structured','ddd']:
   label='结构化' if mode=='structured' else 'DDD'
-  d=D('packages-full-'+mode,'系统完整 '+label+' UML 包图',1740,1750,'UMLPackageDiagram')
-  for x,t in [(215,'API 输入层'),(635,'契约层'),(1055,'业务层'),(1510,'基础设施层')]:d.text(x,105,t,25,True,True)
-  api_specs=[('api.user',['UserController']),('api.role',['RoleController']),('api.department',['DepartmentController']),('api.system',['SystemController']),('api.permission',['PermissionController'])]
-  services=[]
-  for i,(name,body) in enumerate(api_specs):
-   y=180+i*210;module=['User','Role','Department','System','Permission'][i]
-   a=pack(d,name,30,y,370,body,130)
-   b=pack(d,'service.port',450,y,370,[module+'UseCase','Data.'+module],130)
-   c=pack(d,'service.'+mode,870,y,370,[prefix+module+'Service'],130)
-   dep(d,a,b,[(405,y+70),(440,y+70)])
-   dep(d,c,b,[(865,y+105),(830,y+105)])
-   services.append(c)
-  auth=pack(d,'api.auth / api.identity',30,1280,370,['AuthController','IdentityUserController'],160)
-  shared=pack(d,'api.shared',30,1510,370,['Requests / ApiErrors'],130)
-  authservice=pack(d,'service.auth',450,1280,370,['AuthService'],160)
-  ports=pack(d,'service.port',450,1510,370,['ManagementStore / SessionStore','Data / BusinessException'],130)
-  security=pack(d,'service.security',870,1280,370,['AccessPolicy'],160)
-  domainbox=pack(d,'service.ddd.domain' if mode=='ddd' else 'service.structured',870,1510,370,['User / Role / Department' if mode=='ddd' else '五个事务脚本服务','System / Permission' if mode=='ddd' else '以共享 Data 编排业务'],130)
-  infrastructure=[]
-  for name,y,body in [
-   ('infrastructure.persistence',180,['JdbcManagementStore','JdbcSessionStore','JdbcTemplate / RowMapper']),
-   ('infrastructure.security',520,['BearerFilter / CurrentIdentity','TokenConfiguration','SecurityConfiguration']),
-   ('infrastructure.logging',930,['LayerLogging','SLF4J / Logback']),
-   ('infrastructure.bootstrap',1280,['DemoData']),
-   ('resources',1510,['application.yaml','logback-spring.xml','db/migration/V1__rbac.sql'])]:infrastructure.append(pack(d,name,1320,y,390,body,150))
-  dep(d,auth,authservice,[(405,1360),(440,1360)])
-  dep(d,authservice,ports,[(635,1445),(635,1500)])
-  dep(d,infrastructure[0],ports,[(1315,265),(1280,265),(1280,1480),(830,1480),(830,1570)])
-  dep(d,services[-1],security,[(1055,bottom(services[-1])+5),(1055,1270)])
-  if mode=='ddd':dep(d,services[-1],domainbox,[(1245,1100),(1260,1100),(1260,1470),(1055,1470),(1055,1500)])
-  d.text(870,1725,'包内列出实际类；同一真实包按职责重复呈现，均对应相同 Java 包。虚线箭头指向依赖。',20,True)
-  # A simpler strategy-specific layer plate accompanies the full inventory.
-  q=D('packages-'+mode,label+' 分层包图',900,1110,'UMLPackageDiagram')
-  a=pack(q,'api',60,130,780,['auth / identity / user / role / department / system / permission','shared：Requests / ApiErrors'],140)
-  p=pack(q,'service.port',60,370,780,['五个 UseCase / Data','ManagementStore / SessionStore / BusinessException'],140)
-  s=pack(q,'service.'+mode,60,640,360,[prefix+'UserService / '+prefix+'RoleService','其他目录 Service'],180)
-  n=pack(q,'infrastructure',480,640,360,['JDBC / Bearer / Logback','bootstrap / 配置'],180)
-  dep(q,a,p,[(450,bottom(a)+5),(450,360)])
-  dep(q,s,p,[(240,635),(240,bottom(p)+10)])
-  dep(q,n,p,[(660,635),(660,bottom(p)+10)])
-  note(q,60,925,780,['共享 API 与端口保持相同；通过 app.backend-strategy 在启动时选用服务。','DDD 服务使用 service.ddd.domain；结构化服务执行事务脚本。'])
-  for part in ['entry','implementation']:
-   q=D('packages-'+mode+'-'+part,label+' 包图 '+('入口与用例契约' if part=='entry' else '服务与基础设施'),900,1510,'UMLPackageDiagram')
-   for i,module in enumerate(['User','Role','Department','System','Permission']):
-    y=130+i*235
-    if part=='entry':
-     a=pack(q,'api.'+module.lower(),30,y,380,[module+'Controller'],145)
-     b=pack(q,'service.port',490,y,380,[module+'UseCase','Data.'+module],145)
-     dep(q,a,b,[(415,y+80),(480,y+80)])
-    else:
-     a=pack(q,'service.'+mode,30,y,380,[prefix+module+'Service'],145)
-     b=pack(q,'service.port',490,y,380,[module+'UseCase','ManagementStore'],145)
-     dep(q,a,b,[(415,y+80),(480,y+80)])
-   if part=='entry':note(q,30,1360,840,['请求 DTO 为 api.shared.Requests；CloneFactory 生成到 Data 输入契约的拷贝。','AuthController、IdentityUserController 直接调用共享 AuthService。'])
-   else:note(q,30,1360,840,['ManagementStore 由 JdbcManagementStore 实现；存储与安全代码共用。','领域对象见完整 DDD 类图；配置及各基础设施包见完整包图。'])
+  specs=[
+   ('api',40,120,380,185,['auth / identity / shared','user / role / department','system / permission']),
+   ('service.port',500,120,380,155,['共享用例与持久化契约']),
+   ('service.'+mode,40,470,380,155,['事务脚本' if mode=='structured' else '应用用例编排']),
+   ('service.auth',500,470,380,155,['身份、界面和 API 决策']),
+   ('service.security',500,820,380,155,['RBAC 与部门范围校验']),
+   ('infrastructure',40,820,380,185,['persistence / security','logging / bootstrap'])]
+  if mode=='ddd':specs.append(('service.ddd.domain',40,1170,380,155,['用户、角色及目录对象行为']))
+  for stem,title in [('packages-full-'+mode,'系统完整 '+label+' UML 包图')]:
+   d=D(stem,title,920,1500 if mode=='ddd' else 1200,'UMLPackageDiagram');nodes={}
+   for name,x,y,w,h,body in specs:nodes[name]=pack(d,name,x,y,w,body,h)
+   for a,b,pts in [
+    ('api','service.port',[(420,195),(500,195)]),
+    ('api','service.auth',[(420,280),(440,280),(440,395),(690,395),(690,470)]),
+    ('api','infrastructure',[(40,200),(5,200),(5,925),(40,925)]),
+    ('service.security','service.port',[(880,900),(910,900),(910,240),(880,240)]),
+    ('service.'+mode,'service.port',[(420,545),(460,545),(460,265),(500,265)]),
+    ('service.auth','service.port',[(690,470),(690,275)]),
+    ('service.'+mode,'service.security',[(230,625),(230,740),(690,740),(690,820)]),
+    ('service.auth','service.security',[(690,625),(690,820)]),
+    ('infrastructure','service.port',[(40,895),(15,895),(15,330),(895,330),(895,195),(880,195)])]:dep(d,nodes[a],nodes[b],pts)
+   if mode=='ddd':
+    dep(d,nodes['service.ddd'],nodes['service.ddd.domain'],[(230,625),(445,625),(445,1090),(230,1090),(230,1170)])
+    dep(d,nodes['service.ddd.domain'],nodes['service.port'],[(420,1240),(900,1240),(900,260),(880,260)])
+   note(d,40,1380 if mode=='ddd' else 1080,840,['虚线开箭头指向所依赖的包。包图表达组织和依赖，类及字段关系见模块类图。'])
+
+
+  # Each projection answers a different question; the full plate retains all packages.
+  d=D('packages-'+mode,label+' 四层包依赖总览',920,1120,'UMLPackageDiagram')
+  api=pack(d,'api',40,130,380,['HTTP 资源输入与响应'],150)
+  port=pack(d,'service.port',500,130,380,['用例与存储接口 数据契约'],150)
+  business=pack(d,'service.'+mode,40,510,380,['事务脚本' if mode=='structured' else '应用服务与领域对象'],150)
+  infra=pack(d,'infrastructure',500,510,380,['持久化 安全 日志 初始化'],150)
+  dep(d,api,port,[(420,210),(500,210)])
+  dep(d,business,port,[(230,510),(230,385),(690,385),(690,280)])
+  dep(d,infra,port,[(690,510),(690,280)])
+  note(d,40,840,840,['Service Port 声明输入输出契约和存储端口；业务实现与基础设施均依赖它。','service.auth 和 service.security 的完整依赖见完整包图。'])
+
+  d=D('packages-'+mode+'-entry',label+' 输入与身份包依赖',920,1150,'UMLPackageDiagram')
+  api=pack(d,'api',40,130,380,['auth identity shared','user role department system permission'],185)
+  auth=pack(d,'service.auth',500,130,380,['登录 身份 界面与 API 决策','授权候选项查询'],185)
+  security=pack(d,'service.security',500,490,380,['RBAC 操作许可与部门范围'],150)
+  infra=pack(d,'infrastructure.security',40,490,380,['CurrentIdentity BearerFilter','SecurityConfiguration TokenConfiguration'],185)
+  port=pack(d,'service.port',270,850,380,['Identity Page 数据及会话端口'],150)
+  dep(d,api,auth,[(420,225),(500,225)])
+  dep(d,api,infra,[(230,315),(230,490)])
+  dep(d,api,port,[(40,245),(15,245),(15,930),(270,930)])
+  dep(d,auth,security,[(690,315),(690,490)])
+  dep(d,auth,port,[(880,230),(905,230),(905,1040),(460,1040),(460,1000)])
+  dep(d,security,port,[(690,640),(690,770),(580,770),(580,850)])
+  dep(d,infra,port,[(230,675),(230,770),(340,770),(340,850)])
+  note(d,40,1080,840,['图示包引用方向；输入类通过 CurrentIdentity 读取认证身份。'])
+
+  d=D('packages-'+mode+'-implementation',label+' 业务与持久化包依赖',920,1280 if mode=='ddd' else 920,'UMLPackageDiagram')
+  business=pack(d,'service.'+mode,40,130,380,['五个业务 Service'],150)
+  security=pack(d,'service.security',500,130,380,['操作许可 部门边界'],150)
+  port=pack(d,'service.port',500,530,380,['UseCase Data ManagementStore','SessionStore'],185)
+  persistence=pack(d,'infrastructure.persistence',40,530,380,['JdbcManagementStore','JdbcSessionStore'],185)
+  dep(d,business,security,[(420,205),(500,205)])
+  dep(d,business,port,[(420,245),(460,245),(460,610),(500,610)])
+  dep(d,security,port,[(690,280),(690,530)])
+  dep(d,persistence,port,[(420,610),(500,610)])
+  if mode=='ddd':
+   domain=pack(d,'service.ddd.domain',40,930,380,['User Role Department System Permission','字段变化与授权集合规则'],185)
+   dep(d,business,domain,[(40,230),(15,230),(15,1005),(40,1005)])
+   dep(d,domain,port,[(420,1005),(905,1005),(905,620),(880,620)])
+  note(d,40,1180 if mode=='ddd' else 820,840,['基础设施实现存储端口；包图以依赖表达引用，实现关系在对应类图中展开。'])
 
 
 def supporting():
@@ -211,12 +226,25 @@ def supporting():
  s=cls(d,'StructuredUserService',30,620,390,['create','update'])
  t=cls(d,'DddUserService',480,620,390,['create','update'])
  st=cls(d,'ManagementStore',60,900,780,['createUser','updateUser'],interface=True)
- dep(d,a,p,[(450,bottom(a)+5),(450,340)])
+ ref(d,a,p,[(450,bottom(a)),(450,350)],'service')
  dep(d,s,p,[(225,615),(225,bottom(p)+10)],True)
  dep(d,t,p,[(675,615),(675,bottom(p)+10)],True)
- for c in [s,t]:dep(d,c,st,[(center(c),bottom(c)+5),(center(c),890)])
+ for c in [s,t]:ref(d,c,st,[(center(c),bottom(c)),(center(c),900)],'store')
  note(d,60,1090,780,['BACKEND_STRATEGY=structured 或 ddd，每个用例端口仅注册一个实现。','适配器、数据库和前端使用相同契约。'])
- persistence();relations();common_sequences();authentication()
+ selection_class();persistence();relations();common_sequences();authentication()
+
+
+def selection_class():
+ d=D('class-selection','共享授权候选查询 类图',1100,1220)
+ svc=cls(d,'SelectionService',360,390,390,['roles','systems','permissions'])
+ for i,name in enumerate(['RoleController','SystemController','PermissionController']):
+  ctrl=cls(d,name,30+i*365,100,330,['options'])
+  ref(d,ctrl,svc,[(195+i*365,bottom(ctrl)),(195+i*365,320),(555,320),(555,390)],'selections')
+ policy=cls(d,'AccessPolicy',30,850,450,['require','allowed','scope'])
+ store=cls(d,'ManagementStore',620,850,450,['roles','systems','permissions'],interface=True)
+ ref(d,svc,policy,[(360,495),(255,495),(255,850)],'access')
+ ref(d,svc,store,[(750,495),(845,495),(845,850)],'store')
+ note(d,30,1080,1040,['三个只读候选接口共用授权任务许可；数据仍由同一 ManagementStore 分页读取。'])
 
 
 def persistence():
@@ -249,7 +277,7 @@ def relations():
   r=cls(d,prefix+'RoleService',30,470,470,['permissions','grant','revoke'])
   st=cls(d,'ManagementStore',630,900,450,['userRoles','rolePermissions','assignRole','revokeRole','grantPermission','revokePermission'],interface=True)
   rp=cls(d,'RoleUseCase',30,900,470,['permissions','grant','revoke'],interface=True)
-  dep(d,c,p,[(505,190),(620,190)])
+  ref(d,c,p,[(500,190),(630,190)],'service')
   dep(d,s,p,[(855,465),(855,bottom(p)+10)],True)
   dep(d,r,rp,[(265,bottom(r)+5),(265,890)],True)
   ref(d,s,st,[(855,bottom(s)+5),(855,890)],'store')

@@ -1,6 +1,27 @@
 {
- "name":"rbac-frontend","version":"3.3.0","private":true,"type":"module",
- "scripts":{"dev":"vite --host 127.0.0.1","build":"vue-tsc --noEmit && vite build --base=/platform/ && vite build --base=/course/ --outDir dist-course"},
- "dependencies":{"vue":"3.5.13","vue-router":"4.5.0"},
- "devDependencies":{"@vitejs/plugin-vue":"5.2.1","typescript":"5.7.3","vite":"6.0.11","vue-tsc":"2.2.0"}
+  "name": "rbac-frontend",
+  "version": "3.4.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "vue-tsc --noEmit && vite build --base=/platform/ && vite build --base=/course/ --outDir dist-course",
+    "format": "prettier --write \"src/**/*.{ts,vue,css}\" \"*.{json,ts}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,vue,css}\" \"*.{json,ts}\"",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "vue": "3.5.13",
+    "vue-router": "4.5.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "5.2.1",
+    "@vue/test-utils": "^2.4.6",
+    "jsdom": "^26.1.0",
+    "prettier": "^3.6.2",
+    "typescript": "5.7.3",
+    "vite": "6.0.11",
+    "vitest": "^3.2.4",
+    "vue-tsc": "2.2.0"
+  }
 }

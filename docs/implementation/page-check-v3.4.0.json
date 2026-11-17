@@ -1,0 +1,31 @@
+{
+  "version": "3.4.0",
+  "checkedAt": "2026-11-17",
+  "viewports": [
+    {
+      "width": 1440,
+      "height": 1000
+    },
+    {
+      "width": 390,
+      "height": 844
+    }
+  ],
+  "checks": [
+    "Viewer course menu remains disabled without MTR",
+    "Pending review buttons remain visible and disabled without MCOR",
+    "Course detail loads through getCourse",
+    "Local current-user profile loads through /course-api/me",
+    "Platform user assignment lists local department roles",
+    "Platform role assignment loads system and permission candidate endpoints",
+    "Mobile table scroll preserves account and phone values"
+  ],
+  "browserConsoleErrors": 0,
+  "screenshots": [
+    "images/v340-course-viewer.png",
+    "images/v340-course-viewer-mobile.png",
+    "images/v340-platform-user-roles.png",
+    "images/v340-platform-role-permissions.png",
+    "images/v340-platform-mobile.png"
+  ]
+}

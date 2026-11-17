@@ -1,8 +1,12 @@
 package cn.edu.xmu.rbac.service.ddd.domain;
 
-import cn.edu.xmu.rbac.service.port.*;
-import java.util.*;
+import cn.edu.xmu.rbac.service.port.BusinessException;
+import cn.edu.xmu.rbac.service.port.Data;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
+/** 角色聚合，维护名称和已授予权限集合. */
 public class Role {
   private String name;
   private final Set<Long> permissionIds;
@@ -24,8 +28,11 @@ public class Role {
     return name;
   }
 
+  /** grantPermission 的用例处理. */
   public void grantPermission(Data.Permission permission) {
-    if (permission == null) throw BusinessException.missing();
+    if (permission == null) {
+      throw BusinessException.missing();
+    }
     permissionIds.add(permission.id());
   }
 

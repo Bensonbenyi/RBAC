@@ -1,15 +1,21 @@
 package cn.edu.xmu.rbac;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import cn.edu.xmu.rbac.infrastructure.bootstrap.DemoData;
 import cn.edu.xmu.rbac.service.port.ManagementStore;
 import java.net.URI;
-import java.net.http.*;
-import java.nio.file.*;
-import java.security.*;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.security.KeyPairGenerator;
 import java.util.Base64;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -78,7 +84,9 @@ abstract class ContractSuite {
           "app_user",
           "`role`",
           "department"
-        }) jdbc.update("DELETE FROM " + table);
+        }) {
+      jdbc.update("DELETE FROM " + table);
+    }
     new DemoData(store, jdbc, "13800000000").run(null);
     token = login("admin", "rbac");
   }
@@ -86,7 +94,9 @@ abstract class ContractSuite {
   HttpResponse<String> call(String method, String path, String body, String credential)
       throws Exception {
     var builder = HttpRequest.newBuilder(URI.create("http://localhost:" + port + path));
-    if (credential != null) builder.header("Authorization", "Bearer " + credential);
+    if (credential != null) {
+      builder.header("Authorization", "Bearer " + credential);
+    }
     builder.header("Content-Type", "application/json");
     builder.method(
         method,
@@ -139,6 +149,98 @@ abstract class ContractSuite {
   }
 
   @Test
+  void isolatesUiAndApiPermissionsAndSupportsNarrowSelections() {
+    var course = login("reviewer", "course-project-management");
+    assertTrue(
+        expect(200, "GET", "/auth/permissions/MCOR", null, course).get("allowed").asBoolean());
+    assertFalse(
+        expect(200, "GET", "/auth/permissions/CR", null, course).get("allowed").asBoolean());
+    assertFalse(
+        expect(200, "GET", "/auth/api-permissions/MCOR", null, course).get("allowed").asBoolean());
+    assertTrue(
+        expect(200, "GET", "/auth/api-permissions/reviewCourse", null, course)
+            .get("allowed")
+            .asBoolean());
+    jdbc.update(
+        "DELETE FROM role_permission WHERE role_id=? AND permission_id=?",
+        roleId("reviewer"),
+        permissionId("course-project-management", "CR"));
+    assertTrue(
+        expect(200, "GET", "/auth/permissions/MCOR", null, course).get("allowed").asBoolean());
+    assertFalse(
+        expect(200, "GET", "/auth/api-permissions/reviewCourse", null, course)
+            .get("allowed")
+            .asBoolean());
+    store.grantPermission(roleId("reviewer"), permissionId("course-project-management", "CR"));
+    jdbc.update(
+        "DELETE FROM role_permission WHERE role_id=? AND permission_id=?",
+        roleId("reviewer"),
+        permissionId("course-project-management", "MCOR"));
+    assertFalse(
+        expect(200, "GET", "/auth/permissions/MCOR", null, course).get("allowed").asBoolean());
+    assertTrue(
+        expect(200, "GET", "/auth/api-permissions/reviewCourse", null, course)
+            .get("allowed")
+            .asBoolean());
+    assertTrue(
+        expect(200, "GET", "/auth/api-permissions/user.list", null, token)
+            .get("allowed")
+            .asBoolean());
+    assertFalse(
+        expect(200, "GET", "/auth/api-permissions/unknown", null, token)
+            .get("allowed")
+            .asBoolean());
+    for (String code : new String[] {"role.manage", "system.manage", "permission.manage"}) {
+      jdbc.update(
+          "DELETE FROM role_permission WHERE role_id=? AND permission_id=?",
+          roleId("admin"),
+          permissionId("rbac", code));
+    }
+    expect(200, "GET", "/api/roles/options", null, token);
+    expect(403, "GET", "/api/roles", null, token);
+    expect(403, "GET", "/api/systems/options", null, token);
+    store.grantPermission(roleId("admin"), permissionId("rbac", "role.manage"));
+    expect(200, "GET", "/api/systems/options", null, token);
+    long system =
+        jdbc.queryForObject("SELECT id FROM business_system WHERE system_key='rbac'", Long.class);
+    expect(200, "GET", "/api/permissions/options?systemId=" + system, null, token);
+    expect(403, "GET", "/api/systems/" + system + "/permissions", null, token);
+    expect(400, "GET", "/api/roles/options?size=101", null, token);
+  }
+
+  @Test
+  void upgradesExistingGrantsOnceAndKeepsUiRevocationIndependent() throws Exception {
+    // 模拟旧版本目录：保留 API 授权，移除新界面码后运行升级脚本。
+    jdbc.update(
+        "DELETE rp FROM role_permission rp JOIN permission p ON p.id=rp.permission_id"
+            + " WHERE p.code LIKE 'ui.%' OR p.code IN ('MCO','MTR','MCOR','MTRC','MTRE','MTRD')");
+    jdbc.update(
+        "DELETE FROM permission WHERE code LIKE 'ui.%'"
+            + " OR code IN ('MCO','MTR','MCOR','MTRC','MTRE','MTRD')");
+    try (var connection = jdbc.getDataSource().getConnection()) {
+      org.springframework.jdbc.datasource.init.ScriptUtils.executeSqlScript(
+          connection,
+          new org.springframework.core.io.ClassPathResource("db/migration/V2__ui_permissions.sql"));
+    }
+    assertTrue(
+        expect(200, "GET", "/auth/permissions/ui.users", null, token).get("allowed").asBoolean());
+    assertTrue(
+        expect(200, "GET", "/auth/api-permissions/user.list", null, token)
+            .get("allowed")
+            .asBoolean());
+    jdbc.update(
+        "DELETE FROM role_permission WHERE role_id=? AND permission_id=?",
+        roleId("admin"),
+        permissionId("rbac", "ui.users"));
+    assertFalse(
+        expect(200, "GET", "/auth/permissions/ui.users", null, token).get("allowed").asBoolean());
+    assertTrue(
+        expect(200, "GET", "/auth/api-permissions/user.list", null, token)
+            .get("allowed")
+            .asBoolean());
+  }
+
+  @Test
   void preservesHttpRoutingErrors() {
     expect(404, "GET", "/api/unknown-resource", null, token);
     var response = expect(405, "PUT", "/api/users", "{}", token);
@@ -156,7 +258,7 @@ abstract class ContractSuite {
         null);
     var me = expect(200, "GET", "/auth/me", null, token);
     assertEquals("admin", me.get("username").asText());
-    assertTrue(me.get("permissions").toString().contains("user.view"));
+    assertTrue(me.get("permissions").toString().contains("ui.users"));
     expect(
         403,
         "POST",
@@ -193,7 +295,8 @@ abstract class ContractSuite {
         400,
         "POST",
         "/auth/login",
-        "{\"username\":\"admin\",\"password\":\"13800000000\",\"systems\":[\"rbac\",\"course-project-management\"]}",
+        "{\"username\":\"admin\",\"password\":\"13800000000\","
+            + "\"systems\":[\"rbac\",\"course-project-management\"]}",
         null);
   }
 

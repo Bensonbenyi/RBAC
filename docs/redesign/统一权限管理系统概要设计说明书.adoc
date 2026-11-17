@@ -1,6 +1,6 @@
 = 统一权限管理系统概要设计说明书
 OOAD 课程项目组
-v3.3.1, 2026-11-17
+v3.4.0, 2026-11-17
 :doctype: book
 :lang: zh-CN
 :toc:
@@ -38,8 +38,8 @@ v3.3.1, 2026-11-17
 |https://www.csc.lsu.edu/~chen/pdf/erd-5-pages.pdf[Chen ER 建模论文] |实体、联系、属性、键和参与约束。
 |《5. 面向对象设计》课程课件 |按用户提供的 142 页课件核对类图、分层与 DDD 职责。
 |需求与详细设计说明书 v2 |字体、字号、用例表配色、接口调用说明和分页形式。
-|https://gitee.com/mingqcn/course-project-mgt[课程管理系统] c96efa2 |四层组织、双实现、统一身份接口和权限码。
-|https://gitee.com/mingqcn/spring-fundamentals[Spring 教学示例] 57c53ff |CloneFactory 0.0.2 编译期拷贝工具。
+|https://gitee.com/mingqcn/course-project-mgt[课程管理系统] ca90f1c |四层组织、双实现、统一身份接口和权限码。
+|https://gitee.com/mingqcn/spring-fundamentals[Spring 教学示例] 40583ff |CloneFactory 0.0.2 编译期拷贝工具。
 |本项目 v3.2.2 与 2026-11-17 确认决定 |当前修订基线；性能指标按本次实测建立。
 |===
 
@@ -398,13 +398,15 @@ image::v33/story-availability.svg[S3 / U-A1 应用恢复与会话,width=100%]
 第三方软件接口为老师课程管理系统，使用 HTTP/JSON 和 Authorization Bearer。课程前端向平台申请目标系统令牌，课程后端验签并查询当前身份和操作许可。对应 REQ-F-07、AD-07。
 
 
+界面权限与 API 权限共用 RBAC 关系并分别授权。界面使用独立菜单和按钮码，无权限控件 disabled；接口按 operationId 对应的 API 码及对象规则决定是否执行。授权表单使用三个只读候选查询，避免依赖无关目录管理权限。课程页面初始化还调用 GET /course-api/me，读取与平台 userId 关联的本地教师资料和当前界面权限；未关联时返回 403。
+
 
 [cols="2,5,3,3",options="header"]
 |===
 |外部接口编号 |路径 |核心输入 |核心输出
 |EXT-01 |POST /auth/login |用户名、手机号和目标系统 |Bearer 凭据及有效期
-|EXT-02 |GET /auth/me |Bearer |当前身份、角色、当前系统权限
-|EXT-03 |GET /auth/permissions/{permission} |Bearer 与权限码 |allowed
+|EXT-02 |GET /auth/me |Bearer |当前身份、角色、当前系统界面码
+|EXT-03 |GET /auth/permissions/{permission} |Bearer 与独立界面码 |allowed
 |EXT-04 |GET /auth/api-permissions/{operationId} |Bearer 与操作编号 |allowed
 |EXT-05 |GET /identity/users/{id} |Bearer 与用户标识 |用户标识、工号和姓名
 |EXT-06 |POST /auth/logout |Bearer |撤销结果

@@ -6,6 +6,7 @@ import java.time.Instant;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+/** JdbcSessionStore 的 JDBC 持久化实现. */
 @Repository
 public class JdbcSessionStore implements SessionStore {
   private final JdbcTemplate jdbc;
@@ -14,6 +15,7 @@ public class JdbcSessionStore implements SessionStore {
     this.jdbc = jdbc;
   }
 
+  /** save 的用例处理. */
   public void save(Session s) {
     jdbc.update(
         "INSERT INTO login_session(id,user_id,system_key,expires_at) VALUES(?,?,?,?)",
@@ -23,6 +25,7 @@ public class JdbcSessionStore implements SessionStore {
         Timestamp.from(s.expiresAt()));
   }
 
+  /** find 的用例处理. */
   public Session find(String id) {
     var rows =
         jdbc.query(
@@ -40,6 +43,7 @@ public class JdbcSessionStore implements SessionStore {
     return rows.isEmpty() ? null : rows.getFirst();
   }
 
+  /** 撤销指定授权关联. */
   public void revoke(String id, Instant when) {
     jdbc.update(
         "UPDATE login_session SET revoked_at=? WHERE id=? AND revoked_at IS NULL",

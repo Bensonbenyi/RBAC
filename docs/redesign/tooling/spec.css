@@ -208,3 +208,9 @@ table.use-case tr.scene-band td { background: #bfbfbf; color: #000; }
  .use-case-body > h4 { margin-top: 0; }
  .sect3:has(> .use-case-body) { break-before: page; }
 }
+
+/* Long service interactions use the portrait plate height; core typography is retained. */
+@media print {
+ .diagram img[src*="v33/"][src*="-ddd"],
+ .diagram img[src*="v33/"][src*="-structured"] { max-height: 210mm; }
+}

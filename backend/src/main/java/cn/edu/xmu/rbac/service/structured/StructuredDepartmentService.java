@@ -1,6 +1,8 @@
 package cn.edu.xmu.rbac.service.structured;
 
-import cn.edu.xmu.rbac.service.port.*;
+import cn.edu.xmu.rbac.service.port.Data;
+import cn.edu.xmu.rbac.service.port.DepartmentUseCase;
+import cn.edu.xmu.rbac.service.port.ManagementStore;
 import cn.edu.xmu.rbac.service.security.AccessPolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,6 +10,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/** Department 用例的结构化事务脚本实现. */
 @Service
 @Transactional
 @ConditionalOnProperty(name = "app.backend-strategy", havingValue = "structured")
@@ -26,13 +29,17 @@ public class StructuredDepartmentService implements DepartmentUseCase {
     return store.departments(page, size);
   }
 
+  /** 校验输入后创建对象. */
   public Data.Department create(Data.Identity actor, Data.CreateDepartment command) {
     access.require(actor, "department.manage");
-    if (command.parentId() != null) store.department(command.parentId());
+    if (command.parentId() != null) {
+      store.department(command.parentId());
+    }
     log.debug("createDepartment actor={}", actor.userId());
     return store.createDepartment(command);
   }
 
+  /** 修改白名单字段并保持归属不变. */
   public void update(Data.Identity actor, Long id, Data.Name command) {
     access.require(actor, "department.manage");
     store.department(id);
@@ -40,6 +47,7 @@ public class StructuredDepartmentService implements DepartmentUseCase {
     log.debug("renameDepartment actor={} target={}", actor.userId(), id);
   }
 
+  /** 检查引用关系后删除对象. */
   public void delete(Data.Identity actor, Long id) {
     access.require(actor, "department.manage");
     store.department(id);

@@ -473,8 +473,9 @@ def finish():
  for v in nodes:
   if '$ref' in v:assert v['$ref'] in ids,v
  (OUT/'rbac-spec.mdj').write_text(json.dumps(PROJECT,ensure_ascii=False,indent=2))
- (OUT/'model-check.json').write_text(json.dumps({'diagrams':len(DIAGRAMS),'elements':len(ids),'references':'resolved','operationSignatures':len(OPS)},indent=2))
- print(f'{len(DIAGRAMS)} diagrams, {len(ids)} elements, {len(OPS)} operations; references resolved.')
+ operation_count=sum(v.get('_type')=='UMLOperation' for v in nodes)
+ (OUT/'model-check.json').write_text(json.dumps({'diagrams':len(DIAGRAMS),'elements':len(ids),'references':'resolved','operationSignatures':operation_count},indent=2))
+ print(f'{len(DIAGRAMS)} diagrams, {len(ids)} elements, {operation_count} operations; references resolved.')
 
 if __name__=='__main__':
  from draw_complete import generate

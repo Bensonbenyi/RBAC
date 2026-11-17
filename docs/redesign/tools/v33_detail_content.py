@@ -39,11 +39,11 @@ CASES = [
  ('验证所属业务系统，分页查询权限。','systemId 来自路径。'),('新建 code、name 或修改展示名称。','systemId、code 创建后固定。'),('检查角色权限引用后删除。','权限码在所属系统内唯一。')],
  [('系统或目标权限不存在','404。'),('权限码重复','409。'),('仍被角色引用','409。'),('编码或名称无效','400。')],
  '目录更新；后续角色配置引用现有权限编号。',None,'Permission'),
- ('ROLE-001','角色维护与权限配置','REQ-F-03',['ROLE-01','ROLE-02','ROLE-03','ROLE-04','ROLE-05','ROLE-06','ROLE-07','ROLE-08'],'角色授权','持有 role.manage 的管理用户','维护本部门角色及其跨业务系统的权限集合。','管理用户创建角色或编辑现有角色权限。','已登录 rbac，角色与操作者属于同一部门。',[
+ ('ROLE-001','角色维护与权限配置','REQ-F-03',['ROLE-01','ROLE-02','ROLE-03','ROLE-04','ROLE-05','ROLE-06','ROLE-07','ROLE-08','SYS-05','PERM-05'],'角色授权','持有 role.manage 的管理用户','维护本部门角色及其跨业务系统的权限集合。','管理用户创建角色或编辑现有角色权限。','已登录 rbac，角色与操作者属于同一部门。',[
  ('按本部门分页查询角色或创建角色。','部门从当前身份推导，名称在部门内唯一。'),('查询角色权限，选择现有权限授予或撤销。','授予与撤销幂等；权限可来自两个接入系统。'),('修改角色名称或检查引用后删除。','角色部门固定，存在用户或权限关系时拒绝删除。')],
  [('角色跨部门或无操作许可','403。'),('角色或权限不存在','404。'),('部门内重名或删除引用冲突','409。')],
  '角色及权限集合持久化，后续请求依据当前关系鉴权。',None,'Role'),
- ('GRANT-001','分配用户角色','REQ-F-02',['USER-06','USER-07'],'用户角色授权','持有 user.role.assign 的管理用户','查看用户已有角色，为本部门用户分配本部门角色。','管理员选择用户并提交待分配角色。','已登录 rbac，操作者具有分配许可和非空部门。',[
+ ('GRANT-001','分配用户角色','REQ-F-02',['USER-06','USER-07','ROLE-09'],'用户角色授权','持有 user.role.assign 的管理用户','查看用户已有角色，为本部门用户分配本部门角色。','管理员选择用户并提交待分配角色。','已登录 rbac，操作者具有分配许可和非空部门。',[
  ('检查分配操作权限并读取用户、角色。','操作者身份来自认证上下文。'),('校验操作者、目标用户和角色同部门。','部门与角色的一对多关系限定可分配范围。'),('检查用户尚未持有该角色。','DDD 由 User.assignRole 检查集合重复和部门。'),('事务内新增 user_role 并提交。','联合主键裁决并发重复分配。')],
  [('无操作许可或跨部门','403，不写入关系。'),('用户或角色不存在','404。'),('已分配或并发重复插入','409，事务回滚。')],
  '新增关系持久化；用户下一次鉴权合并新角色的权限。','activity-assign',None),
@@ -65,6 +65,7 @@ INPUTS = {
 
 def operation_input(op):
  if op.key in INPUTS:return INPUTS[op.key]
+ if op.function=='options':return ('查询参数 systemId；' if op.module=='Permission' else '')+'page 从 0 开始，size 默认为 20、最大 100；前端遍历分页。'
  if op.function=='list':return ('路径 systemId；' if op.module=='Permission' else '')+'page 从 0 开始，size 默认为 20、最大 100。'
  return '路径 '+('id、permissionId。' if op.module=='Role' and op.function in ['grant','revoke'] else 'id、roleId。' if op.key=='USER-08' else 'id。')+'无请求体。'
 
@@ -145,7 +146,7 @@ BearerFilter 在进入 Controller 前检查签名、过期时间、会话绑定�
 
 ==== 对象拷贝与运行日志
 
-老师的 CloneFactory 0.0.2 作为编译期注解处理器使用，Requests record 通过 @CopyTo 声明到 Data.CreateUser、Profile、Name 等六组目标类型。生成的 CloneFactory.copy 返回目标 record。持久化结果通过 RowMapper 从 ResultSet 显式映射到 Data，领域对象由应用服务构造。
+老师的 CloneFactory 0.0.2 作为编译期注解处理器使用，Requests record 通过 @CopyTo 声明到 Data.CreateUser、Profile、Name 等六组目标类型。生成的 CloneFactory.copy 返回目标 record。Data.Profile 使用 @CopyNotNullFrom，资料更新通过 CloneFactory.copyNotNull 保留未提交字段。上游 master 40583ff 的工具版本仍为 0.0.2，已逐文件校验源码一致。持久化结果通过 RowMapper 从 ResultSet 显式映射到 Data，领域对象由应用服务构造。
 '''
  s+=table(['可执行层','日志内容','级别'],[
  ('API','方法、路由、响应结果、耗时；规则拒绝信息。','DEBUG / WARN'),('结构化服务','用例、操作者与目标编号，执行结果。','DEBUG / WARN'),('DDD 应用服务','用例编排、领域行为结果及事务异常。','DEBUG / WARN'),('DDD 领域对象','由应用服务记录行为结果，领域保持框架无关。','应用服务记录'),('Infrastructure','存储方法、结果、耗时及数据库异常。','DEBUG / ERROR')],'2,5,2')

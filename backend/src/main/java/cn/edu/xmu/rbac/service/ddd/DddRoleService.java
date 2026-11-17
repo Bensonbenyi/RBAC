@@ -1,6 +1,8 @@
 package cn.edu.xmu.rbac.service.ddd;
 
-import cn.edu.xmu.rbac.service.port.*;
+import cn.edu.xmu.rbac.service.port.Data;
+import cn.edu.xmu.rbac.service.port.ManagementStore;
+import cn.edu.xmu.rbac.service.port.RoleUseCase;
 import cn.edu.xmu.rbac.service.security.AccessPolicy;
 import java.util.List;
 import org.slf4j.Logger;
@@ -9,6 +11,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/** Role 用例的 DDD 应用服务实现. */
 @Service
 @Transactional
 @ConditionalOnProperty(name = "app.backend-strategy", havingValue = "ddd")
@@ -28,6 +31,7 @@ public class DddRoleService implements RoleUseCase {
     return role;
   }
 
+  /** 分页查询当前用例可见的对象. */
   public Data.Page<Data.Role> list(Data.Identity actor, int page, int size) {
     access.require(actor, "role.manage");
     access.scope(actor, actor.departmentId());
@@ -39,6 +43,7 @@ public class DddRoleService implements RoleUseCase {
     return scoped(actor, id);
   }
 
+  /** 校验输入后创建对象. */
   public Data.Role create(Data.Identity actor, Data.Name command) {
     access.require(actor, "role.manage");
     access.scope(actor, actor.departmentId());
@@ -46,6 +51,7 @@ public class DddRoleService implements RoleUseCase {
     return store.createRole(actor.departmentId(), command.name());
   }
 
+  /** 修改白名单字段并保持归属不变. */
   public void update(Data.Identity actor, Long id, Data.Name command) {
     access.require(actor, "role.manage");
     scoped(actor, id);
@@ -55,6 +61,7 @@ public class DddRoleService implements RoleUseCase {
     log.debug("renameRole actor={} target={}", actor.userId(), id);
   }
 
+  /** 检查引用关系后删除对象. */
   public void delete(Data.Identity actor, Long id) {
     access.require(actor, "role.manage");
     scoped(actor, id);
@@ -62,12 +69,14 @@ public class DddRoleService implements RoleUseCase {
     log.debug("deleteRole actor={} target={}", actor.userId(), id);
   }
 
+  /** 查询角色已授予权限. */
   public List<Data.Permission> permissions(Data.Identity actor, Long id) {
     access.require(actor, "role.manage");
     scoped(actor, id);
     return store.rolePermissions(id);
   }
 
+  /** 授予指定权限，重复授予保持幂等. */
   public void grant(Data.Identity actor, Long id, Long permissionId) {
     access.require(actor, "role.manage");
     scoped(actor, id);
@@ -77,6 +86,7 @@ public class DddRoleService implements RoleUseCase {
     log.debug("grantPermission actor={} role={} permission={}", actor.userId(), id, permissionId);
   }
 
+  /** 撤销指定授权关联. */
   public void revoke(Data.Identity actor, Long id, Long permissionId) {
     access.require(actor, "role.manage");
     scoped(actor, id);

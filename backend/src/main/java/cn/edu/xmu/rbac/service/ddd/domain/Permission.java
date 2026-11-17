@@ -2,6 +2,7 @@ package cn.edu.xmu.rbac.service.ddd.domain;
 
 import cn.edu.xmu.rbac.service.port.Data;
 
+/** 权限领域对象，维护名称. */
 public class Permission {
   private String name;
 

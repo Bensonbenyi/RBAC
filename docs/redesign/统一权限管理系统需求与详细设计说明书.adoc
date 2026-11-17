@@ -1,6 +1,6 @@
 = 统一权限管理系统需求与详细设计说明书
 OOAD 课程项目组
-v3.3.1, 2026-11-17
+v3.4.0, 2026-11-17
 :doctype: book
 :lang: zh-CN
 :toc:
@@ -21,7 +21,7 @@ v3.3.1, 2026-11-17
 
 本文规定当前基线的需求、数据结构、各功能交互、HTTP 契约和双实现设计，供课程评审、开发与验收使用。独立《概要设计说明书》说明系统骨架及 ATAM 评估，本文保存字段字典和各功能详细设计。
 
-本次版本为 3.3.1，基于 v3.2.2 和 2026-11-17 确认决定修订。代码与文档共用功能编号和配置名称，验证结果见实施报告。
+本次版本为 3.4.0，基于 v3.2.2 和 2026-11-17 确认决定修订。代码与文档共用功能编号和配置名称，验证结果见实施报告。
 
 === 背景与术语
 
@@ -55,8 +55,8 @@ v3.3.1, 2026-11-17
 |https://www.csc.lsu.edu/~chen/pdf/erd-5-pages.pdf[Chen ER 建模论文] |实体、联系、属性、键和参与约束。
 |《5. 面向对象设计》课程课件 |按用户提供的 142 页课件核对类图、分层与 DDD 职责。
 |需求与详细设计说明书 v2 |字体、字号、用例表配色、接口调用说明和分页形式。
-|https://gitee.com/mingqcn/course-project-mgt[课程管理系统] c96efa2 |四层组织、双实现、统一身份接口和权限码。
-|https://gitee.com/mingqcn/spring-fundamentals[Spring 教学示例] 57c53ff |CloneFactory 0.0.2 编译期拷贝工具。
+|https://gitee.com/mingqcn/course-project-mgt[课程管理系统] ca90f1c |四层组织、双实现、统一身份接口和权限码。
+|https://gitee.com/mingqcn/spring-fundamentals[Spring 教学示例] 40583ff |CloneFactory 0.0.2 编译期拷贝工具。
 |本项目 v3.2.2 与 2026-11-17 确认决定 |当前修订基线；性能指标按本次实测建立。
 |===
 
@@ -103,6 +103,7 @@ v3.3.1, 2026-11-17
 |BR-09 |JWT 保存身份和目标系统，会话保存在 MySQL；权限按当前授权关系读取。
 |BR-10 |用户删除同时清理登录会话和用户角色；其他对象存在引用时先撤销关联再删除。
 |BR-11 |结构化与 DDD 共用输入输出、存储端口和数据库约束；切换配置保持外部行为一致。
+|BR-13 |界面码与 API 码分别授予；界面展示和接口执行分别检查，统一复用 RBAC 表。
 |BR-12 |本版功能为单项维护和授权，范围按已确认的精简设计执行。
 |===
 
@@ -442,7 +443,7 @@ image::v33/flow-login-session.svg[建立登录会话与签发凭据,width=100%]
 [cols="3,4,3",options="header",frame=all,grid=all]
 |===
 |图中处理／实际方法 |调用说明 URL |功能
-|`AuthController.me` |`GET /auth/me` |返回 subject、姓名、用户名、部门及当前系统权限；权限实时查询。
+|`AuthController.me` |`GET /auth/me` |返回 subject、姓名、用户名、部门及当前系统界面权限；权限实时查询。
 |`AuthController.updateMe` |`PATCH /auth/me` |本人编号取自认证上下文，仅接收姓名和手机号。
 |`AuthController.logout` |`POST /auth/logout` |更新当前会话 revoked_at；原令牌随后返回 401。
 |===
@@ -451,7 +452,7 @@ image::v33/flow-login-session.svg[建立登录会话与签发凭据,width=100%]
 
 ===== AUTH-02 读取本人资料和权限
 
-返回 subject、姓名、用户名、部门及当前系统权限；权限实时查询。
+返回 subject、姓名、用户名、部门及当前系统界面权限；权限实时查询。
 
 输入：无请求体；身份来自 Bearer。
 
@@ -656,6 +657,15 @@ image::v33/user-04-ddd.svg[USER-04 DDD 详细交互,width=100%]
 --
 
 
+
+[.diagram.plate]
+--
+[[fig-user-04-ddd-domain]]
+.USER-04 DDD 聚合修改与保存
+image::v33/user-04-ddd-domain.svg[USER-04 DDD 聚合修改与保存,width=100%]
+--
+
+
 ===== USER-05 删除用户
 
 同事务删除其登录会话、用户角色关联及用户。
@@ -821,6 +831,15 @@ image::v33/dept-03-ddd.svg[DEPT-03 DDD 详细交互,width=100%]
 --
 
 
+
+[.diagram.plate]
+--
+[[fig-dept-03-ddd-domain]]
+.DEPT-03 DDD 聚合修改与保存
+image::v33/dept-03-ddd-domain.svg[DEPT-03 DDD 聚合修改与保存,width=100%]
+--
+
+
 ===== DEPT-04 删除部门
 
 有引用时返回 409；不存在返回 404。
@@ -982,6 +1001,15 @@ image::v33/sys-03-structured.svg[SYS-03 结构化 详细交互,width=100%]
 [[fig-sys-03-ddd]]
 .SYS-03 DDD 详细交互
 image::v33/sys-03-ddd.svg[SYS-03 DDD 详细交互,width=100%]
+--
+
+
+
+[.diagram.plate]
+--
+[[fig-sys-03-ddd-domain]]
+.SYS-03 DDD 聚合修改与保存
+image::v33/sys-03-ddd-domain.svg[SYS-03 DDD 聚合修改与保存,width=100%]
 --
 
 
@@ -1150,6 +1178,15 @@ image::v33/perm-03-ddd.svg[PERM-03 DDD 详细交互,width=100%]
 --
 
 
+
+[.diagram.plate]
+--
+[[fig-perm-03-ddd-domain]]
+.PERM-03 DDD 聚合修改与保存
+image::v33/perm-03-ddd-domain.svg[PERM-03 DDD 聚合修改与保存,width=100%]
+--
+
+
 ===== PERM-04 删除权限
 
 有引用时返回 409；不存在返回 404。
@@ -1236,6 +1273,8 @@ image::v33/class-ddd-permission.svg[权限目录 DDD 模块类图,width=100%]
 |`RoleController.permissions` |`GET /api/roles/{id}/permissions` |角色限定本部门；权限可来自两个接入系统。
 |`RoleController.grant` |`PUT /api/roles/{id}/permissions/{permissionId}` |校验角色和权限存在，重复授予保持 204。
 |`RoleController.revoke` |`DELETE /api/roles/{id}/permissions/{permissionId}` |同事务移除关联，提交后新鉴权请求读取新权限。
+|`SystemController.options` |`GET /api/systems/options` |仅开放授权任务所需的系统只读目录，不授予系统写权限。
+|`PermissionController.options` |`GET /api/permissions/options` |查询参数 systemId；返回该系统权限，分页上限 100。
 |===
 --
 
@@ -1344,6 +1383,15 @@ image::v33/role-04-ddd.svg[ROLE-04 DDD 详细交互,width=100%]
 --
 
 
+
+[.diagram.plate]
+--
+[[fig-role-04-ddd-domain]]
+.ROLE-04 DDD 聚合修改与保存
+image::v33/role-04-ddd-domain.svg[ROLE-04 DDD 聚合修改与保存,width=100%]
+--
+
+
 ===== ROLE-05 删除角色
 
 存在用户角色或角色权限引用时返回 409，先处理关联。
@@ -1422,6 +1470,15 @@ image::v33/role-07-ddd.svg[ROLE-07 DDD 详细交互,width=100%]
 --
 
 
+
+[.diagram.plate]
+--
+[[fig-role-07-ddd-domain]]
+.ROLE-07 DDD 聚合修改与保存
+image::v33/role-07-ddd-domain.svg[ROLE-07 DDD 聚合修改与保存,width=100%]
+--
+
+
 ===== ROLE-08 撤销角色权限
 
 同事务移除关联，提交后新鉴权请求读取新权限。
@@ -1445,6 +1502,49 @@ image::v33/role-08-structured.svg[ROLE-08 结构化 详细交互,width=100%]
 [[fig-role-08-ddd]]
 .ROLE-08 DDD 详细交互
 image::v33/role-08-ddd.svg[ROLE-08 DDD 详细交互,width=100%]
+--
+
+
+
+[.diagram.plate]
+--
+[[fig-role-08-ddd-domain]]
+.ROLE-08 DDD 聚合修改与保存
+image::v33/role-08-ddd-domain.svg[ROLE-08 DDD 聚合修改与保存,width=100%]
+--
+
+
+===== SYS-05 查询授权系统候选
+
+仅开放授权任务所需的系统只读目录，不授予系统写权限。
+
+输入：page 从 0 开始，size 默认为 20、最大 100；前端遍历分页。
+
+成功结果：200 Page<System>。权限：role.manage 或 permission.manage。
+
+
+[.diagram.plate]
+--
+[[fig-sys-05-shared]]
+.SYS-05 共享认证交互
+image::v33/sys-05-shared.svg[SYS-05 共享认证交互,width=100%]
+--
+
+
+===== PERM-05 查询可授予权限候选
+
+查询参数 systemId；返回该系统权限，分页上限 100。
+
+输入：查询参数 systemId；page 从 0 开始，size 默认为 20、最大 100；前端遍历分页。
+
+成功结果：200 Page<Permission>。权限：role.manage。
+
+
+[.diagram.plate]
+--
+[[fig-perm-05-shared]]
+.PERM-05 共享认证交互
+image::v33/perm-05-shared.svg[PERM-05 共享认证交互,width=100%]
 --
 
 
@@ -1503,6 +1603,7 @@ image::v33/class-ddd-role.svg[角色授权 DDD 模块类图,width=100%]
 |图中处理／实际方法 |调用说明 URL |功能
 |`UserController.roles` |`GET /api/users/{id}/roles` |校验目标用户的部门范围。
 |`UserController.assign` |`POST /api/users/{id}/roles` |校验操作者、目标用户和角色同部门；重复分配返回 409。
+|`RoleController.options` |`GET /api/roles/options` |仅返回本部门角色；不要求 role.manage，分页上限 100。
 |===
 --
 
@@ -1568,6 +1669,32 @@ image::v33/user-07-ddd.svg[USER-07 DDD 详细交互,width=100%]
 --
 
 
+
+[.diagram.plate]
+--
+[[fig-user-07-ddd-domain]]
+.USER-07 DDD 聚合修改与保存
+image::v33/user-07-ddd-domain.svg[USER-07 DDD 聚合修改与保存,width=100%]
+--
+
+
+===== ROLE-09 查询可分配角色候选
+
+仅返回本部门角色；不要求 role.manage，分页上限 100。
+
+输入：page 从 0 开始，size 默认为 20、最大 100；前端遍历分页。
+
+成功结果：200 Page<Role>。权限：user.role.assign。
+
+
+[.diagram.plate]
+--
+[[fig-role-09-shared]]
+.ROLE-09 共享认证交互
+image::v33/role-09-shared.svg[ROLE-09 共享认证交互,width=100%]
+--
+
+
 ==== 撤销用户角色
 
 
@@ -1629,6 +1756,15 @@ image::v33/user-08-ddd.svg[USER-08 DDD 详细交互,width=100%]
 --
 
 
+
+[.diagram.plate]
+--
+[[fig-user-08-ddd-domain]]
+.USER-08 DDD 聚合修改与保存
+image::v33/user-08-ddd-domain.svg[USER-08 DDD 聚合修改与保存,width=100%]
+--
+
+
 ==== 运行时鉴权与统一身份
 
 
@@ -1662,16 +1798,16 @@ image::v33/user-08-ddd.svg[USER-08 DDD 详细交互,width=100%]
 [cols="3,4,3",options="header",frame=all,grid=all]
 |===
 |图中处理／实际方法 |调用说明 URL |功能
-|`AuthController.check` |`GET /auth/permissions/{permission}` |系统标识取自 audience；按用户角色权限并集判断。
-|`AuthController.api` |`GET /auth/api-permissions/{operationId}` |课程 operationId 在适配层映射到老师的权限码；未映射返回 false。
+|`AuthController.check` |`GET /auth/permissions/{permission}` |系统标识取自 audience；仅检查已登记界面码；API 码在此接口返回 false。
+|`AuthController.api` |`GET /auth/api-permissions/{operationId}` |AuthService 将两系统 operationId 映射到 API 权限；未映射返回 false。
 |`IdentityUserController.get` |`GET /identity/users/{id}` |返回 userId、no、name；no 使用 username，查询他人要求当前系统 UL。
 |===
 --
 
 
-===== AUTH-05 检查操作权限
+===== AUTH-05 检查界面权限
 
-系统标识取自 audience；按用户角色权限并集判断。
+系统标识取自 audience；仅检查已登记界面码；API 码在此接口返回 false。
 
 输入：路径 permission；身份和目标系统来自令牌。
 
@@ -1688,7 +1824,7 @@ image::v33/auth-05-shared.svg[AUTH-05 共享认证交互,width=100%]
 
 ===== AUTH-06 检查接入 API 权限
 
-课程 operationId 在适配层映射到老师的权限码；未映射返回 false。
+AuthService 将两系统 operationId 映射到 API 权限；未映射返回 false。
 
 输入：路径 operationId；由映射表定位权限码。
 
@@ -1733,6 +1869,8 @@ image::v33/class-auth-shared.svg[共享认证与实时鉴权 类图,width=100%]
 
 需求 REQ-F-07。课程前端直接向平台 /auth/login 登录，携带 course-project-management audience 的令牌调用老师后端。反向代理把 /course-api/ 前缀剥离后转发。老师的业务规则保留，适配层完成验签、实时身份与 API 权限查询。
 
+登录后先读取平台 /auth/me，再通过 /course-api/me 调用课程 GET /me，合并老师系统的本地教师资料与当前界面权限。课程 teacher.user_id 对应平台用户编号；未关联本地资料时老师接口返回 403。演示部署使用 integrations/course-project-mgt/link-demo-teachers.sql 按实际账号编号关联教师，正式账号按真实教师资料关联。
+
 
 [cols="1,1",frame=all,grid=all,role="use-case"]
 |===
@@ -1746,7 +1884,7 @@ image::v33/class-auth-shared.svg[共享认证与实时鉴权 类图,width=100%]
 |*主成功场景：* |*信息*
 |1. 读取当前身份与实时 API 权限。 |未通过检查时课程后端拒绝执行。
 |2. 调用老师的学期或课程业务接口。 |保留上游输入、对象和课程状态规则。
-|3. 返回老师的业务结果。 |前端按权限显示维护和审核操作。
+|3. 返回老师的业务结果。 |前端按独立 UI 码启用控件，缺少权限时使用 disabled。
 |*扩展场景：* |*处理及信息*
 |无效登录或已退出 |401。
 |无本次操作权限 |403。
@@ -1862,9 +2000,22 @@ image::v33/course-07.svg[reviewCourse 接入详细交互,width=100%]
 --
 
 
+===== COURSE-08 getCurrentUser 支撑接口
+
+调用 GET /me，operationId 为 getCurrentUser，平台映射到课程 login 权限。老师服务读取当前统一身份与本地资料，返回 userId、teacherId、studentId、no、name、roles、permissions。permissions 保留当前系统界面码；该接口支撑页面初始化和权限刷新。
+
+
+[.diagram.plate]
+--
+[[fig-course-08]]
+.getCurrentUser 本地资料与界面权限交互
+image::v33/course-08.svg[getCurrentUser 本地资料与界面权限交互,width=100%]
+--
+
+
 课程列表 page 从 1 开始，courseStatus 为 1 申请、2 待审核、3 已开课。审核输入 decision 为 approved 或 rejected，驳回必须填写 comment。菜单来自当前权限，后端仍独立检查。该课程状态属于老师系统的课程对象。
 
-接口适配补丁固定到 c96efa2，保留 MIT 许可。其他老师项目路由在此演示装配中拒绝访问；选定业务服务仍使用老师原实现。
+接口适配补丁固定到 ca90f1c，保留 MIT 许可。其他老师项目路由在此演示装配中拒绝访问；选定业务服务仍使用老师原实现。
 
 
 
@@ -2073,7 +2224,7 @@ image::v33/flow-adapter.svg[持久化读取与数据映射 顺序图,width=100%]
 
 ==== 对象拷贝与运行日志
 
-老师的 CloneFactory 0.0.2 作为编译期注解处理器使用，Requests record 通过 @CopyTo 声明到 Data.CreateUser、Profile、Name 等六组目标类型。生成的 CloneFactory.copy 返回目标 record。持久化结果通过 RowMapper 从 ResultSet 显式映射到 Data，领域对象由应用服务构造。
+老师的 CloneFactory 0.0.2 作为编译期注解处理器使用，Requests record 通过 @CopyTo 声明到 Data.CreateUser、Profile、Name 等六组目标类型。生成的 CloneFactory.copy 返回目标 record。Data.Profile 使用 @CopyNotNullFrom，资料更新通过 CloneFactory.copyNotNull 保留未提交字段。上游 master 40583ff 的工具版本仍为 0.0.2，已逐文件校验源码一致。持久化结果通过 RowMapper 从 ResultSet 显式映射到 Data，领域对象由应用服务构造。
 
 [cols="2,5,2",options="header"]
 |===
@@ -2102,7 +2253,7 @@ image::v33/flow-adapter.svg[持久化读取与数据映射 顺序图,width=100%]
 
 JWT 使用 RS256，携带 iss、sub、aud、jti、iat 和 exp，默认有效期 30 分钟。BearerFilter 校验签名、到期时间、单个目标系统、数据库会话、当前账号及 login 权限。目标系统和用户须与会话一致。
 
-/auth/me 返回 subject、username、name、departmentId、roles、permissions；/identity/users/{id} 返回 userId、no、name。角色名称用于显示，管理资格由权限集合确定。权限检查返回 allowed 布尔值。
+/auth/me 返回 subject、username、name、departmentId、roles、permissions，permissions 只含当前系统的界面码；/identity/users/{id} 返回 userId、no、name。角色名称用于显示，管理资格由权限集合确定。权限检查返回 allowed 布尔值。
 
 
 
@@ -2119,6 +2270,52 @@ JWT 使用 RS256，携带 iss、sub、aud、jti、iat 和 exp，默认有效期 
 |503 |SERVICE_UNAVAILABLE |数据库不可用；课程端使用 IDENTITY_SERVICE_UNAVAILABLE 表达身份依赖故障。
 |===
 
+
+==== 独立界面权限与禁用规则
+
+权限实体同时保存界面码和 API 码，两者经同一用户角色、角色权限关系分别授予。数据库沿用现有七张业务表。GET /auth/me 的 permissions 及 GET /auth/permissions/{permission} 仅返回或判断已登记的界面码。GET /auth/api-permissions/{operationId} 在 AuthService 中映射到 API 码；平台使用 user.list、role.grant 等资源加操作编号，课程保留老师的 operationId。未知操作返回 false。
+
+
+[cols="2,2,5,4",options="header"]
+|===
+|界面 |菜单码 |按钮码 |后端 API 码
+|课程管理 |MCO |MCOR 审核 |CV 查询/详情；CR 审核
+|学期维护 |MTR |MTRC 新建；MTRE 修改；MTRD 删除 |login 查询；TC 新建；TE 修改；TD 删除
+|用户 |ui.users |ui.user.create/edit/delete/roles |user.view/create/edit/delete/role.assign
+|角色 |ui.roles |ui.role.create/edit/delete/permissions |role.manage
+|部门 |ui.departments |ui.department.create/edit/delete |department.manage
+|业务系统 |ui.systems |ui.system.create/edit/delete |system.manage
+|权限目录 |ui.permissions |ui.permission.create/edit/delete |permission.manage
+|===
+
+
+同一管理分组中，拥有任一菜单码时显示全部菜单项；无对应码的菜单使用原生 button disabled。没有管理菜单码时收起管理分组。业务条件满足的操作按钮持续显示，无对应按钮码时 disabled，保存、授予和撤销同样检查。查询与翻页属于菜单基础能力。桌面与移动端共用组件。界面码有效且 API 码缺失时，控件可用，后端返回 403；只有 API 码时控件禁用。窗口重新获得焦点、手动刷新及 403 后重新读取界面码，路由检查菜单权限。
+
+===== 授权表单候选项
+
+GET /api/roles/options 由 user.role.assign 授权并限定本部门；GET /api/systems/options 允许 role.manage 或 permission.manage；GET /api/permissions/options?systemId=... 要求 role.manage。三个接口共用 SelectionService，只读分页，不扩大目录写权限。前端逐页读取，避免目录超过 100 项时遗漏。
+
+
+[.diagram.plate]
+--
+[[fig-class-selection]]
+.共享授权候选查询 类图
+image::v33/class-selection.svg[共享授权候选查询 类图,width=100%]
+--
+
+
+
+[.diagram.plate]
+--
+[[fig-flow-ui-api]]
+.界面码与 API 码独立检查 交互图
+image::v33/flow-ui-api.svg[界面码与 API 码独立检查 交互图,width=100%]
+--
+
+
+===== 数据库升级
+
+Flyway V2 在现有 permission 与 role_permission 中补齐旧版既有界面的独立码和对应演示授权，不增表。迁移只执行一次；之后撤销 UI 码与 API 码各自生效。空演示库由 DemoData 分别初始化两套码。
 
 ==== 输入对象与字段白名单
 
@@ -2176,6 +2373,9 @@ JWT 使用 RS256，携带 iss、sub、aud、jti、iat 和 exp，默认有效期 
 |PERM-02 |POST /api/systems/{systemId}/permissions |permission.manage |201
 |PERM-03 |PATCH /api/permissions/{id} |permission.manage |204
 |PERM-04 |DELETE /api/permissions/{id} |permission.manage |204
+|ROLE-09 |GET /api/roles/options |user.role.assign |200 Page<Role>
+|SYS-05 |GET /api/systems/options |role.manage 或 permission.manage |200 Page<System>
+|PERM-05 |GET /api/permissions/options |role.manage |200 Page<Permission>
 |===
 
 
@@ -2185,7 +2385,7 @@ JWT 使用 RS256，携带 iss、sub、aud、jti、iat 和 exp，默认有效期 
 
 2026-11-17，辅助节点通过公网 HTTP 对两套实现执行同一负载：权限查询与本部门用户列表各占 50%。每轮预热 100 次，再计时 1,000 次；并发为 1、4、8，8 并发各测三轮。登录在计时前完成。数据、连接池、容器资源与 DEBUG 分层日志配置相同。
 
-列表采用有界分页，数据库连接池上限为 5。数据库含 2 个部门、5 个用户、3 个角色、2 个系统、17 项权限、4 条用户角色和 26 条角色权限关联。测试页容量为 20，本部门列表返回 4 个用户。实时授权查询使用关联表主键及反向索引。
+列表采用有界分页，数据库连接池上限为 5。历史基线数据库含 2 个部门、5 个用户、3 个角色、2 个系统、17 项权限、4 条用户角色和 26 条角色权限关联。v3.4.0 增加独立界面码，该组结果保留为 v3.3.0 部署实测记录；本轮验证见整改报告。测试页容量为 20，本部门列表返回 4 个用户。实时授权查询使用关联表主键及反向索引。
 
 === 精度与一致性
 
@@ -2213,7 +2413,7 @@ JWT 使用 RS256，携带 iss、sub、aud、jti、iat 和 exp，默认有效期 
 
 两套实现共完成 10,000 次计时请求，全部返回 200，错误率为 0。8 并发三轮 P95 为结构化 36.67 至 52.61 ms、DDD 36.90 至 55.83 ms。结果受 JVM 预热、共享节点和网络波动影响，作为上述数据规模与部署环境的回归基线。
 
-连接复用调整前，1,000 次测试中有 2 次 504（0.2%），网关日志记录上游连接超时。启用 Nginx keepalive 后完成表中全部测量。原始结果、配置、资源快照及调查记录见 docs/implementation/实施报告.md。
+旧版连接复用调整前，1,000 次请求出现 2 次 504（0.2%），网关记录上游连接超时。Nginx 启用 keepalive 后，表中全部请求成功；原始结果及配置见原实施报告。
 
 == 运行需求
 

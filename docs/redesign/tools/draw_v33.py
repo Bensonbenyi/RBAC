@@ -34,7 +34,7 @@ def architecture():
  d.note(80,960,740,['业务实现依赖存储端口；Infrastructure 实现该端口。','API 通过共享用例端口调用选中的业务实现。'])
 
 def domain_relations():
- d=D('domain-relations','DDD 领域对象类图',900,1100)
+ d=D('domain-relations','核心业务对象关系模型',900,1100)
  items={}
  for name,x,y,ops in [('Department',40,120,[('rename','')]),('User',520,120,[('changeProfile',''),('assignRole',''),('revokeRole','')]),('Role',40,510,[('rename',''),('grantPermission',''),('revokePermission','')]),('Permission',520,510,[('rename','')]),('System',520,850,[('rename','')])]:items[name]=d.node(name,x,y,340,170 if name in ['User','Role'] else 140,ops=ops)
  def association(a,b,pts,ma,mb,label,labels):
@@ -62,9 +62,9 @@ def core_classes():
    u.classifier(name,methods,attrs,interface=name in ['UserUseCase','ManagementStore'],stereo=stereo)
   for name,x,y,w in [('UserController',35,110,830),('UserUseCase',35,300,830),(prefix+'UserService',35,500,830),('ManagementStore',35,700,830),('User',35,950,390),('Role',475,950,390)]:
    nodes[name]=u.klass(d,name,x,y,w)
-  d.edge(nodes['UserController'],nodes['UserUseCase'],[(450,220),(450,290)])
+  u.assoc(d,nodes['UserController'],nodes['UserUseCase'],[(450,220),(450,290)],role='service')
   d.edge(nodes[prefix+'UserService'],nodes['UserUseCase'],[(450,495),(450,430)],real=True)
-  d.edge(nodes[prefix+'UserService'],nodes['ManagementStore'],[(450,605),(450,690)])
+  u.assoc(d,nodes[prefix+'UserService'],nodes['ManagementStore'],[(450,605),(450,690)],role='store')
   if mode=='ddd':
    d.edge(nodes[prefix+'UserService'],nodes['User'],[(30,560),(15,560),(15,930),(225,930),(225,945)])
   else:d.edge(nodes['ManagementStore'],nodes['User'],[(225,860),(225,945)])
@@ -72,6 +72,12 @@ def core_classes():
   d.text(433,980,'*',18);d.text(456,980,'*',18)
 
 def sequence_for(op,mode):
+ if op.function=="options":
+  from v34_sequences import selection_sequence
+  return selection_sequence(op)
+ if op.module!="Auth":
+  from v34_sequences import service_sequence
+  return service_sequence(op,mode)
  shared=op.module=='Auth' and op.function!='updateMe'
  label='共享' if shared else '结构化' if mode=='structured' else 'DDD'
  stem=op.key.lower()+('-shared' if shared else '-'+mode)
@@ -108,7 +114,7 @@ def sequence_for(op,mode):
  else:parts=[('api',op.module+'Controller'),('usecase',prefix+op.module+'Service'),('access','AccessPolicy'),('store','ManagementStore')]
  s=Sequence(stem,f'{op.key} {label} {op.title}',parts,height=1140)
  if shared or op.key=='AUTH-04':
-  fn={'AUTH-05':'allowed','AUTH-06':'allowed','AUTH-07':'lookup'}.get(op.key,op.function)
+  fn={'AUTH-05':'uiAllowed','AUTH-06':'apiAllowed','AUTH-07':'lookup'}.get(op.key,op.function)
   s.msg(0,1,300,op.method+' '+op.route,end=940)
   s.msg(1,2,410,fn+'(校验后的输入 / 当前身份)',end=880)
   data={'AUTH-01':'userByUsername；检查手机号和当前 login 许可','AUTH-02':'user；rolesForUser；permissionsForUser','AUTH-03':'revoke(sessionId, now)','AUTH-04':'user(actor.userId)；updateUser(本人, profile)','AUTH-05':'permissionsForUser(当前用户, 当前系统)','AUTH-06':'permissionsForUser(当前用户, 当前系统)','AUTH-07':'检查本人或 UL；user(id)'}[op.key]
@@ -116,7 +122,7 @@ def sequence_for(op,mode):
   s.msg(3,2,770,'当前数据 / 更新结果 / 异常',reply=True)
   s.msg(2,1,900,'结果或业务错误',reply=True)
   s.msg(1,0,970,op.result,reply=True)
-  note={'AUTH-01':'AuthService 校验通过后调用 SessionStore.save，使用 JwtEncoder 签发身份 JWT；同事务保存会话。','AUTH-03':'撤销当前会话，后续请求由 BearerFilter 拒绝。','AUTH-04':'本人编号来自认证上下文；仅修改姓名和手机号；不要求用户管理权限。','AUTH-06':'Controller 通过 OperationPermissions 将 operationId 映射为权限码；未知操作直接返回 false。'}.get(op.key,'BearerFilter 已检查签名、会话、账号及目标系统 login；权限从当前关联读取。')
+  note={'AUTH-01':'AuthService 校验通过后调用 SessionStore.save，使用 JwtEncoder 签发身份 JWT；同事务保存会话。','AUTH-03':'撤销当前会话，后续请求由 BearerFilter 拒绝。','AUTH-04':'本人编号来自认证上下文；仅修改姓名和手机号；不要求用户管理权限。','AUTH-06':'AuthService 通过 OperationPermissions 将 operationId 映射为权限码；未知操作直接返回 false。'}.get(op.key,'BearerFilter 已检查签名、会话、账号及目标系统 login；权限从当前关联读取。')
   s.note(1040,note)
  else:
   s.msg(0,1,300,op.function+'(actor, 参数)',end=940)
@@ -185,20 +191,20 @@ def files_and_integration():
  ('vendor / integrations / docs',50,950,800,150,['vendor/clonefactory 教师源码与许可','integrations/ 固定上游版本与适配补丁   docs/ 文档和图稿'])]:d.node(title,x,y,w,h,'UMLPackage',body=body)
  d=D('class-auth-shared','共享认证模块类图',900,1150)
  ctrl=d.node('AuthController',40,110,380,220,ops=[('login',''),('me',''),('logout',''),('check',''),('api','')])
- svc=d.node('AuthService',480,110,380,250,ops=[('login',''),('me',''),('logout',''),('allowed',''),('lookup','')])
+ svc=d.node('AuthService',480,110,380,330,ops=[('login',''),('me',''),('logout',''),('uiAllowed',''),('apiAllowed',''),('allowed',''),('lookup','')])
  store=d.node('ManagementStore',480,510,380,220,'UMLInterface',ops=[('userByUsername',''),('permissionsForUser',''),('rolesForUser','')])
  session=d.node('SessionStore',40,510,380,220,'UMLInterface',ops=[('save',''),('find',''),('revoke','')])
  encoder=d.node('JwtEncoder',480,890,380,130,'UMLInterface',ops=[('encode','')])
- d.edge(ctrl,svc,[(425,190),(470,190)])
- d.edge(svc,store,[(670,365),(670,500)])
- d.edge(svc,session,[(475,300),(450,300),(450,450),(230,450),(230,500)])
- d.edge(svc,encoder,[(865,300),(880,300),(880,840),(670,840),(670,880)])
+ u.assoc(d,ctrl,svc,[(420,190),(480,190)],role='service')
+ u.assoc(d,svc,store,[(670,440),(670,510)],role='store')
+ u.assoc(d,svc,session,[(480,300),(450,300),(450,450),(230,450),(230,510)],role='sessions')
+ u.assoc(d,svc,encoder,[(860,300),(880,300),(880,840),(670,840),(670,890)],role='encoder')
  d.note(40,890,380,['登录通过当前 RBAC 校验。','会话保存与撤销由数据库维护。','JWT 记录身份及目标系统。'])
  for key,method,route,operation,target in [('01','GET','/terms','listTerms','TermController'),('02','POST','/terms','createTerm','TermController'),('03','PATCH','/terms/{id}','updateTerm','TermController'),('04','DELETE','/terms/{id}','deleteTerm','TermController'),('05','GET','/admin/courses','listAdminCourses','CourseController'),('06','GET','/courses/{id}','getCourse','CourseController'),('07','POST','/courses/{id}/review','reviewCourse','CourseController')]:
   q=Sequence('course-'+key,'COURSE-'+key+' '+operation,[('client','Browser'),('filter','RbacIntegrationFilter'),('identity','IdentityPlatform'),('business',target)],height=1140)
   q.msg(0,1,290,method+' '+route+' + Bearer',end=970)
   q.msg(1,2,410,'GET /auth/me；检查会话和目标系统',end=500)
-  q.msg(2,1,520,'当前身份；无效凭据 401',reply=True)
+  q.msg(2,1,520,'身份与界面码；无效凭据 401',reply=True)
   q.msg(1,2,620,'GET /auth/api-permissions/'+operation,end=710)
   q.msg(2,1,730,'allowed；拒绝 403；依赖不可用 503',reply=True)
   q.msg(1,3,830,'允许后执行 '+operation,end=900)
@@ -283,8 +289,10 @@ if __name__=='__main__':
  from draw_detail_v331 import classes as detailed_classes, supporting
  architecture();detailed_classes();domain_relations();core_classes();supporting();overview_sequences();lifecycle();deployment();files_and_integration();utility();dataflow();analysis()
  for op in OPS:
-  if op.module=='Auth' and op.function!='updateMe':sequence_for(op,'shared')
+  if (op.module=='Auth' and op.function!='updateMe') or op.function=='options':sequence_for(op,'shared')
   else:
    sequence_for(op,'structured');sequence_for(op,'ddd')
+ from v34_sequences import ui_sequences
+ ui_sequences()
  u.finish()
  (u.OUT/'coverage.json').write_text(json.dumps({'operations':len(OPS),'diagrams':len(u.DIAGRAMS),'operationKeys':[o.key for o in OPS]},ensure_ascii=False,indent=2))
