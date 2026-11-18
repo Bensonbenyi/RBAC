@@ -1,4 +1,4 @@
--- RBAC 第一版评审草案；MySQL 8.4 LTS / InnoDB。
+-- RBAC1 v3.5.0 当前设计；MySQL 8.4 LTS / InnoDB。
 -- 在选定的空数据库中执行；不创建数据库、不删除已有表、不预置管理员。
 -- 用户与角色均属于一个部门。
 SET NAMES utf8mb4;
@@ -86,6 +86,17 @@ CREATE TABLE role_permission (
         REFERENCES permission (id) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_as_cs COMMENT='角色与权限关联';
 
+
+-- RBAC1：高级角色继承基础角色；同部门约束与防环由事务内业务规则维护。
+CREATE TABLE role_inheritance (
+    senior_role_id BIGINT NOT NULL COMMENT '获得继承权限的高级角色',
+    junior_role_id BIGINT NOT NULL COMMENT '提供权限的基础角色',
+    PRIMARY KEY (senior_role_id, junior_role_id),
+    KEY idx_inheritance_junior (junior_role_id),
+    CONSTRAINT fk_inheritance_senior FOREIGN KEY (senior_role_id) REFERENCES `role` (id) ON DELETE RESTRICT,
+    CONSTRAINT fk_inheritance_junior FOREIGN KEY (junior_role_id) REFERENCES `role` (id) ON DELETE RESTRICT,
+    CONSTRAINT ck_inheritance_distinct CHECK (senior_role_id <> junior_role_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_as_cs COMMENT='角色继承';
 
 CREATE TABLE login_session (
  id CHAR(36) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,

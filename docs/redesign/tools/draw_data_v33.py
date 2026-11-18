@@ -21,6 +21,8 @@ def chen():
  # Recursive department relationship placed in the left margin below the root.
  sub=d.diamond(100,420,'下设');d.line([(137,190),(20,190),(20,420),(24,420)]);d.line([(100,374),(100,285),(220,285),(220,222)])
  d.text(60,270,'1 父',18,'middle');d.text(155,285,'N 子',18,'middle')
+ inherited=d.diamond(130,990,'继承');d.line([(137,650),(20,650),(20,990),(54,990)]);d.line([(130,944),(130,890),(220,890),(220,682)])
+ d.text(65,880,'M 高级',17,'middle');d.text(270,880,'N 基础',17,'middle')
  d.text(450,1200,'键属性加下划线；双线为全参与；用户与角色均属于一个部门。',17,'middle');d.save('chen')
 
 def table(d,x,y,name,title,fields,width=380,footer=''):
@@ -32,7 +34,7 @@ def table(d,x,y,name,title,fields,width=380,footer=''):
  return h
 
 def physical():
- d=Figure(900,1500,'relational-v33');d.text(450,40,'七张业务表 数据库关系图',26,'middle',True)
+ d=Figure(900,1640,'relational-v33');d.text(450,40,'八张业务表 数据库关系图',26,'middle',True)
  fields={
  'department': [('id','BIGINT','PK NN'),('name','VARCHAR','NN'),('parent_id','BIGINT','FK')],
  'app_user':[('id','BIGINT','PK NN'),('username','VARCHAR','NN'),('name','VARCHAR','NN'),('phone','VARCHAR','NN'),('department_id','BIGINT','FK NN')],
@@ -59,11 +61,14 @@ def physical():
  table(d,30,790,'role_permission','角色权限',fields['role_permission'])
  table(d,490,790,'permission','操作权限',fields['permission'],footer='唯一：system_id + code')
  table(d,490,1170,'business_system','业务系统',fields['business_system'],footer='唯一：system_key')
- d.text(40,1220,'PK 主键  FK 外键  NN 非空',17)
- d.text(40,1260,'联合主键防止关联重复。',17)
- d.text(40,1300,'实线：FK 属于子表主键。',17)
- d.text(40,1340,'虚线：FK 不属于子表主键。',17)
- d.text(40,1435,'MySQL 8.4 InnoDB；七张业务表之外单列登录会话技术结构。',18)
+ d.relation([(30,550),(15,550),(15,1240),(30,1240)],'one','many',True)
+ d.relation([(300,676),(300,720),(450,720),(450,1290),(410,1290)],'one','many',True)
+ table(d,30,1170,'role_inheritance','角色继承',[('senior_role_id','BIGINT','PK FK NN'),('junior_role_id','BIGINT','PK FK NN')])
+ d.text(40,1390,'PK 主键  FK 外键  NN 非空',17)
+ d.text(40,1430,'继承的两端均引用 role.id。',17)
+ d.text(40,1470,'实线：FK 属于子表主键。',17)
+ d.text(40,1510,'虚线：FK 不属于子表主键。',17)
+ d.text(40,1580,'MySQL 8.4 InnoDB；八张业务表，登录会话技术结构单列。',18)
  d.save('schema')
  d=Figure(900,820,'session-table-v33');d.text(450,40,'登录会话 技术表与用户关系',26,'middle',True)
  table(d,260,110,'app_user','用户账号',[('id','BIGINT','PK NN')])

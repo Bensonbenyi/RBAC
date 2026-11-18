@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Observe existing sessions through an operator-triggered restart or dependency outage."""
 import argparse,json,os,time,urllib.request,urllib.error
+from datetime import datetime,timezone
 from pathlib import Path
 p=argparse.ArgumentParser();p.add_argument('--base',required=True);p.add_argument('--mode',choices=['restart','dependency'],required=True);p.add_argument('--report',required=True);a=p.parse_args()
 def call(path,token=None,body=None):
@@ -22,7 +23,7 @@ while time.monotonic()-start<150:
  if code!=200 and first_failure is None:first_failure=now;print('Observed unavailable status',code,flush=True)
  if first_failure is not None and code==200:restored=True;break
  time.sleep(.5)
-report={'date':'2026-11-17','mode':a.mode,'path':path,'previousTokenAccepted':restored,'firstFailureToRecoverySeconds':round(time.monotonic()-first_failure,3) if restored else None,'observations':statuses}
+report={'date':datetime.now(timezone.utc).date().isoformat(),'mode':a.mode,'path':path,'previousTokenAccepted':restored,'firstFailureToRecoverySeconds':round(time.monotonic()-first_failure,3) if restored else None,'observations':statuses}
 if a.mode=='dependency':report['courseReturned503']=any(x['status']==503 for x in statuses)
 Path(a.report).write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n');print(json.dumps({k:v for k,v in report.items() if k!='observations'}))
 if not restored or (a.mode=='dependency' and not report['courseReturned503']):raise SystemExit(1)

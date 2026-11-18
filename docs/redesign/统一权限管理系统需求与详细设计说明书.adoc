@@ -1,6 +1,6 @@
 = 统一权限管理系统需求与详细设计说明书
 OOAD 课程项目组
-v3.4.0, 2026-11-17
+v3.5.0, 2026-11-18
 :doctype: book
 :lang: zh-CN
 :toc:
@@ -21,7 +21,7 @@ v3.4.0, 2026-11-17
 
 本文规定当前基线的需求、数据结构、各功能交互、HTTP 契约和双实现设计，供课程评审、开发与验收使用。独立《概要设计说明书》说明系统骨架及 ATAM 评估，本文保存字段字典和各功能详细设计。
 
-本次版本为 3.4.0，基于 v3.2.2 和 2026-11-17 确认决定修订。代码与文档共用功能编号和配置名称，验证结果见实施报告。
+本次版本为 3.5.0，基于 v3.2.2 和 2026-11-17 确认决定修订。代码与文档共用功能编号和配置名称，验证结果见实施报告。
 
 === 背景与术语
 
@@ -104,6 +104,7 @@ v3.4.0, 2026-11-17
 |BR-10 |用户删除同时清理登录会话和用户角色；其他对象存在引用时先撤销关联再删除。
 |BR-11 |结构化与 DDD 共用输入输出、存储端口和数据库约束；切换配置保持外部行为一致。
 |BR-13 |界面码与 API 码分别授予；界面展示和接口执行分别检查，统一复用 RBAC 表。
+|BR-14 |RBAC1 角色继承限同部门，支持多级多路径，禁止环；权限按可达角色去重取并集。
 |BR-12 |本版功能为单项维护和授权，范围按已确认的精简设计执行。
 |===
 
@@ -186,7 +187,7 @@ image::v33/dfd-1.svg[AN-DFD-01 第一层数据流,width=100%]
 
 === 概念与关系模型
 
-五类业务实体为部门、用户、角色、权限和业务系统。用户角色与角色权限两组联系分别落为关联表。登录会话是实现认证撤销和恢复的技术结构，单列说明。关系模型见 <<fig-schema>> 与 <<fig-session-table>>。
+五类业务实体为部门、用户、角色、权限和业务系统。用户角色与角色权限两组联系分别落为关联表，角色继承自联系落为 role_inheritance。登录会话是实现认证撤销和恢复的技术结构，单列说明。关系模型见 <<fig-schema>> 与 <<fig-session-table>>。
 
 
 
@@ -207,7 +208,22 @@ image::v33/session-table.svg[技术会话表关系,width=100%]
 --
 
 
+=== RBAC1 继承约束
+
+高级角色通过 role_inheritance 指向基础角色，获得其直接与间接权限。角色层次与部门层次独立；所有继承边限定同部门。新增边先锁定部门行，再使用锁定读检查可达性，禁止自环及间接环。多路径使用 UNION DISTINCT 去重；移除一条边时其他路径继续有效。直接角色分配与直接权限接口保持原语义，有效权限另行查询。
+
+
 === 数据字典
+
+==== role_inheritance 角色继承
+
+[cols="18,23,10,29,32",options="header"]
+|===
+|字段 |类型 |可空 |约束 |含义
+|senior_role_id |BIGINT |否 |联合主键及外键 role.id |获得权限的高级角色
+|junior_role_id |BIGINT |否 |联合主键及外键 role.id |提供权限的基础角色；禁止自环和间接环
+|===
+
 
 ==== department 部门
 
@@ -302,11 +318,11 @@ image::v33/session-table.svg[技术会话表关系,width=100%]
 
 === 索引、事务与删除
 
-数据库采用 MySQL 8.4 InnoDB，文本使用区分大小写的排序规则。用户名和系统标识建立唯一索引，角色名及权限编码采用所属范围内的联合唯一索引。两个授权关联表使用联合主键，并为反向关联列建立索引。
+数据库采用 MySQL 8.4 InnoDB，文本使用区分大小写的排序规则。用户名和系统标识建立唯一索引，角色名及权限编码采用所属范围内的联合唯一索引。两组授权和角色继承关联表使用联合主键，并为反向关联列建立索引。
 
 写用例在 Service 事务边界内执行。用户删除先清理会话与用户角色，再删除账号；角色、权限、系统和部门存在引用时返回冲突。部门父节点创建时确定，接口仅支持重命名。
 
-关联查询通过用户角色和角色权限读取当前并集。每个鉴权请求检查已提交的授权关系；已进入事务的请求按数据库事务可见性完成。唯一约束负责并发重复写的最终裁决。
+关联查询从用户直接角色出发，递归展开 role_inheritance，再通过角色权限读取去重并集。每个鉴权请求检查已提交的授权关系；已进入事务的请求按数据库事务可见性完成。唯一约束负责并发重复写的最终裁决。
 
 == 功能需求与详细设计
 
@@ -1865,6 +1881,178 @@ image::v33/class-auth-shared.svg[共享认证与实时鉴权 类图,width=100%]
 --
 
 
+==== 角色继承管理
+
+
+[cols="1,1",frame=all,grid=all,role="use-case"]
+|===
+|*用例编号：* UPMS-HIERARCHY-001 |*用例名称：* 角色继承管理
+2+|*级别：* 用户目标
+2+|*包：* 角色继承
+2+|*参与者：* 持有 role.manage 的本部门管理员
+2+|*描述：* 建立同部门无环角色层次，使高级角色获得基础角色权限。
+2+|*触发事件：* 在角色页选择配置继承。
+2+|*前置条件：* 已登录，具有 API 许可，前端控件还需要 ui.role.inheritance。
+|*主成功场景：* |*信息*
+|1. 查询直接基础角色及有效权限。 |直接边与传递闭包分开显示。
+|2. 添加继承边。 |事务先锁部门，再读取当前图；结构化 Service 检查，DDD RoleHierarchy 检查是否回到起点。
+|3. 解除指定继承边。 |其他路径及直接授权继续有效；JWT 不缓存权限。
+|*扩展场景：* |*处理及信息*
+|自环或间接环 |409 ROLE_CYCLE，事务不落边。
+|跨部门或无 API 许可 |403。
+|角色不存在 |404。
+|角色仍被继承关系引用时删除 |409，先解除关系。
+2+|*后置条件：* 继承图保持 DAG；两系统的界面及 API 决策都使用当前有效权限。
+|===
+
+对应需求 REQ-F-03。
+
+
+
+[.scene-detail]
+--
+[cols="3,4,3",options="header",frame=all,grid=all]
+|===
+|图中处理／实际方法 |调用说明 URL |功能
+|`RoleController.inheritedRoles` |`GET /api/roles/{id}/inherited-roles` |同部门范围；返回直接继承边，不混入用户直接分配关系。
+|`RoleController.inherit` |`PUT /api/roles/{id}/inherited-roles/{juniorId}` |高级角色 id 获得基础角色 juniorId 的直接和间接权限；同部门、无环，多路径去重，重复请求幂等。
+|`RoleController.uninherit` |`DELETE /api/roles/{id}/inherited-roles/{juniorId}` |只解除指定直接边，其他路径继续有效；下次请求实时计算权限，重复解除幂等。
+|`RoleController.effectivePermissions` |`GET /api/roles/{id}/effective-permissions` |返回直接授权与全部可达基础角色权限的去重并集，权限保留系统编号。
+|===
+--
+
+
+===== ROLE-10 查询直接基础角色
+
+同部门范围；返回直接继承边，不混入用户直接分配关系。
+
+输入：路径 id。无请求体。
+
+成功结果：200 List<Role>。权限：role.manage。
+
+
+[.diagram.plate]
+--
+[[fig-role-10-structured]]
+.ROLE-10 结构化 详细交互
+image::v33/role-10-structured.svg[ROLE-10 结构化 详细交互,width=100%]
+--
+
+
+
+[.diagram.plate]
+--
+[[fig-role-10-ddd]]
+.ROLE-10 DDD 详细交互
+image::v33/role-10-ddd.svg[ROLE-10 DDD 详细交互,width=100%]
+--
+
+
+===== ROLE-11 添加角色继承
+
+高级角色 id 获得基础角色 juniorId 的直接和间接权限；同部门、无环，多路径去重，重复请求幂等。
+
+输入：路径 id 为高级角色、juniorId 为基础角色，均为正整数；无请求体。
+
+成功结果：204。权限：role.manage。
+
+
+[.diagram.plate]
+--
+[[fig-role-11-structured]]
+.ROLE-11 结构化 详细交互
+image::v33/role-11-structured.svg[ROLE-11 结构化 详细交互,width=100%]
+--
+
+
+
+[.diagram.plate]
+--
+[[fig-role-11-ddd]]
+.ROLE-11 DDD 详细交互
+image::v33/role-11-ddd.svg[ROLE-11 DDD 详细交互,width=100%]
+--
+
+
+
+[.diagram.plate]
+--
+[[fig-role-11-ddd-domain]]
+.ROLE-11 DDD 聚合修改与保存
+image::v33/role-11-ddd-domain.svg[ROLE-11 DDD 聚合修改与保存,width=100%]
+--
+
+
+===== ROLE-12 解除角色继承
+
+只解除指定直接边，其他路径继续有效；下次请求实时计算权限，重复解除幂等。
+
+输入：路径 id 为高级角色、juniorId 为基础角色，均为正整数；无请求体。
+
+成功结果：204。权限：role.manage。
+
+
+[.diagram.plate]
+--
+[[fig-role-12-structured]]
+.ROLE-12 结构化 详细交互
+image::v33/role-12-structured.svg[ROLE-12 结构化 详细交互,width=100%]
+--
+
+
+
+[.diagram.plate]
+--
+[[fig-role-12-ddd]]
+.ROLE-12 DDD 详细交互
+image::v33/role-12-ddd.svg[ROLE-12 DDD 详细交互,width=100%]
+--
+
+
+===== ROLE-13 查询角色有效权限
+
+返回直接授权与全部可达基础角色权限的去重并集，权限保留系统编号。
+
+输入：路径 id。无请求体。
+
+成功结果：200 List<Permission>。权限：role.manage。
+
+
+[.diagram.plate]
+--
+[[fig-role-13-structured]]
+.ROLE-13 结构化 详细交互
+image::v33/role-13-structured.svg[ROLE-13 结构化 详细交互,width=100%]
+--
+
+
+
+[.diagram.plate]
+--
+[[fig-role-13-ddd]]
+.ROLE-13 DDD 详细交互
+image::v33/role-13-ddd.svg[ROLE-13 DDD 详细交互,width=100%]
+--
+
+
+
+[.diagram.plate]
+--
+[[fig-class-hierarchy-structured]]
+.RBAC1 结构化 角色继承类图
+image::v33/class-hierarchy-structured.svg[RBAC1 结构化 角色继承类图,width=100%]
+--
+
+
+
+[.diagram.plate]
+--
+[[fig-class-hierarchy-ddd]]
+.RBAC1 DDD 角色继承类图
+image::v33/class-hierarchy-ddd.svg[RBAC1 DDD 角色继承类图,width=100%]
+--
+
+
 ==== 课程管理系统接入
 
 需求 REQ-F-07。课程前端直接向平台 /auth/login 登录，携带 course-project-management audience 的令牌调用老师后端。反向代理把 /course-api/ 前缀剥离后转发。老师的业务规则保留，适配层完成验签、实时身份与 API 权限查询。
@@ -2013,10 +2201,8 @@ image::v33/course-08.svg[getCurrentUser 本地资料与界面权限交互,width=
 --
 
 
-课程列表 page 从 1 开始，courseStatus 为 1 申请、2 待审核、3 已开课。审核输入 decision 为 approved 或 rejected，驳回必须填写 comment。菜单来自当前权限，后端仍独立检查。该课程状态属于老师系统的课程对象。
-
-接口适配补丁固定到 ca90f1c，保留 MIT 许可。其他老师项目路由在此演示装配中拒绝访问；选定业务服务仍使用老师原实现。
-
+[.course-note]
+课程列表 page 从 1 开始，courseStatus 为 1 申请、2 待审核、3 已开课。审核输入 decision 为 approved 或 rejected，驳回必须填写 comment。菜单与 API 分别检查权限。接入补丁固定到 ca90f1c，保留 MIT 许可及老师原业务规则，演示路由按本版接入范围开放。
 
 
 === 两套架构设计
@@ -2265,7 +2451,7 @@ JWT 使用 RS256，携带 iss、sub、aud、jti、iat 和 exp，默认有效期 
 |403 |FORBIDDEN |目标系统登录许可、操作权限或部门边界不通过。
 |404 |NOT_FOUND |有操作权限后查找的对象不存在。
 |405 |METHOD_NOT_ALLOWED |HTTP 方法不符合接口定义；响应携带 Allow。
-|409 |CONFLICT |唯一约束、重复分配或引用关系冲突。
+|409 |CONFLICT / ROLE_CYCLE |唯一约束、重复分配、引用冲突或角色继承成环。
 |500 |INTERNAL_ERROR |未预期错误，写事务回滚。
 |503 |SERVICE_UNAVAILABLE |数据库不可用；课程端使用 IDENTITY_SERVICE_UNAVAILABLE 表达身份依赖故障。
 |===
@@ -2273,7 +2459,7 @@ JWT 使用 RS256，携带 iss、sub、aud、jti、iat 和 exp，默认有效期 
 
 ==== 独立界面权限与禁用规则
 
-权限实体同时保存界面码和 API 码，两者经同一用户角色、角色权限关系分别授予。数据库沿用现有七张业务表。GET /auth/me 的 permissions 及 GET /auth/permissions/{permission} 仅返回或判断已登记的界面码。GET /auth/api-permissions/{operationId} 在 AuthService 中映射到 API 码；平台使用 user.list、role.grant 等资源加操作编号，课程保留老师的 operationId。未知操作返回 false。
+权限实体同时保存界面码和 API 码，两者经同一用户角色、角色权限关系分别授予。数据库沿用八张业务表。GET /auth/me 的 permissions 及 GET /auth/permissions/{permission} 仅返回或判断已登记的界面码。GET /auth/api-permissions/{operationId} 在 AuthService 中映射到 API 码；平台使用 user.list、role.grant 等资源加操作编号，课程保留老师的 operationId。未知操作返回 false。
 
 
 [cols="2,2,5,4",options="header"]
@@ -2282,7 +2468,7 @@ JWT 使用 RS256，携带 iss、sub、aud、jti、iat 和 exp，默认有效期 
 |课程管理 |MCO |MCOR 审核 |CV 查询/详情；CR 审核
 |学期维护 |MTR |MTRC 新建；MTRE 修改；MTRD 删除 |login 查询；TC 新建；TE 修改；TD 删除
 |用户 |ui.users |ui.user.create/edit/delete/roles |user.view/create/edit/delete/role.assign
-|角色 |ui.roles |ui.role.create/edit/delete/permissions |role.manage
+|角色 |ui.roles |ui.role.create/edit/delete/permissions/inheritance |role.manage
 |部门 |ui.departments |ui.department.create/edit/delete |department.manage
 |业务系统 |ui.systems |ui.system.create/edit/delete |system.manage
 |权限目录 |ui.permissions |ui.permission.create/edit/delete |permission.manage
@@ -2376,6 +2562,10 @@ Flyway V2 在现有 permission 与 role_permission 中补齐旧版既有界面�
 |ROLE-09 |GET /api/roles/options |user.role.assign |200 Page<Role>
 |SYS-05 |GET /api/systems/options |role.manage 或 permission.manage |200 Page<System>
 |PERM-05 |GET /api/permissions/options |role.manage |200 Page<Permission>
+|ROLE-10 |GET /api/roles/{id}/inherited-roles |role.manage |200 List<Role>
+|ROLE-11 |PUT /api/roles/{id}/inherited-roles/{juniorId} |role.manage |204
+|ROLE-12 |DELETE /api/roles/{id}/inherited-roles/{juniorId} |role.manage |204
+|ROLE-13 |GET /api/roles/{id}/effective-permissions |role.manage |200 List<Permission>
 |===
 
 
@@ -2455,11 +2645,50 @@ Flyway V2 在现有 permission 与 role_permission 中补齐旧版既有界面�
 |===
 |编号 |场景 |通过条件
 |ACC-01 |两种业务策略 |同一契约套件在 structured、ddd 下通过。
-|ACC-02 |RBAC 与部门边界 |无许可和跨部门调用返回 403，已有授权保持并集语义。
+|ACC-02 |RBAC1 与部门边界 |多级、多路径继承去重；跨部门返回 403，成环返回 409；并发反向连边仅一条成功。
 |ACC-03 |输入与数据库 |非法、未知字段拒绝；唯一和引用冲突返回 409。
 |ACC-04 |会话及撤权 |退出、到期、用户删除和权限撤销对后续请求生效。
 |ACC-05 |课程接入 |真实学期 CRUD、课程列表和审核；撤权后原令牌被拒绝。
 |ACC-06 |日志 |浏览器功能请求可对应 API、Service 和存储层日志，凭据不进入日志。
 |ACC-07 |恢复和性能 |记录实际恢复时长及两种配置的相同负载结果。
 |ACC-08 |文档与图 |两份 PDF 均为统一 A4 纵向，源文件可编辑，编号和接口对应。
+|===
+
+
+=== 需求到测试方法与页面行为
+
+共同测试位于 backend/src/test/java/cn/edu/xmu/rbac/ContractSuite.java，StructuredContractTest 和 DddContractTest 各继承并执行 16 项。表内方法均为源码中的实际名称；同一方法可覆盖多项需求。
+
+
+[cols="3,7,5",options="header"]
+|===
+|需求 |具体测试方法 / 复现 |前端可观察结果
+|REQ-F-01 认证与鉴权 |authenticatesAndRejectsBadCredentials；tokensContainIdentityAndAudienceWithoutPermissions；logoutExpiryAndDeletionInvalidateSession。 |用户名手机号登录；错误凭据提示；退出后受保护页面拒绝访问。
+|REQ-F-02 用户 |createsUpdatesAndDeletesUserWithGeneratedIdentity；assignsAndRevokesRoleWithConflictAndIdempotence；validatesInputAndProtectedFields。 |单项新建、修改、删除及分配撤销；资料编辑不能修改部门和编号。
+|REQ-F-03 角色与权限 |directoryCrudHonoursReferencesAndCaseSensitiveCodes；revocationIsVisibleToExistingTokenAndSystemsAreIsolated。 |角色权限配置、引用冲突提示；旧令牌按当前许可执行。
+|REQ-F-03 RBAC1 |inheritsAcrossMultiplePathsAndRevokesForExistingTokens；rejectsHierarchyCyclesScopeAndReferences；serializesConcurrentOppositeInheritanceWrites。 |配置继承、有效权限并集、解除继承；自环和间接环 409，跨部门 403；并发反向连边仅一条成功。
+|REQ-F-04 部门 |enforcesDirectDepartmentScope；directoryCrudHonoursReferencesAndCaseSensitiveCodes。 |部门树只表达组织；管理员管理本部门直接成员。
+|REQ-F-05 系统 / REQ-F-06 权限目录 |directoryCrudHonoursReferencesAndCaseSensitiveCodes；isolatesUiAndApiPermissionsAndSupportsNarrowSelections。 |系统与权限目录维护；授权下拉分页完整加载，不依赖无关目录管理权。
+|REQ-F-07 课程接入 |tooling/acceptance.py 对已部署的老师后端调用 /me、学期 CRUD、课程列表与详情、无权审核、撤权及退出。 |课程和学期菜单分别受 UI 码控制；API 许可独立检查。
+|REQ-N-01 安全 |isolatesUiAndApiPermissionsAndSupportsNarrowSelections；upgradesExistingGrantsOnceAndKeepsUiRevocationIndependent；frontend/src/permissions.test.ts。 |无菜单码时禁用菜单，无按钮码时禁用按钮；仅有 API 码也不能启用控件。
+|REQ-N-02 性能 |tooling/benchmark.py；assets/v33/performance-baseline.json 为 v3.3.0 历史测量。 |分页有界；当前版本性能需按相同数据与负载重新测量后比较。
+|REQ-N-03 可用性 |tooling/resilience.py 与历史恢复记录；本轮记录实际部署后健康与会话结果。 |依赖故障拒绝业务；恢复后刷新页面与会话。
+|REQ-N-04 可修改性 |StructuredContractTest / DddContractTest；tooling/check-architecture.py；Swarm 同镜像切换业务策略。 |切换后同一套页面和 HTTP 请求继续工作。
+|REQ-N-05 交付与运行 |Maven verify、tooling/check-copy-artifact.py、build-api.py、build-design.sh；Swarm 镜像与服务记录。 |两个前端、API 文档、覆盖率报告可访问；菜单请求对应后端日志。
+|===
+
+=== 本轮测试与交付入口
+
+v3.5.0 平台测试 36 项、老师 CloneFactory 测试 5 项和前端组件测试 4 项全部通过。JaCoCo 0.8.14 的平台行覆盖率 88.42%，分支覆盖率 76.81%；生成的 CloneFactory 工具类单独由拷贝测试与运行包检查验证，覆盖率排除该生成类。
+
+
+[cols="3,7",options="header"]
+|===
+|产物 |访问与复现
+|权限后台 |http://113.44.144.119/platform/
+|老师课程系统接入 |http://113.44.144.119/course/
+|平台 API 文档 |http://113.44.144.119/api-docs/；npm ci --prefix docs/api 后执行 python3 tooling/build-api.py。
+|覆盖率报告 |http://113.44.144.119/coverage/；执行 ./mvnw verify 生成 backend/target/site/jacoco/。
+|部署与验收证据 |docs/implementation/整改报告-v3.5.0.md 与验收 JSON；口试步骤见同目录第二轮演示脚本.md。
+|课程提交 |代码推送 GitHub，由已配置的自动同步更新 Gitee；课程网站提交与口试预约由组员完成。
 |===

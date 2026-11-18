@@ -1,0 +1,29 @@
+# 用户
+2026-11-18T14:08:26.462Z DEBUG [http-nio-8080-exec-6] c.e.xmu.rbac.infrastructure.logging.LayerLogging layer operation=JdbcManagementStore.users(..) outcome=ok elapsedMicros=736
+2026-11-18T14:08:26.462Z DEBUG [http-nio-8080-exec-6] c.e.xmu.rbac.infrastructure.logging.LayerLogging layer operation=StructuredUserService.list(..) outcome=ok elapsedMicros=1630
+2026-11-18T14:08:26.463Z DEBUG [http-nio-8080-exec-6] c.e.x.rbac.infrastructure.security.BearerFilter request method=GET path=/api/users status=200 elapsedMicros=12812
+
+# 角色
+2026-11-18T14:08:24.698Z DEBUG [http-nio-8080-exec-4] c.e.xmu.rbac.infrastructure.logging.LayerLogging layer operation=JdbcManagementStore.roles(..) outcome=ok elapsedMicros=714
+2026-11-18T14:08:24.698Z DEBUG [http-nio-8080-exec-4] c.e.xmu.rbac.infrastructure.logging.LayerLogging layer operation=StructuredRoleService.list(..) outcome=ok elapsedMicros=1417
+2026-11-18T14:08:24.699Z DEBUG [http-nio-8080-exec-4] c.e.x.rbac.infrastructure.security.BearerFilter request method=GET path=/api/roles status=200 elapsedMicros=6306
+
+# 部门
+2026-11-18T14:08:28.336Z DEBUG [http-nio-8080-exec-7] c.e.xmu.rbac.infrastructure.logging.LayerLogging layer operation=JdbcManagementStore.departments(..) outcome=ok elapsedMicros=697
+2026-11-18T14:08:28.336Z DEBUG [http-nio-8080-exec-7] c.e.xmu.rbac.infrastructure.logging.LayerLogging layer operation=StructuredDepartmentService.list(..) outcome=ok elapsedMicros=1515
+2026-11-18T14:08:28.337Z DEBUG [http-nio-8080-exec-7] c.e.x.rbac.infrastructure.security.BearerFilter request method=GET path=/api/departments status=200 elapsedMicros=10435
+
+# 业务系统
+2026-11-18T14:08:30.272Z DEBUG [http-nio-8080-exec-8] c.e.xmu.rbac.infrastructure.logging.LayerLogging layer operation=JdbcManagementStore.systems(..) outcome=ok elapsedMicros=668
+2026-11-18T14:08:30.272Z DEBUG [http-nio-8080-exec-8] c.e.xmu.rbac.infrastructure.logging.LayerLogging layer operation=StructuredSystemService.list(..) outcome=ok elapsedMicros=1461
+2026-11-18T14:08:30.273Z DEBUG [http-nio-8080-exec-8] c.e.x.rbac.infrastructure.security.BearerFilter request method=GET path=/api/systems status=200 elapsedMicros=9934
+
+# 权限目录
+2026-11-18T14:08:32.250Z DEBUG [http-nio-8080-exec-9] c.e.xmu.rbac.infrastructure.logging.LayerLogging layer operation=JdbcManagementStore.systems(..) outcome=ok elapsedMicros=624
+2026-11-18T14:08:32.250Z DEBUG [http-nio-8080-exec-9] c.e.xmu.rbac.infrastructure.logging.LayerLogging layer operation=SelectionService.systems(..) outcome=ok elapsedMicros=1850
+2026-11-18T14:08:32.250Z DEBUG [http-nio-8080-exec-9] c.e.x.rbac.infrastructure.security.BearerFilter request method=GET path=/api/systems/options status=200 elapsedMicros=6822
+
+# 个人资料
+2026-11-18T14:09:10.888Z DEBUG [http-nio-8080-exec-3] c.e.xmu.rbac.infrastructure.logging.LayerLogging layer operation=JdbcManagementStore.user(..) outcome=ok elapsedMicros=326
+2026-11-18T14:09:10.890Z DEBUG [http-nio-8080-exec-3] c.e.xmu.rbac.infrastructure.logging.LayerLogging layer operation=AuthService.me(..) outcome=ok elapsedMicros=1543
+2026-11-18T14:09:10.890Z DEBUG [http-nio-8080-exec-3] c.e.x.rbac.infrastructure.security.BearerFilter request method=GET path=/auth/me status=200 elapsedMicros=5255

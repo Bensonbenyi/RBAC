@@ -1,0 +1,60 @@
+{
+  "version": "3.5.0",
+  "source": "Logback /logs/rbac.log on Swarm",
+  "menuChecks": [
+    {
+      "menu": "用户",
+      "path": "/api/users",
+      "status": 200,
+      "service": "StructuredUserService.list",
+      "store": "JdbcManagementStore.users",
+      "thread": "http-nio-8080-exec-6",
+      "timeUtc": "2026-11-18T14:08:26.463Z"
+    },
+    {
+      "menu": "角色",
+      "path": "/api/roles",
+      "status": 200,
+      "service": "StructuredRoleService.list",
+      "store": "JdbcManagementStore.roles",
+      "thread": "http-nio-8080-exec-4",
+      "timeUtc": "2026-11-18T14:08:24.699Z"
+    },
+    {
+      "menu": "部门",
+      "path": "/api/departments",
+      "status": 200,
+      "service": "StructuredDepartmentService.list",
+      "store": "JdbcManagementStore.departments",
+      "thread": "http-nio-8080-exec-7",
+      "timeUtc": "2026-11-18T14:08:28.337Z"
+    },
+    {
+      "menu": "业务系统",
+      "path": "/api/systems",
+      "status": 200,
+      "service": "StructuredSystemService.list",
+      "store": "JdbcManagementStore.systems",
+      "thread": "http-nio-8080-exec-8",
+      "timeUtc": "2026-11-18T14:08:30.273Z"
+    },
+    {
+      "menu": "权限目录",
+      "path": "/api/systems/options",
+      "status": 200,
+      "service": "SelectionService.systems",
+      "store": "JdbcManagementStore.systems",
+      "thread": "http-nio-8080-exec-9",
+      "timeUtc": "2026-11-18T14:08:32.250Z"
+    },
+    {
+      "menu": "个人资料",
+      "path": "/auth/me",
+      "status": 200,
+      "service": "AuthService.me",
+      "store": "JdbcManagementStore.user",
+      "thread": "http-nio-8080-exec-3",
+      "timeUtc": "2026-11-18T14:09:10.890Z"
+    }
+  ]
+}

@@ -101,11 +101,11 @@ def classes():
     note(d,30,1310,725,['Service 在事务内编排权限、范围和存储调用。','Data 同时作为共享查询结果和持久化数据契约。','方法在本图省略参数及返回类型，契约见对应功能。'])
    jdbc=cls(d,'JdbcTemplate',820,1460,330,['query','queryForObject','update'])
    ref(d,adapter,jdbc,[(985,bottom(adapter)+5),(985,1450)],'jdbc')
-   d.text(590,1660,'Controller 依赖端口，Service 实现端口；JDBC 适配器实现 ManagementStore。',20,True)
+   d.text(590,1660,('继承操作及 RoleHierarchy 见 RBAC1 专题类图。' if module=='Role' else 'Controller 依赖端口，Service 实现端口；JDBC 适配器实现 ManagementStore。'),20,True)
  domain()
 
 def domain():
- d=D('domain','DDD 领域对象完整类图',1120,1600)
+ d=D('domain','DDD 领域对象完整类图',1120,1910)
  user=cls(d,'User',40,120,470,DOMAIN['User'][1],DOMAIN['User'][0],stereo='aggregate root')
  ud=cls(d,'Data.User',630,120,450,attrs=FIELDS['User'],stereo='record')
  profile=cls(d,'Data.Profile',630,490,450,attrs=[('name','String'),('phone','String')],stereo='record')
@@ -120,7 +120,10 @@ def domain():
   attrs,ops=DOMAIN[module]
   cls(d,module,40+i*365,1210,330,ops,attrs,stereo='entity')
  note(d,630,1025,450,['角色通过 permissionIds 维护权限集合。','Data 保存编号、归属等只读契约。','跨聚合的对象范围由应用服务检查。'])
- d.text(560,1540,'五类领域对象均按当前源码列出实际字段与行为；业务实体关系另见陈氏图及核心设计模型。',19,True)
+ graph=cls(d,'RoleHierarchy',40,1530,470,['requireAcyclic'],[('edges','List<Data.Inheritance>')],stereo='domain rule')
+ edge=cls(d,'Data.Inheritance',630,1530,450,attrs=[('seniorRoleId','Long'),('juniorRoleId','Long')],stereo='record')
+ u.assoc(d,graph,edge,[(515,1620),(620,1620)],role='edges',mult='0..*')
+ note(d,40,1760,1040,['RoleHierarchy 对部门内继承边的不可变快照执行防环检查。','应用服务负责事务、部门锁与持久化，领域规则负责图的无环性。'])
 
 
 def overall_classes():
@@ -156,7 +159,7 @@ def package_diagrams():
    ('service.auth',500,470,380,155,['身份、界面和 API 决策']),
    ('service.security',500,820,380,155,['RBAC 与部门范围校验']),
    ('infrastructure',40,820,380,185,['persistence / security','logging / bootstrap'])]
-  if mode=='ddd':specs.append(('service.ddd.domain',40,1170,380,155,['用户、角色及目录对象行为']))
+  if mode=='ddd':specs.append(('service.ddd.domain',40,1170,380,155,['User / Role / RoleHierarchy','目录对象行为']))
   for stem,title in [('packages-full-'+mode,'系统完整 '+label+' UML 包图')]:
    d=D(stem,title,920,1500 if mode=='ddd' else 1200,'UMLPackageDiagram');nodes={}
    for name,x,y,w,h,body in specs:nodes[name]=pack(d,name,x,y,w,body,h)

@@ -1782,8 +1782,119 @@
               "vertAlign": 5
             },
             {
-              "_type": "UMLTextView",
+              "_type": "FreelineEdgeView",
               "_id": "chen-v33-97",
+              "_parent": {
+                "$ref": "chen-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "54:990;130:944;206:990;130:1036;54:990",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "chen-v33-98",
+              "_parent": {
+                "$ref": "chen-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;21;0",
+              "left": 100.0,
+              "top": 976,
+              "width": 60,
+              "height": 29,
+              "text": "继承",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "chen-v33-99",
+              "_parent": {
+                "$ref": "chen-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "137:650;20:650;20:990;54:990",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "chen-v33-100",
+              "_parent": {
+                "$ref": "chen-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "130:944;130:890;220:890;220:682",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "chen-v33-101",
+              "_parent": {
+                "$ref": "chen-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;17;0",
+              "left": 31.0,
+              "top": 863,
+              "width": 68,
+              "height": 25,
+              "text": "M 高级",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "chen-v33-102",
+              "_parent": {
+                "$ref": "chen-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;17;0",
+              "left": 236.0,
+              "top": 863,
+              "width": 68,
+              "height": 25,
+              "text": "N 基础",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "chen-v33-103",
               "_parent": {
                 "$ref": "chen-v33"
               },

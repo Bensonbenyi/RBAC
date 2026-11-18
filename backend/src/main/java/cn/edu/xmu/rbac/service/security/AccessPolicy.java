@@ -15,7 +15,7 @@ public class AccessPolicy {
     this.store = store;
   }
 
-  /** require 的用例处理. */
+  /** 要求操作者持有平台目标权限，并实时查询有效授权. */
   public void require(Data.Identity actor, String code) {
     if (!"rbac".equals(actor.systemKey()) || !allowed(actor.userId(), "rbac", code)) {
       throw BusinessException.forbidden();
@@ -26,7 +26,7 @@ public class AccessPolicy {
     return store.permissionsForUser(userId, systemKey).contains(code);
   }
 
-  /** scope 的用例处理. */
+  /** 要求目标部门与操作者所属部门相同. */
   public void scope(Data.Identity actor, Long departmentId) {
     if (actor.departmentId() == null || !Objects.equals(actor.departmentId(), departmentId)) {
       throw BusinessException.forbidden();

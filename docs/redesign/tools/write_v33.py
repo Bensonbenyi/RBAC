@@ -6,7 +6,7 @@ from v33_detail_content import FIELD_TABLES, CASES, case_table, calls_table, ope
 R=Path(__file__).resolve().parents[1];VERSION=(R/'VERSION').read_text().strip()
 HEADER='''= {title}
 OOAD 课程项目组
-v{version}, 2026-11-17
+v{version}, 2026-11-18
 :doctype: book
 :lang: zh-CN
 :toc:
@@ -52,9 +52,10 @@ CONSTRAINTS=[
  ('BR-10','用户删除同时清理登录会话和用户角色；其他对象存在引用时先撤销关联再删除。'),
  ('BR-11','结构化与 DDD 共用输入输出、存储端口和数据库约束；切换配置保持外部行为一致。'),
  ('BR-13','界面码与 API 码分别授予；界面展示和接口执行分别检查，统一复用 RBAC 表。'),
+ ('BR-14','RBAC1 角色继承限同部门，支持多级多路径，禁止环；权限按可达角色去重取并集。'),
  ('BR-12','本版功能为单项维护和授权，范围按已确认的精简设计执行。')]
-TABLES=[('department','部门','id PK；name；parent_id FK 自关联','部门 0..1 父节点，0..* 子节点'),('app_user','用户账号','id PK；username 唯一；name；phone；department_id FK 非空','用户属于一个部门'),('role','角色','id PK；name；department_id FK 非空','部门内 name 唯一'),('business_system','业务系统','id PK；system_key 唯一；name','登记 rbac 和 course-project-management'),('permission','操作权限','id PK；system_id FK；code；name','system_id 与 code 联合唯一'),('user_role','用户角色','user_id PK/FK；role_id PK/FK','两列组成联合主键'),('role_permission','角色权限','role_id PK/FK；permission_id PK/FK','两列组成联合主键'),('login_session','技术会话','id PK；user_id FK；system_key；expires_at；revoked_at','会话有效性与撤销验证')]
-ERRORS=[('400','INVALID_ARGUMENT','字段、格式、分页或路径编号无效。'),('401','UNAUTHENTICATED','账号凭据、签名、会话或有效期不通过。'),('403','FORBIDDEN','目标系统登录许可、操作权限或部门边界不通过。'),('404','NOT_FOUND','有操作权限后查找的对象不存在。'),('405','METHOD_NOT_ALLOWED','HTTP 方法不符合接口定义；响应携带 Allow。'),('409','CONFLICT','唯一约束、重复分配或引用关系冲突。'),('500','INTERNAL_ERROR','未预期错误，写事务回滚。'),('503','SERVICE_UNAVAILABLE','数据库不可用；课程端使用 IDENTITY_SERVICE_UNAVAILABLE 表达身份依赖故障。')]
+TABLES=[('role_inheritance','角色继承','senior_role_id PK/FK；junior_role_id PK/FK','同部门无环有向图；高级角色继承基础角色'),('department','部门','id PK；name；parent_id FK 自关联','部门 0..1 父节点，0..* 子节点'),('app_user','用户账号','id PK；username 唯一；name；phone；department_id FK 非空','用户属于一个部门'),('role','角色','id PK；name；department_id FK 非空','部门内 name 唯一'),('business_system','业务系统','id PK；system_key 唯一；name','登记 rbac 和 course-project-management'),('permission','操作权限','id PK；system_id FK；code；name','system_id 与 code 联合唯一'),('user_role','用户角色','user_id PK/FK；role_id PK/FK','两列组成联合主键'),('role_permission','角色权限','role_id PK/FK；permission_id PK/FK','两列组成联合主键'),('login_session','技术会话','id PK；user_id FK；system_key；expires_at；revoked_at','会话有效性与撤销验证')]
+ERRORS=[('400','INVALID_ARGUMENT','字段、格式、分页或路径编号无效。'),('401','UNAUTHENTICATED','账号凭据、签名、会话或有效期不通过。'),('403','FORBIDDEN','目标系统登录许可、操作权限或部门边界不通过。'),('404','NOT_FOUND','有操作权限后查找的对象不存在。'),('405','METHOD_NOT_ALLOWED','HTTP 方法不符合接口定义；响应携带 Allow。'),('409','CONFLICT / ROLE_CYCLE','唯一约束、重复分配、引用冲突或角色继承成环。'),('500','INTERNAL_ERROR','未预期错误，写事务回滚。'),('503','SERVICE_UNAVAILABLE','数据库不可用；课程端使用 IDENTITY_SERVICE_UNAVAILABLE 表达身份依赖故障。')]
 COURSE=[('listTerms','GET /terms','login','学期列表'),('createTerm','POST /terms','TC','新建学期'),('updateTerm','PATCH /terms/{termId}','TE','修改非当前学期'),('deleteTerm','DELETE /terms/{termId}','TD','删除非当前且无引用学期'),('listAdminCourses','GET /admin/courses','CV','从 1 开始分页的课程列表'),('getCourse','GET /courses/{courseId}','CV','课程详情，保留老师的对象规则'),('reviewCourse','POST /courses/{courseId}/review','CR','审核待审核课程')]
 
 def measured_rows():
@@ -103,19 +104,20 @@ def detail():
 
 === 概念与关系模型
 
-五类业务实体为部门、用户、角色、权限和业务系统。用户角色与角色权限两组联系分别落为关联表。登录会话是实现认证撤销和恢复的技术结构，单列说明。关系模型见 <<fig-schema>> 与 <<fig-session-table>>。
+五类业务实体为部门、用户、角色、权限和业务系统。用户角色与角色权限两组联系分别落为关联表，角色继承自联系落为 role_inheritance。登录会话是实现认证撤销和恢复的技术结构，单列说明。关系模型见 <<fig-schema>> 与 <<fig-session-table>>。
 ''')
  add(fig('schema','业务数据库表关系'));add(fig('session-table','技术会话表关系'))
+ add('=== RBAC1 继承约束\n\n高级角色通过 role_inheritance 指向基础角色，获得其直接与间接权限。角色层次与部门层次独立；所有继承边限定同部门。新增边先锁定部门行，再使用锁定读检查可达性，禁止自环及间接环。多路径使用 UNION DISTINCT 去重；移除一条边时其他路径继续有效。直接角色分配与直接权限接口保持原语义，有效权限另行查询。\n')
  add('=== 数据字典')
  for title,rows in FIELD_TABLES:
   add('==== '+title+'\n'+table(['字段','类型','可空','约束','含义'],rows,'18,23,10,29,32'))
  add('''=== 索引、事务与删除
 
-数据库采用 MySQL 8.4 InnoDB，文本使用区分大小写的排序规则。用户名和系统标识建立唯一索引，角色名及权限编码采用所属范围内的联合唯一索引。两个授权关联表使用联合主键，并为反向关联列建立索引。
+数据库采用 MySQL 8.4 InnoDB，文本使用区分大小写的排序规则。用户名和系统标识建立唯一索引，角色名及权限编码采用所属范围内的联合唯一索引。两组授权和角色继承关联表使用联合主键，并为反向关联列建立索引。
 
 写用例在 Service 事务边界内执行。用户删除先清理会话与用户角色，再删除账号；角色、权限、系统和部门存在引用时返回冲突。部门父节点创建时确定，接口仅支持重命名。
 
-关联查询通过用户角色和角色权限读取当前并集。每个鉴权请求检查已提交的授权关系；已进入事务的请求按数据库事务可见性完成。唯一约束负责并发重复写的最终裁决。
+关联查询从用户直接角色出发，递归展开 role_inheritance，再通过角色权限读取去重并集。每个鉴权请求检查已提交的授权关系；已进入事务的请求按数据库事务可见性完成。唯一约束负责并发重复写的最终裁决。
 
 == 功能需求与详细设计
 
@@ -142,8 +144,10 @@ def detail():
    else:
     for mode,label in [('structured','结构化'),('ddd','DDD')]:
      add(fig(op.key.lower()+'-'+mode,op.key+' '+label+' 详细交互'))
-     if mode=='ddd' and op.key in ['USER-04','USER-07','USER-08','ROLE-04','ROLE-07','ROLE-08','DEPT-03','SYS-03','PERM-03']:add(fig(op.key.lower()+'-ddd-domain',op.key+' DDD 聚合修改与保存'))
+     if mode=='ddd' and op.key in ['USER-04','USER-07','USER-08','ROLE-04','ROLE-07','ROLE-08','DEPT-03','SYS-03','PERM-03','ROLE-11']:add(fig(op.key.lower()+'-ddd-domain',op.key+' DDD 聚合修改与保存'))
    if op.key=='AUTH-01':add(fig('flow-login-session','建立登录会话与签发凭据'))
+  if key=='HIERARCHY-001':
+   for mode,label in [('structured','结构化'),('ddd','DDD')]:add(fig('class-hierarchy-'+mode,'RBAC1 '+label+' 角色继承类图'))
   if module=='Auth':add(fig('class-auth-shared','共享认证与实时鉴权 类图'))
   elif module:
    add('===== '+MODULES[module][0]+'模块类图')
@@ -159,10 +163,8 @@ def detail():
   add(fig('course-'+str(i).zfill(2),operation+' 接入详细交互'))
  add('===== COURSE-08 getCurrentUser 支撑接口\n\n调用 GET /me，operationId 为 getCurrentUser，平台映射到课程 login 权限。老师服务读取当前统一身份与本地资料，返回 userId、teacherId、studentId、no、name、roles、permissions。permissions 保留当前系统界面码；该接口支撑页面初始化和权限刷新。')
  add(fig('course-08','getCurrentUser 本地资料与界面权限交互'))
- add('''课程列表 page 从 1 开始，courseStatus 为 1 申请、2 待审核、3 已开课。审核输入 decision 为 approved 或 rejected，驳回必须填写 comment。菜单来自当前权限，后端仍独立检查。该课程状态属于老师系统的课程对象。
-
-接口适配补丁固定到 ca90f1c，保留 MIT 许可。其他老师项目路由在此演示装配中拒绝访问；选定业务服务仍使用老师原实现。
-
+ add('''[.course-note]
+课程列表 page 从 1 开始，courseStatus 为 1 申请、2 待审核、3 已开课。审核输入 decision 为 approved 或 rejected，驳回必须填写 comment。菜单与 API 分别检查权限。接入补丁固定到 ca90f1c，保留 MIT 许可及老师原业务规则，演示路由按本版接入范围开放。
 ''')
  add(architecture_details(fig,table))
  add('''=== 接口与输入设计
@@ -182,12 +184,12 @@ JWT 使用 RS256，携带 iss、sub、aud、jti、iat 和 exp，默认有效期 
 /auth/me 返回 subject、username、name、departmentId、roles、permissions，permissions 只含当前系统的界面码；/identity/users/{id} 返回 userId、no、name。角色名称用于显示，管理资格由权限集合确定。权限检查返回 allowed 布尔值。
 ''')
  add(table(['HTTP','业务码','含义'],ERRORS,'1,3,6'))
- add('==== 独立界面权限与禁用规则\n\n权限实体同时保存界面码和 API 码，两者经同一用户角色、角色权限关系分别授予。数据库沿用现有七张业务表。GET /auth/me 的 permissions 及 GET /auth/permissions/{permission} 仅返回或判断已登记的界面码。GET /auth/api-permissions/{operationId} 在 AuthService 中映射到 API 码；平台使用 user.list、role.grant 等资源加操作编号，课程保留老师的 operationId。未知操作返回 false。')
+ add('==== 独立界面权限与禁用规则\n\n权限实体同时保存界面码和 API 码，两者经同一用户角色、角色权限关系分别授予。数据库沿用八张业务表。GET /auth/me 的 permissions 及 GET /auth/permissions/{permission} 仅返回或判断已登记的界面码。GET /auth/api-permissions/{operationId} 在 AuthService 中映射到 API 码；平台使用 user.list、role.grant 等资源加操作编号，课程保留老师的 operationId。未知操作返回 false。')
  add(table(['界面','菜单码','按钮码','后端 API 码'],[
  ('课程管理','MCO','MCOR 审核','CV 查询/详情；CR 审核'),
  ('学期维护','MTR','MTRC 新建；MTRE 修改；MTRD 删除','login 查询；TC 新建；TE 修改；TD 删除'),
  ('用户','ui.users','ui.user.create/edit/delete/roles','user.view/create/edit/delete/role.assign'),
- ('角色','ui.roles','ui.role.create/edit/delete/permissions','role.manage'),
+ ('角色','ui.roles','ui.role.create/edit/delete/permissions/inheritance','role.manage'),
  ('部门','ui.departments','ui.department.create/edit/delete','department.manage'),
  ('业务系统','ui.systems','ui.system.create/edit/delete','system.manage'),
  ('权限目录','ui.permissions','ui.permission.create/edit/delete','permission.manage')],'2,2,5,4'))
@@ -247,7 +249,9 @@ JWT 使用 RS256，携带 iss、sub、aud、jti、iat 和 exp，默认有效期 
 
 === 验收场景
 ''')
- add(table(['编号','场景','通过条件'],[('ACC-01','两种业务策略','同一契约套件在 structured、ddd 下通过。'),('ACC-02','RBAC 与部门边界','无许可和跨部门调用返回 403，已有授权保持并集语义。'),('ACC-03','输入与数据库','非法、未知字段拒绝；唯一和引用冲突返回 409。'),('ACC-04','会话及撤权','退出、到期、用户删除和权限撤销对后续请求生效。'),('ACC-05','课程接入','真实学期 CRUD、课程列表和审核；撤权后原令牌被拒绝。'),('ACC-06','日志','浏览器功能请求可对应 API、Service 和存储层日志，凭据不进入日志。'),('ACC-07','恢复和性能','记录实际恢复时长及两种配置的相同负载结果。'),('ACC-08','文档与图','两份 PDF 均为统一 A4 纵向，源文件可编辑，编号和接口对应。')],'2,3,5'))
+ add(table(['编号','场景','通过条件'],[('ACC-01','两种业务策略','同一契约套件在 structured、ddd 下通过。'),('ACC-02','RBAC1 与部门边界','多级、多路径继承去重；跨部门返回 403，成环返回 409；并发反向连边仅一条成功。'),('ACC-03','输入与数据库','非法、未知字段拒绝；唯一和引用冲突返回 409。'),('ACC-04','会话及撤权','退出、到期、用户删除和权限撤销对后续请求生效。'),('ACC-05','课程接入','真实学期 CRUD、课程列表和审核；撤权后原令牌被拒绝。'),('ACC-06','日志','浏览器功能请求可对应 API、Service 和存储层日志，凭据不进入日志。'),('ACC-07','恢复和性能','记录实际恢复时长及两种配置的相同负载结果。'),('ACC-08','文档与图','两份 PDF 均为统一 A4 纵向，源文件可编辑，编号和接口对应。')],'2,3,5'))
+ from v35_content import verification
+ add(verification(table))
  (R/'统一权限管理系统需求与详细设计说明书.adoc').write_text('\n'.join(p).rstrip()+'\n')
 
 def outline():
@@ -306,7 +310,7 @@ RBAC 表达全部操作许可，部门限定账号、角色及管理范围。结
 
 逻辑划分见 <<OV-PKG-01>>。本图到包和组件粒度，模块内部类见第 4 章与详细设计文档。
 '''+fig('packages','OV-PKG-01 系统包依赖','OV-PKG-01'))
- add('=== 模块职责与功能分配\n'+table(['模块','职责和核心输入输出','需求'],[('API 输入层','接收 HTTP 路径与请求数据，校验输入，返回结果或统一错误','REQ-F-01 至 REQ-F-07'),('认证与身份','验证用户名手机号、管理技术会话、返回身份及许可','REQ-F-01；REQ-N-01'),('用户管理','接收操作者与用户资料，维护本部门账号及用户角色','REQ-F-02'),('角色授权','接收角色和权限标识，维护本部门角色与角色权限','REQ-F-03'),('目录管理','维护部门树、业务系统及权限命名空间','REQ-F-04 至 REQ-F-06'),('Service Port','为两套业务实现定义相同用例及数据类别','REQ-N-04'),('Infrastructure','持久化、签名与验签、分层日志和环境装配','REQ-N-01 至 REQ-N-05'),('课程适配','读取统一身份、查询 API 许可、保留课程业务检查','REQ-F-07')],'2,5,3'))
+ add('=== 模块职责与功能分配\n'+table(['模块','职责和核心输入输出','需求'],[('API 输入层','接收 HTTP 路径与请求数据，校验输入，返回结果或统一错误','REQ-F-01 至 REQ-F-07'),('认证与身份','验证用户名手机号、管理技术会话、返回身份及许可','REQ-F-01；REQ-N-01'),('用户管理','接收操作者与用户资料，维护本部门账号及用户角色','REQ-F-02'),('角色授权','接收角色和权限标识，维护本部门角色、权限及无环继承','REQ-F-03'),('目录管理','维护部门树、业务系统及权限命名空间','REQ-F-04 至 REQ-F-06'),('Service Port','为两套业务实现定义相同用例及数据类别','REQ-N-04'),('Infrastructure','持久化、签名与验签、分层日志和环境装配','REQ-N-01 至 REQ-N-05'),('课程适配','读取统一身份、查询 API 许可、保留课程业务检查','REQ-F-07')],'2,5,3'))
  add('=== 模块间接口契约\n'+table(['接口编号','接口名称与职责','输入 / 输出大类','协议'],[('INT-01','API 到用例端口','操作者、命令或查询 / 资源结果、分页或错误','进程内 Java 调用'),('INT-02','业务到 ManagementStore','对象与关联标识 / 当前数据或持久化结果','进程内存储端口'),('INT-03','认证到 SessionStore','会话身份和有效期 / 当前会话或撤销结果','进程内存储端口'),('INT-04','课程到身份平台','Bearer、operationId 或用户标识 / 身份或 allowed','HTTP/JSON')],'2,4,5,2'))
  add('''== 设计模型
 
@@ -315,9 +319,13 @@ RBAC 表达全部操作许可，部门限定账号、角色及管理范围。结
 分析中的用户、角色和权限关系转换为 API 边界、用例控制与领域实体。结构化实现把业务编排放在 Service；DDD 实现把资料修改、角色分配、权限集合变化交给领域对象。核心类及关系见 <<OV-CLASS-01>>、<<OV-CLASS-02>> 和 <<OV-DOMAIN-01>>，不列数据库外键字段。
 ''')
  add(fig('core-structured','OV-CLASS-01 结构化核心设计类','OV-CLASS-01'));add(fig('core-ddd','OV-CLASS-02 DDD 核心设计类','OV-CLASS-02'));add(fig('domain-relations','OV-DOMAIN-01 DDD 领域对象关系','OV-DOMAIN-01'))
+ from v35_content import grasp
+ add(grasp(table))
+ add(fig('class-hierarchy-structured','RBAC1 结构化继承设计'))
+ add(fig('class-hierarchy-ddd','RBAC1 DDD 继承设计'))
  add('=== 关键类状态设计\n\n登录会话具有有效、已撤销、已过期三种状态。有效状态要求当前时间早于到期且未记录撤销时间；退出触发撤销，达到到期时间触发过期。图 <<OV-STATE-01>> 转换自需求模型 AN-ST-01。\n'+fig('session-state','OV-STATE-01 登录会话状态','OV-STATE-01'))
- add('=== 系统级数据流图\n\n图 <<OV-DFD-00>> 与 <<OV-DFD-01>> 保持相同外部请求与结果名称。D1 代表七张业务表，D2 代表技术登录会话。\n'+fig('dfd-0','OV-DFD-00 顶层数据流','OV-DFD-00')+fig('dfd-1','OV-DFD-01 第一层数据流','OV-DFD-01'))
- add(table(['加工','数据流到模块的映射','全局数据'],[('P1 认证会话','登录、退出、本人资料请求映射 AuthService 和 UserUseCase','用户与授权关系、登录会话'),('P2 目录维护','目录请求映射用户、部门、系统、权限用例模块','用户、部门、系统和权限'),('P3 角色授权','授权请求映射角色用例和用户角色用例','角色及两组关联'),('P4 身份鉴权','外部查询映射认证、AccessPolicy 与身份适配','用户、角色、权限、登录会话')],'2,5,4'))
+ add('=== 系统级数据流图\n\n图 <<OV-DFD-00>> 与 <<OV-DFD-01>> 保持相同外部请求与结果名称。D1 代表八张业务表，D2 代表技术登录会话。\n'+fig('dfd-0','OV-DFD-00 顶层数据流','OV-DFD-00')+fig('dfd-1','OV-DFD-01 第一层数据流','OV-DFD-01'))
+ add(table(['加工','数据流到模块的映射','全局数据'],[('P1 认证会话','登录、退出、本人资料请求映射 AuthService 和 UserUseCase','用户与授权关系、登录会话'),('P2 目录维护','目录请求映射用户、部门、系统、权限用例模块','用户、部门、系统和权限'),('P3 角色授权','授权请求映射角色用例和用户角色用例','角色及授权、继承关联'),('P4 身份鉴权','外部查询映射认证、AccessPolicy 与身份适配','用户、角色、权限、登录会话')],'2,5,4'))
  add('=== 关键运行时设计\n\n三张时序图使用模块为生命线，分别对应 S1/U-S1、S2/U-P1 和 S3/U-A1。图中展示跨模块消息及响应，详细功能交互见合订本对应功能。')
  for stem,title in [('security','S1 / U-S1 撤权后的调用'),('performance','S2 / U-P1 并发鉴权'),('availability','S3 / U-A1 应用恢复与会话')]:add(fig('story-'+stem,title))
  add('''== 接口设计
@@ -363,7 +371,7 @@ MySQL InnoDB 保存业务数据和登录会话，利用事务、外键及唯一�
 == 非功能需求实现方案
 ''')
  add(table(['需求','架构及模块落实','验证证据'],[('REQ-N-01 安全','AD-03、AD-04、AD-07；字段白名单、单部门边界、实时 RBAC、会话撤销','S1；共同契约及真实课程撤权测试'),('REQ-N-02 性能','AD-05；分页、连接池与关系索引，记录同条件两种策略结果','S2；性能基线报告'),('REQ-N-03 可用性','AD-04、AD-06；持久化会话、密钥、数据库卷、进程重启与备份','S3；恢复与依赖故障报告'),('REQ-N-04 可修改性','AD-01、AD-02；共享用例端口与独立领域模型','S4；两种配置的相同测试'),('REQ-N-05 可重复部署','固定教师提交、依赖版本、容器构建及独立部署资源','构建日志、镜像及部署记录')],'3,6,4'))
- add('=== 架构验证结果\n\n2026-11-17 的真实部署验证对应四个架构故事，结果见下表。原始记录和复现条件保存在实施报告。\n'+table(['场景','实测结果与证据'],[
+ add('=== 架构验证结果\n\n以下为 v3.3.0 在 2026-11-17 的历史部署测量。v3.5.0 的继承与部署验收见需求到测试方法表及本轮整改报告。原始记录和复现条件保存在实施报告。\n'+table(['场景','实测结果与证据'],[
  ('S1 安全','真实课程联调 19 项检查通过；撤销 CR 后原令牌审核返回 403，恢复授权后成功。'),
  ('S2 性能','1、4、8 并发混合查询共 10,000 次，无错误；8 并发三轮 P95：结构化 36.67 至 52.61 ms，DDD 36.90 至 55.83 ms。'),
  ('S3 可用性','应用重启首次失败至恢复 34.477 s；身份依赖中断至课程恢复 39.365 s，故障期间课程端返回 503。原令牌恢复可用。'),
@@ -377,5 +385,7 @@ MySQL InnoDB 保存业务数据和登录会话，利用事务、外键及唯一�
  rows += [('REQ-F-07','课程接入','AD-07；S1','课程适配模块','EXT-01 至 EXT-06；API-C；INT-04','用户、角色、权限及关联'),('REQ-N-01','安全','AD-03、AD-04、AD-07；S1','认证、AccessPolicy、课程适配','EXT-01 至 EXT-06；全部 API','用户、会话、两组授权关联'),('REQ-N-02','性能','AD-05；S2','授权查询、JDBC 存储','INT-02；EXT-03、EXT-04','关联索引、业务数据'),('REQ-N-03','可用性','AD-04、AD-05、AD-06；S3','会话模块、部署和备份','INT-03；全部 API','会话、全部业务表及数据卷'),('REQ-N-04','可修改性','AD-01、AD-02；S4','两套业务实现、共享端口','INT-01、INT-02','共享表结构'),('REQ-N-05','可重复部署','AD-06、AD-07','配置、镜像及教师适配','INT-04；部署入口','独立数据库与迁移版本')]
  add(table(['需求编号','需求名称','故事 / 决策','模块 / 类','内部 / 外部接口','全局数据实体'],rows,'2,2,3,3,3,3'))
  add('=== 需求分析模型引用清单\n'+table(['图编号','模型','转换与使用'],[('AN-UC-01','当前基线用例图','第 3 章职责分配与功能追溯'),('AN-ACT-01','登录活动','认证模块和运行时消息'),('AN-ACT-02','角色分配活动','用户、角色及边界规则'),('AN-CC-01','概念实体关系','核心设计类图与全局 ER'),('AN-ST-01','会话状态','OV-STATE-01'),('AN-DFD-00 / AN-DFD-01','顶层与第一层分析数据流','OV-DFD-00 / OV-DFD-01，加入模块映射')],'3,4,5'))
+ from v35_content import verification
+ add(verification(table))
  (R/'统一权限管理系统概要设计说明书.adoc').write_text('\n'.join(p).rstrip()+'\n')
 if __name__=='__main__':detail();outline()

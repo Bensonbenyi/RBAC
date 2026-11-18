@@ -1,0 +1,45 @@
+{
+  "version": "3.5.0",
+  "manager": "113.44.144.119",
+  "stack": "rbac_v33",
+  "services": [
+    {
+      "name": "rbac_v33_course",
+      "image": "rbac/course:3.5.0",
+      "replicas": "1/1",
+      "containerHealth": "healthy",
+      "strategy": "structured"
+    },
+    {
+      "name": "rbac_v33_rbac",
+      "image": "rbac/backend:3.5.0",
+      "replicas": "1/1",
+      "containerHealth": "healthy",
+      "strategy": "structured"
+    },
+    {
+      "name": "rbac_v33_web",
+      "image": "rbac/web:3.5.0",
+      "replicas": "1/1",
+      "containerHealth": "healthy"
+    },
+    {
+      "name": "rbac_v33_db",
+      "image": "rbac/mysql:8.4.13-amd64",
+      "replicas": "1/1",
+      "node": "worker-1"
+    }
+  ],
+  "realAcceptanceStrategies": [
+    "structured",
+    "ddd"
+  ],
+  "restoredStrategy": "structured",
+  "links": {
+    "platform": "http://113.44.144.119/platform/",
+    "course": "http://113.44.144.119/course/",
+    "api": "http://113.44.144.119/api-docs/",
+    "coverage": "http://113.44.144.119/coverage/"
+  },
+  "date": "2026-11-18"
+}

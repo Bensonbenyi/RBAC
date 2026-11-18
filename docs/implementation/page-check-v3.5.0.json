@@ -1,0 +1,65 @@
+{
+  "version": "3.5.0",
+  "date": "2026-11-18",
+  "base": "http://113.44.144.119",
+  "viewports": [
+    [
+      1440,
+      1000
+    ],
+    [
+      390,
+      844
+    ]
+  ],
+  "checks": [
+    {
+      "case": "角色继承添加与解除",
+      "result": "passed",
+      "evidence": "images/v350-role-inheritance.png",
+      "observed": "PUT 与 DELETE 后刷新直接继承和有效权限表；解除后继承权限消失。"
+    },
+    {
+      "case": "独立界面码",
+      "result": "passed",
+      "evidence": "images/v350-role-disabled.png",
+      "observed": "临时账号具有 role.manage 和 ui.roles，缺少 ui.role.inheritance 时配置继承禁用。"
+    },
+    {
+      "case": "移动端角色管理",
+      "result": "passed",
+      "evidence": "images/v350-role-mobile.png"
+    },
+    {
+      "case": "课程查询及审核禁用",
+      "result": "passed",
+      "evidence": "images/v350-course-detail.png",
+      "observed": "viewer 能打开待审核课程详情，通过和驳回按钮禁用。"
+    },
+    {
+      "case": "移动端课程界面",
+      "result": "passed",
+      "evidence": "images/v350-course-mobile.png"
+    },
+    {
+      "case": "菜单切换日志",
+      "result": "passed",
+      "evidence": "menu-log-v3.5.0.json"
+    },
+    {
+      "case": "Swagger UI 全部 42 项接口",
+      "result": "passed",
+      "consoleErrors": 0,
+      "evidence": "images/v350-api-docs.png"
+    },
+    {
+      "case": "JaCoCo 页面加载及排序",
+      "result": "passed",
+      "consoleErrors": 0,
+      "evidence": "images/v350-coverage.png",
+      "observed": "覆盖率表头排序正常；以 unsafe-hashes 精确许可四种报告事件脚本。"
+    }
+  ],
+  "businessPagesConsoleErrors": 0,
+  "syntheticUiFixturesCleaned": true
+}

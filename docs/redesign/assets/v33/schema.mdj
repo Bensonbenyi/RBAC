@@ -36,7 +36,7 @@
               "top": 14,
               "width": 312,
               "height": 34,
-              "text": "七张业务表 数据库关系图",
+              "text": "八张业务表 数据库关系图",
               "wordWrap": false,
               "horzAlign": 2,
               "vertAlign": 5
@@ -3648,7 +3648,7 @@
               "vertAlign": 5
             },
             {
-              "_type": "UMLTextView",
+              "_type": "FreelineEdgeView",
               "_id": "relational-v33-191",
               "_parent": {
                 "$ref": "relational-v33"
@@ -3658,18 +3658,13 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;17;0",
-              "left": 40,
-              "top": 1203,
-              "width": 323,
-              "height": 25,
-              "text": "PK 主键  FK 外键  NN 非空",
-              "wordWrap": false,
-              "horzAlign": 0,
-              "vertAlign": 5
+              "font": "PingFang SC;18;0",
+              "points": "30:550;15:550;15:1240;30:1240",
+              "lineStyle": 1,
+              "lineMode": 0
             },
             {
-              "_type": "UMLTextView",
+              "_type": "FreelineEdgeView",
               "_id": "relational-v33-192",
               "_parent": {
                 "$ref": "relational-v33"
@@ -3679,18 +3674,13 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;17;0",
-              "left": 40,
-              "top": 1243,
-              "width": 187,
-              "height": 25,
-              "text": "联合主键防止关联重复。",
-              "wordWrap": false,
-              "horzAlign": 0,
-              "vertAlign": 5
+              "font": "PingFang SC;18;0",
+              "points": "21.0:558.0;21.0:542.0",
+              "lineStyle": 1,
+              "lineMode": 0
             },
             {
-              "_type": "UMLTextView",
+              "_type": "FreelineEdgeView",
               "_id": "relational-v33-193",
               "_parent": {
                 "$ref": "relational-v33"
@@ -3700,18 +3690,13 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;17;0",
-              "left": 40,
-              "top": 1283,
-              "width": 221,
-              "height": 25,
-              "text": "实线：FK 属于子表主键。",
-              "wordWrap": false,
-              "horzAlign": 0,
-              "vertAlign": 5
+              "font": "PingFang SC;18;0",
+              "points": "11.0:558.0;11.0:542.0",
+              "lineStyle": 1,
+              "lineMode": 0
             },
             {
-              "_type": "UMLTextView",
+              "_type": "FreelineEdgeView",
               "_id": "relational-v33-194",
               "_parent": {
                 "$ref": "relational-v33"
@@ -3721,18 +3706,13 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;17;0",
-              "left": 40,
-              "top": 1323,
-              "width": 238,
-              "height": 25,
-              "text": "虚线：FK 不属于子表主键。",
-              "wordWrap": false,
-              "horzAlign": 0,
-              "vertAlign": 5
+              "font": "PingFang SC;18;0",
+              "points": "30.0:1249.0;11.0:1240.0;30.0:1231.0",
+              "lineStyle": 1,
+              "lineMode": 0
             },
             {
-              "_type": "UMLTextView",
+              "_type": "EllipseView",
               "_id": "relational-v33-195",
               "_parent": {
                 "$ref": "relational-v33"
@@ -3743,11 +3723,489 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "left": 40,
-              "top": 1417,
-              "width": 630,
+              "left": -7.0,
+              "top": 1235.0,
+              "width": 10,
+              "height": 10
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-196",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "300:676;300:720;450:720;450:1290;410:1290",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-197",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "308.0:685.0;292.0:685.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-198",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "308.0:695.0;292.0:695.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-199",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "410.0:1281.0;429.0:1290.0;410.0:1299.0",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "EllipseView",
+              "_id": "relational-v33-200",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 437.0,
+              "top": 1285.0,
+              "width": 10,
+              "height": 10
+            },
+            {
+              "_type": "RectangleView",
+              "_id": "relational-v33-201",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 30,
+              "top": 1170,
+              "width": 380,
+              "height": 150
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-202",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;21;1",
+              "left": 42,
+              "top": 1175,
+              "width": 84,
+              "height": 29,
+              "text": "角色继承",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-203",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 42,
+              "top": 1204,
+              "width": 288,
               "height": 26,
-              "text": "MySQL 8.4 InnoDB；七张业务表之外单列登录会话技术结构。",
+              "text": "role_inheritance",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-204",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "30:1234;410:1234",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-205",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;1",
+              "left": 40,
+              "top": 1239,
+              "width": 60,
+              "height": 24,
+              "text": "字段",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-206",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;1",
+              "left": 205,
+              "top": 1239,
+              "width": 60,
+              "height": 24,
+              "text": "类型",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-207",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;1",
+              "left": 318,
+              "top": 1239,
+              "width": 60,
+              "height": 24,
+              "text": "约束",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-208",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "30:1260;410:1260",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-209",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;17;0",
+              "left": 40,
+              "top": 1265,
+              "width": 238,
+              "height": 25,
+              "text": "senior_role_id",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-210",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;15;0",
+              "left": 205,
+              "top": 1267,
+              "width": 90,
+              "height": 23,
+              "text": "BIGINT",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-211",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;14;0",
+              "left": 318,
+              "top": 1268,
+              "width": 112,
+              "height": 22,
+              "text": "PK FK NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-212",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "30:1290;410:1290",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-213",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;17;0",
+              "left": 40,
+              "top": 1295,
+              "width": 238,
+              "height": 25,
+              "text": "junior_role_id",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-214",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;15;0",
+              "left": 205,
+              "top": 1297,
+              "width": 90,
+              "height": 23,
+              "text": "BIGINT",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-215",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;14;0",
+              "left": 318,
+              "top": 1298,
+              "width": 112,
+              "height": 22,
+              "text": "PK FK NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-216",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;17;0",
+              "left": 40,
+              "top": 1373,
+              "width": 323,
+              "height": 25,
+              "text": "PK 主键  FK 外键  NN 非空",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-217",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;17;0",
+              "left": 40,
+              "top": 1413,
+              "width": 289,
+              "height": 25,
+              "text": "继承的两端均引用 role.id。",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-218",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;17;0",
+              "left": 40,
+              "top": 1453,
+              "width": 221,
+              "height": 25,
+              "text": "实线：FK 属于子表主键。",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-219",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;17;0",
+              "left": 40,
+              "top": 1493,
+              "width": 238,
+              "height": 25,
+              "text": "虚线：FK 不属于子表主键。",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-220",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "left": 40,
+              "top": 1562,
+              "width": 612,
+              "height": 26,
+              "text": "MySQL 8.4 InnoDB；八张业务表，登录会话技术结构单列。",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5

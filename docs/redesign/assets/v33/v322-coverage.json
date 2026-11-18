@@ -1,6 +1,6 @@
 {
   "baseline": "v3.2.2",
-  "revision": "3.3.1",
+  "revision": "3.5.0",
   "baselineFigureCount": 90,
   "coveredFigures": 89,
   "scopeReplacements": 1,
@@ -9,8 +9,8 @@
   "originalStyleRetained": true,
   "baselineUseCases": 10,
   "retainedBaselineUseCases": 10,
-  "currentUseCases": 11,
-  "fieldDictionaryTables": 8,
+  "currentUseCases": 12,
+  "fieldDictionaryTables": 9,
   "figures": [
     {
       "v322": "rbac-chen-v1.svg",

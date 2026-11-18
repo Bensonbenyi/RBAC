@@ -18,7 +18,7 @@ public class User {
     this(data, List.of());
   }
 
-  /** 装配User所需依赖. */
+  /** 根据用户资料和直接角色集合重建用户聚合. */
   public User(Data.User data, List<Data.Role> roles) {
     this.data = data;
     this.profile = new Data.Profile(data.name(), data.phone());
@@ -29,7 +29,7 @@ public class User {
     profile = CloneFactory.copyNotNull(profile, change);
   }
 
-  /** assignRole 的用例处理. */
+  /** 核对用户、角色和操作者属于同一部门，并拒绝重复分配. */
   public void assignRole(Data.Role role, Long actorDepartment) {
     if (!Objects.equals(data.departmentId(), role.departmentId())
         || !Objects.equals(actorDepartment, data.departmentId())) {

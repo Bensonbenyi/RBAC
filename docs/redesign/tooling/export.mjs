@@ -21,7 +21,7 @@ if(doc.getSections().length!==(title.includes('概要')?9:7))throw Error('Unexpe
 let html=doc.convert();
 html=html.replace(`<h1>${title}</h1>`,`<h1>统一权限管理系统<br>${title.replace('统一权限管理系统','')}</h1>`)
  .replace(/version 3\.\d+\.\d+,?/,`版本 ${version}`)
- .replace('2026-11-17</span>','2026 年 11 月 17 日</span>')
+ .replace(/(2026)-(\d{2})-(\d{2})<\/span>/g,'$1 年 $2 月 $3 日</span>')
  .replace(/(<h[234][^>]*>|<a href="#[^"]+">)(\d+(?:\.\d+)*)\. /g,'$1$2 ');
 // Use the source folder as HTML base; AsciiDoc remains portable with relative images.
 html=html.replace('<head>',`<head><base href="${pathToFileURL(root+'/').href}">`);
@@ -41,6 +41,8 @@ try{
    const heading=section.querySelector(':scope > h3');
    if(heading && /概要级表结构|拓扑与资源说明/.test(heading.textContent))section.classList.add('page-section');
   }
+  const courseLast=document.querySelector('.diagram:has(img[src*="course-08.svg"])');
+  if(courseLast)courseLast.classList.add('course-final-plate');
   // Keep section introductions with the first figure.
   for(const section of document.querySelectorAll('.sect2,.sect3,.sect4')) {
    const first=[...section.children].find(n=>n.classList.contains('diagram'));
@@ -85,6 +87,18 @@ try{
   for(const table of document.querySelectorAll('table')) {
    if(table.rows[0]?.textContent.includes('领域对象')) table.classList.add('domain-state');
    if(table.offsetHeight<600)table.classList.add('keep-table');
+  }
+  // Keep the GRASP introduction with its first responsibility table.
+  for(const section of document.querySelectorAll('.sect2')) {
+   const heading=section.querySelector(':scope > h3');
+   if(!heading?.textContent.includes('GRASP'))continue;
+   section.classList.add('grasp-section');
+   const group=document.createElement('div');group.className='keep-section';
+   section.prepend(group);
+   for(const child of [...section.children]) {
+    if(child===group)continue;
+    group.append(child);if(child.matches('table'))break;
+   }
   }
   // Keep a short table with its own heading and introductory paragraphs.
   for(const section of document.querySelectorAll('.sect2,.sect3,.sect4')) {

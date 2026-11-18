@@ -1,0 +1,24 @@
+{
+  "date": "2026-11-18",
+  "spring": {
+    "head": "c0f5e66e7c160bd369a6a58e52d39f72716deea4",
+    "cloneFactoryVersion": "0.0.2",
+    "comparedFiles": 22,
+    "sourceHashesMatchV340": true,
+    "changesSinceReviewedRevision": [
+      "WebFlux 和 Vue 示例 README 更新"
+    ]
+  },
+  "course": {
+    "reviewedHead": "4a721ba2ba1d6688bc7d27f33afc66b3386ed118",
+    "integrationPinnedRevision": "ca90f1cb7faa7d73b71b93a125460513f46b730e",
+    "identityApiUnchanged": true,
+    "reviewedChanges": [
+      "Swarm 前后端部署说明与配置",
+      "Servlet Filter 排除分层切面，安全链内部创建过滤器",
+      "课程分组、里程碑、提交及口试评分审计",
+      "前端 Mock E2E 运行说明"
+    ],
+    "disposition": "当前集成使用 rbac-integration 独立安全链与容器过滤器，保持已验证的固定提交；学期、课程查询及审核身份契约相同。审计等功能沿用已确认范围。"
+  }
+}

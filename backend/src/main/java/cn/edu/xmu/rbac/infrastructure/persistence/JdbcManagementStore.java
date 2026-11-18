@@ -98,7 +98,7 @@ public class JdbcManagementStore implements ManagementStore {
     return page("app_user", " WHERE department_id=?", USER, page, size, departmentId);
   }
 
-  /** createUser 的用例处理. */
+  /** 插入本部门用户，并使用数据库生成的编号读取结果. */
   public Data.User createUser(Long departmentId, Data.CreateUser c) {
     return user(
         insert(
@@ -113,7 +113,7 @@ public class JdbcManagementStore implements ManagementStore {
     jdbc.update("UPDATE app_user SET name=?,phone=? WHERE id=?", c.name(), c.phone(), id);
   }
 
-  /** deleteUser 的用例处理. */
+  /** 依次删除用户会话、角色关联和账号，由调用方事务统一提交. */
   public void deleteUser(Long id) {
     jdbc.update("DELETE FROM login_session WHERE user_id=?", id);
     jdbc.update("DELETE FROM user_role WHERE user_id=?", id);
@@ -153,7 +153,7 @@ public class JdbcManagementStore implements ManagementStore {
     return page("business_system", "", SYSTEM, page, size);
   }
 
-  /** createSystem 的用例处理. */
+  /** 登记业务系统标识与名称，并读取创建结果. */
   public Data.System createSystem(Data.CreateSystem c) {
     return system(
         insert(
@@ -177,7 +177,7 @@ public class JdbcManagementStore implements ManagementStore {
     return page("permission", " WHERE system_id=?", PERMISSION, page, size, systemId);
   }
 
-  /** createPermission 的用例处理. */
+  /** 在指定业务系统下登记权限码与名称. */
   public Data.Permission createPermission(Long systemId, Data.CreatePermission c) {
     return permission(
         insert(
@@ -268,7 +268,7 @@ public class JdbcManagementStore implements ManagementStore {
         juniorId);
   }
 
-  /** userRoles 的用例处理. */
+  /** 查询用户直接分配的角色，按编号排序. */
   public List<Data.Role> userRoles(Long userId) {
     return jdbc.query(
         "SELECT r.* FROM `role` r JOIN user_role ur ON ur.role_id=r.id WHERE ur.user_id=? ORDER BY"
@@ -277,7 +277,7 @@ public class JdbcManagementStore implements ManagementStore {
         userId);
   }
 
-  /** rolePermissions 的用例处理. */
+  /** 查询角色直接授予的权限，继承权限由有效权限查询计算. */
   public List<Data.Permission> rolePermissions(Long roleId) {
     return jdbc.query(
         "SELECT p.* FROM permission p JOIN role_permission rp ON rp.permission_id=p.id WHERE"
@@ -286,7 +286,7 @@ public class JdbcManagementStore implements ManagementStore {
         roleId);
   }
 
-  /** hasRole 的用例处理. */
+  /** 判断指定用户与角色的直接关联是否存在. */
   public boolean hasRole(Long userId, Long roleId) {
     return jdbc.queryForObject(
             "SELECT COUNT(*) FROM user_role WHERE user_id=? AND role_id=?",
@@ -304,7 +304,7 @@ public class JdbcManagementStore implements ManagementStore {
     jdbc.update("DELETE FROM user_role WHERE user_id=? AND role_id=?", userId, roleId);
   }
 
-  /** grantPermission 的用例处理. */
+  /** 幂等插入角色与权限的直接授权关联. */
   public void grantPermission(Long roleId, Long permissionId) {
     jdbc.update(
         "INSERT INTO role_permission(role_id,permission_id) VALUES(?,?) ON DUPLICATE KEY UPDATE"
@@ -318,7 +318,7 @@ public class JdbcManagementStore implements ManagementStore {
         "DELETE FROM role_permission WHERE role_id=? AND permission_id=?", roleId, permissionId);
   }
 
-  /** permissionsForUser 的用例处理. */
+  /** 递归合并用户直接角色及继承角色的目标系统权限，并去重排序. */
   public List<String> permissionsForUser(Long userId, String systemKey) {
     long start = System.nanoTime();
     var result =

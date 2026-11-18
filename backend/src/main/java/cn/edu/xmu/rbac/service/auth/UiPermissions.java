@@ -33,7 +33,7 @@ public final class UiPermissions {
           "ui.permission.delete");
   public static final Set<String> COURSE = Set.of("MCO", "MTR", "MCOR", "MTRC", "MTRE", "MTRD");
 
-  /** contains 的用例处理. */
+  /** 判断权限码是否属于指定系统登记的界面权限目录. */
   public static boolean contains(String system, String code) {
     return switch (system) {
       case "rbac" -> PLATFORM.contains(code);

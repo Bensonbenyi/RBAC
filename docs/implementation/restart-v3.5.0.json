@@ -1,0 +1,221 @@
+{
+  "date": "2026-11-18",
+  "mode": "restart",
+  "path": "/auth/me",
+  "previousTokenAccepted": true,
+  "firstFailureToRecoverySeconds": 34.577,
+  "observations": [
+    {
+      "afterSeconds": 0.127,
+      "status": 200
+    },
+    {
+      "afterSeconds": 0.751,
+      "status": 200
+    },
+    {
+      "afterSeconds": 1.369,
+      "status": 200
+    },
+    {
+      "afterSeconds": 1.993,
+      "status": 200
+    },
+    {
+      "afterSeconds": 2.664,
+      "status": 200
+    },
+    {
+      "afterSeconds": 3.303,
+      "status": 200
+    },
+    {
+      "afterSeconds": 3.94,
+      "status": 200
+    },
+    {
+      "afterSeconds": 4.563,
+      "status": 200
+    },
+    {
+      "afterSeconds": 5.196,
+      "status": 200
+    },
+    {
+      "afterSeconds": 5.84,
+      "status": 200
+    },
+    {
+      "afterSeconds": 6.487,
+      "status": 200
+    },
+    {
+      "afterSeconds": 7.114,
+      "status": 200
+    },
+    {
+      "afterSeconds": 7.735,
+      "status": 200
+    },
+    {
+      "afterSeconds": 8.361,
+      "status": 200
+    },
+    {
+      "afterSeconds": 8.992,
+      "status": 200
+    },
+    {
+      "afterSeconds": 9.628,
+      "status": 200
+    },
+    {
+      "afterSeconds": 10.258,
+      "status": 200
+    },
+    {
+      "afterSeconds": 10.882,
+      "status": 200
+    },
+    {
+      "afterSeconds": 11.506,
+      "status": 200
+    },
+    {
+      "afterSeconds": 12.142,
+      "status": 200
+    },
+    {
+      "afterSeconds": 12.775,
+      "status": 200
+    },
+    {
+      "afterSeconds": 13.411,
+      "status": 200
+    },
+    {
+      "afterSeconds": 14.031,
+      "status": 200
+    },
+    {
+      "afterSeconds": 14.662,
+      "status": 200
+    },
+    {
+      "afterSeconds": 15.296,
+      "status": 200
+    },
+    {
+      "afterSeconds": 15.924,
+      "status": 200
+    },
+    {
+      "afterSeconds": 16.553,
+      "status": 200
+    },
+    {
+      "afterSeconds": 17.177,
+      "status": 200
+    },
+    {
+      "afterSeconds": 17.806,
+      "status": 200
+    },
+    {
+      "afterSeconds": 18.427,
+      "status": 200
+    },
+    {
+      "afterSeconds": 19.058,
+      "status": 200
+    },
+    {
+      "afterSeconds": 19.694,
+      "status": 200
+    },
+    {
+      "afterSeconds": 20.328,
+      "status": 200
+    },
+    {
+      "afterSeconds": 20.965,
+      "status": 200
+    },
+    {
+      "afterSeconds": 21.595,
+      "status": 200
+    },
+    {
+      "afterSeconds": 22.215,
+      "status": 200
+    },
+    {
+      "afterSeconds": 22.835,
+      "status": 200
+    },
+    {
+      "afterSeconds": 23.458,
+      "status": 200
+    },
+    {
+      "afterSeconds": 24.08,
+      "status": 200
+    },
+    {
+      "afterSeconds": 24.703,
+      "status": 200
+    },
+    {
+      "afterSeconds": 25.322,
+      "status": 200
+    },
+    {
+      "afterSeconds": 26.967,
+      "status": 502
+    },
+    {
+      "afterSeconds": 30.693,
+      "status": 504
+    },
+    {
+      "afterSeconds": 31.669,
+      "status": 502
+    },
+    {
+      "afterSeconds": 35.403,
+      "status": 504
+    },
+    {
+      "afterSeconds": 39.024,
+      "status": 504
+    },
+    {
+      "afterSeconds": 42.649,
+      "status": 504
+    },
+    {
+      "afterSeconds": 46.272,
+      "status": 504
+    },
+    {
+      "afterSeconds": 49.902,
+      "status": 504
+    },
+    {
+      "afterSeconds": 53.528,
+      "status": 504
+    },
+    {
+      "afterSeconds": 57.143,
+      "status": 504
+    },
+    {
+      "afterSeconds": 60.785,
+      "status": 504
+    },
+    {
+      "afterSeconds": 61.543,
+      "status": 200
+    }
+  ]
+}

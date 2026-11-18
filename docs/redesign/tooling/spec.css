@@ -214,3 +214,10 @@ table.use-case tr.scene-band td { background: #bfbfbf; color: #000; }
  .diagram img[src*="v33/"][src*="-ddd"],
  .diagram img[src*="v33/"][src*="-structured"] { max-height: 210mm; }
 }
+
+/* Keep the short course integration note on the final interaction plate. */
+@media print {
+ .grasp-section { break-before: page; }
+ .course-final-plate img { max-height: 172mm !important; }
+ .course-final-plate + .course-note { break-before: avoid; }
+}

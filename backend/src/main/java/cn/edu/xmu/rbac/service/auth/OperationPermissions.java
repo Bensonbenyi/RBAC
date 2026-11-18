@@ -60,7 +60,7 @@ public final class OperationPermissions {
           Map.entry("permission.update", "permission.manage"),
           Map.entry("permission.delete", "permission.manage"));
 
-  /** code 的用例处理. */
+  /** 按目标系统映射操作标识到 API 权限码，未知操作返回 null. */
   public static String code(String system, String operation) {
     return switch (system) {
       case "course-project-management" -> COURSE.get(operation);

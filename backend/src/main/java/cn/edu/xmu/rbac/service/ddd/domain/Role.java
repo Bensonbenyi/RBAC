@@ -28,7 +28,7 @@ public class Role {
     return name;
   }
 
-  /** grantPermission 的用例处理. */
+  /** 确认权限存在后加入角色授权集合，重复授予保持幂等. */
   public void grantPermission(Data.Permission permission) {
     if (permission == null) {
       throw BusinessException.missing();

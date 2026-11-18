@@ -20,7 +20,7 @@ def architecture():
  box(d,80,530,345,160,'结构化业务实现',['事务脚本 Service','校验、编排、调用存储'])
  box(d,475,530,345,160,'DDD 业务实现',['应用服务','领域实体与聚合集合'])
  box(d,80,730,740,120,'共享 Infrastructure',['Spring JDBC  MySQL   JWT 签名与校验','存储适配器  Logback 分层日志'])
- box(d,80,890,740,90,'MySQL 8.4',['七张业务表和一张技术会话表'])
+ box(d,80,890,740,90,'MySQL 8.4',['八张业务表和一张技术会话表'])
  for a,b in [(200,240),(360,400),(850,890)]:d.line([(450,a+5),(450,b-10)],'dep')
  for x in [252,647]:d.line([(x,495),(x,520)],'dep');d.line([(x,695),(x,720)],'dep')
  d.note(80,1010,740,['app.backend-strategy 在启动时选择一套业务实现。','认证、存储及外部契约共用。'])
@@ -48,6 +48,7 @@ def domain_relations():
  association('User','Role',[(690,295),(690,385),(300,385),(300,505)],'0..*','0..*','分配',[(705,325,'0..*'),(315,490,'0..*')])
  association('Role','Permission',[(385,585),(515,585)],'0..*','0..*','授权',[(390,567,'0..*'),(468,567,'0..*')])
  association('Permission','System',[(690,655),(690,845)],'0..*','1','所属系统',[(705,690,'0..*'),(705,825,'1')])
+ association('Role','Role',[(40,600),(15,600),(15,820),(280,820),(280,680)],'0..*','0..*','继承',[(22,715,'0..* 高级'),(285,755,'0..* 基础')])
  d.note(40,870,380,['User 和 Role 为聚合根。','跨聚合通过标识关联。','图中展示领域关系。'])
 
 def core_classes():
@@ -72,6 +73,9 @@ def core_classes():
   d.text(433,980,'*',18);d.text(456,980,'*',18)
 
 def sequence_for(op,mode):
+ if op.function in ['inheritedRoles','inherit','uninherit','effectivePermissions']:
+  from v35_diagrams import hierarchy_sequence
+  return hierarchy_sequence(op,mode)
  if op.function=="options":
   from v34_sequences import selection_sequence
   return selection_sequence(op)
@@ -240,7 +244,7 @@ def dataflow():
      d.line([(725,sy),(870,sy)]);d.line([(725,sy+45),(870,sy+45)]);d.text(797,sy+28,name,17,True);d.view('RectangleView',left=725,top=sy,width=145,height=45)
      flow([(715,sy+12),(590,sy+12)],'读取',650,sy-5)
      if pid!='P4':flow([(590,sy+35),(715,sy+35)],'写入',650,sy+65)
-  d.note(30,1120,840,['外部实体同名表示同一实体；D1 为七张业务表，D2 为会话表。'])
+  d.note(30,1120,840,['外部实体同名表示同一实体；D1 为八张业务表，D2 为会话表。'])
 
 def analysis():
  d=D('usecases','当前基线用例图',900,1080,'UMLUseCaseDiagram')
@@ -294,5 +298,7 @@ if __name__=='__main__':
    sequence_for(op,'structured');sequence_for(op,'ddd')
  from v34_sequences import ui_sequences
  ui_sequences()
+ from v35_diagrams import classes as hierarchy_classes
+ hierarchy_classes()
  u.finish()
  (u.OUT/'coverage.json').write_text(json.dumps({'operations':len(OPS),'diagrams':len(u.DIAGRAMS),'operationKeys':[o.key for o in OPS]},ensure_ascii=False,indent=2))

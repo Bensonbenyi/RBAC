@@ -49,5 +49,10 @@ OPS.extend([
  Operation('ROLE-09','Role','GET','/api/roles/options','options','查询可分配角色候选','user.role.assign','200 Page<Role>','仅返回本部门角色；不要求 role.manage，分页上限 100。'),
  Operation('SYS-05','System','GET','/api/systems/options','options','查询授权系统候选','role.manage 或 permission.manage','200 Page<System>','仅开放授权任务所需的系统只读目录，不授予系统写权限。'),
  Operation('PERM-05','Permission','GET','/api/permissions/options','options','查询可授予权限候选','role.manage','200 Page<Permission>','查询参数 systemId；返回该系统权限，分页上限 100。')])
-MODULES={'User':('用户管理','REQ-F-02','app_user、user_role、login_session'),'Role':('角色授权','REQ-F-03','role、role_permission'),'Department':('部门目录','REQ-F-04','department'),'System':('系统目录','REQ-F-05','business_system'),'Permission':('权限目录','REQ-F-06','permission'),'Auth':('认证与鉴权','REQ-F-01','app_user、login_session、两组授权关联')}
+OPS.extend([
+ Operation('ROLE-10','Role','GET','/api/roles/{id}/inherited-roles','inheritedRoles','查询直接基础角色','role.manage','200 List<Role>','同部门范围；返回直接继承边，不混入用户直接分配关系。'),
+ Operation('ROLE-11','Role','PUT','/api/roles/{id}/inherited-roles/{juniorId}','inherit','添加角色继承','role.manage','204','高级角色 id 获得基础角色 juniorId 的直接和间接权限；同部门、无环，多路径去重，重复请求幂等。'),
+ Operation('ROLE-12','Role','DELETE','/api/roles/{id}/inherited-roles/{juniorId}','uninherit','解除角色继承','role.manage','204','只解除指定直接边，其他路径继续有效；下次请求实时计算权限，重复解除幂等。'),
+ Operation('ROLE-13','Role','GET','/api/roles/{id}/effective-permissions','effectivePermissions','查询角色有效权限','role.manage','200 List<Permission>','返回直接授权与全部可达基础角色权限的去重并集，权限保留系统编号。')])
+MODULES={'User':('用户管理','REQ-F-02','app_user、user_role、login_session'),'Role':('角色授权','REQ-F-03','role、role_permission、role_inheritance'),'Department':('部门目录','REQ-F-04','department'),'System':('系统目录','REQ-F-05','business_system'),'Permission':('权限目录','REQ-F-06','permission'),'Auth':('认证与鉴权','REQ-F-01','app_user、login_session、两组授权关联')}
 REQS=[('REQ-F-01','登录、退出、身份及当前权限'),('REQ-F-02','本部门用户维护和用户角色分配'),('REQ-F-03','本部门角色维护和角色权限配置'),('REQ-F-04','多级部门目录维护'),('REQ-F-05','两个业务系统登记'),('REQ-F-06','各系统权限目录维护'),('REQ-F-07','课程系统学期维护与课程审核接入'),('REQ-N-01','安全与部门隔离'),('REQ-N-02','性能可测量与有界查询'),('REQ-N-03','应用恢复与数据可恢复性'),('REQ-N-04','双实现可切换与契约一致性'),('REQ-N-05','容器部署与可重复构建')]

@@ -142,7 +142,7 @@ public class AuthService {
     return access.allowed(actor.userId(), actor.systemKey(), permission);
   }
 
-  /** lookup 的用例处理. */
+  /** 允许本人或持有 UL 权限的调用方查询用户身份资料. */
   public IdentityUser lookup(Data.Identity actor, Long id) {
     if (!Objects.equals(actor.userId(), id) && !allowed(actor, "UL")) {
       throw BusinessException.forbidden();

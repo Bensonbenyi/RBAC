@@ -1,5 +1,6 @@
 """Detailed tables retained from v3.2.2, revised against the running contracts."""
 FIELD_TABLES = [
+ ('role_inheritance 角色继承', [('senior_role_id','BIGINT','否','联合主键及外键 role.id','获得权限的高级角色'),('junior_role_id','BIGINT','否','联合主键及外键 role.id','提供权限的基础角色；禁止自环和间接环')]),
  ('department 部门', [('id','BIGINT','否','主键，自增','部门编号'),('name','VARCHAR(100)','否','非空文本','部门名称'),('parent_id','BIGINT','是','外键 department.id','父部门；根节点为空')]),
  ('app_user 用户', [('id','BIGINT','否','主键，自增','用户编号'),('username','VARCHAR(64)','否','全局唯一，区分大小写','创建后固定的登录名'),('name','VARCHAR(100)','否','非空文本','用户姓名'),('phone','VARCHAR(20)','否','ASCII，API 校验格式','手机号，本版登录凭据'),('department_id','BIGINT','否','外键 department.id','唯一所属部门，创建后固定')]),
  ('role 角色', [('id','BIGINT','否','主键，自增','角色编号'),('name','VARCHAR(100)','否','部门内唯一','角色名称'),('department_id','BIGINT','否','外键 department.id','角色归属及可分配范围')]),
@@ -56,6 +57,11 @@ CASES = [
  [('令牌或会话失效','401。'),('本系统 login 已撤销，或无身份查询资格','403。'),('编码未授予或未映射','200，allowed=false。'),('数据库或身份依赖不可用','平台 503；课程拒绝业务操作。')],
  '本次权限结论来自已提交的当前关系；接入系统独立执行拒绝。',None,'Auth')]
 
+CASES.append(('HIERARCHY-001','角色继承管理','REQ-F-03',['ROLE-10','ROLE-11','ROLE-12','ROLE-13'],'角色继承','持有 role.manage 的本部门管理员','建立同部门无环角色层次，使高级角色获得基础角色权限。','在角色页选择配置继承。','已登录，具有 API 许可，前端控件还需要 ui.role.inheritance。',[
+ ('查询直接基础角色及有效权限。','直接边与传递闭包分开显示。'),('添加继承边。','事务先锁部门，再读取当前图；结构化 Service 检查，DDD RoleHierarchy 检查是否回到起点。'),('解除指定继承边。','其他路径及直接授权继续有效；JWT 不缓存权限。')],
+ [('自环或间接环','409 ROLE_CYCLE，事务不落边。'),('跨部门或无 API 许可','403。'),('角色不存在','404。'),('角色仍被继承关系引用时删除','409，先解除关系。')],
+ '继承图保持 DAG；两系统的界面及 API 决策都使用当前有效权限。',None,None))
+
 INPUTS = {
  'AUTH-01': 'Requests.Login：username、password、systems；systems 长度为 1。',
  'AUTH-02':'无请求体；身份来自 Bearer。','AUTH-03':'无请求体；撤销当前 JWT 对应会话。','AUTH-04':'Requests.Profile：name、phone 至少出现一项。',
@@ -64,6 +70,7 @@ INPUTS = {
  'ROLE-03':'Requests.Name：name。','ROLE-04':'Requests.Name：name。','DEPT-02':'Requests.CreateDepartment：name、parentId；parentId 可空。','DEPT-03':'Requests.Name：name。','SYS-02':'Requests.CreateSystem：systemKey、name。','SYS-03':'Requests.Name：name。','PERM-02':'Requests.CreatePermission：code、name；systemId 来自路径。','PERM-03':'Requests.Name：name。'}
 
 def operation_input(op):
+ if op.function in ['inherit','uninherit']:return '路径 id 为高级角色、juniorId 为基础角色，均为正整数；无请求体。'
  if op.key in INPUTS:return INPUTS[op.key]
  if op.function=='options':return ('查询参数 systemId；' if op.module=='Permission' else '')+'page 从 0 开始，size 默认为 20、最大 100；前端遍历分页。'
  if op.function=='list':return ('路径 systemId；' if op.module=='Permission' else '')+'page 从 0 开始，size 默认为 20、最大 100。'

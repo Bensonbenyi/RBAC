@@ -15,7 +15,7 @@ public class JdbcSessionStore implements SessionStore {
     this.jdbc = jdbc;
   }
 
-  /** save 的用例处理. */
+  /** 保存会话标识、目标系统及到期时间. */
   public void save(Session s) {
     jdbc.update(
         "INSERT INTO login_session(id,user_id,system_key,expires_at) VALUES(?,?,?,?)",
@@ -25,7 +25,7 @@ public class JdbcSessionStore implements SessionStore {
         Timestamp.from(s.expiresAt()));
   }
 
-  /** find 的用例处理. */
+  /** 读取持久化会话，不存在时返回 null. */
   public Session find(String id) {
     var rows =
         jdbc.query(
@@ -43,7 +43,7 @@ public class JdbcSessionStore implements SessionStore {
     return rows.isEmpty() ? null : rows.getFirst();
   }
 
-  /** 撤销指定授权关联. */
+  /** 幂等记录会话撤销时间. */
   public void revoke(String id, Instant when) {
     jdbc.update(
         "UPDATE login_session SET revoked_at=? WHERE id=? AND revoked_at IS NULL",

@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 public class LayerLogging {
   private static final Logger log = LoggerFactory.getLogger(LayerLogging.class);
 
-  /** execution 的用例处理. */
+  /** 记录调用耗时与执行结果，异常保持原样抛出. */
   @Around(
       "execution(public * cn.edu.xmu.rbac.infrastructure.persistence..*(..)) || execution(public *"
           + " cn.edu.xmu.rbac.service.auth..*(..)) || execution(public *"
