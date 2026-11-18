@@ -1,11 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
 cd "$(dirname "$0")/.."
+npm ci --prefix docs/api
+python3 tooling/build-api.py
+test -f backend/target/site/jacoco/index.html
 for service in backend course frontend; do
   image="$service"
   if [ "$service" = frontend ]; then image=web; fi
-  docker build --platform linux/amd64 -t "rbac/$image:3.4.0" -f "deploy/Dockerfile.$service" .
-  test "$(docker image inspect "rbac/$image:3.4.0" --format '{{.Architecture}}')" = amd64
+  docker build --platform linux/amd64 -t "rbac/$image:3.5.0" -f "deploy/Dockerfile.$service" .
+  test "$(docker image inspect "rbac/$image:3.5.0" --format '{{.Architecture}}')" = amd64
 done
 # Pin the amd64 manifest, including when the builder itself runs on Apple Silicon.
 mysql_image='docker.m.daocloud.io/library/mysql@sha256:72c368d898861f3b3a07af0e6d690400f44f048799ed46822783d9224cc2c86d'

@@ -39,6 +39,9 @@ public final class Data {
       String code,
       String name) {}
 
+  /** 高级角色继承基础角色的有向边. */
+  public record Inheritance(Long seniorRoleId, Long juniorRoleId) {}
+
   /** CreateUser 数据契约. */
   public record CreateUser(String username, String name, String phone) {}
 

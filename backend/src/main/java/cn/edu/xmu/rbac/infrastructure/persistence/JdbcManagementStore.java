@@ -215,6 +215,59 @@ public class JdbcManagementStore implements ManagementStore {
     jdbc.update("DELETE FROM `role` WHERE id=?", id);
   }
 
+  public void lockHierarchy(Long departmentId) {
+    jdbc.queryForObject(
+        "SELECT id FROM department WHERE id=? FOR UPDATE", Long.class, departmentId);
+  }
+
+  /** 读取当前部门继承图，锁定读取得最新已提交边. */
+  public List<Data.Inheritance> inheritanceEdges(Long departmentId) {
+    return jdbc.query(
+        "SELECT h.* FROM role_inheritance h JOIN `role` r ON r.id=h.senior_role_id"
+            + " WHERE r.department_id=? FOR UPDATE",
+        (r, n) -> new Data.Inheritance(r.getLong("senior_role_id"), r.getLong("junior_role_id")),
+        departmentId);
+  }
+
+  /** 查询直接基础角色. */
+  public List<Data.Role> inheritedRoles(Long roleId) {
+    return jdbc.query(
+        "SELECT r.* FROM `role` r JOIN role_inheritance h ON h.junior_role_id=r.id"
+            + " WHERE h.senior_role_id=? ORDER BY r.id",
+        ROLE,
+        roleId);
+  }
+
+  /** 递归求角色权限并集，多路径使用去重合并. */
+  public List<Data.Permission> effectiveRolePermissions(Long roleId) {
+    return jdbc.query(
+        "WITH RECURSIVE effective(id) AS (SELECT id FROM `role` WHERE id=?"
+            + " UNION DISTINCT SELECT h.junior_role_id FROM role_inheritance h JOIN effective e"
+            + " ON h.senior_role_id=e.id) SELECT DISTINCT p.* FROM effective e"
+            + " JOIN role_permission rp ON rp.role_id=e.id"
+            + " JOIN permission p ON p.id=rp.permission_id"
+            + " ORDER BY p.id",
+        PERMISSION,
+        roleId);
+  }
+
+  /** 幂等新增角色继承边. */
+  public void inheritRole(Long seniorId, Long juniorId) {
+    jdbc.update(
+        "INSERT INTO role_inheritance(senior_role_id,junior_role_id) VALUES(?,?)"
+            + " ON DUPLICATE KEY UPDATE junior_role_id=VALUES(junior_role_id)",
+        seniorId,
+        juniorId);
+  }
+
+  /** 幂等删除指定继承边. */
+  public void removeInheritance(Long seniorId, Long juniorId) {
+    jdbc.update(
+        "DELETE FROM role_inheritance WHERE senior_role_id=? AND junior_role_id=?",
+        seniorId,
+        juniorId);
+  }
+
   /** userRoles 的用例处理. */
   public List<Data.Role> userRoles(Long userId) {
     return jdbc.query(
@@ -270,9 +323,12 @@ public class JdbcManagementStore implements ManagementStore {
     long start = System.nanoTime();
     var result =
         jdbc.queryForList(
-            "SELECT DISTINCT p.code FROM user_role ur JOIN role_permission rp ON"
-                + " rp.role_id=ur.role_id JOIN permission p ON p.id=rp.permission_id JOIN"
-                + " business_system s ON s.id=p.system_id WHERE ur.user_id=? AND s.system_key=?"
+            "WITH RECURSIVE effective(id) AS (SELECT role_id FROM user_role WHERE user_id=?"
+                + " UNION DISTINCT SELECT h.junior_role_id FROM role_inheritance h JOIN effective e"
+                + " ON h.senior_role_id=e.id) SELECT DISTINCT p.code FROM effective e"
+                + " JOIN role_permission rp ON rp.role_id=e.id"
+                + " JOIN permission p ON p.id=rp.permission_id"
+                + " JOIN business_system s ON s.id=p.system_id WHERE s.system_key=?"
                 + " ORDER BY p.code",
             String.class,
             userId,
@@ -285,7 +341,14 @@ public class JdbcManagementStore implements ManagementStore {
     return result;
   }
 
+  /** 查询直接和间接有效角色名称. */
   public List<String> rolesForUser(Long userId) {
-    return userRoles(userId).stream().map(Data.Role::name).toList();
+    return jdbc.queryForList(
+        "WITH RECURSIVE effective(id) AS (SELECT role_id FROM user_role WHERE user_id=?"
+            + " UNION DISTINCT SELECT h.junior_role_id FROM role_inheritance h JOIN effective e"
+            + " ON h.senior_role_id=e.id) SELECT r.name FROM `role` r JOIN effective e ON e.id=r.id"
+            + " ORDER BY r.id",
+        String.class,
+        userId);
   }
 }

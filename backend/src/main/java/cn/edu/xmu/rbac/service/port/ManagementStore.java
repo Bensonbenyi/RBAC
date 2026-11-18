@@ -58,6 +58,20 @@ public interface ManagementStore {
 
   void deleteRole(Long id);
 
+  /** 锁定部门行，使同部门继承写操作串行；必须在事务中调用. */
+  void lockHierarchy(Long departmentId);
+
+  /** 读取当前继承边；锁定读避免事务快照遗漏刚提交的边. */
+  List<Data.Inheritance> inheritanceEdges(Long departmentId);
+
+  List<Data.Role> inheritedRoles(Long roleId);
+
+  List<Data.Permission> effectiveRolePermissions(Long roleId);
+
+  void inheritRole(Long seniorId, Long juniorId);
+
+  void removeInheritance(Long seniorId, Long juniorId);
+
   List<Data.Role> userRoles(Long userId);
 
   List<Data.Permission> rolePermissions(Long roleId);

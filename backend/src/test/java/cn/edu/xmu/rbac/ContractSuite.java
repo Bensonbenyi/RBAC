@@ -77,6 +77,7 @@ abstract class ContractSuite {
     for (String table :
         new String[] {
           "login_session",
+          "role_inheritance",
           "user_role",
           "role_permission",
           "permission",
@@ -431,5 +432,114 @@ abstract class ContractSuite {
     expect(204, "PATCH", "/api/permissions/" + pid, "{\"name\":\"重命名\"}", token);
     expect(204, "DELETE", "/api/permissions/" + pid, null, token);
     expect(204, "DELETE", "/api/systems/" + sid, null, token);
+  }
+
+  @Test
+  void inheritsAcrossMultiplePathsAndRevokesForExistingTokens() {
+    Long dept = store.user(userId("admin")).departmentId();
+    var senior = store.createRole(dept, "senior");
+    final var left = store.createRole(dept, "left");
+    final var right = store.createRole(dept, "right");
+    var base = store.createRole(dept, "base");
+    var isolated =
+        store.createUser(
+            dept, new cn.edu.xmu.rbac.service.port.Data.CreateUser("heir", "继承用户", "13800000000"));
+    store.assignRole(isolated.id(), senior.id());
+    store.grantPermission(base.id(), permissionId("rbac", "login"));
+    store.grantPermission(base.id(), permissionId("rbac", "user.view"));
+    store.grantPermission(base.id(), permissionId("rbac", "ui.users"));
+    for (var edge :
+        new Long[][] {
+          {senior.id(), left.id()},
+          {senior.id(), right.id()},
+          {left.id(), base.id()},
+          {right.id(), base.id()}
+        }) {
+      expect(204, "PUT", "/api/roles/" + edge[0] + "/inherited-roles/" + edge[1], null, token);
+    }
+    String heir = login("heir", "rbac");
+    expect(200, "GET", "/api/users", null, heir);
+    assertEquals(
+        3,
+        expect(200, "GET", "/api/roles/" + senior.id() + "/effective-permissions", null, token)
+            .size());
+    assertTrue(
+        expect(200, "GET", "/auth/permissions/ui.users", null, heir).get("allowed").asBoolean());
+    expect(
+        403,
+        "POST",
+        "/auth/login",
+        "{\"username\":\"heir\",\"password\":\"13800000000\","
+            + "\"systems\":[\"course-project-management\"]}",
+        null);
+    expect(204, "DELETE", "/api/roles/" + left.id() + "/inherited-roles/" + base.id(), null, token);
+    expect(200, "GET", "/api/users", null, heir);
+    // 保留 login，只撤销继承来的业务权限，旧令牌立即被拒绝。
+    store.grantPermission(senior.id(), permissionId("rbac", "login"));
+    expect(
+        204, "DELETE", "/api/roles/" + right.id() + "/inherited-roles/" + base.id(), null, token);
+    expect(403, "GET", "/api/users", null, heir);
+    assertFalse(
+        expect(200, "GET", "/auth/permissions/ui.users", null, heir).get("allowed").asBoolean());
+  }
+
+  @Test
+  void rejectsHierarchyCyclesScopeAndReferences() {
+    Long dept = store.user(userId("admin")).departmentId();
+    var a = store.createRole(dept, "A");
+    var b = store.createRole(dept, "B");
+    final var c = store.createRole(dept, "C");
+    String ab = "/api/roles/" + a.id() + "/inherited-roles/" + b.id();
+    expect(204, "PUT", ab, null, token);
+    expect(204, "PUT", ab, null, token);
+    assertEquals(
+        1, expect(200, "GET", "/api/roles/" + a.id() + "/inherited-roles", null, token).size());
+    expect(204, "PUT", "/api/roles/" + b.id() + "/inherited-roles/" + c.id(), null, token);
+    expect(409, "PUT", "/api/roles/" + c.id() + "/inherited-roles/" + a.id(), null, token);
+    expect(409, "PUT", "/api/roles/" + a.id() + "/inherited-roles/" + a.id(), null, token);
+    expect(409, "DELETE", "/api/roles/" + b.id(), null, token);
+    var other = store.createRole(store.user(userId("other")).departmentId(), "foreign");
+    expect(403, "PUT", "/api/roles/" + a.id() + "/inherited-roles/" + other.id(), null, token);
+    expect(403, "DELETE", "/api/roles/" + a.id() + "/inherited-roles/" + other.id(), null, token);
+    expect(404, "PUT", "/api/roles/" + a.id() + "/inherited-roles/9999999", null, token);
+    expect(400, "PUT", "/api/roles/" + a.id() + "/inherited-roles/0", null, token);
+    expect(
+        403,
+        "GET",
+        "/api/roles/" + a.id() + "/inherited-roles",
+        null,
+        login("viewer", "course-project-management"));
+    expect(204, "DELETE", ab, null, token);
+    expect(204, "DELETE", ab, null, token);
+  }
+
+  @Test
+  void serializesConcurrentOppositeInheritanceWrites() throws Exception {
+    Long dept = store.user(userId("admin")).departmentId();
+    var a = store.createRole(dept, "concurrent-a");
+    var b = store.createRole(dept, "concurrent-b");
+    try (var pool = java.util.concurrent.Executors.newFixedThreadPool(2)) {
+      var start = new java.util.concurrent.CountDownLatch(1);
+      var first =
+          pool.submit(
+              () -> {
+                start.await();
+                return call(
+                        "PUT", "/api/roles/" + a.id() + "/inherited-roles/" + b.id(), null, token)
+                    .statusCode();
+              });
+      var second =
+          pool.submit(
+              () -> {
+                start.await();
+                return call(
+                        "PUT", "/api/roles/" + b.id() + "/inherited-roles/" + a.id(), null, token)
+                    .statusCode();
+              });
+      start.countDown();
+      var statuses = java.util.List.of(first.get(), second.get());
+      assertTrue(statuses.contains(204), statuses.toString());
+      assertTrue(statuses.contains(409), statuses.toString());
+    }
   }
 }

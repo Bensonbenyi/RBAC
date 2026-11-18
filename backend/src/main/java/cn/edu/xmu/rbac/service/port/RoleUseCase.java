@@ -19,4 +19,14 @@ public interface RoleUseCase {
   void grant(Data.Identity actor, Long id, Long permissionId);
 
   void revoke(Data.Identity actor, Long id, Long permissionId);
+
+  /** 查询直接继承的基础角色. */
+  List<Data.Role> inheritedRoles(Data.Identity actor, Long id);
+
+  /** 查询直接与继承权限的去重并集. */
+  List<Data.Permission> effectivePermissions(Data.Identity actor, Long id);
+
+  void inherit(Data.Identity actor, Long id, Long juniorId);
+
+  void uninherit(Data.Identity actor, Long id, Long juniorId);
 }

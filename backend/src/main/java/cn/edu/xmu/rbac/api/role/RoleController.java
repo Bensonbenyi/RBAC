@@ -96,4 +96,28 @@ public class RoleController {
   public void revoke(@PathVariable @Positive Long id, @PathVariable @Positive Long permissionId) {
     service.revoke(current.get(), id, permissionId);
   }
+
+  /** 查询角色直接继承的基础角色. */
+  @GetMapping("/{id}/inherited-roles")
+  public List<Data.Role> inheritedRoles(@PathVariable @Positive Long id) {
+    return service.inheritedRoles(current.get(), id);
+  }
+
+  /** 展示直接与继承权限的去重并集. */
+  @GetMapping("/{id}/effective-permissions")
+  public List<Data.Permission> effectivePermissions(@PathVariable @Positive Long id) {
+    return service.effectivePermissions(current.get(), id);
+  }
+
+  @PutMapping("/{id}/inherited-roles/{juniorId}")
+  @ResponseStatus(org.springframework.http.HttpStatus.NO_CONTENT)
+  public void inherit(@PathVariable @Positive Long id, @PathVariable @Positive Long juniorId) {
+    service.inherit(current.get(), id, juniorId);
+  }
+
+  @DeleteMapping("/{id}/inherited-roles/{juniorId}")
+  @ResponseStatus(org.springframework.http.HttpStatus.NO_CONTENT)
+  public void uninherit(@PathVariable @Positive Long id, @PathVariable @Positive Long juniorId) {
+    service.uninherit(current.get(), id, juniorId);
+  }
 }

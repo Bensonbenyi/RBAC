@@ -91,4 +91,54 @@ public class StructuredRoleService implements RoleUseCase {
     store.revokePermission(id, permissionId);
     log.debug("revokePermission actor={} role={} permission={}", actor.userId(), id, permissionId);
   }
+
+  /** 查询直接基础角色，归属与其他角色操作一致. */
+  public List<Data.Role> inheritedRoles(Data.Identity actor, Long id) {
+    access.require(actor, "role.manage");
+    scoped(actor, id);
+    return store.inheritedRoles(id);
+  }
+
+  /** 权限并集包含所有可达基础角色，删除继承边后下次查询即生效. */
+  public List<Data.Permission> effectivePermissions(Data.Identity actor, Long id) {
+    access.require(actor, "role.manage");
+    scoped(actor, id);
+    return store.effectiveRolePermissions(id);
+  }
+
+  /** 同部门串行写入，避免两次并发新增共同形成环. */
+  public void inherit(Data.Identity actor, Long id, Long juniorId) {
+    access.require(actor, "role.manage");
+    store.lockHierarchy(actor.departmentId());
+    scoped(actor, id);
+    scoped(actor, juniorId);
+    var edges = store.inheritanceEdges(actor.departmentId());
+    var pending = new java.util.ArrayDeque<Long>();
+    var visited = new java.util.HashSet<Long>();
+    pending.add(juniorId);
+    while (!pending.isEmpty()) {
+      Long current = pending.removeFirst();
+      if (current.equals(id)) {
+        throw new cn.edu.xmu.rbac.service.port.BusinessException(409, "ROLE_CYCLE", "角色继承不能形成环");
+      }
+      if (visited.add(current)) {
+        edges.stream()
+            .filter(edge -> edge.seniorRoleId().equals(current))
+            .map(Data.Inheritance::juniorRoleId)
+            .forEach(pending::addLast);
+      }
+    }
+    store.inheritRole(id, juniorId);
+    log.debug("inheritRole actor={} senior={} junior={}", actor.userId(), id, juniorId);
+  }
+
+  /** 移除一条直接继承边；其他继承路径仍然有效，重复移除保持幂等. */
+  public void uninherit(Data.Identity actor, Long id, Long juniorId) {
+    access.require(actor, "role.manage");
+    store.lockHierarchy(actor.departmentId());
+    scoped(actor, id);
+    scoped(actor, juniorId);
+    store.removeInheritance(id, juniorId);
+    log.debug("uninheritRole actor={} senior={} junior={}", actor.userId(), id, juniorId);
+  }
 }

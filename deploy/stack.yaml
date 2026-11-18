@@ -28,7 +28,7 @@ services:
         reservations: {memory: 256M}
       restart_policy: {condition: on-failure, delay: 5s}
   rbac:
-    image: rbac/backend:3.4.0
+    image: rbac/backend:3.5.0
     environment:
       DB_URL: jdbc:mysql://db:3306/rbac?serverTimezone=Asia/Shanghai
       DB_USER: rbac
@@ -61,7 +61,7 @@ services:
       restart_policy: {condition: on-failure, delay: 5s}
       update_config: {parallelism: 1, order: stop-first, failure_action: rollback}
   course:
-    image: rbac/course:3.4.0
+    image: rbac/course:3.5.0
     environment:
       SPRING_PROFILES_ACTIVE: swarm,rbac-integration
       DB_HOST: db
@@ -93,7 +93,7 @@ services:
       restart_policy: {condition: on-failure, delay: 5s}
       update_config: {parallelism: 1, order: stop-first, failure_action: rollback}
   web:
-    image: rbac/web:3.4.0
+    image: rbac/web:3.5.0
     ports:
       - target: 80
         published: 80

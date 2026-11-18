@@ -21,6 +21,11 @@ const roles = ref<Role[]>([]),
   systemId = ref(''),
   permissions = ref<Permission[]>([]),
   permissionId = ref(''),
+  inherited = ref<Role[]>([]),
+  candidates = ref<Role[]>([]),
+  effective = ref<Permission[]>([]),
+  hierarchyRole = ref<Role | null>(null),
+  juniorId = ref(''),
   error = ref('');
 async function run(action: () => Promise<void>) {
   error.value = '';
@@ -85,6 +90,23 @@ async function revoke(permission: Permission) {
     await refresh();
   });
 }
+async function selectHierarchy(role: Role) {
+  await run(async () => {
+    hierarchyRole.value = role;
+    inherited.value = await request<Role[]>(`/api/roles/${role.id}/inherited-roles`);
+    effective.value = await request<Permission[]>(`/api/roles/${role.id}/effective-permissions`);
+    candidates.value = (await allPages<Role>('/api/roles')).filter((item) => item.id !== role.id);
+  });
+}
+async function changeInheritance(id: string, method: 'PUT' | 'DELETE') {
+  await run(async () => {
+    if (!hierarchyRole.value || !id) return;
+    await request(`/api/roles/${hierarchyRole.value.id}/inherited-roles/${id}`, method);
+    juniorId.value = '';
+    await selectHierarchy(hierarchyRole.value);
+    await refresh();
+  });
+}
 onMounted(() => run(load));
 </script>
 <template>
@@ -111,6 +133,8 @@ onMounted(() => run(load));
             重命名</button
           ><button :disabled="!allowed('ui.role.permissions')" @click="select(role)">
             配置权限</button
+          ><button :disabled="!allowed('ui.role.inheritance')" @click="selectHierarchy(role)">
+            配置继承</button
           ><button :disabled="!allowed('ui.role.delete')" @click="remove(role)">删除</button>
         </td>
       </tr>
@@ -151,6 +175,50 @@ onMounted(() => run(load));
       取消
     </button>
   </form>
+  <section v-if="hierarchyRole">
+    <h3>{{ hierarchyRole.name }} 的角色继承</h3>
+    <p>当前角色获得下列基础角色的全部权限，包含多级继承。角色均属于本部门。</p>
+    <ul>
+      <li v-for="role in inherited" :key="role.id">
+        {{ role.name }}
+        <button
+          :disabled="!allowed('ui.role.inheritance')"
+          @click="changeInheritance(role.id, 'DELETE')"
+        >
+          解除继承
+        </button>
+      </li>
+    </ul>
+    <form @submit.prevent="changeInheritance(juniorId, 'PUT')">
+      <label
+        >基础角色<select v-model="juniorId" required>
+          <option value="">请选择基础角色</option>
+          <option v-for="role in candidates" :key="role.id" :value="role.id">
+            {{ role.name }}
+          </option>
+        </select></label
+      >
+      <button :disabled="!allowed('ui.role.inheritance')">添加继承</button>
+      <button type="button" @click="hierarchyRole = null">关闭</button>
+    </form>
+    <h4>有效权限 直接授权与继承的并集</h4>
+    <table>
+      <thead>
+        <tr>
+          <th>系统编号</th>
+          <th>权限编码</th>
+          <th>名称</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="permission in effective" :key="permission.id">
+          <td>{{ permission.systemId }}</td>
+          <td>{{ permission.code }}</td>
+          <td>{{ permission.name }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
   <section v-if="selected">
     <h3>{{ selected.name }} 的权限</h3>
     <table>

@@ -1,9 +1,17 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { auth, request, refresh } from '../auth';
 const name = ref(auth.me?.name || ''),
   phone = ref(''),
   message = ref('');
+onMounted(async () => {
+  try {
+    await refresh();
+    name.value = auth.me?.name || '';
+  } catch (e) {
+    message.value = (e as Error).message;
+  }
+});
 async function save() {
   message.value = '';
   try {

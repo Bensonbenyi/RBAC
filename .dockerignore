@@ -1,5 +1,7 @@
 .git
-.runtime
+.runtime/*
+!.runtime/api-site/
+!.runtime/api-site/**
 docs
 vendor
 frontend/node_modules

@@ -18,6 +18,7 @@ public final class UiPermissions {
           "ui.role.edit",
           "ui.role.delete",
           "ui.role.permissions",
+          "ui.role.inheritance",
           "ui.departments",
           "ui.department.create",
           "ui.department.edit",
