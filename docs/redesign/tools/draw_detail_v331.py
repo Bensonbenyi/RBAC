@@ -54,11 +54,11 @@ STORE={
  'System':['systems','system','createSystem','renameSystem','deleteSystem'],
  'Permission':['permissions','permission','createPermission','renamePermission','deletePermission']}
 REQUEST={
- 'User':('Requests.CreateUser',[('username','String'),('name','String'),('phone','String')]),
- 'Role':('Requests.Name',[('name','String')]),
- 'Department':('Requests.CreateDepartment',[('name','String'),('parentId','Long')]),
- 'System':('Requests.CreateSystem',[('systemKey','String'),('name','String')]),
- 'Permission':('Requests.CreatePermission',[('code','String'),('name','String')])}
+ 'User':('ManagementDTOs.CreateUserDTO',[('username','String'),('name','String'),('phone','String')]),
+ 'Role':('ManagementDTOs.NameDTO',[('name','String')]),
+ 'Department':('ManagementDTOs.CreateDepartmentDTO',[('name','String'),('parentId','Long')]),
+ 'System':('ManagementDTOs.CreateSystemDTO',[('systemKey','String'),('name','String')]),
+ 'Permission':('ManagementDTOs.CreatePermissionDTO',[('code','String'),('name','String')])}
 DOMAIN={
  'User':([('data','Data.User'),('profile','Data.Profile'),('roleIds','Set<Long>')],['changeProfile','assignRole','revokeRole','profile','roleIds']),
  'Role':([('name','String'),('permissionIds','Set<Long>')],['rename','grantPermission','revokePermission','permissionIds']),

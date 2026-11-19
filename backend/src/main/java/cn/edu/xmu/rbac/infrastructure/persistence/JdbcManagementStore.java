@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -18,7 +16,6 @@ import org.springframework.stereotype.Repository;
 /** JdbcManagementStore 的 JDBC 持久化实现. */
 @Repository
 public class JdbcManagementStore implements ManagementStore {
-  private static final Logger log = LoggerFactory.getLogger(JdbcManagementStore.class);
   private final JdbcTemplate jdbc;
 
   public JdbcManagementStore(JdbcTemplate jdbc) {
@@ -47,7 +44,7 @@ public class JdbcManagementStore implements ManagementStore {
               r.getLong("id"), r.getLong("system_id"), r.getString("code"), r.getString("name"));
 
   private <T> T one(String sql, RowMapper<T> mapper, Object... args) {
-    var rows = jdbc.query(sql, mapper, args);
+    List<T> rows = jdbc.query(sql, mapper, args);
     if (rows.isEmpty()) {
       throw BusinessException.missing();
     }
@@ -56,15 +53,26 @@ public class JdbcManagementStore implements ManagementStore {
 
   private <T> Data.Page<T> page(
       String table, String where, RowMapper<T> mapper, int page, int size, Object... params) {
+    return page(table, "*", where, mapper, page, size, params);
+  }
+
+  private <T> Data.Page<T> page(
+      String table,
+      String columns,
+      String where,
+      RowMapper<T> mapper,
+      int page,
+      int size,
+      Object... params) {
     long count =
         Objects.requireNonNull(
             jdbc.queryForObject("SELECT COUNT(*) FROM " + table + where, Long.class, params));
-    var args = new ArrayList<Object>(Arrays.asList(params));
+    List<Object> args = new ArrayList<>(Arrays.asList(params));
     args.add(size);
     args.add((long) page * size);
     return new Data.Page<>(
         jdbc.query(
-            "SELECT * FROM " + table + where + " ORDER BY id LIMIT ? OFFSET ?",
+            "SELECT " + columns + " FROM " + table + where + " ORDER BY 1 LIMIT ? OFFSET ?",
             mapper,
             args.toArray()),
         page,
@@ -73,10 +81,10 @@ public class JdbcManagementStore implements ManagementStore {
   }
 
   private Long insert(String sql, Object... args) {
-    var keys = new GeneratedKeyHolder();
+    GeneratedKeyHolder keys = new GeneratedKeyHolder();
     jdbc.update(
         c -> {
-          var p = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+          java.sql.PreparedStatement p = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
           for (int i = 0; i < args.length; i++) {
             p.setObject(i + 1, args[i]);
           }
@@ -126,6 +134,49 @@ public class JdbcManagementStore implements ManagementStore {
 
   public Data.Page<Data.Department> departments(int page, int size) {
     return page("department", "", DEPT, page, size);
+  }
+
+  /** 部门编码由现有主键生成，保存名称修改时保持编码稳定. */
+  public Data.Page<Data.DirectoryDepartment> directoryDepartments(
+      Long parentId, String keyword, int page, int size) {
+    return page(
+        "department d",
+        "d.id, CONCAT('D', d.id) AS code, d.name, d.parent_id,"
+            + " EXISTS(SELECT 1 FROM department c WHERE c.parent_id=d.id) AS has_children",
+        " WHERE d.parent_id <=> ?" + " AND (LOCATE(?,d.name)>0 OR LOCATE(?,CONCAT('D',d.id))>0)",
+        (r, n) ->
+            new Data.DirectoryDepartment(
+                r.getLong("id"),
+                r.getString("code"),
+                r.getString("name"),
+                r.getObject("parent_id", Long.class),
+                r.getBoolean("has_children")),
+        page,
+        size,
+        parentId,
+        keyword,
+        keyword);
+  }
+
+  /** 直接投影对外目录字段，避免读取联系方式. */
+  public Data.Page<Data.DirectoryUser> directoryUsers(
+      Long departmentId, String keyword, int page, int size) {
+    return page(
+        "app_user u JOIN department d ON d.id=u.department_id",
+        "u.id,u.username,u.name,u.department_id,d.name AS department_name",
+        " WHERE u.department_id=? AND (LOCATE(?,u.name)>0 OR LOCATE(?,u.username)>0)",
+        (r, n) ->
+            new Data.DirectoryUser(
+                r.getString("id"),
+                r.getString("username"),
+                r.getString("name"),
+                r.getLong("department_id"),
+                r.getString("department_name")),
+        page,
+        size,
+        departmentId,
+        keyword,
+        keyword);
   }
 
   public Data.Department createDepartment(Data.CreateDepartment c) {
@@ -220,11 +271,11 @@ public class JdbcManagementStore implements ManagementStore {
         "SELECT id FROM department WHERE id=? FOR UPDATE", Long.class, departmentId);
   }
 
-  /** 读取当前部门继承图，锁定读取得最新已提交边. */
+  /** 锁定部门后读取当前已提交的继承边. */
   public List<Data.Inheritance> inheritanceEdges(Long departmentId) {
     return jdbc.query(
         "SELECT h.* FROM role_inheritance h JOIN `role` r ON r.id=h.senior_role_id"
-            + " WHERE r.department_id=? FOR UPDATE",
+            + " WHERE r.department_id=?",
         (r, n) -> new Data.Inheritance(r.getLong("senior_role_id"), r.getLong("junior_role_id")),
         departmentId);
   }
@@ -320,25 +371,17 @@ public class JdbcManagementStore implements ManagementStore {
 
   /** 递归合并用户直接角色及继承角色的目标系统权限，并去重排序. */
   public List<String> permissionsForUser(Long userId, String systemKey) {
-    long start = System.nanoTime();
-    var result =
-        jdbc.queryForList(
-            "WITH RECURSIVE effective(id) AS (SELECT role_id FROM user_role WHERE user_id=?"
-                + " UNION DISTINCT SELECT h.junior_role_id FROM role_inheritance h JOIN effective e"
-                + " ON h.senior_role_id=e.id) SELECT DISTINCT p.code FROM effective e"
-                + " JOIN role_permission rp ON rp.role_id=e.id"
-                + " JOIN permission p ON p.id=rp.permission_id"
-                + " JOIN business_system s ON s.id=p.system_id WHERE s.system_key=?"
-                + " ORDER BY p.code",
-            String.class,
-            userId,
-            systemKey);
-    log.debug(
-        "permissionQuery user={} system={} elapsedMicros={}",
+    return jdbc.queryForList(
+        "WITH RECURSIVE effective(id) AS (SELECT role_id FROM user_role WHERE user_id=?"
+            + " UNION DISTINCT SELECT h.junior_role_id FROM role_inheritance h JOIN effective e"
+            + " ON h.senior_role_id=e.id) SELECT DISTINCT p.code FROM effective e"
+            + " JOIN role_permission rp ON rp.role_id=e.id"
+            + " JOIN permission p ON p.id=rp.permission_id"
+            + " JOIN business_system s ON s.id=p.system_id WHERE s.system_key=?"
+            + " ORDER BY p.code",
+        String.class,
         userId,
-        systemKey,
-        (System.nanoTime() - start) / 1000);
-    return result;
+        systemKey);
   }
 
   /** 查询直接和间接有效角色名称. */

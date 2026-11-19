@@ -16,8 +16,8 @@ public final class RoleHierarchy {
 
   /** 从基础角色沿继承方向搜索，能够回到高级角色时拒绝新增边. */
   public void requireAcyclic(Long seniorId, Long juniorId) {
-    var pending = new ArrayDeque<Long>();
-    var visited = new HashSet<Long>();
+    ArrayDeque<Long> pending = new ArrayDeque<>();
+    HashSet<Long> visited = new HashSet<>();
     pending.add(juniorId);
     while (!pending.isEmpty()) {
       Long current = pending.removeFirst();

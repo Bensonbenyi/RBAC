@@ -10,9 +10,10 @@ import org.springframework.stereotype.Component;
 public class CurrentIdentity {
   /** 读取对象并校验授权范围. */
   public Data.Identity get() {
-    var auth = SecurityContextHolder.getContext().getAuthentication();
+    org.springframework.security.core.Authentication auth =
+        SecurityContextHolder.getContext().getAuthentication();
     if (auth == null || !(auth.getPrincipal() instanceof Data.Identity identity)) {
-      throw new BusinessException(401, "UNAUTHENTICATED", "请先登录");
+      throw new BusinessException(401, "UNAUTHORIZED", "请先登录");
     }
     return identity;
   }

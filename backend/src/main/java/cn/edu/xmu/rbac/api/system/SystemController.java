@@ -1,7 +1,8 @@
 package cn.edu.xmu.rbac.api.system;
 
 import cn.edu.xmu.clonefactory.util.CloneFactory;
-import cn.edu.xmu.rbac.api.shared.Requests;
+import cn.edu.xmu.rbac.api.shared.dto.ManagementDTOs;
+import cn.edu.xmu.rbac.api.shared.vo.ManagementVOs;
 import cn.edu.xmu.rbac.infrastructure.security.CurrentIdentity;
 import cn.edu.xmu.rbac.service.auth.SelectionService;
 import cn.edu.xmu.rbac.service.port.Data;
@@ -41,31 +42,34 @@ public class SystemController {
 
   /** 返回当前授权任务可用的候选项，分页上限为 100. */
   @GetMapping("/api/systems/options")
-  public Data.Page<Data.System> options(
+  public ManagementVOs.PageVO<ManagementVOs.SystemVO> options(
       @RequestParam(defaultValue = "0") @Min(0) @Max(1000000) int page,
       @RequestParam(defaultValue = "20") @Min(1) @Max(100) int size) {
-    return selections.systems(current.get(), page, size);
+    return ManagementVOs.page(selections.systems(current.get(), page, size), ManagementVOs::system);
   }
 
   @GetMapping("/api/systems")
-  public Data.Page<Data.System> list(
+  public ManagementVOs.PageVO<ManagementVOs.SystemVO> list(
       @RequestParam(defaultValue = "0") @Min(0) @Max(1000000) int page,
       @RequestParam(defaultValue = "20") @Min(1) @Max(100) int size) {
-    return service.list(current.get(), page, size);
+    return ManagementVOs.page(service.list(current.get(), page, size), ManagementVOs::system);
   }
 
   /** 校验输入后创建对象. */
   @PostMapping("/api/systems")
-  public ResponseEntity<Data.System> create(@RequestBody @Valid Requests.CreateSystem request) {
-    var entity =
+  public ResponseEntity<ManagementVOs.SystemVO> create(
+      @RequestBody @Valid ManagementDTOs.CreateSystemDTO request) {
+    Data.System entity =
         service.create(
             current.get(), CloneFactory.copy(new Data.CreateSystem(null, null), request));
-    return ResponseEntity.created(URI.create("/api/systems/" + entity.id())).body(entity);
+    return ResponseEntity.created(URI.create("/api/systems/" + entity.id()))
+        .body(ManagementVOs.system(entity));
   }
 
   @PatchMapping("/api/systems/{id}")
   @ResponseStatus(org.springframework.http.HttpStatus.NO_CONTENT)
-  public void update(@PathVariable @Positive Long id, @RequestBody @Valid Requests.Name request) {
+  public void update(
+      @PathVariable @Positive Long id, @RequestBody @Valid ManagementDTOs.NameDTO request) {
     service.update(current.get(), id, CloneFactory.copy(new Data.Name(null), request));
   }
 

@@ -1,0 +1,84 @@
+{
+  "version": "3.6.0",
+  "date": "2026-11-20",
+  "platformTests": 42,
+  "platformSuites": [
+    {
+      "name": "cn.edu.xmu.rbac.CopyTest",
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "cn.edu.xmu.rbac.DddContractTest",
+      "tests": "19",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "cn.edu.xmu.rbac.DomainTest",
+      "tests": "3",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "cn.edu.xmu.rbac.StructuredContractTest",
+      "tests": "19",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    }
+  ],
+  "cloneFactoryTests": 5,
+  "frontendTests": 4,
+  "coverage": {
+    "INSTRUCTION": {
+      "covered": 5580,
+      "missed": 620,
+      "percent": 90.0
+    },
+    "BRANCH": {
+      "covered": 126,
+      "missed": 44,
+      "percent": 74.12
+    },
+    "LINE": {
+      "covered": 1000,
+      "missed": 119,
+      "percent": 89.37
+    },
+    "COMPLEXITY": {
+      "covered": 346,
+      "missed": 80,
+      "percent": 81.22
+    },
+    "METHOD": {
+      "covered": 298,
+      "missed": 42,
+      "percent": 87.65
+    },
+    "CLASS": {
+      "covered": 81,
+      "missed": 1,
+      "percent": 98.78
+    }
+  },
+  "checks": [
+    "Maven verify",
+    "Spotless",
+    "Google Checkstyle",
+    "CloneFactory runtime artifact",
+    "Dual strategy architecture",
+    "Prettier",
+    "TypeScript",
+    "Both Vite production builds",
+    "Teacher backend build and local HTTP integration"
+  ],
+  "tdd": {
+    "structuredInitialFailures": 4,
+    "reason": "New contracts returned 404 or multi-system login returned 400"
+  }
+}

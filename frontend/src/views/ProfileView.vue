@@ -29,7 +29,7 @@ async function save() {
 </script>
 <template>
   <h2>个人资料</h2>
-  <p>用户名 {{ auth.me?.username }}　所属部门编号 {{ auth.me?.departmentId }}</p>
+  <p>用户名 {{ auth.me?.no }}　所属部门编号 {{ auth.me?.departmentId }}</p>
   <form @submit.prevent="save">
     <label>姓名<input v-model.trim="name" required maxlength="100" /></label
     ><label

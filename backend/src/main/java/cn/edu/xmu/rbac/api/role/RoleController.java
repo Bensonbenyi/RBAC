@@ -1,7 +1,8 @@
 package cn.edu.xmu.rbac.api.role;
 
 import cn.edu.xmu.clonefactory.util.CloneFactory;
-import cn.edu.xmu.rbac.api.shared.Requests;
+import cn.edu.xmu.rbac.api.shared.dto.ManagementDTOs;
+import cn.edu.xmu.rbac.api.shared.vo.ManagementVOs;
 import cn.edu.xmu.rbac.infrastructure.security.CurrentIdentity;
 import cn.edu.xmu.rbac.service.auth.SelectionService;
 import cn.edu.xmu.rbac.service.port.Data;
@@ -44,33 +45,37 @@ public class RoleController {
 
   /** 返回当前授权任务可用的候选项，分页上限为 100. */
   @GetMapping("/options")
-  public Data.Page<Data.Role> options(
+  public ManagementVOs.PageVO<ManagementVOs.RoleVO> options(
       @RequestParam(defaultValue = "0") @Min(0) @Max(1000000) int page,
       @RequestParam(defaultValue = "20") @Min(1) @Max(100) int size) {
-    return selections.roles(current.get(), page, size);
+    return ManagementVOs.page(selections.roles(current.get(), page, size), ManagementVOs::role);
   }
 
   @GetMapping
-  public Data.Page<Data.Role> list(
+  public ManagementVOs.PageVO<ManagementVOs.RoleVO> list(
       @RequestParam(defaultValue = "0") @Min(0) @Max(1000000) int page,
       @RequestParam(defaultValue = "20") @Min(1) @Max(100) int size) {
-    return service.list(current.get(), page, size);
+    return ManagementVOs.page(service.list(current.get(), page, size), ManagementVOs::role);
   }
 
   @GetMapping("/{id}")
-  public Data.Role get(@PathVariable @Positive Long id) {
-    return service.get(current.get(), id);
+  public ManagementVOs.RoleVO get(@PathVariable @Positive Long id) {
+    return ManagementVOs.role(service.get(current.get(), id));
   }
 
+  /** 创建当前部门的角色. */
   @PostMapping
-  public ResponseEntity<Data.Role> create(@RequestBody @Valid Requests.Name request) {
-    var role = service.create(current.get(), CloneFactory.copy(new Data.Name(null), request));
-    return ResponseEntity.created(URI.create("/api/roles/" + role.id())).body(role);
+  public ResponseEntity<ManagementVOs.RoleVO> create(
+      @RequestBody @Valid ManagementDTOs.NameDTO request) {
+    Data.Role role = service.create(current.get(), CloneFactory.copy(new Data.Name(null), request));
+    return ResponseEntity.created(URI.create("/api/roles/" + role.id()))
+        .body(ManagementVOs.role(role));
   }
 
   @PatchMapping("/{id}")
   @ResponseStatus(org.springframework.http.HttpStatus.NO_CONTENT)
-  public void update(@PathVariable @Positive Long id, @RequestBody @Valid Requests.Name request) {
+  public void update(
+      @PathVariable @Positive Long id, @RequestBody @Valid ManagementDTOs.NameDTO request) {
     service.update(current.get(), id, CloneFactory.copy(new Data.Name(null), request));
   }
 
@@ -81,8 +86,8 @@ public class RoleController {
   }
 
   @GetMapping("/{id}/permissions")
-  public List<Data.Permission> permissions(@PathVariable @Positive Long id) {
-    return service.permissions(current.get(), id);
+  public List<ManagementVOs.PermissionVO> permissions(@PathVariable @Positive Long id) {
+    return service.permissions(current.get(), id).stream().map(ManagementVOs::permission).toList();
   }
 
   @PutMapping("/{id}/permissions/{permissionId}")
@@ -99,14 +104,16 @@ public class RoleController {
 
   /** 查询角色直接继承的基础角色. */
   @GetMapping("/{id}/inherited-roles")
-  public List<Data.Role> inheritedRoles(@PathVariable @Positive Long id) {
-    return service.inheritedRoles(current.get(), id);
+  public List<ManagementVOs.RoleVO> inheritedRoles(@PathVariable @Positive Long id) {
+    return service.inheritedRoles(current.get(), id).stream().map(ManagementVOs::role).toList();
   }
 
   /** 展示直接与继承权限的去重并集. */
   @GetMapping("/{id}/effective-permissions")
-  public List<Data.Permission> effectivePermissions(@PathVariable @Positive Long id) {
-    return service.effectivePermissions(current.get(), id);
+  public List<ManagementVOs.PermissionVO> effectivePermissions(@PathVariable @Positive Long id) {
+    return service.effectivePermissions(current.get(), id).stream()
+        .map(ManagementVOs::permission)
+        .toList();
   }
 
   @PutMapping("/{id}/inherited-roles/{juniorId}")

@@ -1,0 +1,95 @@
+{
+  "result": "passed",
+  "checks": [
+    {
+      "service": "identity",
+      "method": "POST",
+      "path": "/auth/login",
+      "status": 200
+    },
+    {
+      "service": "identity",
+      "method": "POST",
+      "path": "/auth/login",
+      "status": 200
+    },
+    {
+      "service": "identity",
+      "method": "GET",
+      "path": "/auth/me",
+      "status": 200
+    },
+    {
+      "service": "identity",
+      "method": "GET",
+      "path": "/auth/departments",
+      "status": 200
+    },
+    {
+      "service": "identity",
+      "method": "GET",
+      "path": "/auth/departments/1/users",
+      "status": 200
+    },
+    {
+      "service": "identity",
+      "method": "GET",
+      "path": "/auth/users/1",
+      "status": 200
+    },
+    {
+      "service": "identity",
+      "method": "GET",
+      "path": "/auth/permissions/MCO",
+      "status": 200
+    },
+    {
+      "service": "identity",
+      "method": "GET",
+      "path": "/auth/api-permissions/createTerm",
+      "status": 200
+    },
+    {
+      "service": "course",
+      "method": "GET",
+      "path": "/me",
+      "status": 200
+    },
+    {
+      "service": "course",
+      "method": "GET",
+      "path": "/admin/courses?page=1&pageSize=20",
+      "status": 200
+    },
+    {
+      "service": "course",
+      "method": "POST",
+      "path": "/terms",
+      "status": 403
+    },
+    {
+      "service": "course",
+      "method": "POST",
+      "path": "/terms",
+      "status": 201
+    },
+    {
+      "service": "course",
+      "method": "DELETE",
+      "path": "/terms/2",
+      "status": 204
+    },
+    {
+      "service": "identity",
+      "method": "POST",
+      "path": "/auth/logout",
+      "status": 204
+    },
+    {
+      "service": "course",
+      "method": "GET",
+      "path": "/me",
+      "status": 401
+    }
+  ]
+}

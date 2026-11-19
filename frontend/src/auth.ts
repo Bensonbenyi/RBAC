@@ -3,9 +3,9 @@ export const isCourse = import.meta.env.BASE_URL.includes('course');
 const key = isCourse ? 'course-token' : 'rbac-token';
 export interface Me {
   subject: string;
-  username: string;
+  no: string;
   name: string;
-  departmentId: string;
+  departmentId: number;
   roles: string[];
   permissions: string[];
 }

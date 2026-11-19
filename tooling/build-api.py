@@ -11,12 +11,20 @@ def ref(name):return {'$ref':'#/components/schemas/'+name}
 def arr(name):return {'type':'array','items':ref(name)}
 string={'type':'string'};id_schema={'type':'string','pattern':'^[1-9][0-9]*$','description':'BIGINT 以字符串返回，避免前端精度丢失'}
 name={'type':'string','minLength':1,'maxLength':100,'pattern':r'.*\S.*'};phone={'type':'string','pattern':'^1[3-9][0-9]{9}$'}
+integer_id={'type':'integer','format':'int64','minimum':1}
+identity_operations={
+ 'AUTH-01':'login','AUTH-02':'getIdentityCurrentUser','AUTH-03':'logout',
+ 'AUTH-05':'checkIdentityPermission','AUTH-06':'getApiAuthority','AUTH-07':'lookupIdentityUser',
+ 'AUTH-08':'listIdentityDepartments','AUTH-09':'listIdentityDepartmentUsers',
+}
 schemas={
- 'Login':obj({'username':{'type':'string','minLength':1,'maxLength':64,'pattern':r'.*\S.*'},'password':dict(phone,description='本版承载手机号'),'systems':{'type':'array','minItems':1,'maxItems':1,'items':{'type':'string','minLength':1,'maxLength':64,'pattern':r'.*\S.*'}}},['username','password','systems']),
- 'LoginResult':obj({'accessToken':string,'tokenType':{'type':'string','enum':['Bearer']},'expiresIn':{'type':'integer','format':'int64'}}),
- 'Me':obj({'subject':id_schema,'username':string,'name':string,'departmentId':id_schema,'roles':{'type':'array','items':string,'description':'直接与继承角色名称'},'permissions':{'type':'array','items':string,'description':'当前系统有效界面码，不含 API 码'}}),
- 'Allowed':obj({'allowed':{'type':'boolean'}}),
- 'IdentityUser':obj({'userId':id_schema,'no':string,'name':string}),
+ 'Login':obj({'username':{'type':'string','minLength':1,'maxLength':128},'password':{'type':'string','format':'password','minLength':1,'maxLength':256,'writeOnly':True,'description':'本版承载手机号'},'systems':{'type':'array','minItems':1,'uniqueItems':True,'items':{'type':'string','minLength':1}}},['username','password','systems']),
+ 'LoginResult':obj({'accessToken':string,'tokenType':{'type':'string','enum':['Bearer']},'expiresIn':{'type':'integer','minimum':1}},['accessToken','tokenType','expiresIn']),
+ 'Me':obj({'subject':string,'no':string,'name':string,'departmentId':integer_id,'roles':{'type':'array','items':string},'permissions':{'type':'array','items':string,'description':'当前系统有效界面码'}},['subject','roles','permissions']),
+ 'Allowed':obj({'allowed':{'type':'boolean'}},['allowed']),
+ 'IdentityUser':obj({'userId':string,'no':string,'name':string},['userId','no','name']),
+ 'IdentityDepartment':obj({'id':integer_id,'code':string,'name':string,'parentId':dict(integer_id,nullable=True),'hasChildren':{'type':'boolean'}},['id','code','name','hasChildren']),
+ 'IdentityDepartmentUser':obj({'userId':string,'no':string,'name':string,'departmentId':integer_id,'departmentName':string},['userId','no','name','departmentId','departmentName']),
  'Error':obj({'code':string,'message':string}),
  'Name':obj({'name':name},['name']),
  'Profile':dict(obj({'name':dict(name,nullable=True),'phone':dict(phone,nullable=True)}),anyOf=[{'required':['name'],'properties':{'name':name}},{'required':['phone'],'properties':{'phone':phone}}]),
@@ -28,6 +36,8 @@ schemas={
 for entity,fields in {'User':['id','username','name','phone','departmentId'],'Role':['id','name','departmentId'],'Department':['id','name','parentId'],'System':['id','systemKey','name'],'Permission':['id','systemId','code','name']}.items():
  schemas[entity]=obj({n:(dict(id_schema,nullable=True) if n=='parentId' else id_schema if n=='id' or n.endswith('Id') else string) for n in fields})
  schemas['Page'+entity]=obj({'items':arr(entity),'page':{'type':'integer'},'size':{'type':'integer'},'total':{'type':'integer','format':'int64'}})
+for entity in ['IdentityDepartment','IdentityDepartmentUser']:
+ schemas[entity+'Page']=obj({'items':arr(entity),'page':{'type':'integer','minimum':1},'pageSize':{'type':'integer','minimum':1,'maximum':100},'total':{'type':'integer','minimum':0}},['items','page','pageSize','total'])
 actual=set()
 for controller in (ROOT/'backend/src/main/java/cn/edu/xmu/rbac/api').rglob('*Controller.java'):
  source=controller.read_text()
@@ -39,15 +49,23 @@ expected={(op.method,op.route) for op in OPS}
 assert actual==expected, f'API catalog mismatch: missing={actual-expected}, stale={expected-actual}'
 paths={}
 for op in OPS:
- operation={'operationId':op.module.lower()+'.'+op.function if op.key!='AUTH-07' else 'identity.get','tags':[op.module],'summary':op.title,'description':op.rule+'\n\nAPI 许可：'+op.permission,'parameters':[],'responses':{},'security':[] if op.key=='AUTH-01' else [{'Bearer':[]}]}
- for n in re.findall(r'\{([^}]+)\}',op.route):operation['parameters'].append({'name':n,'in':'path','required':True,'schema':{'type':'string','minLength':1,'maxLength':100} if n in ['permission','operationId'] else {'type':'integer','format':'int64','minimum':1}})
+ operation={'operationId':identity_operations.get(op.key, op.module.lower()+'.'+op.function),'tags':['统一身份鉴权' if op.key in identity_operations else op.module],'summary':op.title,'description':op.rule+'\n\nAPI 许可：'+op.permission,'parameters':[],'responses':{},'security':[] if op.key=='AUTH-01' else [{'Bearer':[]}]}
+ for n in re.findall(r'\{([^}]+)\}',op.route):operation['parameters'].append({'name':n,'in':'path','required':True,'schema':{'type':'string','minLength':1,'maxLength':128} if n=='operationId' else {'type':'string','minLength':1} if n in ['permission','userId'] else integer_id})
+ if op.key in identity_operations and op.key!='AUTH-01':
+  operation['parameters'].append({'name':'X-Target-System','in':'header','description':'可选目标系统，必须在令牌 aud 中。默认使用 aud 首项。','schema':string})
+ if op.key in {'AUTH-08','AUTH-09'}:
+  operation['parameters'].extend([
+   {'name':'keyword','in':'query','schema':dict(string,maxLength=100)},
+   {'name':'page','in':'query','schema':{'type':'integer','minimum':1,'default':1}},
+   {'name':'pageSize','in':'query','schema':{'type':'integer','minimum':1,'maximum':100,'default':20}}])
+  if op.key=='AUTH-08':operation['parameters'].append({'name':'parentId','in':'query','schema':integer_id})
  if op.function in ['list','options']:
   for n,default,minimum,maximum in [('page',0,0,1000000),('size',20,1,100)]:operation['parameters'].append({'name':n,'in':'query','schema':{'type':'integer','default':default,'minimum':minimum,'maximum':maximum}})
  if op.key=='PERM-05':operation['parameters'].append({'name':'systemId','in':'query','required':True,'schema':{'type':'integer','format':'int64','minimum':1}})
  body={'AUTH-01':'Login','AUTH-04':'Profile','USER-03':'CreateUser','USER-04':'Profile','USER-07':'AssignRole','ROLE-03':'Name','ROLE-04':'Name','DEPT-02':'CreateDepartment','DEPT-03':'Name','SYS-02':'CreateSystem','SYS-03':'Name','PERM-02':'CreatePermission','PERM-03':'Name'}.get(op.key)
  if body:operation['requestBody']={'required':True,'content':{'application/json':{'schema':ref(body)}}}
  status=op.result.split()[0]
- result={'AUTH-01':'LoginResult','AUTH-02':'Me','AUTH-05':'Allowed','AUTH-06':'Allowed','AUTH-07':'IdentityUser'}.get(op.key)
+ result={'AUTH-01':'LoginResult','AUTH-02':'Me','AUTH-05':'Allowed','AUTH-06':'Allowed','AUTH-07':'IdentityUser','AUTH-08':'IdentityDepartmentPage','AUTH-09':'IdentityDepartmentUserPage'}.get(op.key)
  if op.module!='Auth':
   result=('Page'+op.module if op.function in ['list','options'] else op.module if op.function in ['get','create'] else None)
   if op.function in ['permissions','effectivePermissions']:result=arr('Permission')
@@ -58,6 +76,14 @@ for op in OPS:
  if status=='201':response['headers']={'Location':{'description':'新资源地址','schema':string}}
  operation['responses'][status]=response
  for code,description in [('400','输入校验失败'),('401','凭据或会话无效'),('403','无操作许可或越界'),('404','对象不存在'),('405','HTTP 方法不支持'),('409','重复、引用冲突或 ROLE_CYCLE'),('503','数据库不可用')]:operation['responses'][code]={'description':description,'content':{'application/json':{'schema':ref('Error')}}}
+ if op.key in identity_operations:
+  error_codes={'400':'BAD_REQUEST','401':'UNAUTHORIZED','403':'FORBIDDEN','503':'IDENTITY_SERVICE_UNAVAILABLE'}
+  missing={'AUTH-06':'API_OPERATION_NOT_FOUND','AUTH-07':'IDENTITY_USER_NOT_FOUND','AUTH-09':'IDENTITY_DEPARTMENT_NOT_FOUND'}.get(op.key)
+  if missing:error_codes['404']=missing
+  for code,error in error_codes.items():
+   operation['responses'][code]['content']['application/json']['example']={'code':error,'message':operation['responses'][code]['description']}
+  if not missing:operation['responses'].pop('404')
+  operation['responses'].pop('409')
  paths.setdefault(op.route,{})[op.method.lower()]=operation
 spec={'openapi':'3.0.3','info':{'title':'统一权限管理平台 API','version':version,'description':'RBAC1 双实现契约。高级角色继承基础角色；界面码与 API 码独立。切换策略保持 HTTP 行为一致。'},'servers':[{'url':'/'}],'paths':paths,'components':{'securitySchemes':{'Bearer':{'type':'http','scheme':'bearer','bearerFormat':'JWT'}},'schemas':schemas}}
 (R/'openapi.json').write_text(json.dumps(spec,ensure_ascii=False,indent=2)+'\n')

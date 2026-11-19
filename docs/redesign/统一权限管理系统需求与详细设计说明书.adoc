@@ -1,6 +1,6 @@
 = 统一权限管理系统需求与详细设计说明书
 OOAD 课程项目组
-v3.5.0, 2026-11-18
+v3.6.0, 2026-11-20
 :doctype: book
 :lang: zh-CN
 :toc:
@@ -21,7 +21,7 @@ v3.5.0, 2026-11-18
 
 本文规定当前基线的需求、数据结构、各功能交互、HTTP 契约和双实现设计，供课程评审、开发与验收使用。独立《概要设计说明书》说明系统骨架及 ATAM 评估，本文保存字段字典和各功能详细设计。
 
-本次版本为 3.5.0，基于 v3.2.2 和 2026-11-17 确认决定修订。代码与文档共用功能编号和配置名称，验证结果见实施报告。
+本次版本为 3.6.0，基于 v3.2.2 和 2026-11-17 确认决定修订。代码与文档共用功能编号和配置名称，验证结果见实施报告。
 
 === 背景与术语
 
@@ -98,7 +98,7 @@ v3.5.0, 2026-11-18
 |BR-04 |角色可包含两个业务系统的权限；部门不直接获得系统权限。
 |BR-05 |用户名全局唯一、部门内角色名唯一、系统内权限码唯一、系统标识唯一。
 |BR-06 |用户名、部门、系统标识、权限所属系统和权限码创建后固定；普通编辑使用字段白名单。
-|BR-07 |登录使用用户名和手机号，password 字段承载手机号；systems 只接受一个目标系统。
+|BR-07 |登录使用用户名和手机号，password 字段承载手机号；systems 接受一组不重复的目标系统。
 |BR-08 |成功登录必须拥有目标系统 login 权限；每个受保护请求实时检查会话及登录许可。
 |BR-09 |JWT 保存身份和目标系统，会话保存在 MySQL；权限按当前授权关系读取。
 |BR-10 |用户删除同时清理登录会话和用户角色；其他对象存在引用时先撤销关联再删除。
@@ -210,7 +210,7 @@ image::v33/session-table.svg[技术会话表关系,width=100%]
 
 === RBAC1 继承约束
 
-高级角色通过 role_inheritance 指向基础角色，获得其直接与间接权限。角色层次与部门层次独立；所有继承边限定同部门。新增边先锁定部门行，再使用锁定读检查可达性，禁止自环及间接环。多路径使用 UNION DISTINCT 去重；移除一条边时其他路径继续有效。直接角色分配与直接权限接口保持原语义，有效权限另行查询。
+高级角色通过 role_inheritance 指向基础角色，获得其直接与间接权限。角色层次与部门层次独立；所有继承边限定同部门。新增边先锁定部门行，再在 READ COMMITTED 下读取当前边并检查可达性，禁止自环及间接环。多路径使用 UNION DISTINCT 去重；移除一条边时其他路径继续有效。直接角色分配与直接权限接口保持原语义，有效权限另行查询。
 
 
 === 数据字典
@@ -310,7 +310,7 @@ image::v33/session-table.svg[技术会话表关系,width=100%]
 |字段 |类型 |可空 |约束 |含义
 |id |CHAR(36) |否 |主键，ASCII UUID |对应 JWT jti
 |user_id |BIGINT |否 |外键 app_user.id |当前登录用户
-|system_key |VARCHAR(64) |否 |ASCII，与令牌 aud 一致 |本次目标系统标识
+|system_key |VARCHAR(64) |否 |ASCII，对应令牌 aud 首项 |本次默认目标系统
 |expires_at |TIMESTAMP(6) |否 |UTC 到期时刻 |到期后拒绝认证
 |revoked_at |TIMESTAMP(6) |是 |撤销时刻 |为空表示尚未撤销
 |===
@@ -363,16 +363,16 @@ image::v33/packages.svg[系统包依赖概览,width=100%]
 2+|*级别：* 用户目标
 2+|*包：* 身份认证
 2+|*参与者：* 用户及接入系统客户端
-2+|*描述：* 提交用户名、手机号和一个目标系统，取得该系统的登录凭据。
+2+|*描述：* 提交用户名、手机号和目标系统列表，取得对应系统的登录凭据。
 2+|*触发事件：* 用户打开平台后台或课程系统登录页。
 2+|*前置条件：* 两个业务系统已登记，用户存在并通过角色取得目标系统 login 权限。
 |*主成功场景：* |*信息*
-|1. 校验 username、password 和 systems。 |password 承载手机号，systems 恰有一个非空标识。
+|1. 校验 username、password 和 systems。 |password 承载手机号，systems 包含至少一个不重复的非空标识。
 |2. 按用户名读取账号并匹配手机号。 |失败统一返回 401。
 |3. 读取目标系统及当前 RBAC 登录许可。 |无系统登录资格返回 403。
 |4. 同事务保存登录会话并签发 JWT。 |返回 accessToken、tokenType、expiresIn。
 |*扩展场景：* |*处理及信息*
-|字段缺失、格式错误或多系统输入 |400，不调用登录服务。
+|字段缺失、格式错误或目标系统重复 |400，不调用登录服务。
 |账号不存在或手机号错误 |401，返回统一凭据错误。
 |目标系统不存在或无 login 权限 |403，不建立成功会话。
 2+|*后置条件：* 成功后客户端持有目标系统的 Bearer 凭据；JWT 只保存身份及会话信息。
@@ -387,7 +387,7 @@ image::v33/packages.svg[系统包依赖概览,width=100%]
 [cols="3,4,3",options="header",frame=all,grid=all]
 |===
 |图中处理／实际方法 |调用说明 URL |功能
-|`AuthController.login` |`POST /auth/login` |按用户名和手机号认证，校验单个系统 login，保存会话并签发 JWT。
+|`AuthController.login` |`POST /auth/login` |按用户名和手机号认证，逐一校验所请求系统的 login，保存会话并签发 JWT。
 |===
 --
 
@@ -403,9 +403,9 @@ image::v33/activity-login.svg[登录 活动图,width=100%]
 
 ===== AUTH-01 登录
 
-按用户名和手机号认证，校验单个系统 login，保存会话并签发 JWT。
+按用户名和手机号认证，逐一校验所请求系统的 login，保存会话并签发 JWT。
 
-输入：Requests.Login：username、password、systems；systems 长度为 1。
+输入：LoginDTO 接收 username、password 与非空且无重复的 systems。
 
 成功结果：200 LoginResult。权限：目标系统 login。
 
@@ -459,7 +459,7 @@ image::v33/flow-login-session.svg[建立登录会话与签发凭据,width=100%]
 [cols="3,4,3",options="header",frame=all,grid=all]
 |===
 |图中处理／实际方法 |调用说明 URL |功能
-|`AuthController.me` |`GET /auth/me` |返回 subject、姓名、用户名、部门及当前系统界面权限；权限实时查询。
+|`AuthController.me` |`GET /auth/me` |返回 subject、姓名、工号或学号、部门及当前系统界面权限；权限实时查询。
 |`AuthController.updateMe` |`PATCH /auth/me` |本人编号取自认证上下文，仅接收姓名和手机号。
 |`AuthController.logout` |`POST /auth/logout` |更新当前会话 revoked_at；原令牌随后返回 401。
 |===
@@ -468,11 +468,11 @@ image::v33/flow-login-session.svg[建立登录会话与签发凭据,width=100%]
 
 ===== AUTH-02 读取本人资料和权限
 
-返回 subject、姓名、用户名、部门及当前系统界面权限；权限实时查询。
+返回 subject、姓名、工号或学号、部门及当前系统界面权限；权限实时查询。
 
 输入：无请求体；身份来自 Bearer。
 
-成功结果：200 Me。权限：有效登录。
+成功结果：200 CurrentUserVO。权限：有效登录。
 
 
 [.diagram.plate]
@@ -487,7 +487,7 @@ image::v33/auth-02-shared.svg[AUTH-02 共享认证交互,width=100%]
 
 本人编号取自认证上下文，仅接收姓名和手机号。
 
-输入：Requests.Profile：name、phone 至少出现一项。
+输入：ManagementDTOs.ProfileDTO：name、phone 至少出现一项。
 
 成功结果：204。权限：有效登录。
 
@@ -625,7 +625,7 @@ image::v33/user-02-ddd.svg[USER-02 DDD 详细交互,width=100%]
 
 部门取自操作者；用户名全局唯一，编号由数据库生成。
 
-输入：Requests.CreateUser：username、name、phone。
+输入：ManagementDTOs.CreateUserDTO：username、name、phone。
 
 成功结果：201 User。权限：user.create。
 
@@ -651,7 +651,7 @@ image::v33/user-03-ddd.svg[USER-03 DDD 详细交互,width=100%]
 
 仅更新出现的姓名和手机号，保留未提交字段。
 
-输入：Requests.Profile：name、phone 至少出现一项。
+输入：ManagementDTOs.ProfileDTO：name、phone 至少出现一项。
 
 成功结果：204。权限：user.edit。
 
@@ -799,7 +799,7 @@ image::v33/dept-01-ddd.svg[DEPT-01 DDD 详细交互,width=100%]
 
 校验名称及可选父部门，保存层级归属。
 
-输入：Requests.CreateDepartment：name、parentId；parentId 可空。
+输入：ManagementDTOs.CreateDepartmentDTO：name、parentId；parentId 可空。
 
 成功结果：201。权限：department.manage。
 
@@ -825,7 +825,7 @@ image::v33/dept-02-ddd.svg[DEPT-02 DDD 详细交互,width=100%]
 
 仅修改名称，父部门创建后固定。
 
-输入：Requests.Name：name。
+输入：ManagementDTOs.NameDTO：name。
 
 成功结果：204。权限：department.manage。
 
@@ -972,7 +972,7 @@ image::v33/sys-01-ddd.svg[SYS-01 DDD 详细交互,width=100%]
 
 系统标识全局唯一，创建后固定。
 
-输入：Requests.CreateSystem：systemKey、name。
+输入：ManagementDTOs.CreateSystemDTO：systemKey、name。
 
 成功结果：201。权限：system.manage。
 
@@ -998,7 +998,7 @@ image::v33/sys-02-ddd.svg[SYS-02 DDD 详细交互,width=100%]
 
 仅修改名称，系统标识创建后固定。
 
-输入：Requests.Name：name。
+输入：ManagementDTOs.NameDTO：name。
 
 成功结果：204。权限：system.manage。
 
@@ -1146,7 +1146,7 @@ image::v33/perm-01-ddd.svg[PERM-01 DDD 详细交互,width=100%]
 
 校验所属系统存在，权限码在系统内唯一。
 
-输入：Requests.CreatePermission：code、name；systemId 来自路径。
+输入：ManagementDTOs.CreatePermissionDTO：code、name；systemId 来自路径。
 
 成功结果：201。权限：permission.manage。
 
@@ -1172,7 +1172,7 @@ image::v33/perm-02-ddd.svg[PERM-02 DDD 详细交互,width=100%]
 
 仅修改名称，所属系统及权限码创建后固定。
 
-输入：Requests.Name：name。
+输入：ManagementDTOs.NameDTO：name。
 
 成功结果：204。权限：permission.manage。
 
@@ -1351,7 +1351,7 @@ image::v33/role-02-ddd.svg[ROLE-02 DDD 详细交互,width=100%]
 
 角色部门取自操作者；名称在部门内唯一。
 
-输入：Requests.Name：name。
+输入：ManagementDTOs.NameDTO：name。
 
 成功结果：201 Role。权限：role.manage。
 
@@ -1377,7 +1377,7 @@ image::v33/role-03-ddd.svg[ROLE-03 DDD 详细交互,width=100%]
 
 部门固定，仅修改名称。
 
-输入：Requests.Name：name。
+输入：ManagementDTOs.NameDTO：name。
 
 成功结果：204。权限：role.manage。
 
@@ -1521,15 +1521,6 @@ image::v33/role-08-ddd.svg[ROLE-08 DDD 详细交互,width=100%]
 --
 
 
-
-[.diagram.plate]
---
-[[fig-role-08-ddd-domain]]
-.ROLE-08 DDD 聚合修改与保存
-image::v33/role-08-ddd-domain.svg[ROLE-08 DDD 聚合修改与保存,width=100%]
---
-
-
 ===== SYS-05 查询授权系统候选
 
 仅开放授权任务所需的系统只读目录，不授予系统写权限。
@@ -1663,7 +1654,7 @@ image::v33/user-06-ddd.svg[USER-06 DDD 详细交互,width=100%]
 
 校验操作者、目标用户和角色同部门；重复分配返回 409。
 
-输入：Requests.AssignRole：roleId；目标用户来自路径。
+输入：ManagementDTOs.AssignRoleDTO：roleId；目标用户来自路径。
 
 成功结果：201。权限：user.role.assign。
 
@@ -1772,15 +1763,6 @@ image::v33/user-08-ddd.svg[USER-08 DDD 详细交互,width=100%]
 --
 
 
-
-[.diagram.plate]
---
-[[fig-user-08-ddd-domain]]
-.USER-08 DDD 聚合修改与保存
-image::v33/user-08-ddd-domain.svg[USER-08 DDD 聚合修改与保存,width=100%]
---
-
-
 ==== 运行时鉴权与统一身份
 
 
@@ -1796,11 +1778,11 @@ image::v33/user-08-ddd-domain.svg[USER-08 DDD 聚合修改与保存,width=100%]
 |*主成功场景：* |*信息*
 |1. 从令牌和数据库会话确定用户及系统。 |调用方只提交权限码、operationId 或身份编号。
 |2. 读取当前用户角色及角色权限并集。 |按当前 audience 限定权限命名空间。
-|3. 返回 allowed 或统一用户资料。 |未知 operationId 返回 false；查询他人需要当前系统 UL。
+|3. 返回 allowed 或统一用户资料。 |未知 operationId 返回 404。课程身份目录要求 TEC。
 |*扩展场景：* |*处理及信息*
 |令牌或会话失效 |401。
 |本系统 login 已撤销，或无身份查询资格 |403。
-|编码未授予或未映射 |200，allowed=false。
+|编码已知但未授予 |200，allowed=false。
 |数据库或身份依赖不可用 |平台 503；课程拒绝业务操作。
 2+|*后置条件：* 本次权限结论来自已提交的当前关系；接入系统独立执行拒绝。
 |===
@@ -1815,8 +1797,10 @@ image::v33/user-08-ddd-domain.svg[USER-08 DDD 聚合修改与保存,width=100%]
 |===
 |图中处理／实际方法 |调用说明 URL |功能
 |`AuthController.check` |`GET /auth/permissions/{permission}` |系统标识取自 audience；仅检查已登记界面码；API 码在此接口返回 false。
-|`AuthController.api` |`GET /auth/api-permissions/{operationId}` |AuthService 将两系统 operationId 映射到 API 权限；未映射返回 false。
-|`IdentityUserController.get` |`GET /identity/users/{id}` |返回 userId、no、name；no 使用 username，查询他人要求当前系统 UL。
+|`AuthController.api` |`GET /auth/api-permissions/{operationId}` |AuthService 将两系统 operationId 映射到 API 权限；未知操作返回 404 API_OPERATION_NOT_FOUND。
+|`IdentityUserController.get` |`GET /auth/users/{userId}` |返回 userId、no、name。平台限定本部门，课程端要求 TEC，不存在返回 IDENTITY_USER_NOT_FOUND。
+|`IdentityDepartmentController.list` |`GET /auth/departments` |按 parentId 逐层展开，按名称或编码搜索，并返回 hasChildren。
+|`IdentityDepartmentController.users` |`GET /auth/departments/{departmentId}/users` |按姓名或账号分页查询部门直接成员。平台限定本部门，响应仅包含身份字段。
 |===
 --
 
@@ -1840,7 +1824,7 @@ image::v33/auth-05-shared.svg[AUTH-05 共享认证交互,width=100%]
 
 ===== AUTH-06 检查接入 API 权限
 
-AuthService 将两系统 operationId 映射到 API 权限；未映射返回 false。
+AuthService 将两系统 operationId 映射到 API 权限；未知操作返回 404 API_OPERATION_NOT_FOUND。
 
 输入：路径 operationId；由映射表定位权限码。
 
@@ -1855,13 +1839,13 @@ image::v33/auth-06-shared.svg[AUTH-06 共享认证交互,width=100%]
 --
 
 
-===== AUTH-07 查询统一身份
+===== AUTH-07 查询统一身份用户
 
-返回 userId、no、name；no 使用 username，查询他人要求当前系统 UL。
+返回 userId、no、name。平台限定本部门，课程端要求 TEC，不存在返回 IDENTITY_USER_NOT_FOUND。
 
-输入：路径 id 为正整数；查询他人要求 UL。
+输入：路径 userId 为字符串。
 
-成功结果：200 IdentityUser。权限：本人或 UL。
+成功结果：200 IdentityUser。权限：user.view 或 TEC。
 
 
 [.diagram.plate]
@@ -1872,12 +1856,55 @@ image::v33/auth-07-shared.svg[AUTH-07 共享认证交互,width=100%]
 --
 
 
+===== AUTH-08 查询统一身份部门
+
+按 parentId 逐层展开，按名称或编码搜索，并返回 hasChildren。
+
+输入：parentId 可空，keyword 可选，page 从 1 开始，pageSize 默认为 20。
+
+成功结果：200 IdentityDepartmentPage。权限：department.manage 或 TEC。
+
+
+[.diagram.plate]
+--
+[[fig-auth-08-shared]]
+.AUTH-08 共享认证交互
+image::v33/auth-08-shared.svg[AUTH-08 共享认证交互,width=100%]
+--
+
+
+===== AUTH-09 查询部门下的用户
+
+按姓名或账号分页查询部门直接成员。平台限定本部门，响应仅包含身份字段。
+
+输入：departmentId 为正整数，支持 keyword、page、pageSize。
+
+成功结果：200 IdentityDepartmentUserPage。权限：user.view 或 TEC。
+
+
+[.diagram.plate]
+--
+[[fig-auth-09-shared]]
+.AUTH-09 共享认证交互
+image::v33/auth-09-shared.svg[AUTH-09 共享认证交互,width=100%]
+--
+
+
 
 [.diagram.plate]
 --
 [[fig-class-auth-shared]]
 .共享认证与实时鉴权 类图
 image::v33/class-auth-shared.svg[共享认证与实时鉴权 类图,width=100%]
+--
+
+
+
+[.diagram.plate]
+--
+[[fig-class-identity-directory]]
+.统一身份目录类图
+image::v33/class-identity-directory.svg[统一身份目录类图,width=100%]
 --
 
 
@@ -2422,7 +2449,7 @@ image::v33/flow-adapter.svg[持久化读取与数据映射 顺序图,width=100%]
 |Infrastructure |存储方法、结果、耗时及数据库异常。 |DEBUG / ERROR
 |===
 
-各执行层通过 SLF4J 输出到 Logback 控制台与滚动文件；LayerLogging 覆盖业务和存储方法。统一异常边界记录未预期错误堆栈，运行日志保留操作证据并排除凭据值。
+各执行层通过 SLF4J 输出到 Logback 控制台与滚动文件；LayerLogging 覆盖 Controller、业务和存储方法。切面记录操作、耗时和异常类型。认证过滤器记录请求路径及状态。
 
 
 === 接口与输入设计
@@ -2437,17 +2464,17 @@ image::v33/flow-adapter.svg[持久化读取与数据映射 顺序图,width=100%]
 
 ==== 认证与异常
 
-JWT 使用 RS256，携带 iss、sub、aud、jti、iat 和 exp，默认有效期 30 分钟。BearerFilter 校验签名、到期时间、单个目标系统、数据库会话、当前账号及 login 权限。目标系统和用户须与会话一致。
+JWT 使用 RS256，携带 iss、sub、aud、jti、iat 和 exp，默认有效期 30 分钟。BearerFilter 校验签名、到期时间、aud、数据库会话、当前账号及 login 权限。默认使用 aud 首项。X-Target-System 可选择 aud 中另一个已获准系统。
 
-/auth/me 返回 subject、username、name、departmentId、roles、permissions，permissions 只含当前系统的界面码；/identity/users/{id} 返回 userId、no、name。角色名称用于显示，管理资格由权限集合确定。权限检查返回 allowed 布尔值。
+/auth/me 返回 subject、no、name、departmentId、roles、permissions，permissions 只含当前系统的界面码；/auth/users/{userId} 返回 userId、no、name。角色名称用于显示，管理资格由权限集合确定。权限检查返回 allowed 布尔值。统一身份目录按层级和关键词分页查询。部门编码由 D 加现有部门编号组成。课程目录通过 TEC 授权。
 
 
 
 [cols="1,3,6",options="header"]
 |===
 |HTTP |业务码 |含义
-|400 |INVALID_ARGUMENT |字段、格式、分页或路径编号无效。
-|401 |UNAUTHENTICATED |账号凭据、签名、会话或有效期不通过。
+|400 |INVALID_ARGUMENT / BAD_REQUEST |字段、格式、分页或路径编号无效。
+|401 |UNAUTHORIZED |账号凭据、签名、会话或有效期不通过。
 |403 |FORBIDDEN |目标系统登录许可、操作权限或部门边界不通过。
 |404 |NOT_FOUND |有操作权限后查找的对象不存在。
 |405 |METHOD_NOT_ALLOWED |HTTP 方法不符合接口定义；响应携带 Allow。
@@ -2459,7 +2486,7 @@ JWT 使用 RS256，携带 iss、sub、aud、jti、iat 和 exp，默认有效期 
 
 ==== 独立界面权限与禁用规则
 
-权限实体同时保存界面码和 API 码，两者经同一用户角色、角色权限关系分别授予。数据库沿用八张业务表。GET /auth/me 的 permissions 及 GET /auth/permissions/{permission} 仅返回或判断已登记的界面码。GET /auth/api-permissions/{operationId} 在 AuthService 中映射到 API 码；平台使用 user.list、role.grant 等资源加操作编号，课程保留老师的 operationId。未知操作返回 false。
+权限实体同时保存界面码和 API 码，两者经同一用户角色、角色权限关系分别授予。数据库沿用八张业务表。GET /auth/me 的 permissions 及 GET /auth/permissions/{permission} 仅返回或判断已登记的界面码。GET /auth/api-permissions/{operationId} 在 AuthService 中映射到 API 码；平台使用 user.list、role.grant 等资源加操作编号，课程保留老师的 operationId。未知操作返回 404 API_OPERATION_NOT_FOUND。
 
 
 [cols="2,2,5,4",options="header"]
@@ -2508,14 +2535,14 @@ Flyway V2 在现有 permission 与 role_permission 中补齐旧版既有界面�
 [cols="3,4,4",options="header"]
 |===
 |输入对象 |接收字段 |固定或推导字段
-|Requests.Login |username、password、systems |只接受一个目标系统。
-|Requests.CreateUser |username、name、phone |编号生成，departmentId 取当前身份。
-|Requests.Profile |name、phone，至少一项 |用户编号、用户名、部门固定。
-|Requests.CreateDepartment |name、parentId |parentId 可空；创建后固定。
-|Requests.CreateSystem |systemKey、name |systemKey 创建后固定。
-|Requests.CreatePermission |code、name |systemId 来自路径；code 固定。
-|Requests.Name |name |用于角色创建及各目录重命名。
-|Requests.AssignRole |roleId |目标用户来自路径，操作者来自认证上下文。
+|LoginDTO |username、password、systems |逐一检查各目标系统的登录许可。
+|ManagementDTOs.CreateUserDTO |username、name、phone |编号生成，departmentId 取当前身份。
+|ManagementDTOs.ProfileDTO |name、phone，至少一项 |用户编号、用户名、部门固定。
+|ManagementDTOs.CreateDepartmentDTO |name、parentId |parentId 可空；创建后固定。
+|ManagementDTOs.CreateSystemDTO |systemKey、name |systemKey 创建后固定。
+|ManagementDTOs.CreatePermissionDTO |code、name |systemId 来自路径；code 固定。
+|ManagementDTOs.NameDTO |name |用于角色创建及各目录重命名。
+|ManagementDTOs.AssignRoleDTO |roleId |目标用户来自路径，操作者来自认证上下文。
 |===
 
 
@@ -2525,12 +2552,14 @@ Flyway V2 在现有 permission 与 role_permission 中补齐旧版既有界面�
 |===
 |编号 |方法与路径 |操作许可 |成功响应
 |AUTH-01 |POST /auth/login |目标系统 login |200 LoginResult
-|AUTH-02 |GET /auth/me |有效登录 |200 Me
+|AUTH-02 |GET /auth/me |有效登录 |200 CurrentUserVO
 |AUTH-03 |POST /auth/logout |有效登录 |204
 |AUTH-04 |PATCH /auth/me |有效登录 |204
 |AUTH-05 |GET /auth/permissions/{permission} |有效登录 |200 allowed
 |AUTH-06 |GET /auth/api-permissions/{operationId} |有效登录 |200 allowed
-|AUTH-07 |GET /identity/users/{id} |本人或 UL |200 IdentityUser
+|AUTH-07 |GET /auth/users/{userId} |user.view 或 TEC |200 IdentityUser
+|AUTH-08 |GET /auth/departments |department.manage 或 TEC |200 IdentityDepartmentPage
+|AUTH-09 |GET /auth/departments/{departmentId}/users |user.view 或 TEC |200 IdentityDepartmentUserPage
 |USER-01 |GET /api/users |user.view |200 Page<User>
 |USER-02 |GET /api/users/{id} |user.view |200 User
 |USER-03 |POST /api/users |user.create |201 User
@@ -2657,13 +2686,14 @@ Flyway V2 在现有 permission 与 role_permission 中补齐旧版既有界面�
 
 === 需求到测试方法与页面行为
 
-共同测试位于 backend/src/test/java/cn/edu/xmu/rbac/ContractSuite.java，StructuredContractTest 和 DddContractTest 各继承并执行 16 项。表内方法均为源码中的实际名称；同一方法可覆盖多项需求。
+共同测试位于 backend/src/test/java/cn/edu/xmu/rbac/ContractSuite.java，StructuredContractTest 和 DddContractTest 各执行同一套契约。表内方法均为源码中的实际名称；同一方法可覆盖多项需求。
 
 
 [cols="3,7,5",options="header"]
 |===
 |需求 |具体测试方法 / 复现 |前端可观察结果
 |REQ-F-01 认证与鉴权 |authenticatesAndRejectsBadCredentials；tokensContainIdentityAndAudienceWithoutPermissions；logoutExpiryAndDeletionInvalidateSession。 |用户名手机号登录；错误凭据提示；退出后受保护页面拒绝访问。
+|REQ-F-01 身份目录 |listsIdentityDepartmentsByLevelAndKeyword、listsOnlyIdentityFieldsForDepartmentUsers、looksUpIdentityUserUnderTeacherCreationPermission、authenticatesEachRequestedAudienceAndRevokesWholeToken。 |逐层查询部门及所属候选人，按目标系统判权。
 |REQ-F-02 用户 |createsUpdatesAndDeletesUserWithGeneratedIdentity；assignsAndRevokesRoleWithConflictAndIdempotence；validatesInputAndProtectedFields。 |单项新建、修改、删除及分配撤销；资料编辑不能修改部门和编号。
 |REQ-F-03 角色与权限 |directoryCrudHonoursReferencesAndCaseSensitiveCodes；revocationIsVisibleToExistingTokenAndSystemsAreIsolated。 |角色权限配置、引用冲突提示；旧令牌按当前许可执行。
 |REQ-F-03 RBAC1 |inheritsAcrossMultiplePathsAndRevokesForExistingTokens；rejectsHierarchyCyclesScopeAndReferences；serializesConcurrentOppositeInheritanceWrites。 |配置继承、有效权限并集、解除继承；自环和间接环 409，跨部门 403；并发反向连边仅一条成功。
@@ -2672,23 +2702,23 @@ Flyway V2 在现有 permission 与 role_permission 中补齐旧版既有界面�
 |REQ-F-07 课程接入 |tooling/acceptance.py 对已部署的老师后端调用 /me、学期 CRUD、课程列表与详情、无权审核、撤权及退出。 |课程和学期菜单分别受 UI 码控制；API 许可独立检查。
 |REQ-N-01 安全 |isolatesUiAndApiPermissionsAndSupportsNarrowSelections；upgradesExistingGrantsOnceAndKeepsUiRevocationIndependent；frontend/src/permissions.test.ts。 |无菜单码时禁用菜单，无按钮码时禁用按钮；仅有 API 码也不能启用控件。
 |REQ-N-02 性能 |tooling/benchmark.py；assets/v33/performance-baseline.json 为 v3.3.0 历史测量。 |分页有界；当前版本性能需按相同数据与负载重新测量后比较。
-|REQ-N-03 可用性 |tooling/resilience.py 与历史恢复记录；本轮记录实际部署后健康与会话结果。 |依赖故障拒绝业务；恢复后刷新页面与会话。
+|REQ-N-03 可用性 |tooling/resilience.py 与历史恢复记录；上一版有 Swarm 健康与会话实测。 |依赖故障拒绝业务；恢复后刷新页面与会话。
 |REQ-N-04 可修改性 |StructuredContractTest / DddContractTest；tooling/check-architecture.py；Swarm 同镜像切换业务策略。 |切换后同一套页面和 HTTP 请求继续工作。
 |REQ-N-05 交付与运行 |Maven verify、tooling/check-copy-artifact.py、build-api.py、build-design.sh；Swarm 镜像与服务记录。 |两个前端、API 文档、覆盖率报告可访问；菜单请求对应后端日志。
 |===
 
 === 本轮测试与交付入口
 
-v3.5.0 平台测试 36 项、老师 CloneFactory 测试 5 项和前端组件测试 4 项全部通过。JaCoCo 0.8.14 的平台行覆盖率 88.42%，分支覆盖率 76.81%；生成的 CloneFactory 工具类单独由拷贝测试与运行包检查验证，覆盖率排除该生成类。
+v3.6.0 平台测试 42 项、老师 CloneFactory 测试 5 项和前端组件测试 4 项全部通过。JaCoCo 0.8.14 的平台行覆盖率 89.37%，分支覆盖率 74.12%；生成的 CloneFactory 工具类单独由拷贝测试与运行包检查验证，覆盖率排除该生成类。
 
 
 [cols="3,7",options="header"]
 |===
 |产物 |访问与复现
-|权限后台 |http://113.44.144.119/platform/
-|老师课程系统接入 |http://113.44.144.119/course/
-|平台 API 文档 |http://113.44.144.119/api-docs/；npm ci --prefix docs/api 后执行 python3 tooling/build-api.py。
-|覆盖率报告 |http://113.44.144.119/coverage/；执行 ./mvnw verify 生成 backend/target/site/jacoco/。
-|部署与验收证据 |docs/implementation/整改报告-v3.5.0.md 与验收 JSON；口试步骤见同目录第二轮演示脚本.md。
+|权限后台 v3.5.0 |http://113.44.144.119/platform/
+|老师课程系统接入 v3.5.0 |http://113.44.144.119/course/
+|平台 API 文档 |已部署 v3.5.0。v3.6.0 运行 npm ci --prefix docs/api 后执行 python3 tooling/build-api.py。
+|覆盖率报告 |已部署 v3.5.0。v3.6.0 执行 ./mvnw verify 生成 backend/target/site/jacoco/。
+|部署与验收证据 |v3.5.0 Swarm 证据见原整改报告。本版契约回归见 docs/implementation/test-summary-v3.6.0.json。
 |课程提交 |代码推送 GitHub，由已配置的自动同步更新 Gitee；课程网站提交与口试预约由组员完成。
 |===

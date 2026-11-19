@@ -7,8 +7,6 @@ import cn.edu.xmu.rbac.service.port.ManagementStore;
 import cn.edu.xmu.rbac.service.port.UserUseCase;
 import cn.edu.xmu.rbac.service.security.AccessPolicy;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @ConditionalOnProperty(name = "app.backend-strategy", havingValue = "structured")
 public class StructuredUserService implements UserUseCase {
-  private static final Logger log = LoggerFactory.getLogger(StructuredUserService.class);
   private final ManagementStore store;
   private final AccessPolicy access;
 
@@ -28,7 +25,7 @@ public class StructuredUserService implements UserUseCase {
   }
 
   private Data.User scoped(Data.Identity actor, Long id) {
-    var user = store.user(id);
+    Data.User user = store.user(id);
     access.scope(actor, user.departmentId());
     return user;
   }
@@ -36,7 +33,6 @@ public class StructuredUserService implements UserUseCase {
   /** 分页查询当前用例可见的对象. */
   public Data.Page<Data.User> list(Data.Identity actor, int page, int size) {
     access.require(actor, "user.view");
-    access.scope(actor, actor.departmentId());
     return store.users(actor.departmentId(), page, size);
   }
 
@@ -48,28 +44,23 @@ public class StructuredUserService implements UserUseCase {
   /** 校验输入后创建对象. */
   public Data.User create(Data.Identity actor, Data.CreateUser command) {
     access.require(actor, "user.create");
-    access.scope(actor, actor.departmentId());
-    log.debug("createUser actor={}", actor.userId());
     return store.createUser(actor.departmentId(), command);
   }
 
   /** 修改白名单字段并保持归属不变. */
   public void update(Data.Identity actor, Long id, Data.Profile command) {
     access.require(actor, "user.edit");
-    scoped(actor, id);
-    var old = store.user(id);
+    Data.User old = scoped(actor, id);
     store.updateUser(
         id, CloneFactory.copyNotNull(new Data.Profile(old.name(), old.phone()), command));
-    log.debug("updateUser actor={} target={}", actor.userId(), id);
   }
 
   /** 修改当前用户的姓名和手机号. */
   public void updateMe(Data.Identity actor, Data.Profile command) {
     Long id = actor.userId();
-    var old = store.user(id);
+    Data.User old = store.user(id);
     store.updateUser(
         id, CloneFactory.copyNotNull(new Data.Profile(old.name(), old.phone()), command));
-    log.debug("updateMe actor={}", id);
   }
 
   /** 检查引用关系后删除对象. */
@@ -77,7 +68,6 @@ public class StructuredUserService implements UserUseCase {
     access.require(actor, "user.delete");
     scoped(actor, id);
     store.deleteUser(id);
-    log.debug("deleteUser actor={} target={}", actor.userId(), id);
   }
 
   /** 查询用户已分配角色. */
@@ -90,14 +80,13 @@ public class StructuredUserService implements UserUseCase {
   /** 在本部门范围内分配角色. */
   public void assign(Data.Identity actor, Long userId, Long roleId) {
     access.require(actor, "user.role.assign");
-    var user = scoped(actor, userId);
-    var role = store.role(roleId);
+    Data.User user = scoped(actor, userId);
+    Data.Role role = store.role(roleId);
     access.scope(actor, role.departmentId());
     if (store.hasRole(userId, roleId)) {
       throw BusinessException.conflict();
     }
     store.assignRole(userId, roleId);
-    log.debug("assignRole actor={} user={} role={}", actor.userId(), userId, roleId);
   }
 
   /** 撤销指定授权关联. */
@@ -106,6 +95,5 @@ public class StructuredUserService implements UserUseCase {
     scoped(actor, userId);
     access.scope(actor, store.role(roleId).departmentId());
     store.revokeRole(userId, roleId);
-    log.debug("revokeRole actor={} user={} role={}", actor.userId(), userId, roleId);
   }
 }

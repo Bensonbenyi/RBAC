@@ -12,13 +12,15 @@ class Operation:
     result:str
     rule:str
 OPS=[
- Operation('AUTH-01','Auth','POST','/auth/login','login','登录','目标系统 login','200 LoginResult','按用户名和手机号认证，校验单个系统 login，保存会话并签发 JWT。'),
- Operation('AUTH-02','Auth','GET','/auth/me','me','读取本人资料和权限','有效登录','200 Me','返回 subject、姓名、用户名、部门及当前系统界面权限；权限实时查询。'),
+ Operation('AUTH-01','Auth','POST','/auth/login','login','登录','目标系统 login','200 LoginResult','按用户名和手机号认证，逐一校验所请求系统的 login，保存会话并签发 JWT。'),
+ Operation('AUTH-02','Auth','GET','/auth/me','me','读取本人资料和权限','有效登录','200 CurrentUserVO','返回 subject、姓名、工号或学号、部门及当前系统界面权限；权限实时查询。'),
  Operation('AUTH-03','Auth','POST','/auth/logout','logout','退出','有效登录','204','更新当前会话 revoked_at；原令牌随后返回 401。'),
  Operation('AUTH-04','Auth','PATCH','/auth/me','updateMe','修改本人资料','有效登录','204','本人编号取自认证上下文，仅接收姓名和手机号。'),
  Operation('AUTH-05','Auth','GET','/auth/permissions/{permission}','check','检查界面权限','有效登录','200 allowed','系统标识取自 audience；仅检查已登记界面码；API 码在此接口返回 false。'),
- Operation('AUTH-06','Auth','GET','/auth/api-permissions/{operationId}','api','检查接入 API 权限','有效登录','200 allowed','AuthService 将两系统 operationId 映射到 API 权限；未映射返回 false。'),
- Operation('AUTH-07','Auth','GET','/identity/users/{id}','get','查询统一身份','本人或 UL','200 IdentityUser','返回 userId、no、name；no 使用 username，查询他人要求当前系统 UL。'),
+ Operation('AUTH-06','Auth','GET','/auth/api-permissions/{operationId}','api','检查接入 API 权限','有效登录','200 allowed','AuthService 将两系统 operationId 映射到 API 权限；未知操作返回 404 API_OPERATION_NOT_FOUND。'),
+ Operation('AUTH-07','Auth','GET','/auth/users/{userId}','get','查询统一身份用户','user.view 或 TEC','200 IdentityUser','返回 userId、no、name。平台限定本部门，课程端要求 TEC，不存在返回 IDENTITY_USER_NOT_FOUND。'),
+ Operation('AUTH-08','Auth','GET','/auth/departments','directoryDepartments','查询统一身份部门','department.manage 或 TEC','200 IdentityDepartmentPage','按 parentId 逐层展开，按名称或编码搜索，并返回 hasChildren。'),
+ Operation('AUTH-09','Auth','GET','/auth/departments/{departmentId}/users','directoryUsers','查询部门下的用户','user.view 或 TEC','200 IdentityDepartmentUserPage','按姓名或账号分页查询部门直接成员。平台限定本部门，响应仅包含身份字段。'),
  Operation('USER-01','User','GET','/api/users','list','查询本部门用户','user.view','200 Page<User>','分页并限定本部门直接成员。'),
  Operation('USER-02','User','GET','/api/users/{id}','get','查询用户详情','user.view','200 User','校验对象部门等于操作者部门。'),
  Operation('USER-03','User','POST','/api/users','create','新建用户','user.create','201 User','部门取自操作者；用户名全局唯一，编号由数据库生成。'),

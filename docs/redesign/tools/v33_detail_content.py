@@ -8,17 +8,17 @@ FIELD_TABLES = [
  ('permission 操作权限', [('id','BIGINT','否','主键，自增','权限编号'),('system_id','BIGINT','否','外键 business_system.id','权限所属系统，创建后固定'),('code','VARCHAR(100)','否','ASCII，系统内唯一','权限码，创建后固定'),('name','VARCHAR(100)','否','非空文本','操作名称')]),
  ('user_role 用户角色关联', [('user_id','BIGINT','否','联合主键，外键 app_user.id','被授权用户'),('role_id','BIGINT','否','联合主键，外键 role.id','用户持有的角色')]),
  ('role_permission 角色权限关联', [('role_id','BIGINT','否','联合主键，外键 role.id','持有权限的角色'),('permission_id','BIGINT','否','联合主键，外键 permission.id','授予角色的权限')]),
- ('login_session 技术会话', [('id','CHAR(36)','否','主键，ASCII UUID','对应 JWT jti'),('user_id','BIGINT','否','外键 app_user.id','当前登录用户'),('system_key','VARCHAR(64)','否','ASCII，与令牌 aud 一致','本次目标系统标识'),('expires_at','TIMESTAMP(6)','否','UTC 到期时刻','到期后拒绝认证'),('revoked_at','TIMESTAMP(6)','是','撤销时刻','为空表示尚未撤销')])]
+ ('login_session 技术会话', [('id','CHAR(36)','否','主键，ASCII UUID','对应 JWT jti'),('user_id','BIGINT','否','外键 app_user.id','当前登录用户'),('system_key','VARCHAR(64)','否','ASCII，对应令牌 aud 首项','本次默认目标系统'),('expires_at','TIMESTAMP(6)','否','UTC 到期时刻','到期后拒绝认证'),('revoked_at','TIMESTAMP(6)','是','撤销时刻','为空表示尚未撤销')])]
 
 # key, title, requirement, operation keys, package, actor, description, trigger,
 # precondition, steps, extensions, postcondition, activity, module class plates
 CASES = [
- ('AUTH-001','登录','REQ-F-01',['AUTH-01'],'身份认证','用户及接入系统客户端','提交用户名、手机号和一个目标系统，取得该系统的登录凭据。','用户打开平台后台或课程系统登录页。','两个业务系统已登记，用户存在并通过角色取得目标系统 login 权限。',[
- ('校验 username、password 和 systems。','password 承载手机号，systems 恰有一个非空标识。'),
+ ('AUTH-001','登录','REQ-F-01',['AUTH-01'],'身份认证','用户及接入系统客户端','提交用户名、手机号和目标系统列表，取得对应系统的登录凭据。','用户打开平台后台或课程系统登录页。','两个业务系统已登记，用户存在并通过角色取得目标系统 login 权限。',[
+ ('校验 username、password 和 systems。','password 承载手机号，systems 包含至少一个不重复的非空标识。'),
  ('按用户名读取账号并匹配手机号。','失败统一返回 401。'),
  ('读取目标系统及当前 RBAC 登录许可。','无系统登录资格返回 403。'),
  ('同事务保存登录会话并签发 JWT。','返回 accessToken、tokenType、expiresIn。')],
- [('字段缺失、格式错误或多系统输入','400，不调用登录服务。'),('账号不存在或手机号错误','401，返回统一凭据错误。'),('目标系统不存在或无 login 权限','403，不建立成功会话。')],
+ [('字段缺失、格式错误或目标系统重复','400，不调用登录服务。'),('账号不存在或手机号错误','401，返回统一凭据错误。'),('目标系统不存在或无 login 权限','403，不建立成功会话。')],
  '成功后客户端持有目标系统的 Bearer 凭据；JWT 只保存身份及会话信息。','activity-login',None),
  ('AUTH-002','查看本人资料 修改与退出','REQ-F-01',['AUTH-02','AUTH-04','AUTH-03'],'当前用户','已登录用户','读取本人资料和实时权限，修改姓名或手机号，或撤销当前会话。','用户查看个人资料、保存允许修改的字段或点击退出。','令牌签名、会话、账号和本系统 login 权限有效。',[
  ('从认证上下文取得本人编号。','请求不能指定其他用户或部门。'),('读取本人资料或校验资料白名单。','仅 name、phone；未提交字段保持原值。'),('提交资料修改，或撤销当前会话。','退出写入 revoked_at，不影响其他会话。')],
@@ -52,9 +52,9 @@ CASES = [
  ('检查操作权限及用户、角色归属。','跨部门请求在写入前拒绝。'),('移除指定 user_role。','关系已不存在时仍返回 204。')],
  [('无操作许可或跨部门','403。'),('用户或角色不存在','404。')],
  '后续鉴权按剩余角色取并集；其他角色仍授予同一权限时继续允许。',None,None),
- ('AUTHZ-001','运行时鉴权与统一身份','REQ-F-01',['AUTH-05','AUTH-06','AUTH-07'],'身份与鉴权','已登录用户及接入系统客户端','查询当前身份的一项权限，或取得统一用户身份资料。','平台或课程系统准备执行受控操作。','签名、会话、账号及当前系统 login 权限有效。',[
- ('从令牌和数据库会话确定用户及系统。','调用方只提交权限码、operationId 或身份编号。'),('读取当前用户角色及角色权限并集。','按当前 audience 限定权限命名空间。'),('返回 allowed 或统一用户资料。','未知 operationId 返回 false；查询他人需要当前系统 UL。')],
- [('令牌或会话失效','401。'),('本系统 login 已撤销，或无身份查询资格','403。'),('编码未授予或未映射','200，allowed=false。'),('数据库或身份依赖不可用','平台 503；课程拒绝业务操作。')],
+ ('AUTHZ-001','运行时鉴权与统一身份','REQ-F-01',['AUTH-05','AUTH-06','AUTH-07','AUTH-08','AUTH-09'],'身份与鉴权','已登录用户及接入系统客户端','查询当前身份的一项权限，或取得统一用户身份资料。','平台或课程系统准备执行受控操作。','签名、会话、账号及当前系统 login 权限有效。',[
+ ('从令牌和数据库会话确定用户及系统。','调用方只提交权限码、operationId 或身份编号。'),('读取当前用户角色及角色权限并集。','按当前 audience 限定权限命名空间。'),('返回 allowed 或统一用户资料。','未知 operationId 返回 404。课程身份目录要求 TEC。')],
+ [('令牌或会话失效','401。'),('本系统 login 已撤销，或无身份查询资格','403。'),('编码已知但未授予','200，allowed=false。'),('数据库或身份依赖不可用','平台 503；课程拒绝业务操作。')],
  '本次权限结论来自已提交的当前关系；接入系统独立执行拒绝。',None,'Auth')]
 
 CASES.append(('HIERARCHY-001','角色继承管理','REQ-F-03',['ROLE-10','ROLE-11','ROLE-12','ROLE-13'],'角色继承','持有 role.manage 的本部门管理员','建立同部门无环角色层次，使高级角色获得基础角色权限。','在角色页选择配置继承。','已登录，具有 API 许可，前端控件还需要 ui.role.inheritance。',[
@@ -63,11 +63,11 @@ CASES.append(('HIERARCHY-001','角色继承管理','REQ-F-03',['ROLE-10','ROLE-1
  '继承图保持 DAG；两系统的界面及 API 决策都使用当前有效权限。',None,None))
 
 INPUTS = {
- 'AUTH-01': 'Requests.Login：username、password、systems；systems 长度为 1。',
- 'AUTH-02':'无请求体；身份来自 Bearer。','AUTH-03':'无请求体；撤销当前 JWT 对应会话。','AUTH-04':'Requests.Profile：name、phone 至少出现一项。',
- 'AUTH-05':'路径 permission；身份和目标系统来自令牌。','AUTH-06':'路径 operationId；由映射表定位权限码。','AUTH-07':'路径 id 为正整数；查询他人要求 UL。',
- 'USER-03':'Requests.CreateUser：username、name、phone。','USER-04':'Requests.Profile：name、phone 至少出现一项。','USER-07':'Requests.AssignRole：roleId；目标用户来自路径。',
- 'ROLE-03':'Requests.Name：name。','ROLE-04':'Requests.Name：name。','DEPT-02':'Requests.CreateDepartment：name、parentId；parentId 可空。','DEPT-03':'Requests.Name：name。','SYS-02':'Requests.CreateSystem：systemKey、name。','SYS-03':'Requests.Name：name。','PERM-02':'Requests.CreatePermission：code、name；systemId 来自路径。','PERM-03':'Requests.Name：name。'}
+ 'AUTH-01': 'LoginDTO 接收 username、password 与非空且无重复的 systems。',
+ 'AUTH-02':'无请求体；身份来自 Bearer。','AUTH-03':'无请求体；撤销当前 JWT 对应会话。','AUTH-04':'ManagementDTOs.ProfileDTO：name、phone 至少出现一项。',
+ 'AUTH-05':'路径 permission；身份和目标系统来自令牌。','AUTH-06':'路径 operationId；由映射表定位权限码。','AUTH-07':'路径 userId 为字符串。','AUTH-08':'parentId 可空，keyword 可选，page 从 1 开始，pageSize 默认为 20。','AUTH-09':'departmentId 为正整数，支持 keyword、page、pageSize。',
+ 'USER-03':'ManagementDTOs.CreateUserDTO：username、name、phone。','USER-04':'ManagementDTOs.ProfileDTO：name、phone 至少出现一项。','USER-07':'ManagementDTOs.AssignRoleDTO：roleId；目标用户来自路径。',
+ 'ROLE-03':'ManagementDTOs.NameDTO：name。','ROLE-04':'ManagementDTOs.NameDTO：name。','DEPT-02':'ManagementDTOs.CreateDepartmentDTO：name、parentId；parentId 可空。','DEPT-03':'ManagementDTOs.NameDTO：name。','SYS-02':'ManagementDTOs.CreateSystemDTO：systemKey、name。','SYS-03':'ManagementDTOs.NameDTO：name。','PERM-02':'ManagementDTOs.CreatePermissionDTO：code、name；systemId 来自路径。','PERM-03':'ManagementDTOs.NameDTO：name。'}
 
 def operation_input(op):
  if op.function in ['inherit','uninherit']:return '路径 id 为高级角色、juniorId 为基础角色，均为正整数；无请求体。'
@@ -78,6 +78,8 @@ def operation_input(op):
 
 def controller_method(op):
  if op.key=='AUTH-07':return 'IdentityUserController.get'
+ if op.key=='AUTH-08':return 'IdentityDepartmentController.list'
+ if op.key=='AUTH-09':return 'IdentityDepartmentController.users'
  return ('AuthController' if op.module=='Auth' else op.module+'Controller')+'.'+op.function
 
 def calls_table(ops):
@@ -157,5 +159,5 @@ BearerFilter 在进入 Controller 前检查签名、过期时间、会话绑定�
 '''
  s+=table(['可执行层','日志内容','级别'],[
  ('API','方法、路由、响应结果、耗时；规则拒绝信息。','DEBUG / WARN'),('结构化服务','用例、操作者与目标编号，执行结果。','DEBUG / WARN'),('DDD 应用服务','用例编排、领域行为结果及事务异常。','DEBUG / WARN'),('DDD 领域对象','由应用服务记录行为结果，领域保持框架无关。','应用服务记录'),('Infrastructure','存储方法、结果、耗时及数据库异常。','DEBUG / ERROR')],'2,5,2')
- s+='\n各执行层通过 SLF4J 输出到 Logback 控制台与滚动文件；LayerLogging 覆盖业务和存储方法。统一异常边界记录未预期错误堆栈，运行日志保留操作证据并排除凭据值。\n'
+ s+='\n各执行层通过 SLF4J 输出到 Logback 控制台与滚动文件；LayerLogging 覆盖 Controller、业务和存储方法。切面记录操作、耗时和异常类型。认证过滤器记录请求路径及状态。\n'
  return s

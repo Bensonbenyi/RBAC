@@ -1,0 +1,516 @@
+{
+  "version": "3.6.0",
+  "documents": [
+    {
+      "document": "统一权限管理系统需求与详细设计说明书",
+      "pages": 183,
+      "pageSize": [
+        0.0,
+        0.0,
+        594.96,
+        841.92
+      ],
+      "figures": 146,
+      "expectedUiPermissionText": true
+    },
+    {
+      "document": "统一权限管理系统概要设计说明书",
+      "pages": 35,
+      "pageSize": [
+        0.0,
+        0.0,
+        594.96,
+        841.92
+      ],
+      "figures": 16,
+      "expectedUiPermissionText": true
+    }
+  ],
+  "figureAudit": {
+    "figures": 152,
+    "errors": []
+  },
+  "starUmlModels": {
+    "diagrams": 149,
+    "elements": 14589,
+    "references": "resolved",
+    "operationSignatures": 655
+  },
+  "v322Baseline": {
+    "baseline": "v3.2.2",
+    "revision": "3.5.0",
+    "baselineFigureCount": 90,
+    "coveredFigures": 89,
+    "scopeReplacements": 1,
+    "missingFigures": 0,
+    "originalStylePrefixSha256": "3985943c60fa927e3b7cf89a5cc4118af88e201121581d1a378686f3474af909",
+    "originalStyleRetained": true,
+    "baselineUseCases": 10,
+    "retainedBaselineUseCases": 10,
+    "currentUseCases": 12,
+    "fieldDictionaryTables": 9,
+    "figures": [
+      {
+        "v322": "rbac-chen-v1.svg",
+        "current": "assets/v33/chen.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "rbac-schema-v1.svg",
+        "current": "assets/v33/schema.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/10-login-activity.svg",
+        "current": "assets/v33/activity-login.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-csrf.svg",
+        "current": null,
+        "status": "superseded",
+        "reason": "按已确认的老师 Bearer 接入契约替换 Session Cookie 认证，CSRF 凭据流程取消。"
+      },
+      {
+        "v322": "spec/flow-login.svg",
+        "current": "assets/v33/auth-01-shared.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-session.svg",
+        "current": "assets/v33/flow-login-session.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-me.svg",
+        "current": "assets/v33/auth-02-shared.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-logout.svg",
+        "current": "assets/v33/auth-03-shared.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-query-user.svg",
+        "current": "assets/v33/user-01-structured.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-query-user-detail.svg",
+        "current": "assets/v33/user-02-structured.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-user-create-structured.svg",
+        "current": "assets/v33/user-03-structured.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-user-create-ddd.svg",
+        "current": "assets/v33/user-03-ddd.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-user-update-structured.svg",
+        "current": "assets/v33/user-04-structured.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-user-update-ddd.svg",
+        "current": "assets/v33/user-04-ddd.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-user-delete-structured.svg",
+        "current": "assets/v33/user-05-structured.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-user-delete-ddd.svg",
+        "current": "assets/v33/user-05-ddd.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-self-update-structured.svg",
+        "current": "assets/v33/auth-04-structured.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-self-update-ddd.svg",
+        "current": "assets/v33/auth-04-ddd.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-query-department.svg",
+        "current": "assets/v33/dept-01-structured.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-department-create-structured.svg",
+        "current": "assets/v33/dept-02-structured.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-department-create-ddd.svg",
+        "current": "assets/v33/dept-02-ddd.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-department-update-structured.svg",
+        "current": "assets/v33/dept-03-structured.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-department-update-ddd.svg",
+        "current": "assets/v33/dept-03-ddd.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-department-delete-structured.svg",
+        "current": "assets/v33/dept-04-structured.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-department-delete-ddd.svg",
+        "current": "assets/v33/dept-04-ddd.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-query-system.svg",
+        "current": "assets/v33/sys-01-structured.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-system-create-structured.svg",
+        "current": "assets/v33/sys-02-structured.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-system-create-ddd.svg",
+        "current": "assets/v33/sys-02-ddd.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-system-update-structured.svg",
+        "current": "assets/v33/sys-03-structured.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-system-update-ddd.svg",
+        "current": "assets/v33/sys-03-ddd.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-system-delete-structured.svg",
+        "current": "assets/v33/sys-04-structured.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-system-delete-ddd.svg",
+        "current": "assets/v33/sys-04-ddd.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-query-permission.svg",
+        "current": "assets/v33/perm-01-structured.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-permission-create-structured.svg",
+        "current": "assets/v33/perm-02-structured.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-permission-create-ddd.svg",
+        "current": "assets/v33/perm-02-ddd.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-permission-update-structured.svg",
+        "current": "assets/v33/perm-03-structured.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-permission-update-ddd.svg",
+        "current": "assets/v33/perm-03-ddd.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-permission-delete-structured.svg",
+        "current": "assets/v33/perm-04-structured.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-permission-delete-ddd.svg",
+        "current": "assets/v33/perm-04-ddd.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-query-role.svg",
+        "current": "assets/v33/role-01-structured.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-query-role-detail.svg",
+        "current": "assets/v33/role-02-structured.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-role-create-structured.svg",
+        "current": "assets/v33/role-03-structured.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-role-create-ddd.svg",
+        "current": "assets/v33/role-03-ddd.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-role-update-structured.svg",
+        "current": "assets/v33/role-04-structured.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-role-update-ddd.svg",
+        "current": "assets/v33/role-04-ddd.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-role-delete-structured.svg",
+        "current": "assets/v33/role-05-structured.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-role-delete-ddd.svg",
+        "current": "assets/v33/role-05-ddd.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-query-role-permissions.svg",
+        "current": "assets/v33/role-06-structured.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-role-grant-structured.svg",
+        "current": "assets/v33/role-07-structured.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-role-grant-ddd.svg",
+        "current": "assets/v33/role-07-ddd.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-role-revoke-structured.svg",
+        "current": "assets/v33/role-08-structured.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-role-revoke-ddd.svg",
+        "current": "assets/v33/role-08-ddd.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/11-assign-activity.svg",
+        "current": "assets/v33/activity-assign.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-query-user-roles.svg",
+        "current": "assets/v33/user-06-structured.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-user-assign-structured.svg",
+        "current": "assets/v33/user-07-structured.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-user-assign-ddd.svg",
+        "current": "assets/v33/user-07-ddd.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-user-revoke-structured.svg",
+        "current": "assets/v33/user-08-structured.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-user-revoke-ddd.svg",
+        "current": "assets/v33/user-08-ddd.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-authorize.svg",
+        "current": "assets/v33/auth-05-shared.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/01-structured-packages.svg",
+        "current": "assets/v33/packages-structured.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/02-ddd-packages.svg",
+        "current": "assets/v33/packages-ddd.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/architecture-runtime.svg",
+        "current": "assets/v33/architecture-runtime.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/class-user-structured.svg",
+        "current": "assets/v33/class-structured-user.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/class-user-ddd.svg",
+        "current": "assets/v33/class-ddd-user.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/class-department-structured.svg",
+        "current": "assets/v33/class-structured-department.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/class-department-ddd.svg",
+        "current": "assets/v33/class-ddd-department.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/class-system-structured.svg",
+        "current": "assets/v33/class-structured-system.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/class-system-ddd.svg",
+        "current": "assets/v33/class-ddd-system.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/class-permission-structured.svg",
+        "current": "assets/v33/class-structured-permission.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/class-permission-ddd.svg",
+        "current": "assets/v33/class-ddd-permission.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/class-role-structured.svg",
+        "current": "assets/v33/class-structured-role.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/class-role-ddd.svg",
+        "current": "assets/v33/class-ddd-role.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/domain-model.svg",
+        "current": "assets/v33/domain.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/class-persistence.svg",
+        "current": "assets/v33/class-persistence.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/adapter-insert.svg",
+        "current": "assets/v33/adapter-insert.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/adapter-update.svg",
+        "current": "assets/v33/adapter-update.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/adapter-delete.svg",
+        "current": "assets/v33/adapter-delete.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/packages-full-structured.svg",
+        "current": "assets/v33/packages-full-structured.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/packages-full-ddd.svg",
+        "current": "assets/v33/packages-full-ddd.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/packages-structured-entry.svg",
+        "current": "assets/v33/packages-structured-entry.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/packages-structured-implementation.svg",
+        "current": "assets/v33/packages-structured-implementation.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/packages-ddd-entry.svg",
+        "current": "assets/v33/packages-ddd-entry.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/packages-ddd-implementation.svg",
+        "current": "assets/v33/packages-ddd-implementation.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/packages-files.svg",
+        "current": "assets/v33/packages-files.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/class-auth.svg",
+        "current": "assets/v33/class-auth-shared.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/class-relations-structured.svg",
+        "current": "assets/v33/class-relations-structured.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/class-relations-ddd.svg",
+        "current": "assets/v33/class-relations-ddd.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-preflight.svg",
+        "current": "assets/v33/flow-preflight.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-copy.svg",
+        "current": "assets/v33/flow-copy.svg",
+        "status": "covered"
+      },
+      {
+        "v322": "spec/flow-adapter.svg",
+        "current": "assets/v33/flow-adapter.svg",
+        "status": "covered"
+      }
+    ]
+  },
+  "visualReview": {
+    "allPagesRendered": true,
+    "lastPagesRechecked": true,
+    "detailPages": 181,
+    "overviewPages": 35,
+    "courseOrphanParagraphFixed": true,
+    "graspIntroKeptWithTable": true
+  },
+  "identityApiOperations": 8,
+  "platformOperations": 44
+}

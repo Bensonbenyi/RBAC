@@ -53,13 +53,10 @@ public class BearerFilter extends OncePerRequestFilter {
         throw AuthService.unauthenticated();
       }
       Jwt token = decoder.decode(header.substring(7));
-      if (token.getAudience().size() != 1
-          || token.getId() == null
-          || token.getExpiresAt() == null
-          || !Instant.now().isBefore(token.getExpiresAt())) {
+      if (token.getAudience().isEmpty() || token.getId() == null || token.getExpiresAt() == null) {
         throw AuthService.unauthenticated();
       }
-      var session = sessions.find(token.getId());
+      SessionStore.Session session = sessions.find(token.getId());
       if (session == null
           || session.revokedAt() != null
           || !Instant.now().isBefore(session.expiresAt())
@@ -73,21 +70,30 @@ public class BearerFilter extends OncePerRequestFilter {
       } catch (BusinessException e) {
         throw AuthService.unauthenticated();
       }
-      if (!store.permissionsForUser(user.id(), session.systemKey()).contains("login")) {
+      String target = request.getHeader("X-Target-System");
+      if (target == null) {
+        target = session.systemKey();
+      }
+      boolean logout = path.equals("/auth/logout") && request.getMethod().equals("POST");
+      if (!token.getAudience().contains(target)
+          || (!logout && !store.permissionsForUser(user.id(), target).contains("login"))) {
         throw BusinessException.forbidden();
       }
-      var identity =
-          new Data.Identity(user.id(), user.departmentId(), session.systemKey(), session.id());
+      Data.Identity identity =
+          new Data.Identity(user.id(), user.departmentId(), target, session.id());
       SecurityContextHolder.getContext()
           .setAuthentication(new UsernamePasswordAuthenticationToken(identity, null, List.of()));
       chain.doFilter(request, response);
     } catch (JwtException | IllegalArgumentException e) {
-      error(response, 401, "UNAUTHENTICATED", "凭据无效或登录已过期");
+      error(response, 401, "UNAUTHORIZED", "凭据无效或登录已过期");
     } catch (BusinessException e) {
       error(response, e.status(), e.code(), e.getMessage());
     } catch (DataAccessException e) {
-      log.error("authentication database unavailable type={}", e.getClass().getSimpleName());
-      error(response, 503, "SERVICE_UNAVAILABLE", "身份服务暂不可用");
+      String code =
+          request.getRequestURI().startsWith("/auth/")
+              ? "IDENTITY_SERVICE_UNAVAILABLE"
+              : "SERVICE_UNAVAILABLE";
+      error(response, 503, code, "身份服务暂不可用");
     } finally {
       SecurityContextHolder.clearContext();
       log.debug(
@@ -104,6 +110,5 @@ public class BearerFilter extends OncePerRequestFilter {
     response.setStatus(status);
     response.setContentType("application/json;charset=UTF-8");
     response.getWriter().write("{\"code\":\"" + code + "\",\"message\":\"" + message + "\"}");
-    log.warn("authentication rejected status={} code={}", status, code);
   }
 }

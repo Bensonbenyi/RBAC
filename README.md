@@ -1,6 +1,6 @@
 # 统一权限管理系统
 
-当前实现版本为 3.5.0。结构化和 DDD 业务实现共用 HTTP 接口、存储端口、认证及 MySQL 数据库，通过 `BACKEND_STRATEGY=structured` 或 `ddd` 选择。
+当前实现版本为 3.6.0。结构化和 DDD 业务实现共用 HTTP 接口、存储端口、认证及 MySQL 数据库，通过 `BACKEND_STRATEGY=structured` 或 `ddd` 选择。
 
 ## 本地检查
 
@@ -19,7 +19,7 @@
 设置 `DB_URL`、`DB_USER`、`DB_PASSWORD`、`JWT_PRIVATE_KEY`、`JWT_PUBLIC_KEY` 后启动：
 
 ```sh
-java -jar backend/target/rbac-backend-3.5.0.jar
+java -jar backend/target/rbac-backend-3.6.0.jar
 ```
 
 密钥参数使用 Spring Resource 路径，例如 `file:/绝对路径/private.pem`。默认令牌有效期为 30 分钟。空演示库可显式设置 `app.demo.enabled=true` 和 `app.demo.phone` 初始化合成账号；已有用户时跳过初始化。
@@ -40,7 +40,7 @@ mvn -f .integrations/course-project-mgt/backend/pom.xml -s .mvn/settings.xml pac
 
 `deploy/stack.yaml` 将入口及两套应用部署在现有 Swarm Manager，MySQL 放在 Worker 1。使用独立 Overlay、Secret 和数据卷。`deploy/backup.sh` 在数据库节点生成一致性备份；恢复验证使用独立临时数据库。
 
-当前文档入口为 [设计交付目录](docs/redesign/README.md)，本轮核查和验证见 [v3.5.0 整改报告](docs/implementation/整改报告-v3.5.0.md)，原部署记录见 [实施报告](docs/implementation/实施报告.md)。`tooling/build-design.sh` 重建两份 PDF、AsciiDoc、151 张黑白图稿及 StarUML 模型。
+当前文档入口为 [设计交付目录](docs/redesign/README.md)，本轮核查和验证见 [v3.6.0 整改报告](docs/implementation/整改报告-v3.6.0.md)，原部署记录见 [实施报告](docs/implementation/实施报告.md)。`tooling/build-design.sh` 重建两份 PDF、AsciiDoc、154 张黑白图稿及 StarUML 模型。
 
 
 ## 第二轮验收
@@ -51,4 +51,4 @@ mvn -f .integrations/course-project-mgt/backend/pom.xml -s .mvn/settings.xml pac
 - [平台 API 文档](http://113.44.144.119/api-docs/) 与 [JaCoCo 报告](http://113.44.144.119/coverage/)
 - [第二轮演示脚本](docs/implementation/第二轮演示脚本.md)
 
-API 文档由 `python3 tooling/build-api.py` 构建，并核对全部 42 个 Controller 操作。覆盖率由 `./mvnw verify` 生成。真实部署测试使用 `tooling/acceptance.py`，通过环境变量读取演示手机号，结束时清理合成角色、关联及学期。
+API 文档由 `python3 tooling/build-api.py` 构建，并核对全部 44 个 Controller 操作。覆盖率由 `./mvnw verify` 生成。真实部署测试使用 `tooling/acceptance.py`，通过环境变量读取演示手机号，结束时清理合成角色、关联及学期。

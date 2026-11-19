@@ -3,7 +3,7 @@ package cn.edu.xmu.rbac;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import cn.edu.xmu.clonefactory.util.CloneFactory;
-import cn.edu.xmu.rbac.api.shared.Requests;
+import cn.edu.xmu.rbac.api.shared.dto.ManagementDTOs;
 import cn.edu.xmu.rbac.service.port.Data;
 import org.junit.jupiter.api.Test;
 
@@ -11,10 +11,10 @@ import org.junit.jupiter.api.Test;
 class CopyTest {
   @Test
   void copiesRecordAndKeepsUnsubmittedFields() {
-    var command =
-        CloneFactory.copy(new Data.Profile(null, null), new Requests.Profile("新姓名", null));
-    var old = new Data.Profile("原姓名", "13800000000");
-    var merged = CloneFactory.copyNotNull(old, command);
+    Data.Profile command =
+        CloneFactory.copy(new Data.Profile(null, null), new ManagementDTOs.ProfileDTO("新姓名", null));
+    Data.Profile old = new Data.Profile("原姓名", "13800000000");
+    Data.Profile merged = CloneFactory.copyNotNull(old, command);
     assertEquals(new Data.Profile("新姓名", "13800000000"), merged);
     assertEquals(new Data.Profile("原姓名", "13800000000"), old);
     assertEquals(old, CloneFactory.copyNotNull(old, new Data.Profile(null, null)));

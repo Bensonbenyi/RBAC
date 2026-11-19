@@ -37,7 +37,7 @@ def lines(d,s,x,y,width,size=20,mid=False,gap=25):
  return len(ss)*gap
 
 class Sequence:
- def __init__(self,stem,title,parts,height=1000,created=None):
+ def __init__(self,stem,title,parts,height=1000,created=None,compact_headers=False):
   height+=35
   created={i:y+35 for i,y in (created or {}).items()}
   self.owner=obj('UMLInteraction',u.MODEL,name=title,ownedElements=[],participants=[],messages=[],fragments=[])
@@ -54,16 +54,21 @@ class Sequence:
    lp=obj('UMLLinePartView',v,model=ref(m),left=x,top=top+125,width=1,height=height-top-160,parentStyle=False,lineColor='#000000')
    v['subViews']=[c,lp];v['nameCompartment']=ref(c);v['linePart']=ref(lp)
    self.d.rect(x-self.hw,top,2*self.hw,125)
-   if typ=='CloneFactory':
+   if compact_headers:
+    label=f'{name}: {typ}'
+    size=min(20,int((2*self.hw-12)/tw(label,1)))
+    self.d.text(x,top+65,label,size,True,native=False)
+   elif typ=='CloneFactory':
     m['stereotype']='MetaClass';self.d.text(x,top+22,'«MetaClass»',18,True,native=False)
    else:self.d.text(x,top+22,name+':',20,True,native=False)
-   words=re.findall('[A-Z][a-z0-9]*|[A-Z]+(?=[A-Z]|$)',typ) or [typ]
-   header=[];s=''
-   for word in words:
-    if tw(s+word,20)>2*self.hw-15:header.append(s);s=word
-    else:s+=word
-   if s:header.append(s)
-   for j,t in enumerate(header):self.d.text(x,top+54+j*28,t,20,True,native=False)
+   if not compact_headers:
+    words=re.findall('[A-Z][a-z0-9]*|[A-Z]+(?=[A-Z]|$)',typ) or [typ]
+    header=[];s=''
+    for word in words:
+     if tw(s+word,20)>2*self.hw-15:header.append(s);s=word
+     else:s+=word
+    if s:header.append(s)
+    for j,t in enumerate(header):self.d.text(x,top+54+j*28,t,20,True,native=False)
    self.d.line([(x,top+125),(x,height-35)],dash=True)
    self.parts.append((m,v,lp,x,typ))
  def msg(self,a,b,y,text,method=None,reply=False,end=None,create=False):

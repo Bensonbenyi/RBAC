@@ -28,8 +28,8 @@ WRITES={
  'ROLE-07':'grantPermission(id, permissionId)', 'ROLE-08':'revokePermission(id, permissionId)'}
 DOMAIN={
  'USER-04':'changeProfile(command)', 'USER-07':'assignRole(role, actor.departmentId)',
- 'USER-08':'revokeRole(roleId)', 'ROLE-04':'rename(command.name)',
- 'ROLE-07':'grantPermission(permission)', 'ROLE-08':'revokePermission(permissionId)',
+ 'ROLE-04':'rename(command.name)',
+ 'ROLE-07':'grantPermission(permission)',
  'DEPT-03':'rename(command.name)', 'SYS-03':'rename(command.name)', 'PERM-03':'rename(command.name)'}
 
 def service_sequence(op,mode):
@@ -46,11 +46,10 @@ def service_sequence(op,mode):
    calls=[noun+' = '+noun+'(id)'];write=('rename'+module+'(id, name)' if op.function=='update' else 'delete'+module+'(id)')
  extras=[]
  if op.key=='USER-07':extras=['hasRole(userId, roleId)'] if not domain else ['assigned = userRoles(userId)']
- if domain and op.key=='USER-08':extras=['assigned = userRoles(userId)']
- if domain and op.key in ['ROLE-07','ROLE-08']:extras=['assigned = rolePermissions(id)']
- scoped=module in ['User','Role']
+ if domain and op.key=='ROLE-07':extras=['assigned = rolePermissions(id)']
+ scoped=module in ['User','Role'] and op.function not in ['list','create']
  count=len(calls)+len(extras)+(1 if scoped else 0)+(2 if domain else 0)+(1 if write else 0)
- scope_height=(205 if op.key in ["USER-07","USER-08"] else 115) if scoped else 0
+ scope_height=(205 if op.key in ["USER-07","USER-08"] and not (domain and op.key=="USER-07") else 115) if scoped else 0
  final_y=575+115*(len(calls)+len(extras))+scope_height+(285 if domain else 0)+(115 if write else 0)
  height=max(1150,final_y+210)
  if domain:height=575+115*(len(calls)+len(extras))+scope_height+340
@@ -68,7 +67,8 @@ def service_sequence(op,mode):
   seq.msg(1,3,y,call,end=y+45);y+=115
  if scoped:
   target='actor.departmentId' if op.function in ['list','create'] else ('user.departmentId；role.departmentId' if op.key in ['USER-07','USER-08'] else module.lower()+'.departmentId')
-  if '；' in target:
+  if domain and op.key=='USER-07':seq.msg(1,2,y,'scope(actor, user.departmentId)',end=y+40)
+  elif '；' in target:
    seq.msg(1,2,y,'scope(actor, user.departmentId)',end=y+35);y+=90
    seq.msg(1,2,y,'scope(actor, role.departmentId)',end=y+35)
   else:seq.msg(1,2,y,'scope(actor, '+target+')',end=y+40)

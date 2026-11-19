@@ -5,10 +5,9 @@ import cn.edu.xmu.rbac.service.port.ManagementStore;
 import cn.edu.xmu.rbac.service.port.RoleUseCase;
 import cn.edu.xmu.rbac.service.security.AccessPolicy;
 import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 /** Role 用例的结构化事务脚本实现. */
@@ -16,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @ConditionalOnProperty(name = "app.backend-strategy", havingValue = "structured")
 public class StructuredRoleService implements RoleUseCase {
-  private static final Logger log = LoggerFactory.getLogger(StructuredRoleService.class);
   private final ManagementStore store;
   private final AccessPolicy access;
 
@@ -26,7 +24,7 @@ public class StructuredRoleService implements RoleUseCase {
   }
 
   private Data.Role scoped(Data.Identity actor, Long id) {
-    var role = store.role(id);
+    Data.Role role = store.role(id);
     access.scope(actor, role.departmentId());
     return role;
   }
@@ -34,7 +32,6 @@ public class StructuredRoleService implements RoleUseCase {
   /** 分页查询当前用例可见的对象. */
   public Data.Page<Data.Role> list(Data.Identity actor, int page, int size) {
     access.require(actor, "role.manage");
-    access.scope(actor, actor.departmentId());
     return store.roles(actor.departmentId(), page, size);
   }
 
@@ -46,8 +43,6 @@ public class StructuredRoleService implements RoleUseCase {
   /** 校验输入后创建对象. */
   public Data.Role create(Data.Identity actor, Data.Name command) {
     access.require(actor, "role.manage");
-    access.scope(actor, actor.departmentId());
-    log.debug("createRole actor={}", actor.userId());
     return store.createRole(actor.departmentId(), command.name());
   }
 
@@ -56,7 +51,6 @@ public class StructuredRoleService implements RoleUseCase {
     access.require(actor, "role.manage");
     scoped(actor, id);
     store.renameRole(id, command.name());
-    log.debug("renameRole actor={} target={}", actor.userId(), id);
   }
 
   /** 检查引用关系后删除对象. */
@@ -64,7 +58,6 @@ public class StructuredRoleService implements RoleUseCase {
     access.require(actor, "role.manage");
     scoped(actor, id);
     store.deleteRole(id);
-    log.debug("deleteRole actor={} target={}", actor.userId(), id);
   }
 
   /** 查询角色已授予权限. */
@@ -80,7 +73,6 @@ public class StructuredRoleService implements RoleUseCase {
     scoped(actor, id);
     store.permission(permissionId);
     store.grantPermission(id, permissionId);
-    log.debug("grantPermission actor={} role={} permission={}", actor.userId(), id, permissionId);
   }
 
   /** 撤销指定授权关联. */
@@ -89,7 +81,6 @@ public class StructuredRoleService implements RoleUseCase {
     scoped(actor, id);
     store.permission(permissionId);
     store.revokePermission(id, permissionId);
-    log.debug("revokePermission actor={} role={} permission={}", actor.userId(), id, permissionId);
   }
 
   /** 查询直接基础角色，归属与其他角色操作一致. */
@@ -107,14 +98,15 @@ public class StructuredRoleService implements RoleUseCase {
   }
 
   /** 同部门串行写入，避免两次并发新增共同形成环. */
+  @Transactional(isolation = Isolation.READ_COMMITTED)
   public void inherit(Data.Identity actor, Long id, Long juniorId) {
     access.require(actor, "role.manage");
     store.lockHierarchy(actor.departmentId());
     scoped(actor, id);
     scoped(actor, juniorId);
-    var edges = store.inheritanceEdges(actor.departmentId());
-    var pending = new java.util.ArrayDeque<Long>();
-    var visited = new java.util.HashSet<Long>();
+    List<Data.Inheritance> edges = store.inheritanceEdges(actor.departmentId());
+    java.util.ArrayDeque<Long> pending = new java.util.ArrayDeque<>();
+    java.util.HashSet<Long> visited = new java.util.HashSet<>();
     pending.add(juniorId);
     while (!pending.isEmpty()) {
       Long current = pending.removeFirst();
@@ -129,16 +121,13 @@ public class StructuredRoleService implements RoleUseCase {
       }
     }
     store.inheritRole(id, juniorId);
-    log.debug("inheritRole actor={} senior={} junior={}", actor.userId(), id, juniorId);
   }
 
   /** 移除一条直接继承边；其他继承路径仍然有效，重复移除保持幂等. */
   public void uninherit(Data.Identity actor, Long id, Long juniorId) {
     access.require(actor, "role.manage");
-    store.lockHierarchy(actor.departmentId());
     scoped(actor, id);
     scoped(actor, juniorId);
     store.removeInheritance(id, juniorId);
-    log.debug("uninheritRole actor={} senior={} junior={}", actor.userId(), id, juniorId);
   }
 }

@@ -1,6 +1,6 @@
 {
-  "operations": 42,
-  "diagrams": 148,
+  "operations": 44,
+  "diagrams": 149,
   "operationKeys": [
     "AUTH-01",
     "AUTH-02",
@@ -9,6 +9,8 @@
     "AUTH-05",
     "AUTH-06",
     "AUTH-07",
+    "AUTH-08",
+    "AUTH-09",
     "USER-01",
     "USER-02",
     "USER-03",

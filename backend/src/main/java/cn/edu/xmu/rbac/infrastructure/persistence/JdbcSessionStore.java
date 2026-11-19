@@ -27,7 +27,7 @@ public class JdbcSessionStore implements SessionStore {
 
   /** 读取持久化会话，不存在时返回 null. */
   public Session find(String id) {
-    var rows =
+    java.util.List<Session> rows =
         jdbc.query(
             "SELECT * FROM login_session WHERE id=?",
             (r, n) ->

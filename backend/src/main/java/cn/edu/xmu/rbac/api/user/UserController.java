@@ -1,7 +1,8 @@
 package cn.edu.xmu.rbac.api.user;
 
 import cn.edu.xmu.clonefactory.util.CloneFactory;
-import cn.edu.xmu.rbac.api.shared.Requests;
+import cn.edu.xmu.rbac.api.shared.dto.ManagementDTOs;
+import cn.edu.xmu.rbac.api.shared.vo.ManagementVOs;
 import cn.edu.xmu.rbac.infrastructure.security.CurrentIdentity;
 import cn.edu.xmu.rbac.service.port.Data;
 import cn.edu.xmu.rbac.service.port.UserUseCase;
@@ -38,30 +39,32 @@ public class UserController {
   }
 
   @GetMapping
-  public Data.Page<Data.User> list(
+  public ManagementVOs.PageVO<ManagementVOs.UserVO> list(
       @RequestParam(defaultValue = "0") @Min(0) @Max(1000000) int page,
       @RequestParam(defaultValue = "20") @Min(1) @Max(100) int size) {
-    return service.list(current.get(), page, size);
+    return ManagementVOs.page(service.list(current.get(), page, size), ManagementVOs::user);
   }
 
   @GetMapping("/{id}")
-  public Data.User get(@PathVariable @Positive Long id) {
-    return service.get(current.get(), id);
+  public ManagementVOs.UserVO get(@PathVariable @Positive Long id) {
+    return ManagementVOs.user(service.get(current.get(), id));
   }
 
   /** 校验输入后创建对象. */
   @PostMapping
-  public ResponseEntity<Data.User> create(@RequestBody @Valid Requests.CreateUser request) {
-    var user =
+  public ResponseEntity<ManagementVOs.UserVO> create(
+      @RequestBody @Valid ManagementDTOs.CreateUserDTO request) {
+    Data.User user =
         service.create(
             current.get(), CloneFactory.copy(new Data.CreateUser(null, null, null), request));
-    return ResponseEntity.created(URI.create("/api/users/" + user.id())).body(user);
+    return ResponseEntity.created(URI.create("/api/users/" + user.id()))
+        .body(ManagementVOs.user(user));
   }
 
   @PatchMapping("/{id}")
   @ResponseStatus(org.springframework.http.HttpStatus.NO_CONTENT)
   public void update(
-      @PathVariable @Positive Long id, @RequestBody @Valid Requests.Profile request) {
+      @PathVariable @Positive Long id, @RequestBody @Valid ManagementDTOs.ProfileDTO request) {
     service.update(current.get(), id, CloneFactory.copy(new Data.Profile(null, null), request));
   }
 
@@ -72,14 +75,14 @@ public class UserController {
   }
 
   @GetMapping("/{id}/roles")
-  public List<Data.Role> roles(@PathVariable @Positive Long id) {
-    return service.roles(current.get(), id);
+  public List<ManagementVOs.RoleVO> roles(@PathVariable @Positive Long id) {
+    return service.roles(current.get(), id).stream().map(ManagementVOs::role).toList();
   }
 
   /** 在本部门范围内分配角色. */
   @PostMapping("/{id}/roles")
   public ResponseEntity<Void> assign(
-      @PathVariable @Positive Long id, @RequestBody @Valid Requests.AssignRole request) {
+      @PathVariable @Positive Long id, @RequestBody @Valid ManagementDTOs.AssignRoleDTO request) {
     service.assign(current.get(), id, request.roleId());
     return ResponseEntity.created(URI.create("/api/users/" + id + "/roles/" + request.roleId()))
         .build();

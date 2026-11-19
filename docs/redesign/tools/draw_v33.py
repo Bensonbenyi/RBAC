@@ -82,6 +82,8 @@ def sequence_for(op,mode):
  if op.module!="Auth":
   from v34_sequences import service_sequence
   return service_sequence(op,mode)
+ if op.key in {'AUTH-07','AUTH-08','AUTH-09'}:
+  return identity_directory_sequence(op)
  shared=op.module=='Auth' and op.function!='updateMe'
  label='共享' if shared else '结构化' if mode=='structured' else 'DDD'
  stem=op.key.lower()+('-shared' if shared else '-'+mode)
@@ -90,10 +92,8 @@ def sequence_for(op,mode):
   'AUTH-04':('User','changeProfile(command)','user(actor.userId)','updateUser(本人, profile)'),
   'USER-04':('User','changeProfile(command)','user(id)','updateUser(id, profile)'),
   'USER-07':('User','assignRole(role, actorDepartment)','user / role；userRoles','assignRole(user, role)'),
-  'USER-08':('User','revokeRole(roleId)','user / role；userRoles','revokeRole(user, role)'),
   'ROLE-04':('Role','rename(name)','role(id)','renameRole(id, name)'),
   'ROLE-07':('Role','grantPermission(permission)','role / permission；rolePermissions','grantPermission(role, permission)'),
-  'ROLE-08':('Role','revokePermission(permissionId)','role / permission；rolePermissions','revokePermission(role, permission)'),
   'DEPT-03':('Department','rename(name)','department(id)','renameDepartment(id, name)'),
   'SYS-03':('System','rename(name)','system(id)','renameSystem(id, name)'),
   'PERM-03':('Permission','rename(name)','permission(id)','renamePermission(id, name)')}
@@ -113,20 +113,20 @@ def sequence_for(op,mode):
   s.note(1160,'应用服务先执行 AccessPolicy 权限与部门检查；本人资料使用当前身份。领域对象维护状态，存储端口保存变化；写失败回滚。')
   return
  if shared:
-  parts=[('client','Browser'),('api','IdentityUserController' if op.key=='AUTH-07' else 'AuthController'),('service','AuthService'),('store','SessionStore' if op.key=='AUTH-03' else 'ManagementStore')]
+  parts=[('obj','Caller'),('api','AuthController'),('service','AuthService'),('store','SessionStore' if op.key=='AUTH-03' else 'ManagementStore')]
  elif op.key=='AUTH-04':parts=[('client','Browser'),('api','AuthController'),('service',prefix+'UserService'),('store','ManagementStore')]
  else:parts=[('api',op.module+'Controller'),('usecase',prefix+op.module+'Service'),('access','AccessPolicy'),('store','ManagementStore')]
  s=Sequence(stem,f'{op.key} {label} {op.title}',parts,height=1140)
  if shared or op.key=='AUTH-04':
-  fn={'AUTH-05':'uiAllowed','AUTH-06':'apiAllowed','AUTH-07':'lookup'}.get(op.key,op.function)
+  fn={'AUTH-05':'uiAllowed','AUTH-06':'apiAllowed'}.get(op.key,op.function)
   s.msg(0,1,300,op.method+' '+op.route,end=940)
   s.msg(1,2,410,fn+'(校验后的输入 / 当前身份)',end=880)
-  data={'AUTH-01':'userByUsername；检查手机号和当前 login 许可','AUTH-02':'user；rolesForUser；permissionsForUser','AUTH-03':'revoke(sessionId, now)','AUTH-04':'user(actor.userId)；updateUser(本人, profile)','AUTH-05':'permissionsForUser(当前用户, 当前系统)','AUTH-06':'permissionsForUser(当前用户, 当前系统)','AUTH-07':'检查本人或 UL；user(id)'}[op.key]
+  data={'AUTH-01':'userByUsername；检查手机号和当前 login 许可','AUTH-02':'user；rolesForUser；permissionsForUser','AUTH-03':'revoke(sessionId, now)','AUTH-04':'user(actor.userId)；updateUser(本人, profile)','AUTH-05':'permissionsForUser(当前用户, 当前系统)','AUTH-06':'permissionsForUser(当前用户, 当前系统)'}[op.key]
   s.msg(2,3,560,data,end=740)
   s.msg(3,2,770,'当前数据 / 更新结果 / 异常',reply=True)
   s.msg(2,1,900,'结果或业务错误',reply=True)
   s.msg(1,0,970,op.result,reply=True)
-  note={'AUTH-01':'AuthService 校验通过后调用 SessionStore.save，使用 JwtEncoder 签发身份 JWT；同事务保存会话。','AUTH-03':'撤销当前会话，后续请求由 BearerFilter 拒绝。','AUTH-04':'本人编号来自认证上下文；仅修改姓名和手机号；不要求用户管理权限。','AUTH-06':'AuthService 通过 OperationPermissions 将 operationId 映射为权限码；未知操作直接返回 false。'}.get(op.key,'BearerFilter 已检查签名、会话、账号及目标系统 login；权限从当前关联读取。')
+  note={'AUTH-01':'AuthService 校验通过后调用 SessionStore.save，使用 JwtEncoder 签发身份 JWT；同事务保存会话。','AUTH-03':'撤销当前会话，后续请求由 BearerFilter 拒绝。','AUTH-04':'本人编号来自认证上下文；仅修改姓名和手机号；不要求用户管理权限。','AUTH-06':'AuthService 通过 OperationPermissions 将 operationId 映射为权限码；未知操作返回 404。'}.get(op.key,'BearerFilter 已检查签名、会话、账号及目标系统 login；权限从当前关联读取。')
   s.note(1040,note)
  else:
   s.msg(0,1,300,op.function+'(actor, 参数)',end=940)
@@ -185,6 +185,54 @@ def deployment():
  d.line([(450,515),(450,640)],'dep');d.text(475,590,'加密 Overlay  MySQL :3306',19)
  d.note(60,1090,780,['新服务使用独立网络与卷，数据库不发布公网端口。','现有容器保留；当前为单管理节点与单数据库实例。'])
 
+def identity_directory_sequence(op):
+ controller,action,query,http={
+  'AUTH-07':('IdentityUserController','lookup(actor, userId)','user(id)','GET /auth/users/{userId}'),
+  'AUTH-08':('IdentityDepartmentController','departments(actor, query)','directoryDepartments(查询条件)','GET /auth/departments'),
+  'AUTH-09':('IdentityDepartmentController','users(actor, departmentId, query)','directoryUsers(查询条件)','GET 部门成员目录'),
+ }[op.key]
+ height=1300 if op.key=='AUTH-09' else 1160
+ q=Sequence(op.key.lower()+'-shared',op.key+' '+op.title,[
+  ('obj','Caller'),('api',controller),('svc','IdentityDirectoryService'),
+  ('rbac','AccessPolicy'),('store','ManagementStore')
+ ],height=height,compact_headers=True)
+ x=q.parts[0][3]
+ q.d.rect(x-5,305,10,height-390)
+ q.activations.append((0,305,height-85))
+ q.msg(0,1,290,http,end=height-155)
+ q.msg(1,2,410,action,end=height-245)
+ q.msg(2,3,535,'granted = allowed(userId, system, code)',end=585)
+ if op.key=='AUTH-09':
+  q.msg(2,4,665,'department(departmentId)',end=714)
+  q.msg(2,3,780,'[平台] scope(actor, departmentId)',end=825)
+  y=915
+ elif op.key=='AUTH-07':
+  y=685
+ else:
+  y=685
+ q.msg(2,4,y,'result = '+query,end=y+50)
+ if op.key=='AUTH-07':
+  q.msg(2,3,795,'[平台] scope(actor, departmentId)',end=835)
+ q.msg(2,1,height-240,'查询结果',reply=True)
+ q.msg(1,0,height-145,'200 目录响应',reply=True)
+ note='课程使用 TEC，平台使用已有目录权限。无权限返回 403。'
+ if op.key=='AUTH-07':note+=' 用户不存在返回 IDENTITY_USER_NOT_FOUND。'
+ if op.key=='AUTH-09':note+=' 部门不存在返回 IDENTITY_DEPARTMENT_NOT_FOUND。'
+ q.note(height-85,note)
+
+def identity_directory_class():
+ from draw_detail_v331 import cls,ref,bottom
+ d=D('class-identity-directory','统一身份目录类图',1000,1080)
+ departments=cls(d,'IdentityDepartmentController',40,115,420,['list','users'])
+ users=cls(d,'IdentityUserController',540,115,420,['get'])
+ service=cls(d,'IdentityDirectoryService',290,420,420,['departments','users','lookup'])
+ store=cls(d,'ManagementStore',40,770,420,['directoryDepartments','directoryUsers','user'],interface=True)
+ access=cls(d,'AccessPolicy',540,770,420,['allowed','scope'])
+ ref(d,departments,service,[(330,bottom(departments)),(330,420)],'service')
+ ref(d,users,service,[(670,bottom(users)),(670,420)],'service')
+ ref(d,service,store,[(330,bottom(service)),(330,770)],'store')
+ ref(d,service,access,[(670,bottom(service)),(670,770)],'access')
+
 def files_and_integration():
  d=D('packages-files','源文件与配置文件组织',900,1180,'UMLPackageDiagram')
  for title,x,y,w,h,body in [
@@ -195,7 +243,7 @@ def files_and_integration():
  ('vendor / integrations / docs',50,950,800,150,['vendor/clonefactory 教师源码与许可','integrations/ 固定上游版本与适配补丁   docs/ 文档和图稿'])]:d.node(title,x,y,w,h,'UMLPackage',body=body)
  d=D('class-auth-shared','共享认证模块类图',900,1150)
  ctrl=d.node('AuthController',40,110,380,220,ops=[('login',''),('me',''),('logout',''),('check',''),('api','')])
- svc=d.node('AuthService',480,110,380,330,ops=[('login',''),('me',''),('logout',''),('uiAllowed',''),('apiAllowed',''),('allowed',''),('lookup','')])
+ svc=d.node('AuthService',480,110,380,330,ops=[('login',''),('me',''),('logout',''),('uiAllowed',''),('apiAllowed','')])
  store=d.node('ManagementStore',480,510,380,220,'UMLInterface',ops=[('userByUsername',''),('permissionsForUser',''),('rolesForUser','')])
  session=d.node('SessionStore',40,510,380,220,'UMLInterface',ops=[('save',''),('find',''),('revoke','')])
  encoder=d.node('JwtEncoder',480,890,380,130,'UMLInterface',ops=[('encode','')])
@@ -291,7 +339,7 @@ def analysis():
 
 if __name__=='__main__':
  from draw_detail_v331 import classes as detailed_classes, supporting
- architecture();detailed_classes();domain_relations();core_classes();supporting();overview_sequences();lifecycle();deployment();files_and_integration();utility();dataflow();analysis()
+ architecture();detailed_classes();domain_relations();core_classes();supporting();overview_sequences();lifecycle();deployment();files_and_integration();identity_directory_class();utility();dataflow();analysis()
  for op in OPS:
   if (op.module=='Auth' and op.function!='updateMe') or op.function=='options':sequence_for(op,'shared')
   else:

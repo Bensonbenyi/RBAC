@@ -10,14 +10,96 @@ index eafc391..4296cd9 100644
  		<dependency>
  			<groupId>org.springframework.boot</groupId>
  			<artifactId>spring-boot-starter-actuator</artifactId>
+diff --git a/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/identity/IdentityHttpClientConfiguration.java b/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/identity/IdentityHttpClientConfiguration.java
+index 6e94e4a..cff235c 100644
+--- a/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/identity/IdentityHttpClientConfiguration.java
++++ b/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/identity/IdentityHttpClientConfiguration.java
+@@ -1,6 +1,7 @@
+ package cn.edu.xmu.projectmgt.infrastructure.identity;
+
+ import cn.edu.xmu.projectmgt.infrastructure.http.ExternalRestClientFactory;
++import cn.edu.xmu.projectmgt.infrastructure.identity.client.ApiAuthorityClient;
+ import cn.edu.xmu.projectmgt.infrastructure.identity.client.UnifiedIdentityClient;
+ import lombok.RequiredArgsConstructor;
+ import org.springframework.beans.factory.annotation.Value;
+@@ -34,4 +35,15 @@ public class IdentityHttpClientConfiguration {
+                 .build()
+                 .createClient(UnifiedIdentityClient.class);
+     }
++    /** 为 RBAC 集成创建与身份接口共用 HTTP 配置的授权客户端。 */
++    @Bean
++    @Profile("rbac-integration")
++    public ApiAuthorityClient apiAuthorityClient(
++            @Value("${app.identity.base-url}")
++            String baseUrl
++    ) {
++        return HttpServiceProxyFactory.builderFor(RestClientAdapter.create(restClientFactory.create(baseUrl)))
++                .build()
++                .createClient(ApiAuthorityClient.class);
++    }
+ }
+diff --git a/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/identity/client/ApiAuthorityClient.java b/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/identity/client/ApiAuthorityClient.java
+new file mode 100644
+index 0000000..60c38c9
+--- /dev/null
++++ b/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/identity/client/ApiAuthorityClient.java
+@@ -0,0 +1,25 @@
++package cn.edu.xmu.projectmgt.infrastructure.identity.client;
++
++import org.springframework.http.HttpHeaders;
++import org.springframework.web.bind.annotation.PathVariable;
++import org.springframework.web.bind.annotation.RequestHeader;
++import org.springframework.web.service.annotation.GetExchange;
++import org.springframework.web.service.annotation.HttpExchange;
++
++/** 从统一身份服务获取课程 API 的许可。 */
++@HttpExchange(headers = "X-Target-System=course-project-management")
++public interface ApiAuthorityClient {
++
++    /** 查询指定操作的全局许可。 */
++    @GetExchange("/auth/api-permissions/{operationId}")
++    Decision check(
++            @RequestHeader(HttpHeaders.AUTHORIZATION)
++            String authorization,
++            @PathVariable
++            String operationId
++    );
++
++    /** 统一身份返回的权限决定。 */
++    record Decision(boolean allowed) {
++    }
++}
+diff --git a/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/identity/client/UnifiedIdentityClient.java b/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/identity/client/UnifiedIdentityClient.java
+index 71b6e5a..b13831e 100644
+--- a/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/identity/client/UnifiedIdentityClient.java
++++ b/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/identity/client/UnifiedIdentityClient.java
+@@ -9,7 +9,7 @@ import org.springframework.web.service.annotation.HttpExchange;
+ /**
+  * 统一身份认证系统 HTTP 客户端。
+  */
+-@HttpExchange
++@HttpExchange(headers = "X-Target-System=course-project-management")
+ public interface UnifiedIdentityClient {
+
+     /**
+@@ -24,7 +24,7 @@ public interface UnifiedIdentityClient {
+     /**
+      * 按统一身份用户标识查询姓名和工号。
+      */
+-    @GetExchange("/identity/users/{userId}")
++    @GetExchange("/auth/users/{userId}")
+     IdentityUserResponse lookupUser(
+             @RequestHeader(HttpHeaders.AUTHORIZATION)
+             String authorization,
 diff --git a/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/security/RbacIntegrationConfiguration.java b/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/security/RbacIntegrationConfiguration.java
 new file mode 100644
-index 0000000..e23927b
+index 0000000..355c9fb
 --- /dev/null
 +++ b/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/security/RbacIntegrationConfiguration.java
-@@ -0,0 +1,56 @@
+@@ -0,0 +1,48 @@
 +package cn.edu.xmu.projectmgt.infrastructure.security;
 +
++import cn.edu.xmu.projectmgt.infrastructure.identity.client.ApiAuthorityClient;
 +import cn.edu.xmu.projectmgt.infrastructure.identity.client.UnifiedIdentityClient;
 +import org.springframework.beans.factory.annotation.Value;
 +import org.springframework.context.annotation.Bean;
@@ -32,7 +114,6 @@ index 0000000..e23927b
 +import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 +import org.springframework.security.web.SecurityFilterChain;
 +import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-+import org.springframework.web.client.RestClient;
 +
 +@Configuration
 +@Profile("rbac-integration")
@@ -53,33 +134,26 @@ index 0000000..e23927b
 +  SecurityFilterChain rbacSecurity(
 +      HttpSecurity http,
 +      JwtDecoder decoder,
-+      UnifiedIdentityClient identity,
-+      @Value("${app.identity.base-url}") String base)
++      UnifiedIdentityClient identity, ApiAuthorityClient authorities)
 +      throws Exception {
-+    var factory =
-+        new org.springframework.http.client.JdkClientHttpRequestFactory(
-+            java.net.http.HttpClient.newBuilder()
-+                .connectTimeout(java.time.Duration.ofSeconds(3))
-+                .build());
-+    factory.setReadTimeout(java.time.Duration.ofSeconds(5));
-+    var rest = RestClient.builder().baseUrl(base).requestFactory(factory).build();
 +    return http.csrf(c -> c.disable())
 +        .sessionManagement(c -> c.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 +        .authorizeHttpRequests(c -> c.anyRequest().permitAll())
 +        .addFilterBefore(
-+            new RbacIntegrationFilter(decoder, identity, rest),
++            new RbacIntegrationFilter(decoder, identity, authorities),
 +            UsernamePasswordAuthenticationFilter.class)
 +        .build();
 +  }
 +}
 diff --git a/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/security/RbacIntegrationFilter.java b/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/security/RbacIntegrationFilter.java
 new file mode 100644
-index 0000000..28efe7a
+index 0000000..1b4f49c
 --- /dev/null
 +++ b/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/security/RbacIntegrationFilter.java
-@@ -0,0 +1,163 @@
+@@ -0,0 +1,154 @@
 +package cn.edu.xmu.projectmgt.infrastructure.security;
 +
++import cn.edu.xmu.projectmgt.infrastructure.identity.client.ApiAuthorityClient;
 +import cn.edu.xmu.projectmgt.infrastructure.identity.client.UnifiedIdentityClient;
 +import jakarta.servlet.FilterChain;
 +import jakarta.servlet.ServletException;
@@ -96,7 +170,6 @@ index 0000000..28efe7a
 +import org.springframework.security.oauth2.jwt.JwtDecoder;
 +import org.springframework.security.oauth2.jwt.JwtException;
 +import org.springframework.web.client.HttpClientErrorException;
-+import org.springframework.web.client.RestClient;
 +import org.springframework.web.client.RestClientException;
 +import org.springframework.web.filter.OncePerRequestFilter;
 +
@@ -105,16 +178,13 @@ index 0000000..28efe7a
 +  private static final Logger log = LoggerFactory.getLogger(RbacIntegrationFilter.class);
 +  private final JwtDecoder decoder;
 +  private final UnifiedIdentityClient identity;
-+  private final RestClient rest;
++  private final ApiAuthorityClient authorities;
 +
-+  public RbacIntegrationFilter(
-+      JwtDecoder decoder, UnifiedIdentityClient identity, RestClient rest) {
++  public RbacIntegrationFilter(JwtDecoder decoder, UnifiedIdentityClient identity, ApiAuthorityClient authorities) {
 +    this.decoder = decoder;
 +    this.identity = identity;
-+    this.rest = rest;
++    this.authorities = authorities;
 +  }
-+
-+  public record Allowed(boolean allowed) {}
 +
 +  @Override
 +  protected void doFilterInternal(
@@ -132,14 +202,13 @@ index 0000000..28efe7a
 +        return;
 +      }
 +      Jwt jwt = decoder.decode(auth.substring(7));
-+      if (jwt.getAudience().size() != 1
-+          || !jwt.getAudience().contains("course-project-management")
++      if (!jwt.getAudience().contains("course-project-management")
 +          || jwt.getExpiresAt() == null
 +          || !Instant.now().isBefore(jwt.getExpiresAt())) {
 +        error(response, 401, "UNAUTHENTICATED");
 +        return;
 +      }
-+      var me = identity.currentUser(auth);
++      cn.edu.xmu.projectmgt.infrastructure.identity.client.IdentityCurrentUserResponse me = identity.currentUser(auth);
 +      if (!jwt.getSubject().equals(me.subject())) {
 +        error(response, 401, "UNAUTHENTICATED");
 +        return;
@@ -149,12 +218,7 @@ index 0000000..28efe7a
 +        error(response, 403, "FORBIDDEN");
 +        return;
 +      }
-+      var decision =
-+          rest.get()
-+              .uri("/auth/api-permissions/{operation}", operation)
-+              .header("Authorization", auth)
-+              .retrieve()
-+              .body(Allowed.class);
++      ApiAuthorityClient.Decision decision = authorities.check(auth, operation);
 +      if (decision == null || !decision.allowed()) {
 +        error(response, 403, "FORBIDDEN");
 +        return;
@@ -169,10 +233,10 @@ index 0000000..28efe7a
 +            case "reviewCourse" -> "CR";
 +            default -> "login";
 +          };
-+      var authorities = java.util.List.of(new SimpleGrantedAuthority(code));
++      java.util.List<SimpleGrantedAuthority> granted = java.util.List.of(new SimpleGrantedAuthority(code));
 +      SecurityContextHolder.getContext()
 +          .setAuthentication(
-+              new UsernamePasswordAuthenticationToken(me.subject(), null, authorities));
++              new UsernamePasswordAuthenticationToken(me.subject(), null, granted));
 +      chain.doFilter(request, response);
 +    } catch (JwtException e) {
 +      error(response, 401, "UNAUTHENTICATED");

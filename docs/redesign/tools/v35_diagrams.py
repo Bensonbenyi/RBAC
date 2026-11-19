@@ -10,7 +10,7 @@ def hierarchy_sequence(op,mode):
  s.msg(0,1,290,op.function+'(actor, id'+(', juniorId)' if write else ')'),end=1330 if op.function=='inherit' else 920 if write else 815)
  s.msg(1,2,400,'require(actor, role.manage)',end=435)
  y=500
- if write:s.msg(1,3,y,'lockHierarchy(actor.departmentId)',end=y+40);y+=105
+ if op.function=='inherit':s.msg(1,3,y,'lockHierarchy(actor.departmentId)',end=y+40);y+=105
  s.msg(1,3,y,'role(id)'+('；role(juniorId)' if write else ''),end=y+40);y+=105
  s.msg(1,2,y,'scope(actor, 每个目标角色.departmentId)',end=y+40);y+=105
  if op.function=='inherit':
@@ -38,7 +38,7 @@ def hierarchy_sequence(op,mode):
  else:
   s.msg(1,3,y,('inheritedRoles' if op.function=='inheritedRoles' else 'effectiveRolePermissions')+'(id)',end=y+40);y+=105
  s.msg(1,0,y,'返回结果；写入时提交事务',reply=True)
- s.note((1510 if write else 1060)-105,'继承仅限同部门。新增与删除边持有部门锁；防环读取使用当前锁定读，权限查询递归去重。')
+ s.note((1510 if write else 1060)-105,'继承仅限同部门。只在新增边时锁定部门，并读取已提交的边。解除继承直接删除指定边。')
 
 def classes():
  for mode,prefix in [('structured','Structured'),('ddd','Ddd')]:

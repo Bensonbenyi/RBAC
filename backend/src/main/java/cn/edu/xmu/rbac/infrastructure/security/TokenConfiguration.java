@@ -20,14 +20,14 @@ import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 public class TokenConfiguration {
   @Bean
   RSAPublicKey publicKey(@Value("${app.jwt.public-key}") Resource resource) throws Exception {
-    try (var input = resource.getInputStream()) {
+    try (java.io.InputStream input = resource.getInputStream()) {
       return RsaKeyConverters.x509().convert(input);
     }
   }
 
   @Bean
   JwtDecoder jwtDecoder(RSAPublicKey key, @Value("${app.jwt.issuer}") String issuer) {
-    var decoder = NimbusJwtDecoder.withPublicKey(key).build();
+    NimbusJwtDecoder decoder = NimbusJwtDecoder.withPublicKey(key).build();
     decoder.setJwtValidator(JwtValidators.createDefaultWithIssuer(issuer));
     return decoder;
   }
@@ -36,10 +36,10 @@ public class TokenConfiguration {
   JwtEncoder jwtEncoder(RSAPublicKey key, @Value("${app.jwt.private-key}") Resource resource)
       throws Exception {
     RSAPrivateKey privateKey;
-    try (var input = resource.getInputStream()) {
+    try (java.io.InputStream input = resource.getInputStream()) {
       privateKey = RsaKeyConverters.pkcs8().convert(input);
     }
-    var rsa =
+    com.nimbusds.jose.jwk.RSAKey rsa =
         new com.nimbusds.jose.jwk.RSAKey.Builder(key)
             .privateKey(privateKey)
             .keyID("rbac-v3")

@@ -4,8 +4,6 @@ import cn.edu.xmu.rbac.service.port.Data;
 import cn.edu.xmu.rbac.service.port.DepartmentUseCase;
 import cn.edu.xmu.rbac.service.port.ManagementStore;
 import cn.edu.xmu.rbac.service.security.AccessPolicy;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @ConditionalOnProperty(name = "app.backend-strategy", havingValue = "structured")
 public class StructuredDepartmentService implements DepartmentUseCase {
-  private static final Logger log = LoggerFactory.getLogger(StructuredDepartmentService.class);
   private final ManagementStore store;
   private final AccessPolicy access;
 
@@ -35,7 +32,6 @@ public class StructuredDepartmentService implements DepartmentUseCase {
     if (command.parentId() != null) {
       store.department(command.parentId());
     }
-    log.debug("createDepartment actor={}", actor.userId());
     return store.createDepartment(command);
   }
 
@@ -44,7 +40,6 @@ public class StructuredDepartmentService implements DepartmentUseCase {
     access.require(actor, "department.manage");
     store.department(id);
     store.renameDepartment(id, command.name());
-    log.debug("renameDepartment actor={} target={}", actor.userId(), id);
   }
 
   /** 检查引用关系后删除对象. */
@@ -52,6 +47,5 @@ public class StructuredDepartmentService implements DepartmentUseCase {
     access.require(actor, "department.manage");
     store.department(id);
     store.deleteDepartment(id);
-    log.debug("deleteDepartment actor={} target={}", actor.userId(), id);
   }
 }

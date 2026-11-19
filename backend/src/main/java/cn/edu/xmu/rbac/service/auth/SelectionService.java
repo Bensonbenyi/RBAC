@@ -20,7 +20,6 @@ public class SelectionService {
   /** 查询本部门可分配的角色，供用户授权表单选择. */
   public Data.Page<Data.Role> roles(Data.Identity actor, int page, int size) {
     access.require(actor, "user.role.assign");
-    access.scope(actor, actor.departmentId());
     return store.roles(actor.departmentId(), page, size);
   }
 
@@ -38,7 +37,6 @@ public class SelectionService {
   public Data.Page<Data.Permission> permissions(
       Data.Identity actor, Long systemId, int page, int size) {
     access.require(actor, "role.manage");
-    store.system(systemId);
     return store.permissions(systemId, page, size);
   }
 }

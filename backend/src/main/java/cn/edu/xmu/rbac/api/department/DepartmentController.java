@@ -1,7 +1,8 @@
 package cn.edu.xmu.rbac.api.department;
 
 import cn.edu.xmu.clonefactory.util.CloneFactory;
-import cn.edu.xmu.rbac.api.shared.Requests;
+import cn.edu.xmu.rbac.api.shared.dto.ManagementDTOs;
+import cn.edu.xmu.rbac.api.shared.vo.ManagementVOs;
 import cn.edu.xmu.rbac.infrastructure.security.CurrentIdentity;
 import cn.edu.xmu.rbac.service.port.Data;
 import cn.edu.xmu.rbac.service.port.DepartmentUseCase;
@@ -35,25 +36,27 @@ public class DepartmentController {
   }
 
   @GetMapping("/api/departments")
-  public Data.Page<Data.Department> list(
+  public ManagementVOs.PageVO<ManagementVOs.DepartmentVO> list(
       @RequestParam(defaultValue = "0") @Min(0) @Max(1000000) int page,
       @RequestParam(defaultValue = "20") @Min(1) @Max(100) int size) {
-    return service.list(current.get(), page, size);
+    return ManagementVOs.page(service.list(current.get(), page, size), ManagementVOs::department);
   }
 
   /** 校验输入后创建对象. */
   @PostMapping("/api/departments")
-  public ResponseEntity<Data.Department> create(
-      @RequestBody @Valid Requests.CreateDepartment request) {
-    var entity =
+  public ResponseEntity<ManagementVOs.DepartmentVO> create(
+      @RequestBody @Valid ManagementDTOs.CreateDepartmentDTO request) {
+    Data.Department entity =
         service.create(
             current.get(), CloneFactory.copy(new Data.CreateDepartment(null, null), request));
-    return ResponseEntity.created(URI.create("/api/departments/" + entity.id())).body(entity);
+    return ResponseEntity.created(URI.create("/api/departments/" + entity.id()))
+        .body(ManagementVOs.department(entity));
   }
 
   @PatchMapping("/api/departments/{id}")
   @ResponseStatus(org.springframework.http.HttpStatus.NO_CONTENT)
-  public void update(@PathVariable @Positive Long id, @RequestBody @Valid Requests.Name request) {
+  public void update(
+      @PathVariable @Positive Long id, @RequestBody @Valid ManagementDTOs.NameDTO request) {
     service.update(current.get(), id, CloneFactory.copy(new Data.Name(null), request));
   }
 

@@ -10,9 +10,9 @@ beforeEach(() => {
   auth.token = 'test';
   auth.me = {
     subject: '1',
-    username: 'test',
+    no: 'test',
     name: '测试',
-    departmentId: '1',
+    departmentId: 1,
     roles: [],
     permissions: [],
   };

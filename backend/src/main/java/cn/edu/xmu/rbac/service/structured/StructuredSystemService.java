@@ -4,8 +4,6 @@ import cn.edu.xmu.rbac.service.port.Data;
 import cn.edu.xmu.rbac.service.port.ManagementStore;
 import cn.edu.xmu.rbac.service.port.SystemUseCase;
 import cn.edu.xmu.rbac.service.security.AccessPolicy;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @ConditionalOnProperty(name = "app.backend-strategy", havingValue = "structured")
 public class StructuredSystemService implements SystemUseCase {
-  private static final Logger log = LoggerFactory.getLogger(StructuredSystemService.class);
   private final ManagementStore store;
   private final AccessPolicy access;
 
@@ -32,7 +29,6 @@ public class StructuredSystemService implements SystemUseCase {
   /** 校验输入后创建对象. */
   public Data.System create(Data.Identity actor, Data.CreateSystem command) {
     access.require(actor, "system.manage");
-    log.debug("createSystem actor={}", actor.userId());
     return store.createSystem(command);
   }
 
@@ -41,7 +37,6 @@ public class StructuredSystemService implements SystemUseCase {
     access.require(actor, "system.manage");
     store.system(id);
     store.renameSystem(id, command.name());
-    log.debug("renameSystem actor={} target={}", actor.userId(), id);
   }
 
   /** 检查引用关系后删除对象. */
@@ -49,6 +44,5 @@ public class StructuredSystemService implements SystemUseCase {
     access.require(actor, "system.manage");
     store.system(id);
     store.deleteSystem(id);
-    log.debug("deleteSystem actor={} target={}", actor.userId(), id);
   }
 }

@@ -10,10 +10,7 @@ import java.security.MessageDigest;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
-import java.util.Objects;
 import java.util.UUID;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;
 import org.springframework.security.oauth2.jwt.JwsHeader;
@@ -26,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 /** 认证会话、身份查询和独立权限决策. */
 @Service
 public class AuthService {
-  private static final Logger log = LoggerFactory.getLogger(AuthService.class);
   private final ManagementStore store;
   private final SessionStore sessions;
   private final AccessPolicy access;
@@ -54,42 +50,39 @@ public class AuthService {
   public record LoginResult(String accessToken, String tokenType, long expiresIn) {}
 
   /** Me 数据契约. */
-  public record Me(
+  public record CurrentUserResult(
       String subject,
-      String username,
+      String no,
       String name,
-      String departmentId,
+      Long departmentId,
       List<String> roles,
       List<String> permissions) {}
 
-  /** IdentityUser 数据契约. */
-  public record IdentityUser(String userId, String no, String name) {}
-
   /** 验证账号和目标系统登录许可并签发身份凭据. */
   @Transactional
-  public LoginResult login(String username, String password, String systemKey) {
+  public LoginResult login(String username, String password, List<String> systems) {
     Data.User user;
     try {
       user = store.userByUsername(username);
     } catch (BusinessException e) {
-      throw unauthenticated();
+      throw badCredentials();
     }
     if (!MessageDigest.isEqual(
         user.phone().getBytes(StandardCharsets.UTF_8), password.getBytes(StandardCharsets.UTF_8))) {
-      throw unauthenticated();
+      throw badCredentials();
     }
-    if (!access.allowed(user.id(), systemKey, "login")) {
+    if (!systems.stream().allMatch(system -> access.allowed(user.id(), system, "login"))) {
       throw BusinessException.forbidden();
     }
     String id = UUID.randomUUID().toString();
     Instant now = Instant.now();
     Instant end = now.plus(lifetime);
-    sessions.save(new SessionStore.Session(id, user.id(), systemKey, end, null));
-    var claims =
+    sessions.save(new SessionStore.Session(id, user.id(), systems.getFirst(), end, null));
+    JwtClaimsSet claims =
         JwtClaimsSet.builder()
             .issuer(issuer)
             .subject(user.id().toString())
-            .audience(List.of(systemKey))
+            .audience(systems)
             .id(id)
             .issuedAt(now)
             .expiresAt(end)
@@ -100,28 +93,40 @@ public class AuthService {
                 JwtEncoderParameters.from(
                     JwsHeader.with(SignatureAlgorithm.RS256).keyId("rbac-v3").build(), claims))
             .getTokenValue();
-    log.debug("login user={} system={}", user.id(), systemKey);
     return new LoginResult(token, "Bearer", lifetime.toSeconds());
   }
 
   /** 读取本人资料及当前系统界面权限. */
-  public Me me(Data.Identity actor) {
-    var user = store.user(actor.userId());
-    return new Me(
+  public CurrentUserResult me(Data.Identity actor) {
+    Data.User user = store.user(actor.userId());
+    return new CurrentUserResult(
         user.id().toString(),
         user.username(),
         user.name(),
-        user.departmentId().toString(),
-        store.rolesForUser(user.id()),
+        user.departmentId(),
+        roles(actor),
         store.permissionsForUser(user.id(), actor.systemKey()).stream()
             .filter(code -> UiPermissions.contains(actor.systemKey(), code))
             .toList());
   }
 
+  /** 课程端使用契约规定的身份角色，兼容既有演示角色名. */
+  private List<String> roles(Data.Identity actor) {
+    List<String> names = store.rolesForUser(actor.userId());
+    if (!"course-project-management".equals(actor.systemKey())) {
+      return names;
+    }
+    return names.stream()
+        .map(name -> name.equals("reviewer") || name.equals("viewer") ? "teacher" : name)
+        .filter(List.of("admin", "teacher", "student")::contains)
+        .distinct()
+        .toList();
+  }
+
+  /** 撤销当前会话，所有目标系统共用同一令牌标识. */
   @Transactional
   public void logout(Data.Identity actor) {
     sessions.revoke(actor.sessionId(), Instant.now());
-    log.debug("logout user={} system={}", actor.userId(), actor.systemKey());
   }
 
   /** 界面检查只接受当前系统的界面码；API 码不会打开界面控件. */
@@ -135,23 +140,22 @@ public class AuthService {
       return allowed(actor, "role.manage") || allowed(actor, "permission.manage");
     }
     String code = OperationPermissions.code(actor.systemKey(), operationId);
-    return code != null && allowed(actor, code);
+    if (code == null) {
+      throw new BusinessException(404, "API_OPERATION_NOT_FOUND", "没有找到对应的 API 操作");
+    }
+    return allowed(actor, code);
   }
 
-  public boolean allowed(Data.Identity actor, String permission) {
+  private boolean allowed(Data.Identity actor, String permission) {
     return access.allowed(actor.userId(), actor.systemKey(), permission);
   }
 
-  /** 允许本人或持有 UL 权限的调用方查询用户身份资料. */
-  public IdentityUser lookup(Data.Identity actor, Long id) {
-    if (!Objects.equals(actor.userId(), id) && !allowed(actor, "UL")) {
-      throw BusinessException.forbidden();
-    }
-    var user = store.user(id);
-    return new IdentityUser(user.id().toString(), user.username(), user.name());
+  private static BusinessException badCredentials() {
+    return new BusinessException(401, "UNAUTHORIZED", "账号或密码错误");
   }
 
+  /** 无效或已撤销的令牌使用相同的身份错误. */
   public static BusinessException unauthenticated() {
-    return new BusinessException(401, "UNAUTHENTICATED", "凭据无效或登录已过期");
+    return new BusinessException(401, "UNAUTHORIZED", "凭据无效或登录已过期");
   }
 }

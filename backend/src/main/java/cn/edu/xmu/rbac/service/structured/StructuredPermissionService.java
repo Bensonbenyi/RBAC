@@ -4,8 +4,6 @@ import cn.edu.xmu.rbac.service.port.Data;
 import cn.edu.xmu.rbac.service.port.ManagementStore;
 import cn.edu.xmu.rbac.service.port.PermissionUseCase;
 import cn.edu.xmu.rbac.service.security.AccessPolicy;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @ConditionalOnProperty(name = "app.backend-strategy", havingValue = "structured")
 public class StructuredPermissionService implements PermissionUseCase {
-  private static final Logger log = LoggerFactory.getLogger(StructuredPermissionService.class);
   private final ManagementStore store;
   private final AccessPolicy access;
 
@@ -33,7 +30,6 @@ public class StructuredPermissionService implements PermissionUseCase {
   public Data.Permission create(Data.Identity actor, Long systemId, Data.CreatePermission command) {
     access.require(actor, "permission.manage");
     store.system(systemId);
-    log.debug("createPermission actor={}", actor.userId());
     return store.createPermission(systemId, command);
   }
 
@@ -42,7 +38,6 @@ public class StructuredPermissionService implements PermissionUseCase {
     access.require(actor, "permission.manage");
     store.permission(id);
     store.renamePermission(id, command.name());
-    log.debug("renamePermission actor={} target={}", actor.userId(), id);
   }
 
   /** 检查引用关系后删除对象. */
@@ -50,6 +45,5 @@ public class StructuredPermissionService implements PermissionUseCase {
     access.require(actor, "permission.manage");
     store.permission(id);
     store.deletePermission(id);
-    log.debug("deletePermission actor={} target={}", actor.userId(), id);
   }
 }

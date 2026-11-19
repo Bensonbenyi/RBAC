@@ -20,6 +20,14 @@ public interface ManagementStore {
 
   Data.Page<Data.Department> departments(int page, int size);
 
+  /** 查询某一层部门，空上级表示根层. */
+  Data.Page<Data.DirectoryDepartment> directoryDepartments(
+      Long parentId, String keyword, int page, int size);
+
+  /** 查询指定部门下的用户身份. */
+  Data.Page<Data.DirectoryUser> directoryUsers(
+      Long departmentId, String keyword, int page, int size);
+
   Data.Department createDepartment(Data.CreateDepartment command);
 
   void renameDepartment(Long id, String name);
@@ -58,10 +66,10 @@ public interface ManagementStore {
 
   void deleteRole(Long id);
 
-  /** 锁定部门行，使同部门继承写操作串行；必须在事务中调用. */
+  /** 锁定部门行，使同部门新增继承边串行；必须在事务中调用. */
   void lockHierarchy(Long departmentId);
 
-  /** 读取当前继承边；锁定读避免事务快照遗漏刚提交的边. */
+  /** 在 READ COMMITTED 事务中读取当前继承边. */
   List<Data.Inheritance> inheritanceEdges(Long departmentId);
 
   List<Data.Role> inheritedRoles(Long roleId);
