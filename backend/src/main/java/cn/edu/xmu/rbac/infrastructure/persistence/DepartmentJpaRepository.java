@@ -12,19 +12,20 @@ import org.springframework.data.jpa.repository.Query;
 interface DepartmentJpaRepository extends JpaRepository<DepartmentEntity, Long> {
 
   @Lock(LockModeType.PESSIMISTIC_WRITE)
-  @Query("select d from DepartmentEntity d where d.id = :id")
-  Optional<DepartmentEntity> lockById(Long id);
+  Optional<DepartmentEntity> findForUpdateById(Long id);
 
   @Query(
       value =
           """
           select new cn.edu.xmu.rbac.service.port.Data$DirectoryDepartment(
               d.id, concat('D', cast(d.id as String)), d.name, d.parentId,
-              exists (select 1 from DepartmentEntity child where child.parentId = d.id))
+              case when count(child.id) > 0 then true else false end)
           from DepartmentEntity d
+          left join DepartmentEntity child on child.parentId = d.id
           where ((:parentId is null and d.parentId is null) or d.parentId = :parentId)
             and (locate(:keyword, d.name) > 0
                  or locate(:keyword, concat('D', cast(d.id as String))) > 0)
+          group by d.id, d.name, d.parentId
           order by d.id
           """,
       countQuery =

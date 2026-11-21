@@ -219,7 +219,7 @@ public class JpaManagementStore implements ManagementStore {
 
   @Override
   public void lockHierarchy(Long departmentId) {
-    require(departments.lockById(departmentId));
+    require(departments.findForUpdateById(departmentId));
   }
 
   @Override

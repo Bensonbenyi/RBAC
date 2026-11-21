@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import cn.edu.xmu.rbac.infrastructure.bootstrap.DemoData;
+import cn.edu.xmu.rbac.service.port.Data;
 import cn.edu.xmu.rbac.service.port.ManagementStore;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -212,6 +213,16 @@ abstract class ContractSuite {
         expect(200, "GET", IDENTITY_DEPARTMENTS + "?parentId=" + id + "&keyword=教务", null, token);
     assertEquals(id, children.path("items").get(0).path("parentId").asLong());
     assertFalse(children.path("items").get(0).path("hasChildren").asBoolean());
+    var sibling = store.createDepartment(new Data.CreateDepartment("教学支持", id));
+    JsonNode paged =
+        expect(
+            200,
+            "GET",
+            IDENTITY_DEPARTMENTS + "?parentId=" + id + "&page=2&pageSize=1",
+            null,
+            token);
+    assertEquals(2, paged.path("total").asInt());
+    assertEquals(sibling.id().longValue(), paged.path("items").get(0).path("id").asLong());
     JsonNode byCode =
         expect(
             200,
