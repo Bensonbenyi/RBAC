@@ -79,9 +79,8 @@ public class DddUserService implements UserUseCase {
   /** 在本部门范围内分配角色. */
   public void assign(Data.Identity actor, Long userId, Long roleId) {
     access.require(actor, "user.role.assign");
-    Data.User user = scoped(actor, userId);
-    Data.Role role = store.role(roleId);
-    new User(user, store.userRoles(userId)).assignRole(role, actor.departmentId());
+    User user = new User(scoped(actor, userId));
+    user.requireRoleInDepartment(store.role(roleId));
     store.assignRole(userId, roleId);
   }
 

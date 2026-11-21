@@ -1,10 +1,11 @@
 package cn.edu.xmu.rbac.service.ddd;
 
 import cn.edu.xmu.rbac.service.ddd.domain.Role;
-import cn.edu.xmu.rbac.service.ddd.domain.RoleHierarchy;
 import cn.edu.xmu.rbac.service.port.Data;
+import cn.edu.xmu.rbac.service.port.EffectiveAccessStore;
 import cn.edu.xmu.rbac.service.port.ManagementStore;
 import cn.edu.xmu.rbac.service.port.RoleUseCase;
+import cn.edu.xmu.rbac.service.role.RoleHierarchy;
 import cn.edu.xmu.rbac.service.security.AccessPolicy;
 import java.util.List;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -18,10 +19,14 @@ import org.springframework.transaction.annotation.Transactional;
 @ConditionalOnProperty(name = "app.backend-strategy", havingValue = "ddd")
 public class DddRoleService implements RoleUseCase {
   private final ManagementStore store;
+  private final EffectiveAccessStore effectiveAccess;
   private final AccessPolicy access;
 
-  public DddRoleService(ManagementStore store, AccessPolicy access) {
+  /** 组装角色写入、有效权限查询和部门范围校验. */
+  public DddRoleService(
+      ManagementStore store, EffectiveAccessStore effectiveAccess, AccessPolicy access) {
     this.store = store;
+    this.effectiveAccess = effectiveAccess;
     this.access = access;
   }
 
@@ -73,8 +78,8 @@ public class DddRoleService implements RoleUseCase {
   /** 授予指定权限，重复授予保持幂等. */
   public void grant(Data.Identity actor, Long id, Long permissionId) {
     access.require(actor, "role.manage");
-    new Role(scoped(actor, id), store.rolePermissions(id))
-        .grantPermission(store.permission(permissionId));
+    scoped(actor, id);
+    store.permission(permissionId);
     store.grantPermission(id, permissionId);
   }
 
@@ -97,7 +102,7 @@ public class DddRoleService implements RoleUseCase {
   public List<Data.Permission> effectivePermissions(Data.Identity actor, Long id) {
     access.require(actor, "role.manage");
     scoped(actor, id);
-    return store.effectiveRolePermissions(id);
+    return effectiveAccess.effectiveRolePermissions(id);
   }
 
   /** 同部门串行写入，避免两次并发新增共同形成环. */
@@ -108,7 +113,7 @@ public class DddRoleService implements RoleUseCase {
     scoped(actor, id);
     scoped(actor, juniorId);
     List<Data.Inheritance> edges = store.inheritanceEdges(actor.departmentId());
-    new RoleHierarchy(edges).requireAcyclic(id, juniorId);
+    RoleHierarchy.requireAcyclic(edges, id, juniorId);
     store.inheritRole(id, juniorId);
   }
 

@@ -27,9 +27,8 @@ WRITES={
  'ROLE-05':'deleteRole(id)', 'ROLE-06':'result = rolePermissions(id)',
  'ROLE-07':'grantPermission(id, permissionId)', 'ROLE-08':'revokePermission(id, permissionId)'}
 DOMAIN={
- 'USER-04':'changeProfile(command)', 'USER-07':'assignRole(role, actor.departmentId)',
+ 'USER-04':'changeProfile(command)', 'USER-07':'requireRoleInDepartment(role)',
  'ROLE-04':'rename(command.name)',
- 'ROLE-07':'grantPermission(permission)',
  'DEPT-03':'rename(command.name)', 'SYS-03':'rename(command.name)', 'PERM-03':'rename(command.name)'}
 
 def service_sequence(op,mode):
@@ -44,19 +43,14 @@ def service_sequence(op,mode):
    calls=({'Department':['[parentId 非空] department(command.parentId)'],'Permission':['system(systemId)']}.get(module,[]))+['result = create'+module+'('+('systemId, ' if module=='Permission' else '')+'command)']
   else:
    calls=[noun+' = '+noun+'(id)'];write=('rename'+module+'(id, name)' if op.function=='update' else 'delete'+module+'(id)')
- extras=[]
- if op.key=='USER-07':extras=['hasRole(userId, roleId)'] if not domain else ['assigned = userRoles(userId)']
- if domain and op.key=='ROLE-07':extras=['assigned = rolePermissions(id)']
  scoped=module in ['User','Role'] and op.function not in ['list','create']
- count=len(calls)+len(extras)+(1 if scoped else 0)+(2 if domain else 0)+(1 if write else 0)
  scope_height=(205 if op.key in ["USER-07","USER-08"] and not (domain and op.key=="USER-07") else 115) if scoped else 0
- final_y=575+115*(len(calls)+len(extras))+scope_height+(285 if domain else 0)+(115 if write else 0)
+ final_y=575+115*(len(calls))+scope_height+(285 if domain else 0)+(115 if write else 0)
  height=max(1150,final_y+210)
- if domain:height=575+115*(len(calls)+len(extras))+scope_height+340
+ if domain:height=575+115*(len(calls))+scope_height+340
  parts=[('obj','Caller'),('service',prefix+module+'Service'),('access','AccessPolicy'),('store','ManagementStore')]
  # Domain changes are expanded in a separate interaction plate.
  # Domain objects are created after the queries, not at the top of the interaction.
- create_y=575+115*(len(calls)+len(extras))+scope_height
  seq=Sequence(op.key.lower()+'-'+mode,op.key+' '+('DDD' if mode=='ddd' else '结构化')+' '+op.title,parts,height=height,created=None)
  seq.msg(0,1,290,op.function+'(actor, 输入)',end=height-170)
  seq.msg(1,2,400,'require(actor, '+op.permission+')',end=445)
@@ -73,7 +67,6 @@ def service_sequence(op,mode):
    seq.msg(1,2,y,'scope(actor, role.departmentId)',end=y+35)
   else:seq.msg(1,2,y,'scope(actor, '+target+')',end=y+40)
   y+=115
- for call in extras:seq.msg(1,3,y,call,end=y+40);y+=115
  if domain:
   import draw_spec as u
   sub=Sequence(op.key.lower()+'-ddd-domain',op.key+' DDD 聚合修改与保存',[('obj','Caller'),('service',prefix+module+'Service'),('entity',module),('store','ManagementStore')],height=1150,created={2:450})

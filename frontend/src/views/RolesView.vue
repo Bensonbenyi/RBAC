@@ -74,19 +74,14 @@ async function loadPermissions() {
       : [];
   });
 }
-async function grant() {
+async function changePermission(id: string, method: 'PUT' | 'DELETE') {
   await run(async () => {
-    if (!selected.value || !permissionId.value) return;
-    await request(`/api/roles/${selected.value.id}/permissions/${permissionId.value}`, 'PUT');
-    await select(selected.value);
-    await refresh();
-  });
-}
-async function revoke(permission: Permission) {
-  await run(async () => {
-    if (!selected.value) return;
-    await request(`/api/roles/${selected.value.id}/permissions/${permission.id}`, 'DELETE');
-    await select(selected.value);
+    if (!selected.value || !id) return;
+    const roleId = selected.value.id;
+    const url = `/api/roles/${roleId}/permissions`;
+    await request(`${url}/${id}`, method);
+    const directPermissions = await request<Permission[]>(url);
+    if (selected.value?.id === roleId) assigned.value = directPermissions;
     await refresh();
   });
 }
@@ -236,14 +231,17 @@ onMounted(() => run(load));
           <td>{{ permission.code }}</td>
           <td>{{ permission.name }}</td>
           <td>
-            <button :disabled="!allowed('ui.role.permissions')" @click="revoke(permission)">
+            <button
+              :disabled="!allowed('ui.role.permissions')"
+              @click="changePermission(permission.id, 'DELETE')"
+            >
               撤销
             </button>
           </td>
         </tr>
       </tbody>
     </table>
-    <form @submit.prevent="grant">
+    <form @submit.prevent="changePermission(permissionId, 'PUT')">
       <label
         >系统<select v-model="systemId" required @change="loadPermissions">
           <option value="">请选择</option>

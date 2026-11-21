@@ -1,4 +1,4 @@
-# v3.4.0 部署与验收
+# 部署与验收
 
 当前采用已有三节点 Docker Swarm，辅助节点保存备份并执行压测。实际服务入口、资源、检查结果见 [实施报告](../docs/implementation/实施报告.md)。
 
@@ -8,6 +8,7 @@
 
 ```sh
 ./tooling/prepare-course.sh
+./tooling/test.sh
 ./mvnw install -DskipTests
 mvn -f .integrations/course-project-mgt/backend/pom.xml -s .mvn/settings.xml package -DskipTests
 npm ci --prefix frontend
@@ -15,7 +16,7 @@ npm run build --prefix frontend
 ./tooling/build-images.sh
 ```
 
-构建工具生成 amd64 镜像 `rbac/backend:3.4.0`、`rbac/course:3.4.0`、`rbac/web:3.4.0`、`rbac/mysql:8.4.13-amd64`，并检查架构。将前三个镜像通过 `docker save`、文件传输及 `docker load` 载入 Manager，将 MySQL 镜像载入数据库 Worker。当前 Stack 使用本地镜像，更新前需在放置节点载入相同版本。
+构建工具读取 `docs/redesign/VERSION`，用同一个版本标记 amd64 镜像 `rbac/backend`、`rbac/course` 和 `rbac/web`。MySQL 使用 `rbac/mysql:8.4.13-amd64`。将前三个镜像通过 `docker save`、文件传输及 `docker load` 载入 Manager，将 MySQL 镜像载入数据库 Worker。当前 Stack 使用本地镜像，更新前需在放置节点载入相同版本。
 
 ## 初始化与部署
 
@@ -29,11 +30,11 @@ done
 
 `private_key`、`public_key` 是同一组 RSA PEM，生成入口为 `tooling/generate-keys.sh`。`demo_phone` 是合成演示账号手机号。MySQL 首次启动脚本分别创建 `rbac`、`course_project` 数据库及专用账号，数据库迁移由应用启动执行。已有卷沿用原数据库和密码；Secret 变更需要同步数据库账号。
 
-给数据库节点标记 `rbac.db=true`，然后在 Manager 的 `deploy/` 目录部署。
+给数据库节点标记 `rbac.db=true`，然后在 Manager 的仓库根目录部署。
 
 ```sh
 docker node update --label-add rbac.db=true course-node1
-docker stack deploy --resolve-image never -c stack.yaml rbac_v33
+RBAC_VERSION="$(cat docs/redesign/VERSION)" docker stack deploy --resolve-image never -c deploy/stack.yaml rbac_v33
 docker stack services rbac_v33
 ```
 
@@ -43,7 +44,7 @@ docker stack services rbac_v33
 
 两个应用完成初始化后，使用具备跨库读取权限的初始化账号执行 `integrations/course-project-mgt/link-demo-teachers.sql`，将 admin、reviewer、viewer 的实际平台编号关联至课程 `teacher.user_id`。脚本保留已有教师关联。课程 `GET /me` 需要本地教师或学生资料，未关联时返回 403；正式账号使用对应的真实资料。通过数据库命令行执行中文种子时设置 `--default-character-set=utf8mb4`。
 
-v3.4.0 的 Flyway V2 在既有平台库补齐独立界面码，按原版的页面访问范围一次性继承授权。迁移后界面码和 API 码可分别撤销。新版本本地验证记录见 [整改报告](../docs/implementation/整改报告-v3.4.0.md)，远程部署记录仍以原实施报告为准。
+Flyway V2 在既有平台库补齐独立界面码，此后两类权限可以分别撤销。已部署版本和验收记录见 [v3.5.0 部署记录](../docs/implementation/整改报告-v3.5.0.md)。
 
 ## 备份与恢复校验
 

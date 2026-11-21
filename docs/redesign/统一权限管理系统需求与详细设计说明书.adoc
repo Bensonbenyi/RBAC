@@ -1,6 +1,6 @@
 = 统一权限管理系统需求与详细设计说明书
 OOAD 课程项目组
-v3.6.0, 2026-11-20
+v3.6.1, 2026-11-21
 :doctype: book
 :lang: zh-CN
 :toc:
@@ -21,7 +21,7 @@ v3.6.0, 2026-11-20
 
 本文规定当前基线的需求、数据结构、各功能交互、HTTP 契约和双实现设计，供课程评审、开发与验收使用。独立《概要设计说明书》说明系统骨架及 ATAM 评估，本文保存字段字典和各功能详细设计。
 
-本次版本为 3.6.0，基于 v3.2.2 和 2026-11-17 确认决定修订。代码与文档共用功能编号和配置名称，验证结果见实施报告。
+本次版本为 3.6.1，基于 v3.2.2 和 2026-11-17 确认决定修订。代码与文档共用功能编号和配置名称，验证结果见实施报告。
 
 === 背景与术语
 
@@ -38,7 +38,7 @@ v3.6.0, 2026-11-20
 |Bearer JWT |客户端在 Authorization 请求头提交的签名凭据，不携带角色或权限。
 |登录会话 |服务器保存在 MySQL 的技术记录，关联用户、目标系统、到期与撤销时间。
 |结构化实现 |业务 Service 在事务内编排规则和存储调用。
-|DDD 实现 |应用服务编排用例，聚合根维护用户角色及角色权限等规则。
+|DDD 实现 |应用服务编排用例，领域对象维护用户角色分配等业务规则。
 |Service Port |两套业务实现共用的用例接口、数据契约和存储端口。
 |CloneFactory |老师提供的编译期拷贝工具，生成 DTO 到 Command 的转换代码。
 |===
@@ -53,7 +53,7 @@ v3.6.0, 2026-11-20
 |https://www.omg.org/spec/UML/2.5.1[OMG UML 2.5.1] |类、包、状态、部署、活动、用例和时序图语义。
 |https://docs.staruml.io/[StarUML 官方文档] |模型元素和可编辑图稿。
 |https://www.csc.lsu.edu/~chen/pdf/erd-5-pages.pdf[Chen ER 建模论文] |实体、联系、属性、键和参与约束。
-|《5. 面向对象设计》课程课件 |按用户提供的 142 页课件核对类图、分层与 DDD 职责。
+|《5. 面向对象设计》课程课件 |按用户提供的 144 页课件核对类图、分层与 DDD 职责。
 |需求与详细设计说明书 v2 |字体、字号、用例表配色、接口调用说明和分页形式。
 |https://gitee.com/mingqcn/course-project-mgt[课程管理系统] ca90f1c |四层组织、双实现、统一身份接口和权限码。
 |https://gitee.com/mingqcn/spring-fundamentals[Spring 教学示例] 40583ff |CloneFactory 0.0.2 编译期拷贝工具。
@@ -351,7 +351,7 @@ image::v33/packages.svg[系统包依赖概览,width=100%]
 
 === 功能描述
 
-以下每项列出需求、调用说明与详细交互。写请求先校验输入并使用 CloneFactory 转为用例输入；操作者身份由 BearerFilter 和 CurrentIdentity 提供。DDD 的 User、Role 维护角色及权限标识集合，其他简单实体维护自身名称变化。
+以下每项列出需求、调用说明与详细交互。写请求先校验输入并使用 CloneFactory 转为用例输入；操作者身份由 BearerFilter 和 CurrentIdentity 提供。DDD 的 User 校验角色分配，Role 等目录对象维护名称。应用服务保存授权关系。
 
 
 ==== 登录
@@ -1486,15 +1486,6 @@ image::v33/role-07-ddd.svg[ROLE-07 DDD 详细交互,width=100%]
 --
 
 
-
-[.diagram.plate]
---
-[[fig-role-07-ddd-domain]]
-.ROLE-07 DDD 聚合修改与保存
-image::v33/role-07-ddd-domain.svg[ROLE-07 DDD 聚合修改与保存,width=100%]
---
-
-
 ===== ROLE-08 撤销角色权限
 
 同事务移除关联，提交后新鉴权请求读取新权限。
@@ -1922,7 +1913,7 @@ image::v33/class-identity-directory.svg[统一身份目录类图,width=100%]
 2+|*前置条件：* 已登录，具有 API 许可，前端控件还需要 ui.role.inheritance。
 |*主成功场景：* |*信息*
 |1. 查询直接基础角色及有效权限。 |直接边与传递闭包分开显示。
-|2. 添加继承边。 |事务先锁部门，再读取当前图；结构化 Service 检查，DDD RoleHierarchy 检查是否回到起点。
+|2. 添加继承边。 |事务先锁部门，再读取当前图；两套实现调用 RoleHierarchy，检查基础角色能否走回高级角色。
 |3. 解除指定继承边。 |其他路径及直接授权继续有效；JWT 不缓存权限。
 |*扩展场景：* |*处理及信息*
 |自环或间接环 |409 ROLE_CYCLE，事务不落边。
@@ -1998,15 +1989,6 @@ image::v33/role-11-structured.svg[ROLE-11 结构化 详细交互,width=100%]
 [[fig-role-11-ddd]]
 .ROLE-11 DDD 详细交互
 image::v33/role-11-ddd.svg[ROLE-11 DDD 详细交互,width=100%]
---
-
-
-
-[.diagram.plate]
---
-[[fig-role-11-ddd-domain]]
-.ROLE-11 DDD 聚合修改与保存
-image::v33/role-11-ddd-domain.svg[ROLE-11 DDD 聚合修改与保存,width=100%]
 --
 
 
@@ -2285,7 +2267,7 @@ image::v33/architecture-classes-ddd.svg[系统总体架构类图 DDD,width=100%]
 --
 ==== 领域对象与数据契约
 
-DDD User 持有原 Data.User、当前 Profile 及 roleIds；Role 保存名称及 permissionIds。资料与集合修改由相应行为完成。Department、System 和 Permission 的领域对象维护可修改名称，编号及归属等完整资料保存在共享 Data record。应用服务承担权限检查、跨对象存在性与部门范围检查。
+DDD User 持有原 Data.User 和当前 Profile。Role、Department、System 和 Permission 维护名称，编号及归属由共享 Data record 表达。应用服务检查权限、对象存在性和部门范围，并通过存储端口保存直接授权关系。
 
 [.diagram.plate]
 --
@@ -2297,14 +2279,14 @@ image::v33/domain.svg[DDD 领域对象完整类图,width=100%]
 [cols="2,3,5",options="header"]
 |===
 |领域对象 |实际状态 |行为与职责
-|User |Data.User、Data.Profile、Set<Long> roleIds |changeProfile 合并允许修改字段；assignRole 校验同部门及重复；revokeRole 幂等移除。
-|Role |name、Set<Long> permissionIds |rename；grantPermission 与 revokePermission 幂等改变集合。
+|User |Data.User、Data.Profile |changeProfile 合并允许修改的字段；requireRoleInDepartment 校验目标角色的部门。用户角色关联由应用服务保存。
+|Role |name |rename 更新名称。权限授予与撤销直接写关联表，由联合主键维持唯一。
 |Department / System / Permission |name |rename 改名；固定字段、对象存在性及引用约束由应用服务和存储协作。
 |Data.User / Role / Department / System / Permission |编号、名称、归属及固定业务字段 |共享不可变 record，用作查询结果、持久化契约与领域构造输入。
 |===
 ==== 共享持久化与适配器
 
-ManagementStore 提供业务对象和两组授权关系的读写，SessionStore 维护技术会话。JdbcManagementStore 与 JdbcSessionStore 实现端口，使用 JdbcTemplate 和 RowMapper。新建后读取生成编号及结果行；更新先由服务合并完整资料；用户删除依次清理会话、用户角色和账号。
+ManagementStore 提供业务对象、直接授权与继承边的读写。EffectiveAccessStore 查询有效角色和有效权限，SessionStore 维护技术会话。三个 JDBC 适配器共用 JdbcTemplate。新建后读取生成编号及结果行；更新先由服务合并完整资料；用户删除依次清理会话、用户角色和账号。
 
 [.diagram.plate]
 --
@@ -2387,7 +2369,7 @@ image::v33/packages-files.svg[源文件与配置文件组织,width=100%]
 --
 ==== 认证与授权关系
 
-共享认证模块类图位于运行时鉴权功能下，覆盖 AuthController、AuthService、两类存储端口及 JWT 签发。用户角色和角色权限分别由 UserUseCase、RoleUseCase 提供方法，在两套业务服务中保持相同外部行为。
+共享认证模块类图位于运行时鉴权功能下，覆盖 AuthController、AuthService、账号查询、有效授权、会话端口及 JWT 签发。用户角色和角色权限分别由 UserUseCase、RoleUseCase 提供方法，在两套业务服务中保持相同外部行为。
 
 [.diagram.plate]
 --
@@ -2709,7 +2691,7 @@ Flyway V2 在现有 permission 与 role_permission 中补齐旧版既有界面�
 
 === 本轮测试与交付入口
 
-v3.6.0 平台测试 42 项、老师 CloneFactory 测试 5 项和前端组件测试 4 项全部通过。JaCoCo 0.8.14 的平台行覆盖率 89.37%，分支覆盖率 74.12%；生成的 CloneFactory 工具类单独由拷贝测试与运行包检查验证，覆盖率排除该生成类。
+v3.6.1 平台测试 41 项、老师 CloneFactory 测试 5 项和前端组件测试 4 项全部通过。JaCoCo 0.8.14 的平台行覆盖率 88.85%，分支覆盖率 74.05%；生成的 CloneFactory 工具类单独由拷贝测试与运行包检查验证，覆盖率排除该生成类。
 
 
 [cols="3,7",options="header"]
@@ -2717,8 +2699,8 @@ v3.6.0 平台测试 42 项、老师 CloneFactory 测试 5 项和前端组件测�
 |产物 |访问与复现
 |权限后台 v3.5.0 |http://113.44.144.119/platform/
 |老师课程系统接入 v3.5.0 |http://113.44.144.119/course/
-|平台 API 文档 |已部署 v3.5.0。v3.6.0 运行 npm ci --prefix docs/api 后执行 python3 tooling/build-api.py。
-|覆盖率报告 |已部署 v3.5.0。v3.6.0 执行 ./mvnw verify 生成 backend/target/site/jacoco/。
-|部署与验收证据 |v3.5.0 Swarm 证据见原整改报告。本版契约回归见 docs/implementation/test-summary-v3.6.0.json。
+|平台 API 文档 |运行 npm ci --prefix docs/api 后执行 python3 tooling/build-api.py。
+|覆盖率报告 |执行 ./mvnw verify 生成 backend/target/site/jacoco/。
+|部署与验收证据 |已上线 v3.5.0 的 Swarm 证据见该版本整改报告。当前契约回归见 docs/implementation/test-summary-v3.6.1.json。
 |课程提交 |代码推送 GitHub，由已配置的自动同步更新 Gitee；课程网站提交与口试预约由组员完成。
 |===

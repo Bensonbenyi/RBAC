@@ -58,7 +58,7 @@ CASES = [
  '本次权限结论来自已提交的当前关系；接入系统独立执行拒绝。',None,'Auth')]
 
 CASES.append(('HIERARCHY-001','角色继承管理','REQ-F-03',['ROLE-10','ROLE-11','ROLE-12','ROLE-13'],'角色继承','持有 role.manage 的本部门管理员','建立同部门无环角色层次，使高级角色获得基础角色权限。','在角色页选择配置继承。','已登录，具有 API 许可，前端控件还需要 ui.role.inheritance。',[
- ('查询直接基础角色及有效权限。','直接边与传递闭包分开显示。'),('添加继承边。','事务先锁部门，再读取当前图；结构化 Service 检查，DDD RoleHierarchy 检查是否回到起点。'),('解除指定继承边。','其他路径及直接授权继续有效；JWT 不缓存权限。')],
+ ('查询直接基础角色及有效权限。','直接边与传递闭包分开显示。'),('添加继承边。','事务先锁部门，再读取当前图；两套实现调用 RoleHierarchy，检查基础角色能否走回高级角色。'),('解除指定继承边。','其他路径及直接授权继续有效；JWT 不缓存权限。')],
  [('自环或间接环','409 ROLE_CYCLE，事务不落边。'),('跨部门或无 API 许可','403。'),('角色不存在','404。'),('角色仍被继承关系引用时删除','409，先解除关系。')],
  '继承图保持 DAG；两系统的界面及 API 决策都使用当前有效权限。',None,None))
 
@@ -118,17 +118,17 @@ app.backend-strategy 接受 structured 或 ddd。@ConditionalOnProperty 按配�
  for mode,label in [('structured','结构化'),('ddd','DDD')]:s+=fig('architecture-classes-'+mode,'系统总体架构类图 '+label)
  s+='''==== 领域对象与数据契约
 
-DDD User 持有原 Data.User、当前 Profile 及 roleIds；Role 保存名称及 permissionIds。资料与集合修改由相应行为完成。Department、System 和 Permission 的领域对象维护可修改名称，编号及归属等完整资料保存在共享 Data record。应用服务承担权限检查、跨对象存在性与部门范围检查。
+DDD User 持有原 Data.User 和当前 Profile。Role、Department、System 和 Permission 维护名称，编号及归属由共享 Data record 表达。应用服务检查权限、对象存在性和部门范围，并通过存储端口保存直接授权关系。
 '''
  s+=fig('domain','DDD 领域对象完整类图')
  s+=table(['领域对象','实际状态','行为与职责'],[
- ('User','Data.User、Data.Profile、Set<Long> roleIds','changeProfile 合并允许修改字段；assignRole 校验同部门及重复；revokeRole 幂等移除。'),
- ('Role','name、Set<Long> permissionIds','rename；grantPermission 与 revokePermission 幂等改变集合。'),
+ ('User','Data.User、Data.Profile','changeProfile 合并允许修改的字段；requireRoleInDepartment 校验目标角色的部门。用户角色关联由应用服务保存。'),
+ ('Role','name','rename 更新名称。权限授予与撤销直接写关联表，由联合主键维持唯一。'),
  ('Department / System / Permission','name','rename 改名；固定字段、对象存在性及引用约束由应用服务和存储协作。'),
  ('Data.User / Role / Department / System / Permission','编号、名称、归属及固定业务字段','共享不可变 record，用作查询结果、持久化契约与领域构造输入。')],'2,3,5')
  s+='''==== 共享持久化与适配器
 
-ManagementStore 提供业务对象和两组授权关系的读写，SessionStore 维护技术会话。JdbcManagementStore 与 JdbcSessionStore 实现端口，使用 JdbcTemplate 和 RowMapper。新建后读取生成编号及结果行；更新先由服务合并完整资料；用户删除依次清理会话、用户角色和账号。
+ManagementStore 提供业务对象、直接授权与继承边的读写。EffectiveAccessStore 查询有效角色和有效权限，SessionStore 维护技术会话。三个 JDBC 适配器共用 JdbcTemplate。新建后读取生成编号及结果行；更新先由服务合并完整资料；用户删除依次清理会话、用户角色和账号。
 '''
  s+=fig('class-persistence','共享持久化适配器 类图')
  for stem,title in [('adapter-insert','JDBC 用户适配器 新建顺序图'),('adapter-update','JDBC 用户适配器 更新顺序图'),('adapter-delete','JDBC 用户关联清理与删除 顺序图')]:s+=fig(stem,title)
@@ -142,7 +142,7 @@ ManagementStore 提供业务对象和两组授权关系的读写，SessionStore 
  s+=fig('packages-files','源文件与配置文件组织')
  s+='''==== 认证与授权关系
 
-共享认证模块类图位于运行时鉴权功能下，覆盖 AuthController、AuthService、两类存储端口及 JWT 签发。用户角色和角色权限分别由 UserUseCase、RoleUseCase 提供方法，在两套业务服务中保持相同外部行为。
+共享认证模块类图位于运行时鉴权功能下，覆盖 AuthController、AuthService、账号查询、有效授权、会话端口及 JWT 签发。用户角色和角色权限分别由 UserUseCase、RoleUseCase 提供方法，在两套业务服务中保持相同外部行为。
 '''
  s+=fig('class-auth-request','Bearer 认证与实时鉴权 类图')
  for mode,label in [('structured','结构化'),('ddd','DDD')]:s+=fig('class-relations-'+mode,'授权关系 '+label+' 类图')

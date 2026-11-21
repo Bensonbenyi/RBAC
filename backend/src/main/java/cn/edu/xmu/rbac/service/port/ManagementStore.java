@@ -36,8 +36,6 @@ public interface ManagementStore {
 
   Data.System system(Long id);
 
-  Data.System systemByKey(String key);
-
   Data.Page<Data.System> systems(int page, int size);
 
   Data.System createSystem(Data.CreateSystem command);
@@ -74,8 +72,6 @@ public interface ManagementStore {
 
   List<Data.Role> inheritedRoles(Long roleId);
 
-  List<Data.Permission> effectiveRolePermissions(Long roleId);
-
   void inheritRole(Long seniorId, Long juniorId);
 
   void removeInheritance(Long seniorId, Long juniorId);
@@ -84,8 +80,6 @@ public interface ManagementStore {
 
   List<Data.Permission> rolePermissions(Long roleId);
 
-  boolean hasRole(Long userId, Long roleId);
-
   void assignRole(Long userId, Long roleId);
 
   void revokeRole(Long userId, Long roleId);
@@ -93,8 +87,4 @@ public interface ManagementStore {
   void grantPermission(Long roleId, Long permissionId);
 
   void revokePermission(Long roleId, Long permissionId);
-
-  List<String> permissionsForUser(Long userId, String systemKey);
-
-  List<String> rolesForUser(Long userId);
 }

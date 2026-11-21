@@ -2,6 +2,7 @@ package cn.edu.xmu.rbac.service.auth;
 
 import cn.edu.xmu.rbac.service.port.BusinessException;
 import cn.edu.xmu.rbac.service.port.Data;
+import cn.edu.xmu.rbac.service.port.EffectiveAccessStore;
 import cn.edu.xmu.rbac.service.port.ManagementStore;
 import cn.edu.xmu.rbac.service.port.SessionStore;
 import cn.edu.xmu.rbac.service.security.AccessPolicy;
@@ -24,21 +25,24 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class AuthService {
   private final ManagementStore store;
+  private final EffectiveAccessStore effectiveAccess;
   private final SessionStore sessions;
   private final AccessPolicy access;
   private final JwtEncoder encoder;
   private final Duration lifetime;
   private final String issuer;
 
-  /** 装配AuthService所需依赖. */
+  /** 装配当前授权查询、会话记录及令牌签发. */
   public AuthService(
       ManagementStore store,
+      EffectiveAccessStore effectiveAccess,
       SessionStore sessions,
       AccessPolicy access,
       JwtEncoder encoder,
       @Value("${app.jwt.lifetime}") Duration lifetime,
       @Value("${app.jwt.issuer}") String issuer) {
     this.store = store;
+    this.effectiveAccess = effectiveAccess;
     this.sessions = sessions;
     this.access = access;
     this.encoder = encoder;
@@ -46,10 +50,10 @@ public class AuthService {
     this.issuer = issuer;
   }
 
-  /** LoginResult 数据契约. */
+  /** 成功响应包含令牌、凭据类型和秒级有效期. */
   public record LoginResult(String accessToken, String tokenType, long expiresIn) {}
 
-  /** Me 数据契约. */
+  /** 当前身份及目标系统可用的界面权限. */
   public record CurrentUserResult(
       String subject,
       String no,
@@ -105,14 +109,14 @@ public class AuthService {
         user.name(),
         user.departmentId(),
         roles(actor),
-        store.permissionsForUser(user.id(), actor.systemKey()).stream()
+        effectiveAccess.permissionsForUser(user.id(), actor.systemKey()).stream()
             .filter(code -> UiPermissions.contains(actor.systemKey(), code))
             .toList());
   }
 
   /** 课程端使用契约规定的身份角色，兼容既有演示角色名. */
   private List<String> roles(Data.Identity actor) {
-    List<String> names = store.rolesForUser(actor.userId());
+    List<String> names = effectiveAccess.rolesForUser(actor.userId());
     if (!"course-project-management".equals(actor.systemKey())) {
       return names;
     }

@@ -3,6 +3,7 @@ package cn.edu.xmu.rbac.infrastructure.security;
 import cn.edu.xmu.rbac.service.auth.AuthService;
 import cn.edu.xmu.rbac.service.port.BusinessException;
 import cn.edu.xmu.rbac.service.port.Data;
+import cn.edu.xmu.rbac.service.port.EffectiveAccessStore;
 import cn.edu.xmu.rbac.service.port.ManagementStore;
 import cn.edu.xmu.rbac.service.port.SessionStore;
 import jakarta.servlet.FilterChain;
@@ -29,12 +30,18 @@ public class BearerFilter extends OncePerRequestFilter {
   private final JwtDecoder decoder;
   private final SessionStore sessions;
   private final ManagementStore store;
+  private final EffectiveAccessStore effectiveAccess;
 
-  /** 装配BearerFilter所需依赖. */
-  public BearerFilter(JwtDecoder decoder, SessionStore sessions, ManagementStore store) {
+  /** 构造请求鉴权过滤器，账号、会话及当前授权分别查询. */
+  public BearerFilter(
+      JwtDecoder decoder,
+      SessionStore sessions,
+      ManagementStore store,
+      EffectiveAccessStore effectiveAccess) {
     this.decoder = decoder;
     this.sessions = sessions;
     this.store = store;
+    this.effectiveAccess = effectiveAccess;
   }
 
   @Override
@@ -74,9 +81,11 @@ public class BearerFilter extends OncePerRequestFilter {
       if (target == null) {
         target = session.systemKey();
       }
+      // 登录许可被撤销后，持有该令牌的用户仍可结束会话。
       boolean logout = path.equals("/auth/logout") && request.getMethod().equals("POST");
       if (!token.getAudience().contains(target)
-          || (!logout && !store.permissionsForUser(user.id(), target).contains("login"))) {
+          || (!logout
+              && !effectiveAccess.permissionsForUser(user.id(), target).contains("login"))) {
         throw BusinessException.forbidden();
       }
       Data.Identity identity =

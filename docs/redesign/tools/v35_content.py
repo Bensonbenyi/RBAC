@@ -10,17 +10,17 @@ def grasp(table):
 
 '''+table(['原则','代码位置与职责'],[
  ('Controller','RoleController 接收 HTTP，StructuredRoleService 或 DddRoleService 编排事务；不把业务防环放到 HTTP 层。'),
- ('Information Expert','DDD RoleHierarchy 持有继承边快照，执行 requireAcyclic；Role 维护自身 permissionIds，User 维护 roleIds。'),
- ('Creator','DddRoleService 取得部门边集合并创建 RoleHierarchy，生命周期限本次继承用例。'),
+ ('Information Expert','RoleHierarchy 接收当前继承边，执行 requireAcyclic；User 根据自身部门校验可分配的角色。'),
+ ('Creator','DddUserService 根据当前用户资料创建 User，交由 User 校验目标角色的部门。'),
  ('Low Coupling','API 依赖 RoleUseCase，业务依赖 ManagementStore；领域规则使用 Java 集合，与 Spring JDBC、HTTP 解耦。'),
  ('High Cohesion','Controller 处理输入输出，Service 处理事务与范围，RoleHierarchy 处理无环规则，适配器处理 SQL。'),
  ('Polymorphism','五个用例端口分别有 Structured 与 Ddd 实现，启动条件只装配配置选中的实现。'),
  ('Indirection','RoleUseCase 与 ManagementStore 分开调用方和实现方，便于契约测试与替换。'),
- ('Pure Fabrication','JdbcManagementStore、AccessPolicy 是技术与策略对象，集中持久化和权限边界，避免分散到实体。'),
+ ('Pure Fabrication','JdbcManagementStore 读写直接关系；JdbcEffectiveAccessStore 集中递归查询；AccessPolicy 检查权限及部门边界。'),
  ('Protected Variations','共享 API、Data 和存储端口保护两种业务实现变化；同一契约套件验证外部行为。')],'3,7')+table(['比较项','结构化实现','DDD 实现'],[
- ('业务规则位置','StructuredRoleService 在事务脚本中进行队列遍历、防环与存储编排。','DddRoleService 编排事务和范围，RoleHierarchy 执行领域防环。'),
- ('已有授权修改','Service 校验集合及调用存储。','User、Role 管理授权标识集合，应用服务保存变化。'),
- ('继承图生命周期','方法局部 edges、队列和 visited。','不可变 RoleHierarchy 快照；Data.Inheritance 表达边。'),
+ ('业务规则位置','StructuredRoleService 在事务脚本中调用共享防环规则并写入继承边。','DddRoleService 编排事务和范围，调用同一领域规则判断环。'),
+ ('已有授权修改','Service 校验权限和范围，数据库拒绝重复分配。','User 校验角色部门，应用服务保存关联，数据库拒绝重复分配。'),
+ ('继承图生命周期','事务读取 Data.Inheritance 边列表。','同一份列表作为规则输入，队列和已访问集合在方法结束后释放。'),
  ('共同部分','API、认证、用例端口、数据库迁移、JDBC、日志及页面。','相同契约和基础设施，不复制两套数据库与接口。'),
  ('配置切换','BACKEND_STRATEGY=structured。','BACKEND_STRATEGY=ddd，重启生效。')],'2,5,5')+'''
 === 实际 Java Web 技术
@@ -54,9 +54,9 @@ def verification(table):
 v{version} 平台测试 {data['platformTests']} 项、老师 CloneFactory 测试 {data['cloneFactoryTests']} 项和前端组件测试 {data['frontendTests']} 项全部通过。JaCoCo 0.8.14 的平台行覆盖率 {data['coverage']['LINE']['percent']}%，分支覆盖率 {data['coverage']['BRANCH']['percent']}%；生成的 CloneFactory 工具类单独由拷贝测试与运行包检查验证，覆盖率排除该生成类。
 
 '''+table(['产物','访问与复现'],[
- ('权限后台 v3.6.0','http://113.44.144.119/platform/'),
- ('老师课程系统接入 v3.6.0','http://113.44.144.119/course/'),
- ('平台 API 文档','已部署 v3.6.0。v3.6.0 运行 npm ci --prefix docs/api 后执行 python3 tooling/build-api.py。'),
- ('覆盖率报告','已部署 v3.6.0。v3.6.0 执行 ./mvnw verify 生成 backend/target/site/jacoco/。'),
- ('部署与验收证据','v3.6.0 Swarm 证据见原整改报告。本版契约回归见 docs/implementation/test-summary-v3.6.0.json。'),
+ ('权限后台 v3.5.0','http://113.44.144.119/platform/'),
+ ('老师课程系统接入 v3.5.0','http://113.44.144.119/course/'),
+ ('平台 API 文档','运行 npm ci --prefix docs/api 后执行 python3 tooling/build-api.py。'),
+ ('覆盖率报告','执行 ./mvnw verify 生成 backend/target/site/jacoco/。'),
+ ('部署与验收证据',f'已上线 v3.5.0 的 Swarm 证据见该版本整改报告。当前契约回归见 docs/implementation/test-summary-v{version}.json。'),
  ('课程提交','代码推送 GitHub，由已配置的自动同步更新 Gitee；课程网站提交与口试预约由组员完成。')],'3,7')

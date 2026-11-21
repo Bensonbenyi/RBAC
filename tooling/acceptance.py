@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """验证真实 Swarm 两系统及 RBAC1，测试关联和学期在 finally 中清理。"""
 import argparse
+from datetime import date
 import json
 import os
 import time
@@ -10,6 +11,7 @@ from pathlib import Path
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--base', required=True)
+parser.add_argument('--version', required=True, help='被验收部署的版本')
 parser.add_argument('--strategy', choices=['structured', 'ddd'], required=True)
 parser.add_argument('--report', required=True)
 args = parser.parse_args()
@@ -130,7 +132,7 @@ finally:
     for token in [reviewer, admin]:
         if token:
             call('/auth/logout', 'POST', token=token, expected=204)
-report = {'version': '3.5.0', 'date': '2026-11-18', 'strategy': args.strategy,
+report = {'version': args.version, 'date': date.today().isoformat(), 'strategy': args.strategy,
           'base': args.base, 'result': 'passed', 'checks': checks,
           'fixturesCleaned': True}
 Path(args.report).write_text(json.dumps(report, ensure_ascii=False, indent=2) + '\n')

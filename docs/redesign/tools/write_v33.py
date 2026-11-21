@@ -6,7 +6,7 @@ from v33_detail_content import FIELD_TABLES, CASES, case_table, calls_table, ope
 R=Path(__file__).resolve().parents[1];VERSION=(R/'VERSION').read_text().strip()
 HEADER='''= {title}
 OOAD 课程项目组
-v{version}, 2026-11-20
+v{version}, 2026-11-21
 :doctype: book
 :lang: zh-CN
 :toc:
@@ -79,7 +79,7 @@ def detail():
 
 平台统一维护用户、部门、角色、业务系统与权限。用户通过角色获得权限；部门限定账号和角色归属及管理员的数据范围。平台自身后台和老师的课程管理系统均登记为接入系统。
 ''')
- add(table(['术语','定义'],[('用户','员工与登录账号的统一实体，属于一个部门。'),('角色','属于一个部门的权限集合。'),('权限','在一个业务系统内具有唯一编码的操作许可。'),('Bearer JWT','客户端在 Authorization 请求头提交的签名凭据，不携带角色或权限。'),('登录会话','服务器保存在 MySQL 的技术记录，关联用户、目标系统、到期与撤销时间。'),('结构化实现','业务 Service 在事务内编排规则和存储调用。'),('DDD 实现','应用服务编排用例，聚合根维护用户角色及角色权限等规则。'),('Service Port','两套业务实现共用的用例接口、数据契约和存储端口。'),('CloneFactory','老师提供的编译期拷贝工具，生成 DTO 到 Command 的转换代码。')],'2,6'))
+ add(table(['术语','定义'],[('用户','员工与登录账号的统一实体，属于一个部门。'),('角色','属于一个部门的权限集合。'),('权限','在一个业务系统内具有唯一编码的操作许可。'),('Bearer JWT','客户端在 Authorization 请求头提交的签名凭据，不携带角色或权限。'),('登录会话','服务器保存在 MySQL 的技术记录，关联用户、目标系统、到期与撤销时间。'),('结构化实现','业务 Service 在事务内编排规则和存储调用。'),('DDD 实现','应用服务编排用例，领域对象维护用户角色分配等业务规则。'),('Service Port','两套业务实现共用的用例接口、数据契约和存储端口。'),('CloneFactory','老师提供的编译期拷贝工具，生成 DTO 到 Command 的转换代码。')],'2,6'))
  add('=== 参考资料\n'+refs())
  add('''== 任务概述
 
@@ -128,7 +128,7 @@ def detail():
  add(fig('architecture','总体分层架构'));add(fig('packages','系统包依赖概览'))
  add('''=== 功能描述
 
-以下每项列出需求、调用说明与详细交互。写请求先校验输入并使用 CloneFactory 转为用例输入；操作者身份由 BearerFilter 和 CurrentIdentity 提供。DDD 的 User、Role 维护角色及权限标识集合，其他简单实体维护自身名称变化。
+以下每项列出需求、调用说明与详细交互。写请求先校验输入并使用 CloneFactory 转为用例输入；操作者身份由 BearerFilter 和 CurrentIdentity 提供。DDD 的 User 校验角色分配，Role 等目录对象维护名称。应用服务保存授权关系。
 ''')
  for case in CASES:
   key,title,req,keys,package,actor,description,trigger,pre,steps,errors,post,activity,module=case
@@ -144,7 +144,7 @@ def detail():
    else:
     for mode,label in [('structured','结构化'),('ddd','DDD')]:
      add(fig(op.key.lower()+'-'+mode,op.key+' '+label+' 详细交互'))
-     if mode=='ddd' and op.key in ['USER-04','USER-07','ROLE-04','ROLE-07','DEPT-03','SYS-03','PERM-03','ROLE-11']:add(fig(op.key.lower()+'-ddd-domain',op.key+' DDD 聚合修改与保存'))
+     if mode=='ddd' and op.key in ['USER-04','USER-07','ROLE-04','DEPT-03','SYS-03','PERM-03']:add(fig(op.key.lower()+'-ddd-domain',op.key+' DDD 聚合修改与保存'))
    if op.key=='AUTH-01':add(fig('flow-login-session','建立登录会话与签发凭据'))
   if key=='HIERARCHY-001':
    for mode,label in [('structured','结构化'),('ddd','DDD')]:add(fig('class-hierarchy-'+mode,'RBAC1 '+label+' 角色继承类图'))
@@ -373,7 +373,7 @@ MySQL InnoDB 保存业务数据和登录会话，利用事务、外键及唯一�
 == 非功能需求实现方案
 ''')
  add(table(['需求','架构及模块落实','验证证据'],[('REQ-N-01 安全','AD-03、AD-04、AD-07；字段白名单、单部门边界、实时 RBAC、会话撤销','S1；共同契约及真实课程撤权测试'),('REQ-N-02 性能','AD-05；分页、连接池与关系索引，记录同条件两种策略结果','S2；性能基线报告'),('REQ-N-03 可用性','AD-04、AD-06；持久化会话、密钥、数据库卷、进程重启与备份','S3；恢复与依赖故障报告'),('REQ-N-04 可修改性','AD-01、AD-02；共享用例端口与独立领域模型','S4；两种配置的相同测试'),('REQ-N-05 可重复部署','固定教师提交、依赖版本、容器构建及独立部署资源','构建日志、镜像及部署记录')],'3,6,4'))
- add('=== 架构验证结果\n\n以下为 v3.3.0 在 2026-11-17 的历史部署测量。v3.6.0 的继承与部署验收见同版整改报告。原始记录和复现条件保存在实施报告。\n'+table(['场景','实测结果与证据'],[
+ add('=== 架构验证结果\n\n以下为 v3.3.0 在 2026-11-17 的历史部署测量。v3.5.0 的 Swarm 继承验收及 v3.6.0 的本地身份联调结果分别见对应版本的整改报告。原始记录和复现条件保存在实施报告。\n'+table(['场景','实测结果与证据'],[
  ('S1 安全','真实课程联调 19 项检查通过；撤销 CR 后原令牌审核返回 403，恢复授权后成功。'),
  ('S2 性能','1、4、8 并发混合查询共 10,000 次，无错误；8 并发三轮 P95：结构化 36.67 至 52.61 ms，DDD 36.90 至 55.83 ms。'),
  ('S3 可用性','应用重启首次失败至恢复 34.477 s；身份依赖中断至课程恢复 39.365 s，故障期间课程端返回 503。原令牌恢复可用。'),

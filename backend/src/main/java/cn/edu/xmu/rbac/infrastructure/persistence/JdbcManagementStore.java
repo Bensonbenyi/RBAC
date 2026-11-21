@@ -3,6 +3,7 @@ package cn.edu.xmu.rbac.infrastructure.persistence;
 import cn.edu.xmu.rbac.service.port.BusinessException;
 import cn.edu.xmu.rbac.service.port.Data;
 import cn.edu.xmu.rbac.service.port.ManagementStore;
+import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,7 +14,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 
-/** JdbcManagementStore 的 JDBC 持久化实现. */
+/** 业务目录、直接授权关系和继承边的 JDBC 读写. */
 @Repository
 public class JdbcManagementStore implements ManagementStore {
   private final JdbcTemplate jdbc;
@@ -84,7 +85,7 @@ public class JdbcManagementStore implements ManagementStore {
     GeneratedKeyHolder keys = new GeneratedKeyHolder();
     jdbc.update(
         c -> {
-          java.sql.PreparedStatement p = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+          PreparedStatement p = c.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
           for (int i = 0; i < args.length; i++) {
             p.setObject(i + 1, args[i]);
           }
@@ -196,10 +197,6 @@ public class JdbcManagementStore implements ManagementStore {
     return one("SELECT * FROM business_system WHERE id=?", SYSTEM, id);
   }
 
-  public Data.System systemByKey(String key) {
-    return one("SELECT * FROM business_system WHERE system_key=?", SYSTEM, key);
-  }
-
   public Data.Page<Data.System> systems(int page, int size) {
     return page("business_system", "", SYSTEM, page, size);
   }
@@ -289,19 +286,6 @@ public class JdbcManagementStore implements ManagementStore {
         roleId);
   }
 
-  /** 递归求角色权限并集，多路径使用去重合并. */
-  public List<Data.Permission> effectiveRolePermissions(Long roleId) {
-    return jdbc.query(
-        "WITH RECURSIVE effective(id) AS (SELECT id FROM `role` WHERE id=?"
-            + " UNION DISTINCT SELECT h.junior_role_id FROM role_inheritance h JOIN effective e"
-            + " ON h.senior_role_id=e.id) SELECT DISTINCT p.* FROM effective e"
-            + " JOIN role_permission rp ON rp.role_id=e.id"
-            + " JOIN permission p ON p.id=rp.permission_id"
-            + " ORDER BY p.id",
-        PERMISSION,
-        roleId);
-  }
-
   /** 幂等新增角色继承边. */
   public void inheritRole(Long seniorId, Long juniorId) {
     jdbc.update(
@@ -337,16 +321,6 @@ public class JdbcManagementStore implements ManagementStore {
         roleId);
   }
 
-  /** 判断指定用户与角色的直接关联是否存在. */
-  public boolean hasRole(Long userId, Long roleId) {
-    return jdbc.queryForObject(
-            "SELECT COUNT(*) FROM user_role WHERE user_id=? AND role_id=?",
-            Long.class,
-            userId,
-            roleId)
-        > 0;
-  }
-
   public void assignRole(Long userId, Long roleId) {
     jdbc.update("INSERT INTO user_role(user_id,role_id) VALUES(?,?)", userId, roleId);
   }
@@ -367,31 +341,5 @@ public class JdbcManagementStore implements ManagementStore {
   public void revokePermission(Long roleId, Long permissionId) {
     jdbc.update(
         "DELETE FROM role_permission WHERE role_id=? AND permission_id=?", roleId, permissionId);
-  }
-
-  /** 递归合并用户直接角色及继承角色的目标系统权限，并去重排序. */
-  public List<String> permissionsForUser(Long userId, String systemKey) {
-    return jdbc.queryForList(
-        "WITH RECURSIVE effective(id) AS (SELECT role_id FROM user_role WHERE user_id=?"
-            + " UNION DISTINCT SELECT h.junior_role_id FROM role_inheritance h JOIN effective e"
-            + " ON h.senior_role_id=e.id) SELECT DISTINCT p.code FROM effective e"
-            + " JOIN role_permission rp ON rp.role_id=e.id"
-            + " JOIN permission p ON p.id=rp.permission_id"
-            + " JOIN business_system s ON s.id=p.system_id WHERE s.system_key=?"
-            + " ORDER BY p.code",
-        String.class,
-        userId,
-        systemKey);
-  }
-
-  /** 查询直接和间接有效角色名称. */
-  public List<String> rolesForUser(Long userId) {
-    return jdbc.queryForList(
-        "WITH RECURSIVE effective(id) AS (SELECT role_id FROM user_role WHERE user_id=?"
-            + " UNION DISTINCT SELECT h.junior_role_id FROM role_inheritance h JOIN effective e"
-            + " ON h.senior_role_id=e.id) SELECT r.name FROM `role` r JOIN effective e ON e.id=r.id"
-            + " ORDER BY r.id",
-        String.class,
-        userId);
   }
 }

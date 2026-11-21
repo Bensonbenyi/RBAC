@@ -1,7 +1,6 @@
 package cn.edu.xmu.rbac.service.structured;
 
 import cn.edu.xmu.clonefactory.util.CloneFactory;
-import cn.edu.xmu.rbac.service.port.BusinessException;
 import cn.edu.xmu.rbac.service.port.Data;
 import cn.edu.xmu.rbac.service.port.ManagementStore;
 import cn.edu.xmu.rbac.service.port.UserUseCase;
@@ -77,15 +76,11 @@ public class StructuredUserService implements UserUseCase {
     return store.userRoles(id);
   }
 
-  /** 在本部门范围内分配角色. */
+  /** 在本部门范围内分配角色，联合主键约束负责拒绝重复关联. */
   public void assign(Data.Identity actor, Long userId, Long roleId) {
     access.require(actor, "user.role.assign");
-    Data.User user = scoped(actor, userId);
-    Data.Role role = store.role(roleId);
-    access.scope(actor, role.departmentId());
-    if (store.hasRole(userId, roleId)) {
-      throw BusinessException.conflict();
-    }
+    scoped(actor, userId);
+    access.scope(actor, store.role(roleId).departmentId());
     store.assignRole(userId, roleId);
   }
 

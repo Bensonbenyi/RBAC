@@ -1,0 +1,79 @@
+{
+  "version": "3.6.1",
+  "date": "2026-11-21",
+  "platformTests": 41,
+  "platformSuites": [
+    {
+      "name": "cn.edu.xmu.rbac.CopyTest",
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "cn.edu.xmu.rbac.DddContractTest",
+      "tests": "19",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "cn.edu.xmu.rbac.DomainTest",
+      "tests": "2",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "cn.edu.xmu.rbac.StructuredContractTest",
+      "tests": "19",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    }
+  ],
+  "cloneFactoryTests": 5,
+  "frontendTests": 4,
+  "coverage": {
+    "INSTRUCTION": {
+      "covered": 5427,
+      "missed": 637,
+      "percent": 89.5
+    },
+    "BRANCH": {
+      "covered": 117,
+      "missed": 41,
+      "percent": 74.05
+    },
+    "LINE": {
+      "covered": 972,
+      "missed": 122,
+      "percent": 88.85
+    },
+    "COMPLEXITY": {
+      "covered": 331,
+      "missed": 79,
+      "percent": 80.73
+    },
+    "METHOD": {
+      "covered": 286,
+      "missed": 44,
+      "percent": 86.67
+    },
+    "CLASS": {
+      "covered": 81,
+      "missed": 2,
+      "percent": 97.59
+    }
+  },
+  "checks": [
+    "Maven verify",
+    "Spotless",
+    "Google Checkstyle",
+    "CloneFactory runtime artifact",
+    "Dual strategy architecture",
+    "Prettier",
+    "TypeScript",
+    "Both Vite production builds"
+  ]
+}

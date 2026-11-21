@@ -489,7 +489,9 @@ abstract class ContractSuite {
     String roleId = role.get("id").asText();
     String path = "/api/users/" + userId("viewer") + "/roles";
     expect(201, "POST", path, "{\"roleId\":\"" + roleId + "\"}", token);
-    expect(409, "POST", path, "{\"roleId\":\"" + roleId + "\"}", token);
+    assertEquals(
+        "CONFLICT",
+        expect(409, "POST", path, "{\"roleId\":\"" + roleId + "\"}", token).get("code").asText());
     expect(409, "DELETE", "/api/roles/" + roleId, null, token);
     expect(204, "DELETE", path + "/" + roleId, null, token);
     expect(204, "DELETE", path + "/" + roleId, null, token);
@@ -510,6 +512,7 @@ abstract class ContractSuite {
     assertFalse(expect(200, "GET", query, null, course).get("allowed").asBoolean());
     expect(204, "PUT", path, null, token);
     expect(204, "PUT", path, null, token);
+    expect(404, "PUT", "/api/roles/" + roleId("reviewer") + "/permissions/9999999", null, token);
     assertTrue(expect(200, "GET", query, null, course).get("allowed").asBoolean());
     expect(403, "GET", "/api/users", null, course);
     expect(404, "GET", API_PERMISSIONS + "unknown", null, course);

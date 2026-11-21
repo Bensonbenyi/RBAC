@@ -5,7 +5,7 @@ public class BusinessException extends RuntimeException {
   private final int status;
   private final String code;
 
-  /** 装配BusinessException所需依赖. */
+  /** 创建包含 HTTP 状态和业务错误码的异常. */
   public BusinessException(int status, String code, String message) {
     super(message);
     this.status = status;
@@ -26,9 +26,5 @@ public class BusinessException extends RuntimeException {
 
   public static BusinessException missing() {
     return new BusinessException(404, "NOT_FOUND", "对象不存在");
-  }
-
-  public static BusinessException conflict() {
-    return new BusinessException(409, "CONFLICT", "存在关联或重复数据");
   }
 }

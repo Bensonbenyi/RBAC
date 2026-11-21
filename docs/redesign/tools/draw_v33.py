@@ -5,7 +5,6 @@ import draw_spec as u
 from draw_complete import Sequence
 from v33_catalog import OPS,MODULES
 R=Path(__file__).resolve().parents[1]
-u.OUT=R/'assets'/'v33';u.OUT.mkdir(exist_ok=True)
 D=u.D
 
 def box(d,x,y,w,h,title,body=()):
@@ -16,7 +15,7 @@ def architecture():
  d=D('architecture','系统总体分层架构',900,1120)
  box(d,80,100,740,100,'浏览器展现层',['Vue 3  TypeScript   权限后台 / 课程演示入口'])
  box(d,80,240,740,120,'API 输入层',['Controller 输入校验与 CloneFactory','Bearer 认证、异常映射与请求日志'])
- box(d,80,400,740,90,'Service Port',['五个用例端口  数据契约  ManagementStore / SessionStore'])
+ box(d,80,400,740,90,'Service Port',['五个用例端口  数据契约  管理、授权及会话端口'])
  box(d,80,530,345,160,'结构化业务实现',['事务脚本 Service','校验、编排、调用存储'])
  box(d,475,530,345,160,'DDD 业务实现',['应用服务','领域实体与聚合集合'])
  box(d,80,730,740,120,'共享 Infrastructure',['Spring JDBC  MySQL   JWT 签名与校验','存储适配器  Logback 分层日志'])
@@ -26,7 +25,7 @@ def architecture():
  d.note(80,1010,740,['app.backend-strategy 在启动时选择一套业务实现。','认证、存储及外部契约共用。'])
  d=D('packages','系统 UML 包图与依赖',900,1120,'UMLPackageDiagram')
  nodes={}
- for key,title,x,y,w,h,body in [('api','api',80,120,740,130,['auth  user  role  department  system  permission  identity']),('port','service.port',80,300,740,130,['五个 UseCase  Data  ManagementStore  SessionStore']),('structured','service.structured',80,500,345,150,['五个 Structured Service']),('ddd','service.ddd',475,500,345,150,['应用服务  domain']),('infra','infrastructure',80,770,740,140,['persistence  security  logging  bootstrap'])]:nodes[key]=d.node(title,x,y,w,h,'UMLPackage',body=body)
+ for key,title,x,y,w,h,body in [('api','api',80,120,740,130,['auth  user  role  department  system  permission  identity']),('port','service.port',80,300,740,130,['五个 UseCase  Data  三个存储端口']),('structured','service.structured',80,500,345,150,['五个 Structured Service']),('ddd','service.ddd',475,500,345,150,['应用服务  domain']),('infra','infrastructure',80,770,740,140,['persistence  security  logging  bootstrap'])]:nodes[key]=d.node(title,x,y,w,h,'UMLPackage',body=body)
  d.edge(nodes['api'],nodes['port'],[(450,250),(450,290)])
  d.edge(nodes['structured'],nodes['port'],[(250,500),(250,440)])
  d.edge(nodes['ddd'],nodes['port'],[(650,500),(650,440)])
@@ -36,7 +35,7 @@ def architecture():
 def domain_relations():
  d=D('domain-relations','核心业务对象关系模型',900,1100)
  items={}
- for name,x,y,ops in [('Department',40,120,[('rename','')]),('User',520,120,[('changeProfile',''),('assignRole',''),('revokeRole','')]),('Role',40,510,[('rename',''),('grantPermission',''),('revokePermission','')]),('Permission',520,510,[('rename','')]),('System',520,850,[('rename','')])]:items[name]=d.node(name,x,y,340,170 if name in ['User','Role'] else 140,ops=ops)
+ for name,x,y,ops in [('Department',40,120,[('rename','')]),('User',520,120,[('changeProfile',''),('requireRoleInDepartment','')]),('Role',40,510,[('rename','')]),('Permission',520,510,[('rename','')]),('System',520,850,[('rename','')])]:items[name]=d.node(name,x,y,340,170 if name in ['User','Role'] else 140,ops=ops)
  def association(a,b,pts,ma,mb,label,labels):
   m=d.model('UMLAssociation',name=label)
   m['end1']=u.obj('UMLAssociationEnd',m,reference=u.ref(items[a][0]),multiplicity=ma,aggregation='none',navigable='unspecified')
@@ -56,7 +55,7 @@ def core_classes():
  for mode,prefix in [('structured','Structured'),('ddd','Ddd')]:
   for name in ['UserController','UserUseCase','ManagementStore','User','Role']:u.CLASSES.pop(name,None)
   d=D('core-'+mode,('结构化' if mode=='structured' else 'DDD')+' 核心设计类图',900,1180)
-  specs=[('UserController',[],[('assign','user: Identifier;role: Identifier','void')],'boundary'),('UserUseCase',[],[('assign','actor: Identity;user: Identifier;role: Identifier','void')],''),(prefix+'UserService',[],[('assign','actor: Identity;user: Identifier;role: Identifier','void')],'control'),('ManagementStore',[],[('user','id: Identifier','UserData'),('assignRole','user: Identifier;role: Identifier','void')],''),('User',[('username','String'),('name','String'),('phone','String')],[('changeProfile','name: String;phone: String','void'),('assignRole','role: Identifier','void')] if mode=='ddd' else [],'entity'),('Role',[('name','String')],[('grantPermission','permission: Identifier','void')] if mode=='ddd' else [],'entity')]
+  specs=[('UserController',[],[('assign','user: Identifier;role: Identifier','void')],'boundary'),('UserUseCase',[],[('assign','actor: Identity;user: Identifier;role: Identifier','void')],''),(prefix+'UserService',[],[('assign','actor: Identity;user: Identifier;role: Identifier','void')],'control'),('ManagementStore',[],[('user','id: Identifier','UserData'),('assignRole','user: Identifier;role: Identifier','void')],''),('User',[('username','String'),('name','String'),('phone','String')],[('changeProfile','name: String;phone: String','void'),('requireRoleInDepartment','role: Data.Role','void')] if mode=='ddd' else [],'entity'),('Role',[('name','String')],[('rename','name: String','void')] if mode=='ddd' else [],'entity')]
   nodes={}
   # Short diagram method signatures keep prose at subsystem level elsewhere.
   for name,attrs,methods,stereo in specs:
@@ -84,63 +83,62 @@ def sequence_for(op,mode):
   return service_sequence(op,mode)
  if op.key in {'AUTH-07','AUTH-08','AUTH-09'}:
   return identity_directory_sequence(op)
- shared=op.module=='Auth' and op.function!='updateMe'
- label='共享' if shared else '结构化' if mode=='structured' else 'DDD'
- stem=op.key.lower()+('-shared' if shared else '-'+mode)
- prefix='Structured' if mode=='structured' else 'Ddd'
- domain_changes={
-  'AUTH-04':('User','changeProfile(command)','user(actor.userId)','updateUser(本人, profile)'),
-  'USER-04':('User','changeProfile(command)','user(id)','updateUser(id, profile)'),
-  'USER-07':('User','assignRole(role, actorDepartment)','user / role；userRoles','assignRole(user, role)'),
-  'ROLE-04':('Role','rename(name)','role(id)','renameRole(id, name)'),
-  'ROLE-07':('Role','grantPermission(permission)','role / permission；rolePermissions','grantPermission(role, permission)'),
-  'DEPT-03':('Department','rename(name)','department(id)','renameDepartment(id, name)'),
-  'SYS-03':('System','rename(name)','system(id)','renameSystem(id, name)'),
-  'PERM-03':('Permission','rename(name)','permission(id)','renamePermission(id, name)')}
- if mode=='ddd' and op.key in domain_changes:
-  entity,change,load,save=domain_changes[op.key]
-  module='User' if op.key=='AUTH-04' else op.module
-  s=Sequence(stem,f'{op.key} DDD {op.title}',[('api','AuthController' if op.key=='AUTH-04' else module+'Controller'),('app','Ddd'+module+'Service'),('domain',entity),('store','ManagementStore')],height=1280,created={2:560})
-  s.msg(0,1,300,op.function+'(actor, 校验后的输入)',end=1090)
-  s.msg(1,3,405,load,end=500)
-  s.msg(3,1,500,'当前对象及关联',reply=True)
-  s.msg(1,2,560,'构造领域对象',create=True)
-  s.msg(1,2,755,change,end=850)
-  s.msg(2,1,850,'更新后的领域状态 / 业务异常',reply=True)
-  s.msg(1,3,950,save,end=1020)
-  s.msg(3,1,1020,'持久化结果',reply=True)
+ if op.key=='AUTH-04':
+  return profile_sequence(op,mode)
+ return auth_sequence(op)
+
+def profile_sequence(op,mode):
+ stem=op.key.lower()+'-'+mode
+ if mode=='ddd':
+  parts=[('api','AuthController'),('app','DddUserService'),('domain','User'),('store','ManagementStore')]
+  s=Sequence(stem,f'{op.key} DDD {op.title}',parts,height=1280,created={2:560})
+  s.msg(0,1,300,'updateMe(actor, command)',end=1090)
+  s.msg(1,3,405,'user(actor.userId)',end=500)
+  s.msg(3,1,500,'当前用户',reply=True)
+  s.msg(1,2,560,'«create» User(data)',create=True)
+  s.msg(1,2,755,'changeProfile(command)',end=850)
+  s.msg(2,1,850,'更新后的 profile()',reply=True)
+  s.msg(1,3,950,'updateUser(actor.userId, profile)',end=1020)
+  s.msg(3,1,1020,'持久化完成',reply=True)
   s.msg(1,0,1090,op.result,reply=True)
-  s.note(1160,'应用服务先执行 AccessPolicy 权限与部门检查；本人资料使用当前身份。领域对象维护状态，存储端口保存变化；写失败回滚。')
+  s.note(1160,'本人编号来自认证上下文。User 保留未提交的字段，应用服务保存资料。')
   return
- if shared:
-  parts=[('obj','Caller'),('api','AuthController'),('service','AuthService'),('store','SessionStore' if op.key=='AUTH-03' else 'ManagementStore')]
- elif op.key=='AUTH-04':parts=[('client','Browser'),('api','AuthController'),('service',prefix+'UserService'),('store','ManagementStore')]
- else:parts=[('api',op.module+'Controller'),('usecase',prefix+op.module+'Service'),('access','AccessPolicy'),('store','ManagementStore')]
- s=Sequence(stem,f'{op.key} {label} {op.title}',parts,height=1140)
- if shared or op.key=='AUTH-04':
-  fn={'AUTH-05':'uiAllowed','AUTH-06':'apiAllowed'}.get(op.key,op.function)
-  s.msg(0,1,300,op.method+' '+op.route,end=940)
-  s.msg(1,2,410,fn+'(校验后的输入 / 当前身份)',end=880)
-  data={'AUTH-01':'userByUsername；检查手机号和当前 login 许可','AUTH-02':'user；rolesForUser；permissionsForUser','AUTH-03':'revoke(sessionId, now)','AUTH-04':'user(actor.userId)；updateUser(本人, profile)','AUTH-05':'permissionsForUser(当前用户, 当前系统)','AUTH-06':'permissionsForUser(当前用户, 当前系统)'}[op.key]
-  s.msg(2,3,560,data,end=740)
-  s.msg(3,2,770,'当前数据 / 更新结果 / 异常',reply=True)
-  s.msg(2,1,900,'结果或业务错误',reply=True)
-  s.msg(1,0,970,op.result,reply=True)
-  note={'AUTH-01':'AuthService 校验通过后调用 SessionStore.save，使用 JwtEncoder 签发身份 JWT；同事务保存会话。','AUTH-03':'撤销当前会话，后续请求由 BearerFilter 拒绝。','AUTH-04':'本人编号来自认证上下文；仅修改姓名和手机号；不要求用户管理权限。','AUTH-06':'AuthService 通过 OperationPermissions 将 operationId 映射为权限码；未知操作返回 404。'}.get(op.key,'BearerFilter 已检查签名、会话、账号及目标系统 login；权限从当前关联读取。')
-  s.note(1040,note)
- else:
-  s.msg(0,1,300,op.function+'(actor, 参数)',end=940)
-  s.msg(1,2,410,'require(actor, '+op.permission+')',end=510)
-  s.msg(2,1,540,'允许或抛出 403',reply=True)
-  actions={'USER-01':'users(本部门, page, size)','USER-02':'user(id)；校验本部门','USER-03':'createUser(操作者部门, command)','USER-04':'user(id)；校验部门；updateUser(id, profile)','USER-05':'user(id)；校验部门；deleteUser(id)','USER-06':'user(id)；校验部门；userRoles(id)','USER-07':'user / role；校验同部门；assignRole(user, role)','USER-08':'user / role；校验同部门；revokeRole(user, role)','ROLE-01':'roles(本部门, page, size)','ROLE-02':'role(id)；校验本部门','ROLE-03':'createRole(操作者部门, name)','ROLE-04':'role(id)；校验部门；renameRole(id, name)','ROLE-05':'role(id)；校验部门；deleteRole(id)','ROLE-06':'role(id)；校验部门；rolePermissions(id)','ROLE-07':'role / permission；校验部门；grantPermission','ROLE-08':'role / permission；校验部门；revokePermission'}
-  if op.key in actions:data=actions[op.key]
-  else:
-   name=op.module;plural={'Department':'departments','System':'systems','Permission':'permissions'}[name]
-   data={'list':plural+'(分页与所属系统)','create':'校验父对象；create'+name+'(command)','update':name.lower()+'(id)；rename'+name+'(id, name)','delete':name.lower()+'(id)；delete'+name+'(id)'}[op.function]
-  s.msg(1,3,650,data,end=800)
-  s.msg(3,1,830,'结果或数据库约束异常',reply=True)
-  s.msg(1,0,970,op.result,reply=True)
-  s.note(1040,('应用服务调用领域对象维护业务规则；' if mode=='ddd' else '事务脚本组织校验与数据调用；')+'写操作失败回滚；引用或重复冲突返回 409。')
+ parts=[('client','Browser'),('api','AuthController'),('service','StructuredUserService'),('store','ManagementStore')]
+ s=Sequence(stem,f'{op.key} 结构化 {op.title}',parts,height=1140)
+ s.msg(0,1,300,op.method+' '+op.route,end=940)
+ s.msg(1,2,410,'updateMe(actor, command)',end=880)
+ s.msg(2,3,560,'user(actor.userId)',end=630)
+ s.msg(2,2,695,'copyNotNull(当前资料, command)',end=745)
+ s.msg(2,3,800,'updateUser(actor.userId, profile)',end=850)
+ s.msg(2,1,900,'更新完成',reply=True)
+ s.msg(1,0,970,op.result,reply=True)
+ s.note(1040,'本人编号来自认证上下文；资料仅含姓名和手机号。')
+
+def auth_sequence(op):
+ calls={
+  'AUTH-01':[('store','ManagementStore','userByUsername(username)；核对手机号'),
+             ('access','AccessPolicy','allowed(userId, 每个目标系统, login)')],
+  'AUTH-02':[('store','ManagementStore','user(actor.userId)'),
+             ('effective','EffectiveAccessStore','rolesForUser；permissionsForUser')],
+  'AUTH-03':[('sessions','SessionStore','revoke(sessionId, now)')],
+  'AUTH-05':[('access','AccessPolicy','[界面码] allowed(userId, system, code)')],
+  'AUTH-06':[('access','AccessPolicy','[操作已知] allowed(userId, system, code)')],
+ }[op.key]
+ parts=[('obj','Caller'),('api','AuthController'),('service','AuthService')]+[(name,typ) for name,typ,_ in calls]
+ s=Sequence(op.key.lower()+'-shared',f'{op.key} 共享 {op.title}',parts,height=1140)
+ fn={'AUTH-05':'uiAllowed','AUTH-06':'apiAllowed'}.get(op.key,op.function)
+ s.msg(0,1,300,op.method+' '+op.route,end=940)
+ s.msg(1,2,410,fn+'(输入 / 当前身份)',end=880)
+ for i,(_,_,call) in enumerate(calls):
+  y=560+155*i
+  s.msg(2,3+i,y,call,end=y+70)
+ s.msg(2,1,900,'结果或业务错误',reply=True)
+ s.msg(1,0,970,op.result,reply=True)
+ note={'AUTH-01':'验证后保存会话并签发 JWT，详见登录会话图。',
+       'AUTH-03':'撤销当前会话，后续请求由 BearerFilter 拒绝。',
+       'AUTH-06':'OperationPermissions 将 operationId 映射为权限码；未知操作返回 404。'
+ }.get(op.key,'当前有效授权随请求读取。')
+ s.note(1040,note)
 
 def overview_sequences():
  for key,title,parts,messages,note in [
@@ -236,22 +234,24 @@ def identity_directory_class():
 def files_and_integration():
  d=D('packages-files','源文件与配置文件组织',900,1180,'UMLPackageDiagram')
  for title,x,y,w,h,body in [
- ('backend/src/main/java/cn/edu/xmu/rbac',50,110,800,350,['api/auth user role department system permission identity','service/port 共享用例与存储端口','service/structured 五个事务脚本 Service','service/ddd 应用服务与 domain 领域对象','infrastructure/persistence security logging bootstrap']),
+ ('backend/src/main/java/cn/edu/xmu/rbac',50,110,800,350,['api/auth user role department system permission identity','service/port 共享用例与存储端口','service/structured 五个事务脚本 Service','service/ddd 应用服务与 domain 领域对象','service/role 继承图防环规则','infrastructure/persistence security logging bootstrap']),
  ('backend/src/main/resources',50,520,800,160,['application.yaml 运行配置   logback-spring.xml 分层日志','db/migration/V1__rbac.sql 数据库迁移']),
  ('frontend/src',50,740,380,150,['App.vue 入口   auth.ts 凭据','views/ 页面   main.ts 路由']),
  ('deploy / tooling',480,740,370,150,['stack.yaml 容器编排','测试 构建 备份 部署脚本']),
  ('vendor / integrations / docs',50,950,800,150,['vendor/clonefactory 教师源码与许可','integrations/ 固定上游版本与适配补丁   docs/ 文档和图稿'])]:d.node(title,x,y,w,h,'UMLPackage',body=body)
  d=D('class-auth-shared','共享认证模块类图',900,1150)
  ctrl=d.node('AuthController',40,110,380,220,ops=[('login',''),('me',''),('logout',''),('check',''),('api','')])
- svc=d.node('AuthService',480,110,380,330,ops=[('login',''),('me',''),('logout',''),('uiAllowed',''),('apiAllowed','')])
- store=d.node('ManagementStore',480,510,380,220,'UMLInterface',ops=[('userByUsername',''),('permissionsForUser',''),('rolesForUser','')])
- session=d.node('SessionStore',40,510,380,220,'UMLInterface',ops=[('save',''),('find',''),('revoke','')])
- encoder=d.node('JwtEncoder',480,890,380,130,'UMLInterface',ops=[('encode','')])
+ svc=d.node('AuthService',480,110,380,300,ops=[('login',''),('me',''),('logout',''),('uiAllowed',''),('apiAllowed','')])
+ session=d.node('SessionStore',40,510,380,185,'UMLInterface',ops=[('save',''),('find',''),('revoke','')])
+ store=d.node('ManagementStore',480,510,380,185,'UMLInterface',ops=[('userByUsername',''),('user','')])
+ encoder=d.node('JwtEncoder',40,850,380,150,'UMLInterface',ops=[('encode','')])
+ effective=d.node('EffectiveAccessStore',480,850,380,150,'UMLInterface',ops=[('permissionsForUser',''),('rolesForUser','')])
  u.assoc(d,ctrl,svc,[(420,190),(480,190)],role='service')
- u.assoc(d,svc,store,[(670,440),(670,510)],role='store')
- u.assoc(d,svc,session,[(480,300),(450,300),(450,450),(230,450),(230,510)],role='sessions')
- u.assoc(d,svc,encoder,[(860,300),(880,300),(880,840),(670,840),(670,890)],role='encoder')
- d.note(40,890,380,['登录通过当前 RBAC 校验。','会话保存与撤销由数据库维护。','JWT 记录身份及目标系统。'])
+ u.assoc(d,svc,store,[(670,410),(670,510)],role='store')
+ u.assoc(d,svc,session,[(530,410),(530,455),(230,455),(230,510)],role='sessions')
+ u.assoc(d,svc,encoder,[(480,295),(445,295),(445,780),(230,780),(230,850)],role='encoder')
+ u.assoc(d,svc,effective,[(860,300),(880,300),(880,780),(670,780),(670,850)])
+ d.note(40,1040,820,['会话保存在数据库中，JWT 记录身份和目标系统。有效授权在请求时查询。'])
  for key,method,route,operation,target in [('01','GET','/terms','listTerms','TermController'),('02','POST','/terms','createTerm','TermController'),('03','PATCH','/terms/{id}','updateTerm','TermController'),('04','DELETE','/terms/{id}','deleteTerm','TermController'),('05','GET','/admin/courses','listAdminCourses','CourseController'),('06','GET','/courses/{id}','getCourse','CourseController'),('07','POST','/courses/{id}/review','reviewCourse','CourseController')]:
   q=Sequence('course-'+key,'COURSE-'+key+' '+operation,[('client','Browser'),('filter','RbacIntegrationFilter'),('identity','IdentityPlatform'),('business',target)],height=1140)
   q.msg(0,1,290,method+' '+route+' + Bearer',end=970)

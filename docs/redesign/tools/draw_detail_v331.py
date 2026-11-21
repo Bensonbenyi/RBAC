@@ -5,11 +5,11 @@ from draw_complete import Sequence,wrap
 from v33_catalog import MODULES
 D=u.D
 
-def cls(d,name,x,y,w=340,methods=(),attrs=(),interface=False,stereo=''):
+def cls(d,name,x,y,w=340,methods=(),attrs=(),interface=False,stereo='',static_methods=()):
  m=d.model('UMLInterface' if interface else 'UMLClass',name=name,attributes=[],operations=[],stereotype=stereo)
  for a,t in attrs:m['attributes'].append(u.obj('UMLAttribute',m,name=a,type=t,visibility='private'))
  for a in methods:
-  method=u.obj('UMLOperation',m,name=a,visibility='public',parameters=[])
+  method=u.obj('UMLOperation',m,name=a,visibility='public',parameters=[],isStatic=a in static_methods)
   m['operations'].append(method)
  old=u.CLASSES.get(name);u.CLASSES[name]=m
  start=len(d.svg)
@@ -48,7 +48,7 @@ FIELDS={
  'System':[('id','Long'),('systemKey','String'),('name','String')],
  'Permission':[('id','Long'),('systemId','Long'),('code','String'),('name','String')]}
 STORE={
- 'User':['users','user','createUser','updateUser','deleteUser','userRoles','hasRole','assignRole','revokeRole'],
+ 'User':['users','user','createUser','updateUser','deleteUser','userRoles','assignRole','revokeRole'],
  'Role':['roles','role','createRole','renameRole','deleteRole','rolePermissions','grantPermission','revokePermission'],
  'Department':['departments','department','createDepartment','renameDepartment','deleteDepartment'],
  'System':['systems','system','createSystem','renameSystem','deleteSystem'],
@@ -60,8 +60,8 @@ REQUEST={
  'System':('ManagementDTOs.CreateSystemDTO',[('systemKey','String'),('name','String')]),
  'Permission':('ManagementDTOs.CreatePermissionDTO',[('code','String'),('name','String')])}
 DOMAIN={
- 'User':([('data','Data.User'),('profile','Data.Profile'),('roleIds','Set<Long>')],['changeProfile','assignRole','revokeRole','profile','roleIds']),
- 'Role':([('name','String'),('permissionIds','Set<Long>')],['rename','grantPermission','revokePermission','permissionIds']),
+ 'User':([('data','Data.User'),('profile','Data.Profile')],['changeProfile','requireRoleInDepartment','profile']),
+ 'Role':([('name','String')],['rename','name']),
  'Department':([('name','String')],['rename','name']),
  'System':([('name','String')],['rename','name']),
  'Permission':([('name','String')],['rename','name'])}
@@ -96,7 +96,8 @@ def classes():
     attrs,ops=DOMAIN[module]
     entity=cls(d,module,425,1290,330,ops,attrs)
     if module=='User':dep(d,entity,copy,[(425,1400),(390,1400),(390,1080),(365,1080)])
-    dep(d,c,entity,[(1150,320),(1175,320),(1175,1400),(765,1400)])
+    y=min(1400,bottom(entity)-20)
+    dep(d,c,entity,[(1150,320),(1175,320),(1175,y),(765,y)])
    else:
     note(d,30,1310,725,['Service 在事务内编排权限、范围和存储调用。','Data 同时作为共享查询结果和持久化数据契约。','方法在本图省略参数及返回类型，契约见对应功能。'])
    jdbc=cls(d,'JdbcTemplate',820,1460,330,['query','queryForObject','update'])
@@ -112,18 +113,18 @@ def domain():
  ref(d,user,ud,[(515,225),(620,225)],'data')
  ref(d,user,profile,[(515,345),(560,345),(560,570),(620,570)],'profile')
  role=cls(d,'Role',40,720,470,DOMAIN['Role'][1],DOMAIN['Role'][0],stereo='aggregate root')
- rd=cls(d,'Data.Role',630,830,450,attrs=FIELDS['Role'],stereo='record')
- dep(d,user,rd,[(275,bottom(user)+5),(275,650),(855,650),(855,820)])
- d.text(455,625,'assignRole(role, actorDepartment)',18,True,bg=True)
- dep(d,role,rd,[(515,835),(620,835)])
+ rd=cls(d,'Data.Role',630,775,450,attrs=FIELDS['Role'],stereo='record')
+ dep(d,user,rd,[(275,bottom(user)+5),(275,650),(855,650),(855,765)])
+ d.text(455,625,'requireRoleInDepartment(role)',18,True,bg=True)
+ dep(d,role,rd,[(515,825),(620,825)])
  for i,module in enumerate(['Department','System','Permission']):
   attrs,ops=DOMAIN[module]
   cls(d,module,40+i*365,1210,330,ops,attrs,stereo='entity')
- note(d,630,1025,450,['角色通过 permissionIds 维护权限集合。','Data 保存编号、归属等只读契约。','跨聚合的对象范围由应用服务检查。'])
- graph=cls(d,'RoleHierarchy',40,1530,470,['requireAcyclic'],[('edges','List<Data.Inheritance>')],stereo='domain rule')
+ note(d,630,1025,450,['Role 维护名称；权限关系由关联表保存。','Data 保存编号、归属等只读契约。','跨聚合的对象范围由应用服务检查。'])
+ graph=cls(d,'RoleHierarchy',40,1530,470,['requireAcyclic'],stereo='domain rule',static_methods=['requireAcyclic'])
  edge=cls(d,'Data.Inheritance',630,1530,450,attrs=[('seniorRoleId','Long'),('juniorRoleId','Long')],stereo='record')
- u.assoc(d,graph,edge,[(515,1620),(620,1620)],role='edges',mult='0..*')
- note(d,40,1760,1040,['RoleHierarchy 对部门内继承边的不可变快照执行防环检查。','应用服务负责事务、部门锁与持久化，领域规则负责图的无环性。'])
+ dep(d,graph,edge,[(515,1610),(620,1610)])
+ note(d,40,1760,1040,['RoleHierarchy 读取本次操作的部门继承边，检查从基础角色能否走回高级角色。','应用服务负责事务、部门锁与持久化，领域规则负责图的无环性。'])
 
 
 def overall_classes():
@@ -140,8 +141,8 @@ def overall_classes():
    ref(d,a,b,[(380,y+80),(430,y+80)],'service')
    dep(d,c,b,[(815,y+120),(780,y+120)],True);svcs.append(c)
   policy=cls(d,'AccessPolicy',40,1320,340,['require','scope','allowed'])
-  store=cls(d,'ManagementStore',430,1320,340,['users','roles','permissionsForUser'],interface=True)
-  adapter=cls(d,'JdbcManagementStore',820,1320,340,['users','roles','permissionsForUser'])
+  store=cls(d,'ManagementStore',430,1320,340,['users','roles','inheritanceEdges'],interface=True)
+  adapter=cls(d,'JdbcManagementStore',820,1320,340,['users','roles','inheritanceEdges'])
   dep(d,adapter,store,[(815,1400),(780,1400)],True)
   # Shared dependencies are routed in the gutters, once for the service group.
   for c in svcs:ref(d,c,store,[(1165,c[1]['top']+65),(1180,c[1]['top']+65),(1180,1260),(600,1260),(600,1320)],'store')
@@ -159,9 +160,10 @@ def package_diagrams():
    ('service.auth',500,470,380,155,['身份、界面和 API 决策']),
    ('service.security',500,820,380,155,['RBAC 与部门范围校验']),
    ('infrastructure',40,820,380,185,['persistence / security','logging / bootstrap'])]
-  if mode=='ddd':specs.append(('service.ddd.domain',40,1170,380,155,['User / Role / RoleHierarchy','目录对象行为']))
+  specs.append(('service.role',500,1170,380,155,['RoleHierarchy 无环规则']))
+  if mode=='ddd':specs.append(('service.ddd.domain',40,1170,380,155,['User / Role','目录对象行为']))
   for stem,title in [('packages-full-'+mode,'系统完整 '+label+' UML 包图')]:
-   d=D(stem,title,920,1500 if mode=='ddd' else 1200,'UMLPackageDiagram');nodes={}
+   d=D(stem,title,920,1500,'UMLPackageDiagram');nodes={}
    for name,x,y,w,h,body in specs:nodes[name]=pack(d,name,x,y,w,body,h)
    for a,b,pts in [
     ('api','service.port',[(420,195),(500,195)]),
@@ -173,10 +175,12 @@ def package_diagrams():
     ('service.'+mode,'service.security',[(230,625),(230,740),(690,740),(690,820)]),
     ('service.auth','service.security',[(690,625),(690,820)]),
     ('infrastructure','service.port',[(40,895),(15,895),(15,330),(895,330),(895,195),(880,195)])]:dep(d,nodes[a],nodes[b],pts)
+   dep(d,nodes['service.'+mode],nodes['service.role'],[(405,625),(465,625),(465,1240),(500,1240)])
+   dep(d,nodes['service.role'],nodes['service.port'],[(880,1210),(905,1210),(905,270),(880,270)])
    if mode=='ddd':
     dep(d,nodes['service.ddd'],nodes['service.ddd.domain'],[(230,625),(445,625),(445,1090),(230,1090),(230,1170)])
-    dep(d,nodes['service.ddd.domain'],nodes['service.port'],[(420,1240),(900,1240),(900,260),(880,260)])
-   note(d,40,1380 if mode=='ddd' else 1080,840,['虚线开箭头指向所依赖的包。包图表达组织和依赖，类及字段关系见模块类图。'])
+    dep(d,nodes['service.ddd.domain'],nodes['service.port'],[(40,1240),(25,1240),(25,345),(690,345),(690,275)])
+   note(d,40,1380,840,['虚线开箭头指向所依赖的包。包图表达组织和依赖，类及字段关系见模块类图。'])
 
 
   # Each projection answers a different question; the full plate retains all packages.
@@ -208,8 +212,8 @@ def package_diagrams():
   d=D('packages-'+mode+'-implementation',label+' 业务与持久化包依赖',920,1280 if mode=='ddd' else 920,'UMLPackageDiagram')
   business=pack(d,'service.'+mode,40,130,380,['五个业务 Service'],150)
   security=pack(d,'service.security',500,130,380,['操作许可 部门边界'],150)
-  port=pack(d,'service.port',500,530,380,['UseCase Data ManagementStore','SessionStore'],185)
-  persistence=pack(d,'infrastructure.persistence',40,530,380,['JdbcManagementStore','JdbcSessionStore'],185)
+  port=pack(d,'service.port',500,530,380,['UseCase Data ManagementStore','EffectiveAccessStore SessionStore'],185)
+  persistence=pack(d,'infrastructure.persistence',40,530,380,['JdbcManagementStore','JdbcEffectiveAccessStore','JdbcSessionStore'],185)
   dep(d,business,security,[(420,205),(500,205)])
   dep(d,business,port,[(420,245),(460,245),(460,610),(500,610)])
   dep(d,security,port,[(690,280),(690,530)])
@@ -251,17 +255,22 @@ def selection_class():
 
 
 def persistence():
- d=D('class-persistence','共享持久化适配器 类图',1120,1410)
- m=cls(d,'ManagementStore',30,120,490,['user','createUser','updateUser','deleteUser','permissionsForUser'],interface=True)
- s=cls(d,'SessionStore',630,120,450,['save','find','revoke'],interface=True)
- a=cls(d,'JdbcManagementStore',30,610,490,['user','createUser','updateUser','deleteUser','permissionsForUser'],[('jdbc','JdbcTemplate')])
- b=cls(d,'JdbcSessionStore',630,610,450,['save','find','revoke'],[('jdbc','JdbcTemplate')])
- dep(d,a,m,[(275,605),(275,bottom(m)+10)],True);dep(d,b,s,[(855,605),(855,bottom(s)+10)],True)
- jdbc=cls(d,'JdbcTemplate',330,1120,460,['query','queryForObject','update'])
- ref(d,a,jdbc,[(275,bottom(a)+5),(275,1070),(440,1070),(440,1110)],'jdbc')
- ref(d,b,jdbc,[(855,bottom(b)+5),(855,1070),(680,1070),(680,1110)],'jdbc')
- note(d,30,930,490,['RowMapper 映射 ResultSet 到 Data record。','SQL 及 JDBC 类型保留在基础设施。'])
- d.text(560,1370,'Service 的 @Transactional 边界通过 Spring 事务管理器管理这些 JDBC 操作。',20,True)
+ d=D('class-persistence','共享持久化适配器 类图',1160,1210)
+ adapters=[
+  ('ManagementStore',30,['user','createUser','updateUser','deleteUser']),
+  ('EffectiveAccessStore',410,['rolesForUser','permissionsForUser','effectiveRolePermissions']),
+  ('SessionStore',790,['save','find','revoke']),
+ ]
+ jdbc=cls(d,'JdbcTemplate',410,870,340,['query','queryForObject','update'])
+ for name,x,methods in adapters:
+  port=cls(d,name,x,120,340,methods,interface=True)
+  adapter=cls(d,'Jdbc'+name,x,470,340,methods,[('jdbc','JdbcTemplate')])
+  mid=x+170
+  dep(d,adapter,port,[(mid,465),(mid,bottom(port)+10)],True)
+  target={200:465,580:580,960:695}[mid]
+  points=[(mid,bottom(adapter)+5),(mid,780),(target,780),(target,860)] if mid!=target else [(mid,bottom(adapter)+5),(target,860)]
+  ref(d,adapter,jdbc,points,'jdbc')
+ note(d,30,1090,1100,['目录与关联写入、有效授权读取、会话分别使用各自端口。','有效授权从当前继承边递归计算，适配器之间共用 JdbcTemplate。'])
  for stem,title,steps in [
  ('adapter-insert','JDBC 用户适配器 新建顺序图',[(0,1,'createUser(departmentId, command)'),(1,2,'INSERT app_user；GeneratedKeyHolder'),(2,1,'返回生成编号'),(1,2,'SELECT * WHERE id=?；USER RowMapper'),(2,1,'Data.User'),(1,0,'返回创建结果')]),
  ('adapter-update','JDBC 用户适配器 更新顺序图',[(0,1,'updateUser(id, profile)'),(1,2,'UPDATE app_user SET name=?,phone=?'),(2,1,'返回更新行数'),(1,0,'完成；事务由 Service 提交')]),
@@ -285,7 +294,7 @@ def relations():
   dep(d,r,rp,[(265,bottom(r)+5),(265,890)],True)
   ref(d,s,st,[(855,bottom(s)+5),(855,890)],'store')
   ref(d,r,st,[(505,570),(565,570),(565,820),(770,820),(770,890)],'store')
-  note(d,30,1240,1050,['用户角色和角色权限分别由两张 M:N 关联表保存；角色归属一个部门。',('DDD User 与 Role 分别维护 roleIds、permissionIds，应用服务保存关系变更。' if mode=='ddd' else '结构化服务在事务内检查权限、范围、对象存在性和关系后调用存储端口。'),'RoleController 通过 RoleUseCase 调用角色权限方法，详见角色模块类图。'])
+  note(d,30,1240,1050,['用户角色和角色权限分别由两张 M:N 关联表保存；角色归属一个部门。',('DDD User 校验角色分配，应用服务保存直接关联。' if mode=='ddd' else '结构化服务检查权限、范围和对象存在性，数据库约束拒绝重复分配。'),'RoleController 通过 RoleUseCase 调用角色权限方法，详见角色模块类图。'])
 
 
 def common_sequences():
@@ -296,13 +305,14 @@ def common_sequences():
   for i,(a,b,text) in enumerate(messages):seq.msg(a,b,320+i*140,text,reply=(b==0 or (a==2 and b==1)))
   seq.note(1000,note)
 
- seq=Sequence('flow-preflight','受保护请求 校验顺序图',[('filter','BearerFilter'),('decoder','JwtDecoder'),('sessions','SessionStore'),('store','ManagementStore')],height=1230)
+ seq=Sequence('flow-preflight','受保护请求 校验顺序图',[('filter','BearerFilter'),('decoder','JwtDecoder'),('sessions','SessionStore'),('store','ManagementStore'),('effective','EffectiveAccessStore')],height=1400)
  for i,(a,b,text,reply) in enumerate([
   (0,1,'decode(Authorization 中的令牌)',False),(1,0,'验签后的 JWT；失败抛出异常',True),
   (0,2,'find(jti)；核验用户、系统及有效期',False),(2,0,'Session 或认证失败',True),
-  (0,3,'user(userId)；permissionsForUser(userId, system)',False),(3,0,'账号与当前 login 权限',True),
+  (0,3,'user(userId)',False),(3,0,'当前账号',True),
+  (0,4,'permissionsForUser(userId, system)',False),(4,0,'当前 login 权限',True),
   (0,0,'设置 Data.Identity；chain.doFilter',False)]):seq.msg(a,b,300+i*105,text,reply=reply)
- seq.note(1110,'认证失败终止请求并返回 401；login 撤销返回 403；数据库故障返回 503。业务 Service 另查操作许可及部门。')
+ seq.note(1280,'认证失败终止请求并返回 401；login 撤销返回 403；数据库故障返回 503。业务 Service 另查操作许可及部门。')
 
 def authentication():
  seq=Sequence('flow-login-session','建立登录会话与签发凭据',[('auth','AuthService'),('sessions','SessionStore'),('encoder','JwtEncoder')],height=1140)
@@ -313,15 +323,17 @@ def authentication():
  seq.msg(0,0,900,'返回 LoginResult；事务提交')
  seq.note(1030,'账号及目标系统 login 权限先校验。签发失败时回滚会话写入；成功响应包含 accessToken、tokenType、expiresIn。')
  d=D('class-auth-request','Bearer 认证与实时鉴权 类图',1120,1450)
- f=cls(d,'BearerFilter',30,120,470,['doFilterInternal'],[('decoder','JwtDecoder'),('sessions','SessionStore'),('store','ManagementStore')])
+ f=cls(d,'BearerFilter',30,120,470,['doFilterInternal'],[('decoder','JwtDecoder'),('sessions','SessionStore'),('store','ManagementStore'),('effectiveAccess','EffectiveAccessStore')])
  decoder=cls(d,'JwtDecoder',630,120,450,['decode'],interface=True)
  sessions=cls(d,'SessionStore',630,470,450,['find'],interface=True)
- store=cls(d,'ManagementStore',630,830,450,['user','permissionsForUser'],interface=True)
+ store=cls(d,'ManagementStore',630,775,450,['user'],interface=True)
+ effective=cls(d,'EffectiveAccessStore',630,1030,450,['permissionsForUser'],interface=True)
  current=cls(d,'CurrentIdentity',30,830,470,['get'])
  context=cls(d,'SecurityContextHolder',30,1190,470,['getContext','clearContext'],stereo='framework')
  ref(d,f,decoder,[(505,215),(620,215)],'decoder')
- ref(d,f,sessions,[(505,300),(565,300),(565,550),(620,550)],'sessions')
- ref(d,f,store,[(505,350),(585,350),(585,910),(620,910)],'store')
+ ref(d,f,sessions,[(505,300),(565,300),(565,550),(620,550)])
+ ref(d,f,store,[(505,285),(585,285),(585,855),(620,855)])
+ ref(d,f,effective,[(505,320),(550,320),(550,1120),(620,1120)])
  dep(d,f,context,[(25,250),(10,250),(10,1140),(265,1140),(265,1180)])
  dep(d,current,context,[(160,bottom(current)+5),(160,1180)])
- note(d,630,1180,450,['Filter 设置并在 finally 清理身份。','CurrentIdentity 供 Controller 读取。','后续每次请求重新检查当前权限。'])
+ note(d,630,1250,450,['Filter 设置并在 finally 清理身份。','CurrentIdentity 供 Controller 读取。','后续每次请求重新检查当前权限。'])

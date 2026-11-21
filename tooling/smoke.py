@@ -1,5 +1,6 @@
 """Exercise the platform and the real teacher backend without printing tokens."""
 import argparse,json,os,time,urllib.request,urllib.error
+from datetime import date
 p=argparse.ArgumentParser();p.add_argument('--base',default='http://localhost:8080');p.add_argument('--course',default='http://localhost:8081');p.add_argument('--report',default='docs/implementation/smoke-local.json');a=p.parse_args()
 phone=os.environ['RBAC_DEMO_PHONE'];results=[]
 def call(base,path,method='GET',body=None,token=None,status=200):
@@ -38,4 +39,4 @@ finally:call(a.base,relation,'PUT',token=admin,status=204)
 reviewed=call(a.course,path,'POST',body,reviewer);assert reviewed['courseStatus']==3
 call(a.base,'/auth/logout','POST',token=viewer,status=204);call(a.course,'/terms',token=viewer,status=401)
 from pathlib import Path
-Path(a.report).parent.mkdir(parents=True,exist_ok=True);Path(a.report).write_text(json.dumps({'date':'2026-11-17','checks':results,'result':'passed'},ensure_ascii=False,indent=2)+'\n');print('Smoke integration passed:',len(results),'HTTP checks')
+Path(a.report).parent.mkdir(parents=True,exist_ok=True);Path(a.report).write_text(json.dumps({'date':date.today().isoformat(),'checks':results,'result':'passed'},ensure_ascii=False,indent=2)+'\n');print('Smoke integration passed:',len(results),'HTTP checks')
