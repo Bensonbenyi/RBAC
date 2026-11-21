@@ -99,7 +99,7 @@ def architecture_details(fig,table):
 
 ==== 分层与运行装配
 
-两套业务实现共用 API 输入层、Service Port 和 Infrastructure。结构化服务在事务内组织规则与存储调用；DDD 应用服务将资料和授权集合变化交给领域对象。查询返回共享 Data record，JDBC 及 SQL 保留在基础设施层。
+两套业务实现共用 API 输入层、Service Port 和 Infrastructure。结构化服务在事务内组织规则与存储调用；DDD 应用服务通过领域对象处理资料和角色归属规则。两套实现都通过存储端口调用 Spring Data JPA，查询返回共享 Data record。
 '''
  for mode,label in [('structured','结构化'),('ddd','DDD')]:s+=fig('packages-'+mode,label+'设计 分层包图')
  s+=fig('architecture-runtime','运行装配与依赖结构')
@@ -113,7 +113,7 @@ app.backend-strategy 接受 structured 或 ddd。@ConditionalOnProperty 按配�
 
 ==== 系统总体架构类图
 
-下列两图完整列出五类资源的 Controller、UseCase、Service 以及共享存储契约，说明类之间的依赖和实现关系。运行装配图说明策略选择，模块类图进一步展示输入、数据对象、权限策略和 JDBC 适配器。
+下列两图完整列出五类资源的 Controller、UseCase、Service 以及共享存储契约，说明类之间的依赖和实现关系。运行装配图说明策略选择，模块类图进一步展示输入、数据对象、权限策略和 JPA 适配器。
 '''
  for mode,label in [('structured','结构化'),('ddd','DDD')]:s+=fig('architecture-classes-'+mode,'系统总体架构类图 '+label)
  s+='''==== 领域对象与数据契约
@@ -123,15 +123,15 @@ DDD User 持有原 Data.User 和当前 Profile。Role、Department、System 和 
  s+=fig('domain','DDD 领域对象完整类图')
  s+=table(['领域对象','实际状态','行为与职责'],[
  ('User','Data.User、Data.Profile','changeProfile 合并允许修改的字段；requireRoleInDepartment 校验目标角色的部门。用户角色关联由应用服务保存。'),
- ('Role','name','rename 更新名称。权限授予与撤销直接写关联表，由联合主键维持唯一。'),
+ ('Role','name','rename 更新名称。权限授予与撤销通过关联仓储执行，由联合主键维持唯一。重复授予通过角色行锁在事务中合并。'),
  ('Department / System / Permission','name','rename 改名；固定字段、对象存在性及引用约束由应用服务和存储协作。'),
  ('Data.User / Role / Department / System / Permission','编号、名称、归属及固定业务字段','共享不可变 record，用作查询结果、持久化契约与领域构造输入。')],'2,3,5')
  s+='''==== 共享持久化与适配器
 
-ManagementStore 提供业务对象、直接授权与继承边的读写。EffectiveAccessStore 查询有效角色和有效权限，SessionStore 维护技术会话。三个 JDBC 适配器共用 JdbcTemplate。新建后读取生成编号及结果行；更新先由服务合并完整资料；用户删除依次清理会话、用户角色和账号。
+ManagementStore 提供业务对象、直接授权与继承边的读写。EffectiveAccessStore 查询有效角色和有效权限，SessionStore 维护技术会话。三个适配器委托给 Spring Data JPA 仓储。新增通过 save 接收自增编号，更新由事务提交时同步受管实体的变化。用户删除依次清理会话、用户角色和账号。Hibernate 启动时校验 Flyway 维护的表结构。
 '''
  s+=fig('class-persistence','共享持久化适配器 类图')
- for stem,title in [('adapter-insert','JDBC 用户适配器 新建顺序图'),('adapter-update','JDBC 用户适配器 更新顺序图'),('adapter-delete','JDBC 用户关联清理与删除 顺序图')]:s+=fig(stem,title)
+ for stem,title in [('adapter-insert','JPA 用户适配器 新建顺序图'),('adapter-update','JPA 用户适配器 更新顺序图'),('adapter-delete','JPA 用户关联清理与删除 顺序图')]:s+=fig(stem,title)
  s+='''==== 完整包图与文件组织
 
 完整包图按 API、契约、业务实现与基础设施四列展开；同一真实 Java 包可按职责多处呈现。包内列出当前类名。入口与实现分图放大展示相关包依赖，源文件图列出 Java、资源、前端、部署及集成目录。
@@ -155,7 +155,7 @@ BearerFilter 在进入 Controller 前检查签名、过期时间、会话绑定�
 
 ==== 对象拷贝与运行日志
 
-老师的 CloneFactory 0.0.2 作为编译期注解处理器使用，Requests record 通过 @CopyTo 声明到 Data.CreateUser、Profile、Name 等六组目标类型。生成的 CloneFactory.copy 返回目标 record。Data.Profile 使用 @CopyNotNullFrom，资料更新通过 CloneFactory.copyNotNull 保留未提交字段。上游 master 40583ff 的工具版本仍为 0.0.2，已逐文件校验源码一致。持久化结果通过 RowMapper 从 ResultSet 显式映射到 Data，领域对象由应用服务构造。
+老师的 CloneFactory 0.0.2 作为编译期注解处理器使用，Requests record 通过 @CopyTo 声明到 Data.CreateUser、Profile、Name 等六组目标类型。生成的 CloneFactory.copy 返回目标 record。Data.Profile 使用 @CopyNotNullFrom，资料更新通过 CloneFactory.copyNotNull 保留未提交字段。上游 master 40583ff 的工具版本仍为 0.0.2，已逐文件校验源码一致。JPA 将数据库记录映射为持久化实体，适配器将实体转换为 Data，领域对象由应用服务构造。
 '''
  s+=table(['可执行层','日志内容','级别'],[
  ('API','方法、路由、响应结果、耗时；规则拒绝信息。','DEBUG / WARN'),('结构化服务','用例、操作者与目标编号，执行结果。','DEBUG / WARN'),('DDD 应用服务','用例编排、领域行为结果及事务异常。','DEBUG / WARN'),('DDD 领域对象','由应用服务记录行为结果，领域保持框架无关。','应用服务记录'),('Infrastructure','存储方法、结果、耗时及数据库异常。','DEBUG / ERROR')],'2,5,2')

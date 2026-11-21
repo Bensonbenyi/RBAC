@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,21 +16,18 @@ import org.springframework.transaction.annotation.Transactional;
 @ConditionalOnProperty(name = "app.demo.enabled", havingValue = "true")
 public class DemoData implements ApplicationRunner {
   private final ManagementStore store;
-  private final JdbcTemplate jdbc;
   private final String phone;
 
   /** 装配DemoData所需依赖. */
-  public DemoData(
-      ManagementStore store, JdbcTemplate jdbc, @Value("${app.demo.phone}") String phone) {
+  public DemoData(ManagementStore store, @Value("${app.demo.phone}") String phone) {
     this.store = store;
-    this.jdbc = jdbc;
     this.phone = phone;
   }
 
   @Override
   @Transactional
   public void run(ApplicationArguments args) {
-    if (jdbc.queryForObject("SELECT COUNT(*) FROM app_user", Long.class) > 0) {
+    if (store.hasUsers()) {
       return;
     }
     if (!phone.matches("1[3-9][0-9]{9}")) {

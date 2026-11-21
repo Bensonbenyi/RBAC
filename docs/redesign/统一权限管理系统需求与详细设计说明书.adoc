@@ -1,6 +1,6 @@
 = 统一权限管理系统需求与详细设计说明书
 OOAD 课程项目组
-v3.6.1, 2026-11-21
+v3.6.2, 2026-11-21
 :doctype: book
 :lang: zh-CN
 :toc:
@@ -21,7 +21,7 @@ v3.6.1, 2026-11-21
 
 本文规定当前基线的需求、数据结构、各功能交互、HTTP 契约和双实现设计，供课程评审、开发与验收使用。独立《概要设计说明书》说明系统骨架及 ATAM 评估，本文保存字段字典和各功能详细设计。
 
-本次版本为 3.6.1，基于 v3.2.2 和 2026-11-17 确认决定修订。代码与文档共用功能编号和配置名称，验证结果见实施报告。
+本次版本为 3.6.2，基于 v3.2.2 和 2026-11-17 确认决定修订。代码与文档共用功能编号和配置名称，验证结果见实施报告。
 
 === 背景与术语
 
@@ -328,7 +328,7 @@ image::v33/session-table.svg[技术会话表关系,width=100%]
 
 === 总体架构与对象职责
 
-系统总体分层见 <<fig-architecture>>，包依赖见 <<fig-packages>>。API 通过用例端口调用启动配置选中的服务；存储适配器使用 Spring JDBC，显式 SQL 集中在 Infrastructure。认证为共享装配。
+系统总体分层见 <<fig-architecture>>，包依赖见 <<fig-packages>>。API 通过用例端口调用启动配置选中的服务；所有应用数据访问由 Infrastructure 中的 Spring Data JPA 仓储处理，基础 CRUD 和分页由仓储生成，关联查询和定向更新使用 JPQL。认证为共享装配。
 
 
 
@@ -2218,7 +2218,7 @@ image::v33/course-08.svg[getCurrentUser 本地资料与界面权限交互,width=
 
 ==== 分层与运行装配
 
-两套业务实现共用 API 输入层、Service Port 和 Infrastructure。结构化服务在事务内组织规则与存储调用；DDD 应用服务将资料和授权集合变化交给领域对象。查询返回共享 Data record，JDBC 及 SQL 保留在基础设施层。
+两套业务实现共用 API 输入层、Service Port 和 Infrastructure。结构化服务在事务内组织规则与存储调用；DDD 应用服务通过领域对象处理资料和角色归属规则。两套实现都通过存储端口调用 Spring Data JPA，查询返回共享 Data record。
 
 [.diagram.plate]
 --
@@ -2250,7 +2250,7 @@ app.backend-strategy 接受 structured 或 ddd。@ConditionalOnProperty 按配�
 
 ==== 系统总体架构类图
 
-下列两图完整列出五类资源的 Controller、UseCase、Service 以及共享存储契约，说明类之间的依赖和实现关系。运行装配图说明策略选择，模块类图进一步展示输入、数据对象、权限策略和 JDBC 适配器。
+下列两图完整列出五类资源的 Controller、UseCase、Service 以及共享存储契约，说明类之间的依赖和实现关系。运行装配图说明策略选择，模块类图进一步展示输入、数据对象、权限策略和 JPA 适配器。
 
 [.diagram.plate]
 --
@@ -2280,13 +2280,13 @@ image::v33/domain.svg[DDD 领域对象完整类图,width=100%]
 |===
 |领域对象 |实际状态 |行为与职责
 |User |Data.User、Data.Profile |changeProfile 合并允许修改的字段；requireRoleInDepartment 校验目标角色的部门。用户角色关联由应用服务保存。
-|Role |name |rename 更新名称。权限授予与撤销直接写关联表，由联合主键维持唯一。
+|Role |name |rename 更新名称。权限授予与撤销通过关联仓储执行，由联合主键维持唯一。重复授予通过角色行锁在事务中合并。
 |Department / System / Permission |name |rename 改名；固定字段、对象存在性及引用约束由应用服务和存储协作。
 |Data.User / Role / Department / System / Permission |编号、名称、归属及固定业务字段 |共享不可变 record，用作查询结果、持久化契约与领域构造输入。
 |===
 ==== 共享持久化与适配器
 
-ManagementStore 提供业务对象、直接授权与继承边的读写。EffectiveAccessStore 查询有效角色和有效权限，SessionStore 维护技术会话。三个 JDBC 适配器共用 JdbcTemplate。新建后读取生成编号及结果行；更新先由服务合并完整资料；用户删除依次清理会话、用户角色和账号。
+ManagementStore 提供业务对象、直接授权与继承边的读写。EffectiveAccessStore 查询有效角色和有效权限，SessionStore 维护技术会话。三个适配器委托给 Spring Data JPA 仓储。新增通过 save 接收自增编号，更新由事务提交时同步受管实体的变化。用户删除依次清理会话、用户角色和账号。Hibernate 启动时校验 Flyway 维护的表结构。
 
 [.diagram.plate]
 --
@@ -2298,22 +2298,22 @@ image::v33/class-persistence.svg[共享持久化适配器 类图,width=100%]
 [.diagram.plate]
 --
 [[fig-adapter-insert]]
-.JDBC 用户适配器 新建顺序图
-image::v33/adapter-insert.svg[JDBC 用户适配器 新建顺序图,width=100%]
+.JPA 用户适配器 新建顺序图
+image::v33/adapter-insert.svg[JPA 用户适配器 新建顺序图,width=100%]
 --
 
 [.diagram.plate]
 --
 [[fig-adapter-update]]
-.JDBC 用户适配器 更新顺序图
-image::v33/adapter-update.svg[JDBC 用户适配器 更新顺序图,width=100%]
+.JPA 用户适配器 更新顺序图
+image::v33/adapter-update.svg[JPA 用户适配器 更新顺序图,width=100%]
 --
 
 [.diagram.plate]
 --
 [[fig-adapter-delete]]
-.JDBC 用户关联清理与删除 顺序图
-image::v33/adapter-delete.svg[JDBC 用户关联清理与删除 顺序图,width=100%]
+.JPA 用户关联清理与删除 顺序图
+image::v33/adapter-delete.svg[JPA 用户关联清理与删除 顺序图,width=100%]
 --
 ==== 完整包图与文件组织
 
@@ -2419,7 +2419,7 @@ image::v33/flow-adapter.svg[持久化读取与数据映射 顺序图,width=100%]
 
 ==== 对象拷贝与运行日志
 
-老师的 CloneFactory 0.0.2 作为编译期注解处理器使用，Requests record 通过 @CopyTo 声明到 Data.CreateUser、Profile、Name 等六组目标类型。生成的 CloneFactory.copy 返回目标 record。Data.Profile 使用 @CopyNotNullFrom，资料更新通过 CloneFactory.copyNotNull 保留未提交字段。上游 master 40583ff 的工具版本仍为 0.0.2，已逐文件校验源码一致。持久化结果通过 RowMapper 从 ResultSet 显式映射到 Data，领域对象由应用服务构造。
+老师的 CloneFactory 0.0.2 作为编译期注解处理器使用，Requests record 通过 @CopyTo 声明到 Data.CreateUser、Profile、Name 等六组目标类型。生成的 CloneFactory.copy 返回目标 record。Data.Profile 使用 @CopyNotNullFrom，资料更新通过 CloneFactory.copyNotNull 保留未提交字段。上游 master 40583ff 的工具版本仍为 0.0.2，已逐文件校验源码一致。JPA 将数据库记录映射为持久化实体，适配器将实体转换为 Data，领域对象由应用服务构造。
 
 [cols="2,5,2",options="header"]
 |===
@@ -2677,7 +2677,7 @@ Flyway V2 在现有 permission 与 role_permission 中补齐旧版既有界面�
 |REQ-F-01 认证与鉴权 |authenticatesAndRejectsBadCredentials；tokensContainIdentityAndAudienceWithoutPermissions；logoutExpiryAndDeletionInvalidateSession。 |用户名手机号登录；错误凭据提示；退出后受保护页面拒绝访问。
 |REQ-F-01 身份目录 |listsIdentityDepartmentsByLevelAndKeyword、listsOnlyIdentityFieldsForDepartmentUsers、looksUpIdentityUserUnderTeacherCreationPermission、authenticatesEachRequestedAudienceAndRevokesWholeToken。 |逐层查询部门及所属候选人，按目标系统判权。
 |REQ-F-02 用户 |createsUpdatesAndDeletesUserWithGeneratedIdentity；assignsAndRevokesRoleWithConflictAndIdempotence；validatesInputAndProtectedFields。 |单项新建、修改、删除及分配撤销；资料编辑不能修改部门和编号。
-|REQ-F-03 角色与权限 |directoryCrudHonoursReferencesAndCaseSensitiveCodes；revocationIsVisibleToExistingTokenAndSystemsAreIsolated。 |角色权限配置、引用冲突提示；旧令牌按当前许可执行。
+|REQ-F-03 角色与权限 |directoryCrudHonoursReferencesAndCaseSensitiveCodes；revocationIsVisibleToExistingTokenAndSystemsAreIsolated；concurrentGrantsOfSamePermissionAreIdempotent。 |角色权限配置、引用冲突提示；旧令牌按当前许可执行。
 |REQ-F-03 RBAC1 |inheritsAcrossMultiplePathsAndRevokesForExistingTokens；rejectsHierarchyCyclesScopeAndReferences；serializesConcurrentOppositeInheritanceWrites。 |配置继承、有效权限并集、解除继承；自环和间接环 409，跨部门 403；并发反向连边仅一条成功。
 |REQ-F-04 部门 |enforcesDirectDepartmentScope；directoryCrudHonoursReferencesAndCaseSensitiveCodes。 |部门树只表达组织；管理员管理本部门直接成员。
 |REQ-F-05 系统 / REQ-F-06 权限目录 |directoryCrudHonoursReferencesAndCaseSensitiveCodes；isolatesUiAndApiPermissionsAndSupportsNarrowSelections。 |系统与权限目录维护；授权下拉分页完整加载，不依赖无关目录管理权。
@@ -2691,7 +2691,7 @@ Flyway V2 在现有 permission 与 role_permission 中补齐旧版既有界面�
 
 === 本轮测试与交付入口
 
-v3.6.1 平台测试 41 项、老师 CloneFactory 测试 5 项和前端组件测试 4 项全部通过。JaCoCo 0.8.14 的平台行覆盖率 88.85%，分支覆盖率 74.05%；生成的 CloneFactory 工具类单独由拷贝测试与运行包检查验证，覆盖率排除该生成类。
+v3.6.2 平台测试 43 项、老师 CloneFactory 测试 5 项和前端组件测试 4 项全部通过。JaCoCo 0.8.14 的平台行覆盖率 88.59%，分支覆盖率 72.44%；生成的 CloneFactory 工具类单独由拷贝测试与运行包检查验证，覆盖率排除该生成类。
 
 
 [cols="3,7",options="header"]
@@ -2701,6 +2701,6 @@ v3.6.1 平台测试 41 项、老师 CloneFactory 测试 5 项和前端组件测�
 |老师课程系统接入 v3.5.0 |http://113.44.144.119/course/
 |平台 API 文档 |运行 npm ci --prefix docs/api 后执行 python3 tooling/build-api.py。
 |覆盖率报告 |执行 ./mvnw verify 生成 backend/target/site/jacoco/。
-|部署与验收证据 |已上线 v3.5.0 的 Swarm 证据见该版本整改报告。当前契约回归见 docs/implementation/test-summary-v3.6.1.json。
+|部署与验收证据 |已上线 v3.5.0 的 Swarm 证据见该版本整改报告。当前契约回归见 docs/implementation/test-summary-v3.6.2.json。
 |课程提交 |代码推送 GitHub，由已配置的自动同步更新 Gitee；课程网站提交与口试预约由组员完成。
 |===

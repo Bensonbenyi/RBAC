@@ -1,6 +1,6 @@
 # 统一权限管理系统
 
-当前实现版本见 [VERSION](docs/redesign/VERSION)。结构化和 DDD 业务实现共用 HTTP 接口、存储端口、认证及 MySQL 数据库，通过 `BACKEND_STRATEGY=structured` 或 `ddd` 选择。
+当前实现版本见 [VERSION](docs/redesign/VERSION)。结构化和 DDD 业务实现共用 HTTP 接口、存储端口、认证、Spring Data JPA 仓储及 MySQL 数据库，通过 `BACKEND_STRATEGY=structured` 或 `ddd` 选择。
 
 ## 本地检查
 
@@ -40,7 +40,7 @@ mvn -f .integrations/course-project-mgt/backend/pom.xml -s .mvn/settings.xml pac
 
 `deploy/stack.yaml` 将入口及两套应用部署在现有 Swarm Manager，MySQL 放在 Worker 1。使用独立 Overlay、Secret 和数据卷。`deploy/backup.sh` 在数据库节点生成一致性备份；恢复验证使用独立临时数据库。
 
-当前文档入口为 [设计交付目录](docs/redesign/README.md)，本轮改动和验证见 [v3.6.1 精简记录](docs/implementation/整改报告-v3.6.1.md)，原部署记录见 [实施报告](docs/implementation/实施报告.md)。`tooling/build-design.sh` 重建两份 PDF、AsciiDoc、黑白图稿及 StarUML 模型。
+当前文档入口为 [设计交付目录](docs/redesign/README.md)，本轮改动和验证见 [v3.6.2 JPA 整改记录](docs/implementation/整改报告-v3.6.2.md)，原部署记录见 [实施报告](docs/implementation/实施报告.md)。`tooling/build-design.sh` 重建两份 PDF、AsciiDoc、黑白图稿及 StarUML 模型。
 
 
 ## 第二轮验收

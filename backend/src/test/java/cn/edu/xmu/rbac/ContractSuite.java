@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import cn.edu.xmu.rbac.infrastructure.bootstrap.DemoData;
 import cn.edu.xmu.rbac.service.port.ManagementStore;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -13,15 +15,23 @@ import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.KeyPairGenerator;
+import java.time.Instant;
 import java.util.Base64;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
+import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.testcontainers.mysql.MySQLContainer;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.json.JsonMapper;
@@ -72,7 +82,9 @@ abstract class ContractSuite {
   }
 
   @LocalServerPort int port;
-  @Autowired JdbcTemplate jdbc;
+  @PersistenceContext EntityManager entities;
+  @Autowired PlatformTransactionManager transactions;
+  @Autowired DataSource dataSource;
   @Autowired ManagementStore store;
   final JsonMapper json = JsonMapper.builder().build();
   final HttpClient client = HttpClient.newHttpClient();
@@ -80,22 +92,28 @@ abstract class ContractSuite {
 
   @BeforeEach
   void seed() {
-    jdbc.update("UPDATE department SET parent_id=NULL");
-    for (String table :
-        new String[] {
-          "login_session",
-          "role_inheritance",
-          "user_role",
-          "role_permission",
-          "permission",
-          "business_system",
-          "app_user",
-          "`role`",
-          "department"
-        }) {
-      jdbc.update("DELETE FROM " + table);
-    }
-    new DemoData(store, jdbc, "13800000000").run(null);
+    new TransactionTemplate(transactions)
+        .executeWithoutResult(
+            status -> {
+              entities
+                  .createQuery("update DepartmentEntity d set d.parentId = null")
+                  .executeUpdate();
+              for (String entity :
+                  new String[] {
+                    "LoginSessionEntity",
+                    "RoleInheritanceEntity",
+                    "UserRoleEntity",
+                    "RolePermissionEntity",
+                    "PermissionEntity",
+                    "SystemEntity",
+                    "UserEntity",
+                    "RoleEntity",
+                    "DepartmentEntity"
+                  }) {
+                entities.createQuery("delete from " + entity).executeUpdate();
+              }
+              new DemoData(store, "13800000000").run(null);
+            });
     token = login("admin", "rbac");
   }
 
@@ -150,20 +168,31 @@ abstract class ContractSuite {
   }
 
   long userId(String username) {
-    return jdbc.queryForObject("SELECT id FROM app_user WHERE username=?", Long.class, username);
+    return store.userByUsername(username).id();
   }
 
   long roleId(String name) {
-    return jdbc.queryForObject("SELECT id FROM `role` WHERE name=?", Long.class, name);
+    return entities
+        .createQuery("select r.id from RoleEntity r where r.name = :name", Long.class)
+        .setParameter("name", name)
+        .getSingleResult();
+  }
+
+  long systemId(String key) {
+    return entities
+        .createQuery("select s.id from SystemEntity s where s.systemKey = :key", Long.class)
+        .setParameter("key", key)
+        .getSingleResult();
   }
 
   long permissionId(String system, String code) {
-    return jdbc.queryForObject(
-        "SELECT p.id FROM permission p JOIN business_system s ON s.id=p.system_id WHERE"
-            + " s.system_key=? AND p.code=?",
-        Long.class,
-        system,
-        code);
+    return entities
+        .createQuery(
+            "select p.id from PermissionEntity p where p.systemId = :system and p.code = :code",
+            Long.class)
+        .setParameter("system", systemId(system))
+        .setParameter("code", code)
+        .getSingleResult();
   }
 
   @Test
@@ -199,9 +228,7 @@ abstract class ContractSuite {
   @Test
   @DisplayName("REQ-F-01 部门用户分页只返回身份资料")
   void listsOnlyIdentityFieldsForDepartmentUsers() {
-    long departmentId =
-        jdbc.queryForObject(
-            "SELECT department_id FROM app_user WHERE username='admin'", Long.class);
+    long departmentId = store.userByUsername("admin").departmentId();
     String path = IDENTITY_DEPARTMENTS + "/" + departmentId + "/users";
     JsonNode first = expect(200, "GET", path + "?pageSize=1", null, token);
     assertEquals(3, first.path("total").asInt());
@@ -306,10 +333,7 @@ abstract class ContractSuite {
         expect(200, "GET", "/auth/api-permissions/reviewCourse", null, course)
             .get("allowed")
             .asBoolean());
-    jdbc.update(
-        "DELETE FROM role_permission WHERE role_id=? AND permission_id=?",
-        roleId("reviewer"),
-        permissionId("course-project-management", "CR"));
+    store.revokePermission(roleId("reviewer"), permissionId("course-project-management", "CR"));
     assertTrue(
         expect(200, "GET", "/auth/permissions/MCOR", null, course).get("allowed").asBoolean());
     assertFalse(
@@ -317,10 +341,7 @@ abstract class ContractSuite {
             .get("allowed")
             .asBoolean());
     store.grantPermission(roleId("reviewer"), permissionId("course-project-management", "CR"));
-    jdbc.update(
-        "DELETE FROM role_permission WHERE role_id=? AND permission_id=?",
-        roleId("reviewer"),
-        permissionId("course-project-management", "MCOR"));
+    store.revokePermission(roleId("reviewer"), permissionId("course-project-management", "MCOR"));
     assertFalse(
         expect(200, "GET", "/auth/permissions/MCOR", null, course).get("allowed").asBoolean());
     assertTrue(
@@ -333,18 +354,14 @@ abstract class ContractSuite {
             .asBoolean());
     expect(404, "GET", API_PERMISSIONS + "unknown", null, token);
     for (String code : new String[] {"role.manage", "system.manage", "permission.manage"}) {
-      jdbc.update(
-          "DELETE FROM role_permission WHERE role_id=? AND permission_id=?",
-          roleId("admin"),
-          permissionId("rbac", code));
+      store.revokePermission(roleId("admin"), permissionId("rbac", code));
     }
     expect(200, "GET", "/api/roles/options", null, token);
     expect(403, "GET", "/api/roles", null, token);
     expect(403, "GET", "/api/systems/options", null, token);
     store.grantPermission(roleId("admin"), permissionId("rbac", "role.manage"));
     expect(200, "GET", "/api/systems/options", null, token);
-    long system =
-        jdbc.queryForObject("SELECT id FROM business_system WHERE system_key='rbac'", Long.class);
+    long system = systemId("rbac");
     expect(200, "GET", "/api/permissions/options?systemId=" + system, null, token);
     expect(403, "GET", "/api/systems/" + system + "/permissions", null, token);
     expect(400, "GET", "/api/roles/options?size=101", null, token);
@@ -353,27 +370,30 @@ abstract class ContractSuite {
   @Test
   void upgradesExistingGrantsOnceAndKeepsUiRevocationIndependent() throws Exception {
     // 模拟旧版本目录：保留 API 授权，移除新界面码后运行升级脚本。
-    jdbc.update(
-        "DELETE rp FROM role_permission rp JOIN permission p ON p.id=rp.permission_id"
-            + " WHERE p.code LIKE 'ui.%' OR p.code IN ('MCO','MTR','MCOR','MTRC','MTRE','MTRD')");
-    jdbc.update(
-        "DELETE FROM permission WHERE code LIKE 'ui.%'"
-            + " OR code IN ('MCO','MTR','MCOR','MTRC','MTRE','MTRD')");
-    try (var connection = jdbc.getDataSource().getConnection()) {
-      org.springframework.jdbc.datasource.init.ScriptUtils.executeSqlScript(
-          connection,
-          new org.springframework.core.io.ClassPathResource("db/migration/V2__ui_permissions.sql"));
-    }
+    new TransactionTemplate(transactions)
+        .executeWithoutResult(
+            status -> {
+              String ui =
+                  "p.code like 'ui.%' or p.code in ('MCO','MTR','MCOR','MTRC','MTRE','MTRD')";
+              entities
+                  .createQuery(
+                      "delete from RolePermissionEntity link where link.id.permissionId in "
+                          + "(select p.id from PermissionEntity p where "
+                          + ui
+                          + ")")
+                  .executeUpdate();
+              entities.createQuery("delete from PermissionEntity p where " + ui).executeUpdate();
+            });
+    // 执行真实 Flyway 迁移资源，验证已有数据库升级。
+    new ResourceDatabasePopulator(new ClassPathResource("db/migration/V2__ui_permissions.sql"))
+        .execute(dataSource);
     assertTrue(
         expect(200, "GET", "/auth/permissions/ui.users", null, token).get("allowed").asBoolean());
     assertTrue(
         expect(200, "GET", "/auth/api-permissions/user.list", null, token)
             .get("allowed")
             .asBoolean());
-    jdbc.update(
-        "DELETE FROM role_permission WHERE role_id=? AND permission_id=?",
-        roleId("admin"),
-        permissionId("rbac", "ui.users"));
+    store.revokePermission(roleId("admin"), permissionId("rbac", "ui.users"));
     assertFalse(
         expect(200, "GET", "/auth/permissions/ui.users", null, token).get("allowed").asBoolean());
     assertTrue(
@@ -471,9 +491,7 @@ abstract class ContractSuite {
     assertEquals(3, list.get("total").asInt());
     expect(403, "GET", "/api/users/" + userId("other"), null, token);
     expect(403, "PATCH", "/api/users/" + userId("other"), "{\"name\":\"越界\"}", token);
-    long otherDept =
-        jdbc.queryForObject(
-            "SELECT department_id FROM app_user WHERE username='other'", Long.class);
+    long otherDept = store.userByUsername("other").departmentId();
     long otherRole = store.createRole(otherDept, "其他部门角色").id();
     expect(
         403,
@@ -524,9 +542,15 @@ abstract class ContractSuite {
     expect(204, "POST", "/auth/logout", null, course);
     expect(401, "GET", "/auth/me", null, course);
     course = login("viewer", "course-project-management");
-    jdbc.update(
-        "UPDATE login_session SET expires_at=DATE_SUB(NOW(),INTERVAL 1 MINUTE) WHERE user_id=?",
-        userId("viewer"));
+    new TransactionTemplate(transactions)
+        .executeWithoutResult(
+            status ->
+                entities
+                    .createQuery(
+                        "update LoginSessionEntity s set expiresAt=:past where userId=:user")
+                    .setParameter("past", Instant.now().minusSeconds(60))
+                    .setParameter("user", userId("viewer"))
+                    .executeUpdate());
     expect(401, "GET", "/auth/me", null, course);
     course = login("viewer", "course-project-management");
     expect(204, "DELETE", "/api/users/" + userId("viewer"), null, token);
@@ -640,28 +664,42 @@ abstract class ContractSuite {
     Long dept = store.user(userId("admin")).departmentId();
     var a = store.createRole(dept, "concurrent-a");
     var b = store.createRole(dept, "concurrent-b");
-    try (var pool = java.util.concurrent.Executors.newFixedThreadPool(2)) {
-      var start = new java.util.concurrent.CountDownLatch(1);
+    var statuses =
+        parallelPuts(
+            "/api/roles/" + a.id() + "/inherited-roles/" + b.id(),
+            "/api/roles/" + b.id() + "/inherited-roles/" + a.id());
+    assertTrue(statuses.contains(204), statuses.toString());
+    assertTrue(statuses.contains(409), statuses.toString());
+  }
+
+  @Test
+  void concurrentGrantsOfSamePermissionAreIdempotent() throws Exception {
+    long role = roleId("reviewer");
+    long permission = permissionId("course-project-management", "CR");
+    store.revokePermission(role, permission);
+    String path = "/api/roles/" + role + "/permissions/" + permission;
+    assertEquals(List.of(204, 204), parallelPuts(path, path));
+    assertEquals(
+        1L, store.rolePermissions(role).stream().filter(p -> p.id() == permission).count());
+  }
+
+  private List<Integer> parallelPuts(String firstPath, String secondPath) throws Exception {
+    try (var pool = Executors.newFixedThreadPool(2)) {
+      var start = new CountDownLatch(1);
       var first =
           pool.submit(
               () -> {
                 start.await();
-                return call(
-                        "PUT", "/api/roles/" + a.id() + "/inherited-roles/" + b.id(), null, token)
-                    .statusCode();
+                return call("PUT", firstPath, null, token).statusCode();
               });
       var second =
           pool.submit(
               () -> {
                 start.await();
-                return call(
-                        "PUT", "/api/roles/" + b.id() + "/inherited-roles/" + a.id(), null, token)
-                    .statusCode();
+                return call("PUT", secondPath, null, token).statusCode();
               });
       start.countDown();
-      var statuses = java.util.List.of(first.get(), second.get());
-      assertTrue(statuses.contains(204), statuses.toString());
-      assertTrue(statuses.contains(409), statuses.toString());
+      return List.of(first.get(), second.get());
     }
   }
 }

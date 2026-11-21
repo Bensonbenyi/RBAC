@@ -6,26 +6,26 @@ R=Path(__file__).resolve().parents[2]
 def grasp(table):
  return '''=== GRASP 职责分配与双实现
 
-以 ROLE-11 新增继承为抽查入口。RoleController 校验正整数路径，取得操作者，交给 RoleUseCase；业务实现先检查 role.manage，在事务内锁定部门并核对两端归属，再判断继承图并写入关联。ManagementStore 隔离业务与 SQL，JdbcManagementStore 锁定部门并写入继承边。
+以 ROLE-11 新增继承为抽查入口。RoleController 校验正整数路径，取得操作者，交给 RoleUseCase；业务实现先检查 role.manage，在事务内锁定部门并核对两端归属，再判断继承图并写入关联。ManagementStore 隔离业务与 ORM，JpaManagementStore 委托 Spring Data JPA 仓储锁定部门并保存继承边。
 
 '''+table(['原则','代码位置与职责'],[
  ('Controller','RoleController 接收 HTTP，StructuredRoleService 或 DddRoleService 编排事务；不把业务防环放到 HTTP 层。'),
  ('Information Expert','RoleHierarchy 接收当前继承边，执行 requireAcyclic；User 根据自身部门校验可分配的角色。'),
  ('Creator','DddUserService 根据当前用户资料创建 User，交由 User 校验目标角色的部门。'),
- ('Low Coupling','API 依赖 RoleUseCase，业务依赖 ManagementStore；领域规则使用 Java 集合，与 Spring JDBC、HTTP 解耦。'),
+ ('Low Coupling','API 依赖 RoleUseCase，业务依赖 ManagementStore；领域规则使用 Java 集合，与 Spring Data JPA、HTTP 解耦。'),
  ('High Cohesion','Controller 处理输入输出，Service 处理事务与范围，RoleHierarchy 处理无环规则，适配器处理 SQL。'),
  ('Polymorphism','五个用例端口分别有 Structured 与 Ddd 实现，启动条件只装配配置选中的实现。'),
  ('Indirection','RoleUseCase 与 ManagementStore 分开调用方和实现方，便于契约测试与替换。'),
- ('Pure Fabrication','JdbcManagementStore 读写直接关系；JdbcEffectiveAccessStore 集中递归查询；AccessPolicy 检查权限及部门边界。'),
+ ('Pure Fabrication','JpaManagementStore 管理直接关系；JpaEffectiveAccessStore 批量逐层读取基础角色；AccessPolicy 检查权限及部门边界。'),
  ('Protected Variations','共享 API、Data 和存储端口保护两种业务实现变化；同一契约套件验证外部行为。')],'3,7')+table(['比较项','结构化实现','DDD 实现'],[
  ('业务规则位置','StructuredRoleService 在事务脚本中调用共享防环规则并写入继承边。','DddRoleService 编排事务和范围，调用同一领域规则判断环。'),
  ('已有授权修改','Service 校验权限和范围，数据库拒绝重复分配。','User 校验角色部门，应用服务保存关联，数据库拒绝重复分配。'),
  ('继承图生命周期','事务读取 Data.Inheritance 边列表。','同一份列表作为规则输入，队列和已访问集合在方法结束后释放。'),
- ('共同部分','API、认证、用例端口、数据库迁移、JDBC、日志及页面。','相同契约和基础设施，不复制两套数据库与接口。'),
+ ('共同部分','API、认证、用例端口、数据库迁移、Spring Data JPA、日志及页面。','相同契约和基础设施，不复制两套数据库与接口。'),
  ('配置切换','BACKEND_STRATEGY=structured。','BACKEND_STRATEGY=ddd，重启生效。')],'2,5,5')+'''
 === 实际 Java Web 技术
 
-Spring MVC 处理 HTTP，Jakarta Validation 校验 Controller 输入，Spring IoC 按配置装配，Spring 事务管理 JDBC 写边界；Jackson 映射 JSON，Spring Security 校验 Bearer，请求和 AOP 日志通过 SLF4J、Logback 输出。Flyway 执行增量迁移，CloneFactory 0.0.2 在编译期生成对象拷贝。领域类使用普通 Java 对象，持久化使用 Spring JDBC。
+Spring MVC 处理 HTTP，Jakarta Validation 校验 Controller 输入，Spring IoC 按配置装配，Spring 事务管理 JPA 写边界；Jackson 映射 JSON，Spring Security 校验 Bearer，请求和 AOP 日志通过 SLF4J、Logback 输出。Flyway 执行增量迁移，CloneFactory 0.0.2 在编译期生成对象拷贝。领域类使用普通 Java 对象，持久化由 Spring Data JPA 生成数据库访问。
 '''
 
 def verification(table):
@@ -39,7 +39,7 @@ def verification(table):
  ('REQ-F-01 认证与鉴权','authenticatesAndRejectsBadCredentials；tokensContainIdentityAndAudienceWithoutPermissions；logoutExpiryAndDeletionInvalidateSession。','用户名手机号登录；错误凭据提示；退出后受保护页面拒绝访问。'),
  ('REQ-F-01 身份目录','listsIdentityDepartmentsByLevelAndKeyword、listsOnlyIdentityFieldsForDepartmentUsers、looksUpIdentityUserUnderTeacherCreationPermission、authenticatesEachRequestedAudienceAndRevokesWholeToken。','逐层查询部门及所属候选人，按目标系统判权。'),
  ('REQ-F-02 用户','createsUpdatesAndDeletesUserWithGeneratedIdentity；assignsAndRevokesRoleWithConflictAndIdempotence；validatesInputAndProtectedFields。','单项新建、修改、删除及分配撤销；资料编辑不能修改部门和编号。'),
- ('REQ-F-03 角色与权限','directoryCrudHonoursReferencesAndCaseSensitiveCodes；revocationIsVisibleToExistingTokenAndSystemsAreIsolated。','角色权限配置、引用冲突提示；旧令牌按当前许可执行。'),
+ ('REQ-F-03 角色与权限','directoryCrudHonoursReferencesAndCaseSensitiveCodes；revocationIsVisibleToExistingTokenAndSystemsAreIsolated；concurrentGrantsOfSamePermissionAreIdempotent。','角色权限配置、引用冲突提示；旧令牌按当前许可执行。'),
  ('REQ-F-03 RBAC1','inheritsAcrossMultiplePathsAndRevokesForExistingTokens；rejectsHierarchyCyclesScopeAndReferences；serializesConcurrentOppositeInheritanceWrites。','配置继承、有效权限并集、解除继承；自环和间接环 409，跨部门 403；并发反向连边仅一条成功。'),
  ('REQ-F-04 部门','enforcesDirectDepartmentScope；directoryCrudHonoursReferencesAndCaseSensitiveCodes。','部门树只表达组织；管理员管理本部门直接成员。'),
  ('REQ-F-05 系统 / REQ-F-06 权限目录','directoryCrudHonoursReferencesAndCaseSensitiveCodes；isolatesUiAndApiPermissionsAndSupportsNarrowSelections。','系统与权限目录维护；授权下拉分页完整加载，不依赖无关目录管理权。'),

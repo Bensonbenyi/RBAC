@@ -4,6 +4,9 @@ import java.util.List;
 
 /** 业务持久化端口. */
 public interface ManagementStore {
+  /** 演示初始化只在用户表为空时执行. */
+  boolean hasUsers();
+
   Data.User user(Long id);
 
   Data.User userByUsername(String username);

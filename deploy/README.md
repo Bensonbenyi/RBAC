@@ -28,7 +28,7 @@ for name in mysql_root_password rbac_db_password course_db_password private_key 
 done
 ```
 
-`private_key`、`public_key` 是同一组 RSA PEM，生成入口为 `tooling/generate-keys.sh`。`demo_phone` 是合成演示账号手机号。MySQL 首次启动脚本分别创建 `rbac`、`course_project` 数据库及专用账号，数据库迁移由应用启动执行。已有卷沿用原数据库和密码；Secret 变更需要同步数据库账号。
+`private_key`、`public_key` 是同一组 RSA PEM，生成入口为 `tooling/generate-keys.sh`。`demo_phone` 是合成演示账号手机号。MySQL 首次启动脚本分别创建 `rbac`、`course_project` 数据库及专用账号，数据库迁移由应用启动执行，随后 Hibernate 校验 Spring Data JPA 的实体映射。已有卷沿用原数据库和密码；Secret 变更需要同步数据库账号。
 
 给数据库节点标记 `rbac.db=true`，然后在 Manager 的仓库根目录部署。
 

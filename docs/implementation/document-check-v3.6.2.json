@@ -1,0 +1,50 @@
+{
+  "version": "3.6.2",
+  "documents": [
+    {
+      "document": "统一权限管理系统概要设计说明书",
+      "pages": 38,
+      "pageSize": [
+        0.0,
+        0.0,
+        594.96,
+        841.92
+      ],
+      "figures": 16,
+      "namedDestinations": 57,
+      "reviewPages": [
+        1,
+        2,
+        38
+      ]
+    },
+    {
+      "document": "统一权限管理系统需求与详细设计说明书",
+      "pages": 190,
+      "pageSize": [
+        0.0,
+        0.0,
+        594.96,
+        841.92
+      ],
+      "figures": 144,
+      "namedDestinations": 75,
+      "reviewPages": [
+        1,
+        2,
+        160,
+        190
+      ]
+    }
+  ],
+  "figureAudit": {
+    "figures": 150,
+    "errors": []
+  },
+  "starUmlModels": {
+    "diagrams": 147,
+    "elements": 14601,
+    "references": "resolved",
+    "operationSignatures": 651
+  }
+}

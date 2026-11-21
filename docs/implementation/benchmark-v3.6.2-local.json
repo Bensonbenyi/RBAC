@@ -1,0 +1,29 @@
+{
+  "strategy": "ddd",
+  "target": "http://127.0.0.1:32777",
+  "workload": [
+    "GET /auth/permissions/ui.users",
+    "GET /api/users?page=0&size=20"
+  ],
+  "requests": 1000,
+  "warmup": 100,
+  "concurrency": 8,
+  "elapsedSeconds": 11.463,
+  "requestsPerSecond": 87.24,
+  "p50Ms": 31.6,
+  "p95Ms": 282.74,
+  "maxMs": 1575.66,
+  "statusCounts": {
+    "200": 1000
+  },
+  "errors": 0,
+  "errorRate": 0.0,
+  "date": "2026-11-21",
+  "client": "Python urllib, one connection per request",
+  "environment": "Apple Silicon, local amd64 container, RBAC memory limit 384 MiB",
+  "cgroupMemoryEvents": {
+    "max": 10359,
+    "oom": 0,
+    "oom_kill": 0
+  }
+}

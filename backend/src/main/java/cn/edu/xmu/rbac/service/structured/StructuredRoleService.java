@@ -74,6 +74,7 @@ public class StructuredRoleService implements RoleUseCase {
   }
 
   /** 授予指定权限，重复授予保持幂等. */
+  @Transactional(isolation = Isolation.READ_COMMITTED)
   public void grant(Data.Identity actor, Long id, Long permissionId) {
     access.require(actor, "role.manage");
     scoped(actor, id);

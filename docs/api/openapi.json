@@ -2,7 +2,7 @@
   "openapi": "3.0.3",
   "info": {
     "title": "统一权限管理平台 API",
-    "version": "3.6.1",
+    "version": "3.6.2",
     "description": "RBAC1 双实现契约。高级角色继承基础角色；界面码与 API 码独立。切换策略保持 HTTP 行为一致。"
   },
   "servers": [

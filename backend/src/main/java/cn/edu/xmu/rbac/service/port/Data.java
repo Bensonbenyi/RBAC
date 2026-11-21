@@ -7,7 +7,7 @@ import java.util.List;
 public final class Data {
   private Data() {}
 
-  /** 用户聚合，维护资料及本部门角色集合. */
+  /** 用户账号及其部门归属. */
   public record User(Long id, String username, String name, String phone, Long departmentId) {}
 
   /** 部门领域对象，维护名称. */
@@ -24,7 +24,7 @@ public final class Data {
   /** 业务系统领域对象，维护名称. */
   public record System(Long id, String systemKey, String name) {}
 
-  /** 角色聚合，维护名称和已授予权限集合. */
+  /** 角色基本资料及部门归属. */
   public record Role(Long id, String name, Long departmentId) {}
 
   /** 权限领域对象，维护名称. */

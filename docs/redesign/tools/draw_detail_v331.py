@@ -86,7 +86,7 @@ def classes():
    command=cls(d,command_name,30,730,330,attrs=REQUEST[module][1],stereo='record')
    copy=cls(d,'CloneFactory',30,1010,330,['copy','copyNotNull'] if module=='User' else ['copy'],stereo='utility')
    policy=cls(d,'AccessPolicy',425,1010,330,['require','scope','allowed'])
-   adapter=cls(d,'JdbcManagementStore',820,1010,330,STORE[module])
+   adapter=cls(d,'JpaManagementStore',820,1010,330,STORE[module])
    dep(d,adapter,store,[(985,1005),(985,bottom(store)+10)],True)
    dep(d,a,copy,[(30,285),(12,285),(12,1060),(25,1060)])
    dep(d,a,request,[(195,bottom(a)+5),(195,490)])
@@ -100,9 +100,9 @@ def classes():
     dep(d,c,entity,[(1150,320),(1175,320),(1175,y),(765,y)])
    else:
     note(d,30,1310,725,['Service 在事务内编排权限、范围和存储调用。','Data 同时作为共享查询结果和持久化数据契约。','方法在本图省略参数及返回类型，契约见对应功能。'])
-   jdbc=cls(d,'JdbcTemplate',820,1460,330,['query','queryForObject','update'])
-   ref(d,adapter,jdbc,[(985,bottom(adapter)+5),(985,1450)],'jdbc')
-   d.text(590,1660,('继承操作及 RoleHierarchy 见 RBAC1 专题类图。' if module=='Role' else 'Controller 依赖端口，Service 实现端口；JDBC 适配器实现 ManagementStore。'),20,True)
+   repository=cls(d,module+'JpaRepository',820,1460,330,['findById','save','deleteById'],interface=True)
+   ref(d,adapter,repository,[(985,bottom(adapter)+5),(985,1450)])
+   d.text(590,1660,('继承操作及 RoleHierarchy 见 RBAC1 专题类图。' if module=='Role' else 'Controller 依赖端口，Service 实现端口；JPA 适配器实现 ManagementStore。'),20,True)
  domain()
 
 def domain():
@@ -142,7 +142,7 @@ def overall_classes():
    dep(d,c,b,[(815,y+120),(780,y+120)],True);svcs.append(c)
   policy=cls(d,'AccessPolicy',40,1320,340,['require','scope','allowed'])
   store=cls(d,'ManagementStore',430,1320,340,['users','roles','inheritanceEdges'],interface=True)
-  adapter=cls(d,'JdbcManagementStore',820,1320,340,['users','roles','inheritanceEdges'])
+  adapter=cls(d,'JpaManagementStore',820,1320,340,['users','roles','inheritanceEdges'])
   dep(d,adapter,store,[(815,1400),(780,1400)],True)
   # Shared dependencies are routed in the gutters, once for the service group.
   for c in svcs:ref(d,c,store,[(1165,c[1]['top']+65),(1180,c[1]['top']+65),(1180,1260),(600,1260),(600,1320)],'store')
@@ -213,7 +213,7 @@ def package_diagrams():
   business=pack(d,'service.'+mode,40,130,380,['五个业务 Service'],150)
   security=pack(d,'service.security',500,130,380,['操作许可 部门边界'],150)
   port=pack(d,'service.port',500,530,380,['UseCase Data ManagementStore','EffectiveAccessStore SessionStore'],185)
-  persistence=pack(d,'infrastructure.persistence',40,530,380,['JdbcManagementStore','JdbcEffectiveAccessStore','JdbcSessionStore'],185)
+  persistence=pack(d,'infrastructure.persistence',40,530,380,['JpaManagementStore','JpaEffectiveAccessStore','JpaSessionStore'],185)
   dep(d,business,security,[(420,205),(500,205)])
   dep(d,business,port,[(420,245),(460,245),(460,610),(500,610)])
   dep(d,security,port,[(690,280),(690,530)])
@@ -257,27 +257,42 @@ def selection_class():
 def persistence():
  d=D('class-persistence','共享持久化适配器 类图',1160,1210)
  adapters=[
-  ('ManagementStore',30,['user','createUser','updateUser','deleteUser']),
-  ('EffectiveAccessStore',410,['rolesForUser','permissionsForUser','effectiveRolePermissions']),
-  ('SessionStore',790,['save','find','revoke']),
+  ('ManagementStore',30,['user','createUser','updateUser','deleteUser'],
+   'UserJpaRepository',['findById','save','deleteById']),
+  ('EffectiveAccessStore',410,['rolesForUser','permissionsForUser','effectiveRolePermissions'],
+   'PermissionJpaRepository',['forRoles','codesForRoles']),
+  ('SessionStore',790,['save','find','revoke'],
+   'LoginSessionJpaRepository',['findById','save','revoke']),
  ]
- jdbc=cls(d,'JdbcTemplate',410,870,340,['query','queryForObject','update'])
- for name,x,methods in adapters:
+ for name,x,methods,repository_name,repositories in adapters:
   port=cls(d,name,x,120,340,methods,interface=True)
-  adapter=cls(d,'Jdbc'+name,x,470,340,methods,[('jdbc','JdbcTemplate')])
+  adapter=cls(d,'Jpa'+name,x,460,340,methods)
+  repository=cls(d,repository_name,x,800,340,repositories,interface=True)
   mid=x+170
-  dep(d,adapter,port,[(mid,465),(mid,bottom(port)+10)],True)
-  target={200:465,580:580,960:695}[mid]
-  points=[(mid,bottom(adapter)+5),(mid,780),(target,780),(target,860)] if mid!=target else [(mid,bottom(adapter)+5),(target,860)]
-  ref(d,adapter,jdbc,points,'jdbc')
- note(d,30,1090,1100,['目录与关联写入、有效授权读取、会话分别使用各自端口。','有效授权从当前继承边递归计算，适配器之间共用 JdbcTemplate。'])
+  dep(d,adapter,port,[(mid,450),(mid,bottom(port)+10)],True)
+  ref(d,adapter,repository,[(mid,bottom(adapter)+10),(mid,790)])
+ note(d,30,1090,1100,['三个适配器通过扩展 JpaRepository 的仓储管理实体。','图中列出代表性仓储。有效授权通过角色继承仓储分层读取可达角色。'])
  for stem,title,steps in [
- ('adapter-insert','JDBC 用户适配器 新建顺序图',[(0,1,'createUser(departmentId, command)'),(1,2,'INSERT app_user；GeneratedKeyHolder'),(2,1,'返回生成编号'),(1,2,'SELECT * WHERE id=?；USER RowMapper'),(2,1,'Data.User'),(1,0,'返回创建结果')]),
- ('adapter-update','JDBC 用户适配器 更新顺序图',[(0,1,'updateUser(id, profile)'),(1,2,'UPDATE app_user SET name=?,phone=?'),(2,1,'返回更新行数'),(1,0,'完成；事务由 Service 提交')]),
- ('adapter-delete','JDBC 用户关联清理与删除 顺序图',[(0,1,'deleteUser(id)'),(1,2,'DELETE login_session WHERE user_id=?'),(1,2,'DELETE user_role WHERE user_id=?'),(1,2,'DELETE app_user WHERE id=?'),(2,1,'删除完成'),(1,0,'完成；事务由 Service 提交')])]:
-  seq=Sequence(stem,title,[('service','UserUseCase'),('adapter','JdbcManagementStore'),('jdbc','JdbcTemplate')],height=1120)
-  for i,(a,b,text) in enumerate(steps):seq.msg(a,b,310+i*105,text,reply=(a==2 or b==0))
-  seq.note(1000,'同一服务事务中执行；约束冲突回滚并映射为 409，数据库故障映射为 503。')
+ ('adapter-insert','JPA 用户适配器 新建顺序图',[
+  (0,1,'createUser(departmentId, command)'),(1,2,'save(new UserEntity(...))'),
+  (2,1,'返回带自增编号的 UserEntity'),(1,0,'转换并返回 Data.User')]),
+ ('adapter-update','JPA 用户适配器 更新顺序图',[
+  (0,1,'updateUser(id, profile)'),(1,2,'findById(id)'),(2,1,'返回事务内受管实体'),
+  (1,1,'更新姓名和手机号'),(1,0,'返回')])]:
+  seq=Sequence(stem,title,[('service','UserUseCase'),('adapter','JpaManagementStore'),('users','UserJpaRepository')],height=1120)
+  for i,(a,b,text) in enumerate(steps):
+   y=310+i*122
+   seq.msg(a,b,y,text,end=310+(len(steps)-1)*122 if i==0 else y+122,reply=(a==2 or b==0))
+  seq.note(1000,'在服务事务中执行。更新在事务提交时同步，数据库维护主外键和唯一约束。')
+ seq=Sequence('adapter-delete','JPA 用户关联清理与删除 顺序图',[
+  ('service','UserUseCase'),('adapter','JpaManagementStore'),('sessions','LoginSessionJpaRepository'),
+  ('links','UserRoleJpaRepository'),('users','UserJpaRepository')],height=1120)
+ seq.msg(0,1,290,'deleteUser(id)',end=900)
+ seq.msg(1,2,440,'removeByUserId(id)',end=515)
+ seq.msg(1,3,570,'removeByUserId(id)',end=645)
+ seq.msg(1,4,710,'deleteById(id)',end=785)
+ seq.msg(1,0,910,'删除完成；事务提交',reply=True)
+ seq.note(1000,'会话和用户角色关联先删除，随后删除账号，三步在同一事务内提交。')
 
 
 def relations():
@@ -300,7 +315,7 @@ def relations():
 def common_sequences():
  for stem,title,parts,messages,note in [
  ('flow-copy','API 边界对象拷贝 顺序图',[('api','UserController'),('copy','CloneFactory'),('port','UserUseCase')],[(0,1,'copy(new Data.CreateUser(...), request)'),(1,0,'返回创建输入 record'),(0,2,'create(current.get(), command)'),(2,0,'Data.User；201 Location')],'@Valid 已完成格式校验；生成的 copy 仅覆盖 @CopyTo 声明类型，拒绝未知输入字段。'),
- ('flow-adapter','持久化读取与数据映射 顺序图',[('service','UserUseCase'),('store','JdbcManagementStore'),('jdbc','JdbcTemplate')],[(0,1,'user(id)'),(1,2,'query(SELECT, USER RowMapper, id)'),(2,1,'将结果行映射为 Data.User'),(1,0,'返回共享 Data record')],'JDBC ResultSet 由 RowMapper 显式映射；CloneFactory 用于 API 请求到 Command 的对象拷贝。')]:
+ ('flow-adapter','持久化读取与数据映射 顺序图',[('service','UserUseCase'),('store','JpaManagementStore'),('users','UserJpaRepository')],[(0,1,'user(id)'),(1,2,'findById(id)'),(2,1,'返回 UserEntity 或空结果'),(1,0,'返回 Data.User 或对象缺失错误')],'JPA 负责实体和表的映射，适配器把持久化实体转换为共享 Data。')]:
   seq=Sequence(stem,title,parts,height=1120)
   for i,(a,b,text) in enumerate(messages):seq.msg(a,b,320+i*140,text,reply=(b==0 or (a==2 and b==1)))
   seq.note(1000,note)

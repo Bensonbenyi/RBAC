@@ -123,7 +123,7 @@ def detail():
 
 === 总体架构与对象职责
 
-系统总体分层见 <<fig-architecture>>，包依赖见 <<fig-packages>>。API 通过用例端口调用启动配置选中的服务；存储适配器使用 Spring JDBC，显式 SQL 集中在 Infrastructure。认证为共享装配。
+系统总体分层见 <<fig-architecture>>，包依赖见 <<fig-packages>>。API 通过用例端口调用启动配置选中的服务；所有应用数据访问由 Infrastructure 中的 Spring Data JPA 仓储处理，基础 CRUD 和分页由仓储生成，关联查询和定向更新使用 JPQL。认证为共享装配。
 ''')
  add(fig('architecture','总体分层架构'));add(fig('packages','系统包依赖概览'))
  add('''=== 功能描述
@@ -384,7 +384,7 @@ MySQL InnoDB 保存业务数据和登录会话，利用事务、外键及唯一�
  rows=[]
  for module,(title,req,data) in MODULES.items():
   rows.append((req,title,'AD-01、AD-02、AD-03；S1',module+' 用例、对应控制器','EXT-01 至 EXT-08' if module=='Auth' else {'User':'API-U','Role':'API-R','Department':'API-D','System':'API-S','Permission':'API-P'}[module]+'；INT-01、INT-02',data))
- rows += [('REQ-F-07','课程接入','AD-07；S1','课程适配模块','EXT-01 至 EXT-08；API-C；INT-04','用户、角色、权限及关联'),('REQ-N-01','安全','AD-03、AD-04、AD-07；S1','认证、AccessPolicy、课程适配','EXT-01 至 EXT-08；全部 API','用户、会话、两组授权关联'),('REQ-N-02','性能','AD-05；S2','授权查询、JDBC 存储','INT-02；EXT-03、EXT-04','关联索引、业务数据'),('REQ-N-03','可用性','AD-04、AD-05、AD-06；S3','会话模块、部署和备份','INT-03；全部 API','会话、全部业务表及数据卷'),('REQ-N-04','可修改性','AD-01、AD-02；S4','两套业务实现、共享端口','INT-01、INT-02','共享表结构'),('REQ-N-05','可重复部署','AD-06、AD-07','配置、镜像及教师适配','INT-04；部署入口','独立数据库与迁移版本')]
+ rows += [('REQ-F-07','课程接入','AD-07；S1','课程适配模块','EXT-01 至 EXT-08；API-C；INT-04','用户、角色、权限及关联'),('REQ-N-01','安全','AD-03、AD-04、AD-07；S1','认证、AccessPolicy、课程适配','EXT-01 至 EXT-08；全部 API','用户、会话、两组授权关联'),('REQ-N-02','性能','AD-05；S2','授权查询、Spring Data JPA','INT-02；EXT-03、EXT-04','关联索引、业务数据'),('REQ-N-03','可用性','AD-04、AD-05、AD-06；S3','会话模块、部署和备份','INT-03；全部 API','会话、全部业务表及数据卷'),('REQ-N-04','可修改性','AD-01、AD-02；S4','两套业务实现、共享端口','INT-01、INT-02','共享表结构'),('REQ-N-05','可重复部署','AD-06、AD-07','配置、镜像及教师适配','INT-04；部署入口','独立数据库与迁移版本')]
  add(table(['需求编号','需求名称','故事 / 决策','模块 / 类','内部 / 外部接口','全局数据实体'],rows,'2,2,3,3,3,3'))
  add('=== 需求分析模型引用清单\n'+table(['图编号','模型','转换与使用'],[('AN-UC-01','当前基线用例图','第 3 章职责分配与功能追溯'),('AN-ACT-01','登录活动','认证模块和运行时消息'),('AN-ACT-02','角色分配活动','用户、角色及边界规则'),('AN-CC-01','概念实体关系','核心设计类图与全局 ER'),('AN-ST-01','会话状态','OV-STATE-01'),('AN-DFD-00 / AN-DFD-01','顶层与第一层分析数据流','OV-DFD-00 / OV-DFD-01，加入模块映射')],'3,4,5'))
  from v35_content import verification
