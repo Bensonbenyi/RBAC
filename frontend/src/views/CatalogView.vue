@@ -90,6 +90,7 @@ onMounted(() =>
   <label v-if="kind === 'permissions'"
     >所属系统<select
       v-model="systemId"
+      :disabled="busy"
       @change="
         page = 0;
         reset();
@@ -132,7 +133,7 @@ onMounted(() =>
   </table>
   <div class="pager">
     <button
-      :disabled="page === 0"
+      :disabled="busy || page === 0"
       @click="
         page--;
         run(load);
@@ -141,7 +142,7 @@ onMounted(() =>
       上一页</button
     ><span>第 {{ page + 1 }} 页 共 {{ total }} 条</span
     ><button
-      :disabled="(page + 1) * 20 >= total"
+      :disabled="busy || (page + 1) * 20 >= total"
       @click="
         page++;
         run(load);

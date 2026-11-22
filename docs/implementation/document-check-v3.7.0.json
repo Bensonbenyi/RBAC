@@ -1,0 +1,40 @@
+{
+  "version": "3.7.0",
+  "pdfs": [
+    {
+      "name": "统一权限管理系统概要设计说明书-v3.7.0.pdf",
+      "pages": 38,
+      "pageSize": "A4 portrait",
+      "linkTargets": 57
+    },
+    {
+      "name": "统一权限管理系统需求与详细设计说明书-v3.7.0.pdf",
+      "pages": 153,
+      "pageSize": "A4 portrait",
+      "linkTargets": 76
+    }
+  ],
+  "figures": 115,
+  "openApiOperations": 34,
+  "starUmlModels": [
+    {
+      "name": "chen.mdj",
+      "elements": 107
+    },
+    {
+      "name": "rbac-spec.mdj",
+      "elements": 10903
+    },
+    {
+      "name": "schema.mdj",
+      "elements": 224
+    },
+    {
+      "name": "session-table.mdj",
+      "elements": 46
+    }
+  ],
+  "svgBounds": "passed",
+  "imageReferences": "passed",
+  "toc": "converged"
+}

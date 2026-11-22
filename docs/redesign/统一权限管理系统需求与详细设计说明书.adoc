@@ -1,6 +1,6 @@
 = 统一权限管理系统需求与详细设计说明书
 OOAD 课程项目组
-v3.6.2, 2026-11-21
+v3.7.0, 2026-11-22
 :doctype: book
 :lang: zh-CN
 :toc:
@@ -21,7 +21,7 @@ v3.6.2, 2026-11-21
 
 本文规定当前基线的需求、数据结构、各功能交互、HTTP 契约和双实现设计，供课程评审、开发与验收使用。独立《概要设计说明书》说明系统骨架及 ATAM 评估，本文保存字段字典和各功能详细设计。
 
-本次版本为 3.6.2，基于 v3.2.2 和 2026-11-17 确认决定修订。代码与文档共用功能编号和配置名称，验证结果见实施报告。
+本次版本为 3.7.0，基于 v3.2.2 和 2026-11-17 确认决定修订。代码与文档共用功能编号和配置名称，验证结果见实施报告。
 
 === 背景与术语
 
@@ -36,7 +36,7 @@ v3.6.2, 2026-11-21
 |角色 |属于一个部门的权限集合。
 |权限 |在一个业务系统内具有唯一编码的操作许可。
 |Bearer JWT |客户端在 Authorization 请求头提交的签名凭据，不携带角色或权限。
-|登录会话 |服务器保存在 MySQL 的技术记录，关联用户、目标系统、到期与撤销时间。
+|登录会话 |服务器保存在 MySQL 的技术记录，关联用户、到期与撤销时间。
 |结构化实现 |业务 Service 在事务内编排规则和存储调用。
 |DDD 实现 |应用服务编排用例，领域对象维护用户角色分配等业务规则。
 |Service Port |两套业务实现共用的用例接口、数据契约和存储端口。
@@ -55,8 +55,8 @@ v3.6.2, 2026-11-21
 |https://www.csc.lsu.edu/~chen/pdf/erd-5-pages.pdf[Chen ER 建模论文] |实体、联系、属性、键和参与约束。
 |《5. 面向对象设计》课程课件 |按用户提供的 144 页课件核对类图、分层与 DDD 职责。
 |需求与详细设计说明书 v2 |字体、字号、用例表配色、接口调用说明和分页形式。
-|https://gitee.com/mingqcn/course-project-mgt[课程管理系统] ca90f1c |四层组织、双实现、统一身份接口和权限码。
-|https://gitee.com/mingqcn/spring-fundamentals[Spring 教学示例] 40583ff |CloneFactory 0.0.2 编译期拷贝工具。
+|https://gitee.com/mingqcn/course-project-mgt[课程管理系统] 990cea2 |四层组织、双实现、统一身份接口和权限码。
+|https://gitee.com/mingqcn/spring-fundamentals[Spring 教学示例] 38fd817 |CloneFactory 0.0.2 编译期拷贝工具。
 |本项目 v3.2.2 与 2026-11-17 确认决定 |当前修订基线；性能指标按本次实测建立。
 |===
 
@@ -73,15 +73,15 @@ v3.6.2, 2026-11-21
 |===
 |需求编号 |需求名称
 |REQ-F-01 |登录、退出、身份及当前权限
-|REQ-F-02 |本部门用户维护和用户角色分配
+|REQ-F-02 |本部门用户查询和用户角色分配
 |REQ-F-03 |本部门角色维护和角色权限配置
-|REQ-F-04 |多级部门目录维护
+|REQ-F-04 |多级部门目录查询
 |REQ-F-05 |两个业务系统登记
 |REQ-F-06 |各系统权限目录维护
 |REQ-F-07 |课程系统学期维护与课程审核接入
 |REQ-N-01 |安全与部门隔离
 |REQ-N-02 |性能可测量与有界查询
-|REQ-N-03 |应用恢复与数据可恢复性
+|REQ-N-03 |应用可用性与手动数据恢复
 |REQ-N-04 |双实现可切换与契约一致性
 |REQ-N-05 |容器部署与可重复构建
 |===
@@ -101,7 +101,7 @@ v3.6.2, 2026-11-21
 |BR-07 |登录使用用户名和手机号，password 字段承载手机号；systems 接受一组不重复的目标系统。
 |BR-08 |成功登录必须拥有目标系统 login 权限；每个受保护请求实时检查会话及登录许可。
 |BR-09 |JWT 保存身份和目标系统，会话保存在 MySQL；权限按当前授权关系读取。
-|BR-10 |用户删除同时清理登录会话和用户角色；其他对象存在引用时先撤销关联再删除。
+|BR-10 |用户和部门通过 SQL 维护。删除角色、权限或业务系统前先处理引用。
 |BR-11 |结构化与 DDD 共用输入输出、存储端口和数据库约束；切换配置保持外部行为一致。
 |BR-13 |界面码与 API 码分别授予；界面展示和接口执行分别检查，统一复用 RBAC 表。
 |BR-14 |RBAC1 角色继承限同部门，支持多级多路径，禁止环；权限按可达角色去重取并集。
@@ -113,7 +113,7 @@ v3.6.2, 2026-11-21
 
 初次部署在空库中显式初始化两个业务系统及其 login 权限。演示数据建立教学部与教务部、admin、reviewer、viewer 及 other 四个合成账号；管理员与普通用户使用相同实体，通过角色权限区分。
 
-初始化由 app.demo.enabled 和 app.demo.phone 控制，检测已有用户时跳过。演示手机号由环境或 Secret 注入。数据库迁移创建结构，演示初始化独立于迁移执行。
+Flyway 建表后，在空演示库手动导入 demo.sql。账号资料和部门变更通过 SQL 维护。课程库完成迁移后执行教师资料关联脚本。
 
 === 需求分析模型
 
@@ -210,7 +210,7 @@ image::v33/session-table.svg[技术会话表关系,width=100%]
 
 === RBAC1 继承约束
 
-高级角色通过 role_inheritance 指向基础角色，获得其直接与间接权限。角色层次与部门层次独立；所有继承边限定同部门。新增边先锁定部门行，再在 READ COMMITTED 下读取当前边并检查可达性，禁止自环及间接环。多路径使用 UNION DISTINCT 去重；移除一条边时其他路径继续有效。直接角色分配与直接权限接口保持原语义，有效权限另行查询。
+高级角色通过 role_inheritance 指向基础角色，获得其直接与间接权限。角色层次与部门层次独立；所有继承边限定同部门。新增边前从基础角色逐层读取继承关系。能走回高级角色时返回 409 ROLE_CYCLE。有效权限查询复用相同的遍历，多路径通过集合去重。移除一条边时其他路径继续有效。
 
 
 === 数据字典
@@ -244,7 +244,7 @@ image::v33/session-table.svg[技术会话表关系,width=100%]
 |id |BIGINT |否 |主键，自增 |用户编号
 |username |VARCHAR(64) |否 |全局唯一，区分大小写 |创建后固定的登录名
 |name |VARCHAR(100) |否 |非空文本 |用户姓名
-|phone |VARCHAR(20) |否 |ASCII，API 校验格式 |手机号，本版登录凭据
+|phone |VARCHAR(20) |否 |ASCII，初始化时采用 11 位手机号 |手机号，本版登录凭据
 |department_id |BIGINT |否 |外键 department.id |唯一所属部门，创建后固定
 |===
 
@@ -310,7 +310,6 @@ image::v33/session-table.svg[技术会话表关系,width=100%]
 |字段 |类型 |可空 |约束 |含义
 |id |CHAR(36) |否 |主键，ASCII UUID |对应 JWT jti
 |user_id |BIGINT |否 |外键 app_user.id |当前登录用户
-|system_key |VARCHAR(64) |否 |ASCII，对应令牌 aud 首项 |本次默认目标系统
 |expires_at |TIMESTAMP(6) |否 |UTC 到期时刻 |到期后拒绝认证
 |revoked_at |TIMESTAMP(6) |是 |撤销时刻 |为空表示尚未撤销
 |===
@@ -320,13 +319,13 @@ image::v33/session-table.svg[技术会话表关系,width=100%]
 
 数据库采用 MySQL 8.4 InnoDB，文本使用区分大小写的排序规则。用户名和系统标识建立唯一索引，角色名及权限编码采用所属范围内的联合唯一索引。两组授权和角色继承关联表使用联合主键，并为反向关联列建立索引。
 
-写用例在 Service 事务边界内执行。用户删除先清理会话与用户角色，再删除账号；角色、权限、系统和部门存在引用时返回冲突。部门父节点创建时确定，接口仅支持重命名。
+写用例在 Service 事务边界内执行。角色、权限和业务系统存在引用时返回冲突。账号与部门通过 SQL 维护，外键约束仍生效。
 
-关联查询从用户直接角色出发，递归展开 role_inheritance，再通过角色权限读取去重并集。每个鉴权请求检查已提交的授权关系；已进入事务的请求按数据库事务可见性完成。唯一约束负责并发重复写的最终裁决。
+关联查询从用户直接角色出发，递归展开 role_inheritance，再通过角色权限读取去重并集。每个鉴权请求检查已提交的授权关系；已进入事务的请求按数据库事务可见性完成。新增授权及继承用 POST，组合主键拒绝重复关系并返回 409。删除关联重复调用仍返回 204。课程演示按单人操作安排。
 
-== 功能需求与详细设计
+== 总体架构
 
-=== 总体架构与对象职责
+=== 分层与职责
 
 系统总体分层见 <<fig-architecture>>，包依赖见 <<fig-packages>>。API 通过用例端口调用启动配置选中的服务；所有应用数据访问由 Infrastructure 中的 Spring Data JPA 仓储处理，基础 CRUD 和分页由仓储生成，关联查询和定向更新使用 JPQL。认证为共享装配。
 
@@ -349,9 +348,230 @@ image::v33/packages.svg[系统包依赖概览,width=100%]
 --
 
 
+=== 两套架构设计
+
+==== 分层与运行装配
+
+两套业务实现共用 API 输入层、Service Port 和 Infrastructure。结构化服务在事务内组织规则与存储调用；DDD 应用服务通过领域对象校验角色归属和继承规则。两套实现都通过存储端口调用 Spring Data JPA，查询返回共享 Data record。
+
+[.diagram.plate]
+--
+[[fig-packages-structured]]
+.结构化设计 分层包图
+image::v33/packages-structured.svg[结构化设计 分层包图,width=100%]
+--
+
+[.diagram.plate]
+--
+[[fig-packages-ddd]]
+.DDD设计 分层包图
+image::v33/packages-ddd.svg[DDD设计 分层包图,width=100%]
+--
+
+[.diagram.plate]
+--
+[[fig-architecture-runtime]]
+.运行装配与依赖结构
+image::v33/architecture-runtime.svg[运行装配与依赖结构,width=100%]
+--
+[source,yaml]
+----
+app:
+  backend-strategy: ${BACKEND_STRATEGY:structured}
+----
+
+app.backend-strategy 接受 structured 或 ddd。@ConditionalOnProperty 按配置注册用户和角色端口的实现，三个目录服务共享；默认 structured。切换后 API、数据库迁移及前端保持相同契约。认证 AuthService 与两种策略共用，应用重新启动后才使用新配置。
+
+==== 系统总体架构类图
+
+下列两图完整列出五类资源的 Controller、UseCase、Service 以及共享存储契约，说明类之间的依赖和实现关系。运行装配图说明策略选择，模块类图进一步展示输入、数据对象、权限策略和 JPA 适配器。
+
+[.diagram.plate]
+--
+[[fig-architecture-classes-structured]]
+.系统总体架构类图 结构化
+image::v33/architecture-classes-structured.svg[系统总体架构类图 结构化,width=100%]
+--
+
+[.diagram.plate]
+--
+[[fig-architecture-classes-ddd]]
+.系统总体架构类图 DDD
+image::v33/architecture-classes-ddd.svg[系统总体架构类图 DDD,width=100%]
+--
+==== 领域对象与数据契约
+
+DDD User 校验可分配角色的部门。Role 校验基础角色的部门和继承环路。目录采用共享服务和不可变 Data，关联写入由用例服务编排。
+
+[.diagram.plate]
+--
+[[fig-domain]]
+.DDD 领域对象完整类图
+image::v33/domain.svg[DDD 领域对象完整类图,width=100%]
+--
+
+[cols="2,3,5",options="header"]
+|===
+|领域对象 |实际状态 |行为与职责
+|User |Data.User |requireRoleInDepartment 校验候选角色归属。
+|Role |Data.Role |requireBaseRole 判断候选角色与可达集合，保证同部门且无环。
+|Data.User / Role / Department / System / Permission |编号、名称、归属及固定业务字段 |共享不可变 record，用作查询结果、持久化契约与领域构造输入。
+|===
+==== 共享持久化与适配器
+
+ManagementStore 提供业务对象、直接授权与继承边的读写。EffectiveAccessStore 查询有效角色和有效权限，SessionStore 维护技术会话。三个适配器委托给 Spring Data JPA 仓储。新增通过 save 接收自增编号，更新由事务提交时同步受管实体的变化。角色重命名修改受管实体，角色删除时由数据库核对引用。Hibernate 启动时校验 Flyway 维护的表结构。
+
+[.diagram.plate]
+--
+[[fig-class-persistence]]
+.共享持久化适配器 类图
+image::v33/class-persistence.svg[共享持久化适配器 类图,width=100%]
+--
+
+[.diagram.plate]
+--
+[[fig-adapter-insert]]
+.JPA 角色适配器 新建顺序图
+image::v33/adapter-insert.svg[JPA 角色适配器 新建顺序图,width=100%]
+--
+
+[.diagram.plate]
+--
+[[fig-adapter-update]]
+.JPA 角色适配器 更新顺序图
+image::v33/adapter-update.svg[JPA 角色适配器 更新顺序图,width=100%]
+--
+
+[.diagram.plate]
+--
+[[fig-adapter-delete]]
+.JPA 角色适配器 删除顺序图
+image::v33/adapter-delete.svg[JPA 角色适配器 删除顺序图,width=100%]
+--
+==== 完整包图与文件组织
+
+完整包图按 API、契约、业务实现和基础设施组织。入口与实现分图放大展示依赖。源文件图列出 Java、资源、前端、部署及集成目录。
+
+[.diagram.plate]
+--
+[[fig-packages-full-structured]]
+.系统完整 结构化 UML 包图
+image::v33/packages-full-structured.svg[系统完整 结构化 UML 包图,width=100%]
+--
+
+[.diagram.plate]
+--
+[[fig-packages-structured-entry]]
+.结构化 包图 入口与用例契约
+image::v33/packages-structured-entry.svg[结构化 包图 入口与用例契约,width=100%]
+--
+
+[.diagram.plate]
+--
+[[fig-packages-structured-implementation]]
+.结构化 包图 服务与基础设施
+image::v33/packages-structured-implementation.svg[结构化 包图 服务与基础设施,width=100%]
+--
+
+[.diagram.plate]
+--
+[[fig-packages-full-ddd]]
+.系统完整 DDD UML 包图
+image::v33/packages-full-ddd.svg[系统完整 DDD UML 包图,width=100%]
+--
+
+[.diagram.plate]
+--
+[[fig-packages-ddd-entry]]
+.DDD 包图 入口与用例契约
+image::v33/packages-ddd-entry.svg[DDD 包图 入口与用例契约,width=100%]
+--
+
+[.diagram.plate]
+--
+[[fig-packages-ddd-implementation]]
+.DDD 包图 服务与基础设施
+image::v33/packages-ddd-implementation.svg[DDD 包图 服务与基础设施,width=100%]
+--
+
+[.diagram.plate]
+--
+[[fig-packages-files]]
+.源文件与配置文件组织
+image::v33/packages-files.svg[源文件与配置文件组织,width=100%]
+--
+==== 认证与授权关系
+
+共享认证模块类图位于运行时鉴权功能下，覆盖 AuthController、AuthService、账号查询、有效授权、会话端口及 JWT 签发。用户角色和角色权限分别由 UserUseCase、RoleUseCase 提供方法，在两套业务服务中保持相同外部行为。
+
+[.diagram.plate]
+--
+[[fig-class-auth-request]]
+.Bearer 认证与实时鉴权 类图
+image::v33/class-auth-request.svg[Bearer 认证与实时鉴权 类图,width=100%]
+--
+
+[.diagram.plate]
+--
+[[fig-class-relations-structured]]
+.授权关系 结构化 类图
+image::v33/class-relations-structured.svg[授权关系 结构化 类图,width=100%]
+--
+
+[.diagram.plate]
+--
+[[fig-class-relations-ddd]]
+.授权关系 DDD 类图
+image::v33/class-relations-ddd.svg[授权关系 DDD 类图,width=100%]
+--
+==== 公共请求 拷贝与事务边界
+
+BearerFilter 在进入 Controller 前检查签名、过期时间、会话绑定、账号及本系统 login 权限，CurrentIdentity 提供本次身份。Controller 按 @Valid、路径约束和字段白名单校验输入，使用 CloneFactory 将专用请求 record 转为 Data 输入契约。Service 继续核对具体操作许可及部门范围。
+
+[.diagram.plate]
+--
+[[fig-flow-preflight]]
+.受保护请求 校验顺序图
+image::v33/flow-preflight.svg[受保护请求 校验顺序图,width=100%]
+--
+
+[.diagram.plate]
+--
+[[fig-flow-copy]]
+.API 边界对象拷贝 顺序图
+image::v33/flow-copy.svg[API 边界对象拷贝 顺序图,width=100%]
+--
+
+[.diagram.plate]
+--
+[[fig-flow-adapter]]
+.持久化读取与数据映射 顺序图
+image::v33/flow-adapter.svg[持久化读取与数据映射 顺序图,width=100%]
+--
+公开写服务方法使用 @Transactional。Controller 接收到服务结果时事务已完成；保存或提交失败时回滚。唯一及引用约束冲突映射为 409，数据库故障映射为 503，其他未预期错误映射为 500。普通查询和关联查询返回共享 Data，DDD 从 Data 构造领域对象并调用行为。
+
+==== 对象拷贝与运行日志
+
+老师的 CloneFactory 0.0.2 作为编译期注解处理器使用。名称、业务系统登记和权限登记三个 DTO 通过 @CopyTo 声明目标命令。生成的 copy 返回目标 record。教师仓库提交 38fd817 的工具版本为 0.0.2。JPA 将数据库记录映射为持久化实体，适配器将实体转换为 Data，领域对象由应用服务构造。
+
+[cols="2,5,2",options="header"]
+|===
+|可执行层 |日志内容 |级别
+|API |方法、路由、响应结果、耗时；规则拒绝信息。 |DEBUG / WARN
+|结构化服务 |用例名称、耗时和执行结果。 |DEBUG / WARN
+|DDD 应用服务 |用例编排、领域行为结果及事务异常。 |DEBUG / WARN
+|DDD 领域对象 |由应用服务记录行为结果，领域保持框架无关。 |应用服务记录
+|Infrastructure |存储方法、结果、耗时及数据库异常。 |DEBUG / ERROR
+|===
+
+各执行层通过 SLF4J 输出到 Logback 控制台与滚动文件；LayerLogging 覆盖 Controller、业务和存储方法。切面记录操作、耗时和异常类型。认证过滤器记录请求路径及状态。
+
+
+== 功能需求与详细设计
+
 === 功能描述
 
-以下每项列出需求、调用说明与详细交互。写请求先校验输入并使用 CloneFactory 转为用例输入；操作者身份由 BearerFilter 和 CurrentIdentity 提供。DDD 的 User 校验角色分配，Role 等目录对象维护名称。应用服务保存授权关系。
+以下每项列出需求、调用说明与详细交互。写请求先校验输入并使用 CloneFactory 转为用例输入；操作者身份由 BearerFilter 和 CurrentIdentity 提供。DDD 的 User 校验可分配角色的部门，Role 校验基础角色与继承环路。应用服务保存授权关系。
 
 
 ==== 登录
@@ -413,8 +633,8 @@ image::v33/activity-login.svg[登录 活动图,width=100%]
 [.diagram.plate]
 --
 [[fig-auth-01-shared]]
-.AUTH-01 共享认证交互
-image::v33/auth-01-shared.svg[AUTH-01 共享认证交互,width=100%]
+.AUTH-01 详细交互
+image::v33/auth-01-shared.svg[AUTH-01 详细交互,width=100%]
 --
 
 
@@ -427,27 +647,25 @@ image::v33/flow-login-session.svg[建立登录会话与签发凭据,width=100%]
 --
 
 
-==== 查看本人资料 修改与退出
+==== 查看本人资料与退出
 
 
 [cols="1,1",frame=all,grid=all,role="use-case"]
 |===
-|*用例编号：* UPMS-AUTH-002 |*用例名称：* 查看本人资料 修改与退出
+|*用例编号：* UPMS-AUTH-002 |*用例名称：* 查看本人资料与退出
 2+|*级别：* 用户目标
 2+|*包：* 当前用户
 2+|*参与者：* 已登录用户
-2+|*描述：* 读取本人资料和实时权限，修改姓名或手机号，或撤销当前会话。
-2+|*触发事件：* 用户查看个人资料、保存允许修改的字段或点击退出。
-2+|*前置条件：* 令牌签名、会话、账号和本系统 login 权限有效。
+2+|*描述：* 查看个人资料、角色和当前系统界面权限，或退出本次会话。
+2+|*触发事件：* 用户进入个人资料页或点击退出。
+2+|*前置条件：* 令牌签名有效，会话存在且未过期。
 |*主成功场景：* |*信息*
-|1. 从认证上下文取得本人编号。 |请求不能指定其他用户或部门。
-|2. 读取本人资料或校验资料白名单。 |仅 name、phone；未提交字段保持原值。
-|3. 提交资料修改，或撤销当前会话。 |退出写入 revoked_at，不影响其他会话。
+|1. 读取认证上下文中的本人编号。 |按当前目标系统查询界面权限。
+|2. 退出时撤销当前会话。 |写入 revoked_at，原令牌下次请求返回 401。
 |*扩展场景：* |*处理及信息*
-|令牌失效、会话已撤销或账号已删除 |401。
-|资料字段格式错误、空对象或未知字段 |400，不修改资料。
-|当前系统登录许可已撤销 |403。
-2+|*后置条件：* 资料更新影响后续查询和新登录；退出后旧令牌返回 401。
+|令牌失效或会话已撤销 |401。
+|当前系统登录许可已撤销 |资料查询返回 403，用户仍可退出。
+2+|*后置条件：* 本人资料来自当前账号，退出后本次登录凭据失效。
 |===
 
 对应需求 REQ-F-01。
@@ -460,7 +678,6 @@ image::v33/flow-login-session.svg[建立登录会话与签发凭据,width=100%]
 |===
 |图中处理／实际方法 |调用说明 URL |功能
 |`AuthController.me` |`GET /auth/me` |返回 subject、姓名、工号或学号、部门及当前系统界面权限；权限实时查询。
-|`AuthController.updateMe` |`PATCH /auth/me` |本人编号取自认证上下文，仅接收姓名和手机号。
 |`AuthController.logout` |`POST /auth/logout` |更新当前会话 revoked_at；原令牌随后返回 401。
 |===
 --
@@ -478,34 +695,8 @@ image::v33/flow-login-session.svg[建立登录会话与签发凭据,width=100%]
 [.diagram.plate]
 --
 [[fig-auth-02-shared]]
-.AUTH-02 共享认证交互
-image::v33/auth-02-shared.svg[AUTH-02 共享认证交互,width=100%]
---
-
-
-===== AUTH-04 修改本人资料
-
-本人编号取自认证上下文，仅接收姓名和手机号。
-
-输入：ManagementDTOs.ProfileDTO：name、phone 至少出现一项。
-
-成功结果：204。权限：有效登录。
-
-
-[.diagram.plate]
---
-[[fig-auth-04-structured]]
-.AUTH-04 结构化 详细交互
-image::v33/auth-04-structured.svg[AUTH-04 结构化 详细交互,width=100%]
---
-
-
-
-[.diagram.plate]
---
-[[fig-auth-04-ddd]]
-.AUTH-04 DDD 详细交互
-image::v33/auth-04-ddd.svg[AUTH-04 DDD 详细交互,width=100%]
+.AUTH-02 详细交互
+image::v33/auth-02-shared.svg[AUTH-02 详细交互,width=100%]
 --
 
 
@@ -521,34 +712,30 @@ image::v33/auth-04-ddd.svg[AUTH-04 DDD 详细交互,width=100%]
 [.diagram.plate]
 --
 [[fig-auth-03-shared]]
-.AUTH-03 共享认证交互
-image::v33/auth-03-shared.svg[AUTH-03 共享认证交互,width=100%]
+.AUTH-03 详细交互
+image::v33/auth-03-shared.svg[AUTH-03 详细交互,width=100%]
 --
 
 
-==== 用户维护
+==== 查询本部门用户
 
 
 [cols="1,1",frame=all,grid=all,role="use-case"]
 |===
-|*用例编号：* UPMS-USER-001 |*用例名称：* 用户维护
+|*用例编号：* UPMS-USER-001 |*用例名称：* 查询本部门用户
 2+|*级别：* 用户目标
 2+|*包：* 用户管理
-2+|*参与者：* 持有对应用户操作权限的管理用户
-2+|*描述：* 查询、创建、修改及删除本部门直接成员。
-2+|*触发事件：* 管理用户进入用户页面并选择一项操作。
-2+|*前置条件：* 已登录 rbac，具有本次操作权限和非空部门。
+2+|*参与者：* 持有 user.view 的管理用户
+2+|*描述：* 分页查询本部门直接成员，选择角色分配对象。
+2+|*触发事件：* 管理用户打开用户列表。
+2+|*前置条件：* 已登录 rbac，具有用户查询权限。
 |*主成功场景：* |*信息*
-|1. 检查 user.view、user.create、user.edit 或 user.delete。 |按具体方法检查，列表按操作者部门过滤。
-|2. 读取目标或校验新建资料。 |新建部门由当前身份推导；用户名全局唯一。
-|3. 在事务内保存姓名、手机号或新账号。 |用户名、编号、部门均为固定字段。
-|4. 删除时清理会话与用户角色后删除账号。 |全部删除步骤在同一事务中提交。
+|1. 校验 user.view。 |部门从当前操作者身份取得。
+|2. 分页返回本部门用户。 |记录包含账号、姓名和部门编号。
 |*扩展场景：* |*处理及信息*
-|目标用户跨部门 |403。
-|用户名重复或并发冲突 |409，当前事务回滚。
-|目标不存在 |404。
-|输入含 id、username、departmentId 等修改禁用字段 |400。
-2+|*后置条件：* 资料持久化；已删除用户的后续认证失败。
+|无查询许可 |403。
+|分页参数无效 |400。
+2+|*后置条件：* 列表只返回本部门直接成员。演示账号通过 SQL 维护。
 |===
 
 对应需求 REQ-F-02。
@@ -561,10 +748,6 @@ image::v33/auth-03-shared.svg[AUTH-03 共享认证交互,width=100%]
 |===
 |图中处理／实际方法 |调用说明 URL |功能
 |`UserController.list` |`GET /api/users` |分页并限定本部门直接成员。
-|`UserController.get` |`GET /api/users/{id}` |校验对象部门等于操作者部门。
-|`UserController.create` |`POST /api/users` |部门取自操作者；用户名全局唯一，编号由数据库生成。
-|`UserController.update` |`PATCH /api/users/{id}` |仅更新出现的姓名和手机号，保留未提交字段。
-|`UserController.delete` |`DELETE /api/users/{id}` |同事务删除其登录会话、用户角色关联及用户。
 |===
 --
 
@@ -595,119 +778,6 @@ image::v33/user-01-ddd.svg[USER-01 DDD 详细交互,width=100%]
 --
 
 
-===== USER-02 查询用户详情
-
-校验对象部门等于操作者部门。
-
-输入：路径 id。无请求体。
-
-成功结果：200 User。权限：user.view。
-
-
-[.diagram.plate]
---
-[[fig-user-02-structured]]
-.USER-02 结构化 详细交互
-image::v33/user-02-structured.svg[USER-02 结构化 详细交互,width=100%]
---
-
-
-
-[.diagram.plate]
---
-[[fig-user-02-ddd]]
-.USER-02 DDD 详细交互
-image::v33/user-02-ddd.svg[USER-02 DDD 详细交互,width=100%]
---
-
-
-===== USER-03 新建用户
-
-部门取自操作者；用户名全局唯一，编号由数据库生成。
-
-输入：ManagementDTOs.CreateUserDTO：username、name、phone。
-
-成功结果：201 User。权限：user.create。
-
-
-[.diagram.plate]
---
-[[fig-user-03-structured]]
-.USER-03 结构化 详细交互
-image::v33/user-03-structured.svg[USER-03 结构化 详细交互,width=100%]
---
-
-
-
-[.diagram.plate]
---
-[[fig-user-03-ddd]]
-.USER-03 DDD 详细交互
-image::v33/user-03-ddd.svg[USER-03 DDD 详细交互,width=100%]
---
-
-
-===== USER-04 修改用户资料
-
-仅更新出现的姓名和手机号，保留未提交字段。
-
-输入：ManagementDTOs.ProfileDTO：name、phone 至少出现一项。
-
-成功结果：204。权限：user.edit。
-
-
-[.diagram.plate]
---
-[[fig-user-04-structured]]
-.USER-04 结构化 详细交互
-image::v33/user-04-structured.svg[USER-04 结构化 详细交互,width=100%]
---
-
-
-
-[.diagram.plate]
---
-[[fig-user-04-ddd]]
-.USER-04 DDD 详细交互
-image::v33/user-04-ddd.svg[USER-04 DDD 详细交互,width=100%]
---
-
-
-
-[.diagram.plate]
---
-[[fig-user-04-ddd-domain]]
-.USER-04 DDD 聚合修改与保存
-image::v33/user-04-ddd-domain.svg[USER-04 DDD 聚合修改与保存,width=100%]
---
-
-
-===== USER-05 删除用户
-
-同事务删除其登录会话、用户角色关联及用户。
-
-输入：路径 id。无请求体。
-
-成功结果：204。权限：user.delete。
-
-
-[.diagram.plate]
---
-[[fig-user-05-structured]]
-.USER-05 结构化 详细交互
-image::v33/user-05-structured.svg[USER-05 结构化 详细交互,width=100%]
---
-
-
-
-[.diagram.plate]
---
-[[fig-user-05-ddd]]
-.USER-05 DDD 详细交互
-image::v33/user-05-ddd.svg[USER-05 DDD 详细交互,width=100%]
---
-
-
 ===== 用户管理模块类图
 
 
@@ -728,28 +798,25 @@ image::v33/class-ddd-user.svg[用户管理 DDD 模块类图,width=100%]
 --
 
 
-==== 部门维护
+==== 查看部门树
 
 
 [cols="1,1",frame=all,grid=all,role="use-case"]
 |===
-|*用例编号：* UPMS-DEPT-001 |*用例名称：* 部门维护
+|*用例编号：* UPMS-DEPT-001 |*用例名称：* 查看部门树
 2+|*级别：* 用户目标
 2+|*包：* 部门目录
 2+|*参与者：* 持有 department.manage 的管理用户
-2+|*描述：* 查询多级组织目录，创建、重命名或删除无引用部门。
-2+|*触发事件：* 管理员打开部门目录或提交目录维护。
-2+|*前置条件：* 已登录 rbac 并通过部门管理权限检查。
+2+|*描述：* 查看多级组织的父子关系。
+2+|*触发事件：* 管理员打开部门目录。
+2+|*前置条件：* 已登录 rbac，具有部门目录许可。
 |*主成功场景：* |*信息*
-|1. 分页读取 id、name、parentId。 |前端根据 parentId 组装层级，父子关系保持明确。
-|2. 在指定父节点下新建部门或新建根节点。 |parentId 可空；非空时验证父部门存在。
-|3. 重命名部门。 |更新只接收 name，父节点固定。
-|4. 检查子部门、成员及角色引用后删除。 |存在引用时拒绝删除。
+|1. 分页读取 id、name、parentId。 |空 parentId 表示根节点。
+|2. 前端按 parentId 组装树。 |有子部门的节点可展开或折叠。
 |*扩展场景：* |*处理及信息*
-|父部门或目标部门不存在 |404。
-|名称或路径编号无效 |400。
-|部门仍被引用 |409，保留原数据。
-2+|*后置条件：* 组织层级及外键完整；部门通过角色限制分配范围。
+|无目录许可 |403。
+|分页参数无效 |400。
+2+|*后置条件：* 页面显示多级部门。部门数据通过 SQL 维护。
 |===
 
 对应需求 REQ-F-04。
@@ -762,9 +829,6 @@ image::v33/class-ddd-user.svg[用户管理 DDD 模块类图,width=100%]
 |===
 |图中处理／实际方法 |调用说明 URL |功能
 |`DepartmentController.list` |`GET /api/departments` |有界分页读取目录。
-|`DepartmentController.create` |`POST /api/departments` |校验名称及可选父部门，保存层级归属。
-|`DepartmentController.update` |`PATCH /api/departments/{id}` |仅修改名称，父部门创建后固定。
-|`DepartmentController.delete` |`DELETE /api/departments/{id}` |有引用时返回 409；不存在返回 404。
 |===
 --
 
@@ -780,105 +844,9 @@ image::v33/class-ddd-user.svg[用户管理 DDD 模块类图,width=100%]
 
 [.diagram.plate]
 --
-[[fig-dept-01-structured]]
-.DEPT-01 结构化 详细交互
-image::v33/dept-01-structured.svg[DEPT-01 结构化 详细交互,width=100%]
---
-
-
-
-[.diagram.plate]
---
-[[fig-dept-01-ddd]]
-.DEPT-01 DDD 详细交互
-image::v33/dept-01-ddd.svg[DEPT-01 DDD 详细交互,width=100%]
---
-
-
-===== DEPT-02 新建部门
-
-校验名称及可选父部门，保存层级归属。
-
-输入：ManagementDTOs.CreateDepartmentDTO：name、parentId；parentId 可空。
-
-成功结果：201。权限：department.manage。
-
-
-[.diagram.plate]
---
-[[fig-dept-02-structured]]
-.DEPT-02 结构化 详细交互
-image::v33/dept-02-structured.svg[DEPT-02 结构化 详细交互,width=100%]
---
-
-
-
-[.diagram.plate]
---
-[[fig-dept-02-ddd]]
-.DEPT-02 DDD 详细交互
-image::v33/dept-02-ddd.svg[DEPT-02 DDD 详细交互,width=100%]
---
-
-
-===== DEPT-03 重命名部门
-
-仅修改名称，父部门创建后固定。
-
-输入：ManagementDTOs.NameDTO：name。
-
-成功结果：204。权限：department.manage。
-
-
-[.diagram.plate]
---
-[[fig-dept-03-structured]]
-.DEPT-03 结构化 详细交互
-image::v33/dept-03-structured.svg[DEPT-03 结构化 详细交互,width=100%]
---
-
-
-
-[.diagram.plate]
---
-[[fig-dept-03-ddd]]
-.DEPT-03 DDD 详细交互
-image::v33/dept-03-ddd.svg[DEPT-03 DDD 详细交互,width=100%]
---
-
-
-
-[.diagram.plate]
---
-[[fig-dept-03-ddd-domain]]
-.DEPT-03 DDD 聚合修改与保存
-image::v33/dept-03-ddd-domain.svg[DEPT-03 DDD 聚合修改与保存,width=100%]
---
-
-
-===== DEPT-04 删除部门
-
-有引用时返回 409；不存在返回 404。
-
-输入：路径 id。无请求体。
-
-成功结果：204。权限：department.manage。
-
-
-[.diagram.plate]
---
-[[fig-dept-04-structured]]
-.DEPT-04 结构化 详细交互
-image::v33/dept-04-structured.svg[DEPT-04 结构化 详细交互,width=100%]
---
-
-
-
-[.diagram.plate]
---
-[[fig-dept-04-ddd]]
-.DEPT-04 DDD 详细交互
-image::v33/dept-04-ddd.svg[DEPT-04 DDD 详细交互,width=100%]
+[[fig-dept-01-shared]]
+.DEPT-01 详细交互
+image::v33/dept-01-shared.svg[DEPT-01 详细交互,width=100%]
 --
 
 
@@ -887,18 +855,9 @@ image::v33/dept-04-ddd.svg[DEPT-04 DDD 详细交互,width=100%]
 
 [.diagram.plate]
 --
-[[fig-class-structured-department]]
-.部门目录 结构化 模块类图
-image::v33/class-structured-department.svg[部门目录 结构化 模块类图,width=100%]
---
-
-
-
-[.diagram.plate]
---
-[[fig-class-ddd-department]]
-.部门目录 DDD 模块类图
-image::v33/class-ddd-department.svg[部门目录 DDD 模块类图,width=100%]
+[[fig-class-shared-department]]
+.部门目录 共享 模块类图
+image::v33/class-shared-department.svg[部门目录 共享 模块类图,width=100%]
 --
 
 
@@ -916,7 +875,7 @@ image::v33/class-ddd-department.svg[部门目录 DDD 模块类图,width=100%]
 2+|*前置条件：* 已登录 rbac 并通过系统管理权限检查。
 |*主成功场景：* |*信息*
 |1. 读取系统列表或提交 systemKey 与 name。 |系统标识全局唯一。
-|2. 新建系统，或仅修改展示名称。 |systemKey 创建后固定。
+|2. 新建系统。 |系统标识创建后固定，名称由 SQL 维护。
 |3. 检查权限引用后删除系统。 |先处理所属权限，数据库限制被引用系统删除。
 |*扩展场景：* |*处理及信息*
 |系统标识重复 |409。
@@ -936,7 +895,6 @@ image::v33/class-ddd-department.svg[部门目录 DDD 模块类图,width=100%]
 |图中处理／实际方法 |调用说明 URL |功能
 |`SystemController.list` |`GET /api/systems` |有界分页读取目录。
 |`SystemController.create` |`POST /api/systems` |系统标识全局唯一，创建后固定。
-|`SystemController.update` |`PATCH /api/systems/{id}` |仅修改名称，系统标识创建后固定。
 |`SystemController.delete` |`DELETE /api/systems/{id}` |有引用时返回 409；不存在返回 404。
 |===
 --
@@ -953,18 +911,9 @@ image::v33/class-ddd-department.svg[部门目录 DDD 模块类图,width=100%]
 
 [.diagram.plate]
 --
-[[fig-sys-01-structured]]
-.SYS-01 结构化 详细交互
-image::v33/sys-01-structured.svg[SYS-01 结构化 详细交互,width=100%]
---
-
-
-
-[.diagram.plate]
---
-[[fig-sys-01-ddd]]
-.SYS-01 DDD 详细交互
-image::v33/sys-01-ddd.svg[SYS-01 DDD 详细交互,width=100%]
+[[fig-sys-01-shared]]
+.SYS-01 详细交互
+image::v33/sys-01-shared.svg[SYS-01 详细交互,width=100%]
 --
 
 
@@ -979,53 +928,9 @@ image::v33/sys-01-ddd.svg[SYS-01 DDD 详细交互,width=100%]
 
 [.diagram.plate]
 --
-[[fig-sys-02-structured]]
-.SYS-02 结构化 详细交互
-image::v33/sys-02-structured.svg[SYS-02 结构化 详细交互,width=100%]
---
-
-
-
-[.diagram.plate]
---
-[[fig-sys-02-ddd]]
-.SYS-02 DDD 详细交互
-image::v33/sys-02-ddd.svg[SYS-02 DDD 详细交互,width=100%]
---
-
-
-===== SYS-03 重命名业务系统
-
-仅修改名称，系统标识创建后固定。
-
-输入：ManagementDTOs.NameDTO：name。
-
-成功结果：204。权限：system.manage。
-
-
-[.diagram.plate]
---
-[[fig-sys-03-structured]]
-.SYS-03 结构化 详细交互
-image::v33/sys-03-structured.svg[SYS-03 结构化 详细交互,width=100%]
---
-
-
-
-[.diagram.plate]
---
-[[fig-sys-03-ddd]]
-.SYS-03 DDD 详细交互
-image::v33/sys-03-ddd.svg[SYS-03 DDD 详细交互,width=100%]
---
-
-
-
-[.diagram.plate]
---
-[[fig-sys-03-ddd-domain]]
-.SYS-03 DDD 聚合修改与保存
-image::v33/sys-03-ddd-domain.svg[SYS-03 DDD 聚合修改与保存,width=100%]
+[[fig-sys-02-shared]]
+.SYS-02 详细交互
+image::v33/sys-02-shared.svg[SYS-02 详细交互,width=100%]
 --
 
 
@@ -1040,18 +945,9 @@ image::v33/sys-03-ddd-domain.svg[SYS-03 DDD 聚合修改与保存,width=100%]
 
 [.diagram.plate]
 --
-[[fig-sys-04-structured]]
-.SYS-04 结构化 详细交互
-image::v33/sys-04-structured.svg[SYS-04 结构化 详细交互,width=100%]
---
-
-
-
-[.diagram.plate]
---
-[[fig-sys-04-ddd]]
-.SYS-04 DDD 详细交互
-image::v33/sys-04-ddd.svg[SYS-04 DDD 详细交互,width=100%]
+[[fig-sys-04-shared]]
+.SYS-04 详细交互
+image::v33/sys-04-shared.svg[SYS-04 详细交互,width=100%]
 --
 
 
@@ -1060,18 +956,9 @@ image::v33/sys-04-ddd.svg[SYS-04 DDD 详细交互,width=100%]
 
 [.diagram.plate]
 --
-[[fig-class-structured-system]]
-.系统目录 结构化 模块类图
-image::v33/class-structured-system.svg[系统目录 结构化 模块类图,width=100%]
---
-
-
-
-[.diagram.plate]
---
-[[fig-class-ddd-system]]
-.系统目录 DDD 模块类图
-image::v33/class-ddd-system.svg[系统目录 DDD 模块类图,width=100%]
+[[fig-class-shared-system]]
+.系统目录 共享 模块类图
+image::v33/class-shared-system.svg[系统目录 共享 模块类图,width=100%]
 --
 
 
@@ -1127,18 +1014,9 @@ image::v33/class-ddd-system.svg[系统目录 DDD 模块类图,width=100%]
 
 [.diagram.plate]
 --
-[[fig-perm-01-structured]]
-.PERM-01 结构化 详细交互
-image::v33/perm-01-structured.svg[PERM-01 结构化 详细交互,width=100%]
---
-
-
-
-[.diagram.plate]
---
-[[fig-perm-01-ddd]]
-.PERM-01 DDD 详细交互
-image::v33/perm-01-ddd.svg[PERM-01 DDD 详细交互,width=100%]
+[[fig-perm-01-shared]]
+.PERM-01 详细交互
+image::v33/perm-01-shared.svg[PERM-01 详细交互,width=100%]
 --
 
 
@@ -1153,18 +1031,9 @@ image::v33/perm-01-ddd.svg[PERM-01 DDD 详细交互,width=100%]
 
 [.diagram.plate]
 --
-[[fig-perm-02-structured]]
-.PERM-02 结构化 详细交互
-image::v33/perm-02-structured.svg[PERM-02 结构化 详细交互,width=100%]
---
-
-
-
-[.diagram.plate]
---
-[[fig-perm-02-ddd]]
-.PERM-02 DDD 详细交互
-image::v33/perm-02-ddd.svg[PERM-02 DDD 详细交互,width=100%]
+[[fig-perm-02-shared]]
+.PERM-02 详细交互
+image::v33/perm-02-shared.svg[PERM-02 详细交互,width=100%]
 --
 
 
@@ -1179,27 +1048,9 @@ image::v33/perm-02-ddd.svg[PERM-02 DDD 详细交互,width=100%]
 
 [.diagram.plate]
 --
-[[fig-perm-03-structured]]
-.PERM-03 结构化 详细交互
-image::v33/perm-03-structured.svg[PERM-03 结构化 详细交互,width=100%]
---
-
-
-
-[.diagram.plate]
---
-[[fig-perm-03-ddd]]
-.PERM-03 DDD 详细交互
-image::v33/perm-03-ddd.svg[PERM-03 DDD 详细交互,width=100%]
---
-
-
-
-[.diagram.plate]
---
-[[fig-perm-03-ddd-domain]]
-.PERM-03 DDD 聚合修改与保存
-image::v33/perm-03-ddd-domain.svg[PERM-03 DDD 聚合修改与保存,width=100%]
+[[fig-perm-03-shared]]
+.PERM-03 详细交互
+image::v33/perm-03-shared.svg[PERM-03 详细交互,width=100%]
 --
 
 
@@ -1214,18 +1065,9 @@ image::v33/perm-03-ddd-domain.svg[PERM-03 DDD 聚合修改与保存,width=100%]
 
 [.diagram.plate]
 --
-[[fig-perm-04-structured]]
-.PERM-04 结构化 详细交互
-image::v33/perm-04-structured.svg[PERM-04 结构化 详细交互,width=100%]
---
-
-
-
-[.diagram.plate]
---
-[[fig-perm-04-ddd]]
-.PERM-04 DDD 详细交互
-image::v33/perm-04-ddd.svg[PERM-04 DDD 详细交互,width=100%]
+[[fig-perm-04-shared]]
+.PERM-04 详细交互
+image::v33/perm-04-shared.svg[PERM-04 详细交互,width=100%]
 --
 
 
@@ -1234,18 +1076,9 @@ image::v33/perm-04-ddd.svg[PERM-04 DDD 详细交互,width=100%]
 
 [.diagram.plate]
 --
-[[fig-class-structured-permission]]
-.权限目录 结构化 模块类图
-image::v33/class-structured-permission.svg[权限目录 结构化 模块类图,width=100%]
---
-
-
-
-[.diagram.plate]
---
-[[fig-class-ddd-permission]]
-.权限目录 DDD 模块类图
-image::v33/class-ddd-permission.svg[权限目录 DDD 模块类图,width=100%]
+[[fig-class-shared-permission]]
+.权限目录 共享 模块类图
+image::v33/class-shared-permission.svg[权限目录 共享 模块类图,width=100%]
 --
 
 
@@ -1263,7 +1096,7 @@ image::v33/class-ddd-permission.svg[权限目录 DDD 模块类图,width=100%]
 2+|*前置条件：* 已登录 rbac，角色与操作者属于同一部门。
 |*主成功场景：* |*信息*
 |1. 按本部门分页查询角色或创建角色。 |部门从当前身份推导，名称在部门内唯一。
-|2. 查询角色权限，选择现有权限授予或撤销。 |授予与撤销幂等；权限可来自两个接入系统。
+|2. 查询角色权限，选择现有权限授予或撤销。 |重复授予返回 409，重复撤销返回 204；权限可来自两个接入系统。
 |3. 修改角色名称或检查引用后删除。 |角色部门固定，存在用户或权限关系时拒绝删除。
 |*扩展场景：* |*处理及信息*
 |角色跨部门或无操作许可 |403。
@@ -1282,12 +1115,11 @@ image::v33/class-ddd-permission.svg[权限目录 DDD 模块类图,width=100%]
 |===
 |图中处理／实际方法 |调用说明 URL |功能
 |`RoleController.list` |`GET /api/roles` |分页并限定本部门。
-|`RoleController.get` |`GET /api/roles/{id}` |校验角色属于本部门。
 |`RoleController.create` |`POST /api/roles` |角色部门取自操作者；名称在部门内唯一。
 |`RoleController.update` |`PATCH /api/roles/{id}` |部门固定，仅修改名称。
 |`RoleController.delete` |`DELETE /api/roles/{id}` |存在用户角色或角色权限引用时返回 409，先处理关联。
 |`RoleController.permissions` |`GET /api/roles/{id}/permissions` |角色限定本部门；权限可来自两个接入系统。
-|`RoleController.grant` |`PUT /api/roles/{id}/permissions/{permissionId}` |校验角色和权限存在，重复授予保持 204。
+|`RoleController.grant` |`POST /api/roles/{id}/permissions` |通过 permissionId 新建直接授权；重复提交返回 409。
 |`RoleController.revoke` |`DELETE /api/roles/{id}/permissions/{permissionId}` |同事务移除关联，提交后新鉴权请求读取新权限。
 |`SystemController.options` |`GET /api/systems/options` |仅开放授权任务所需的系统只读目录，不授予系统写权限。
 |`PermissionController.options` |`GET /api/permissions/options` |查询参数 systemId；返回该系统权限，分页上限 100。
@@ -1318,32 +1150,6 @@ image::v33/role-01-structured.svg[ROLE-01 结构化 详细交互,width=100%]
 [[fig-role-01-ddd]]
 .ROLE-01 DDD 详细交互
 image::v33/role-01-ddd.svg[ROLE-01 DDD 详细交互,width=100%]
---
-
-
-===== ROLE-02 查询角色详情
-
-校验角色属于本部门。
-
-输入：路径 id。无请求体。
-
-成功结果：200 Role。权限：role.manage。
-
-
-[.diagram.plate]
---
-[[fig-role-02-structured]]
-.ROLE-02 结构化 详细交互
-image::v33/role-02-structured.svg[ROLE-02 结构化 详细交互,width=100%]
---
-
-
-
-[.diagram.plate]
---
-[[fig-role-02-ddd]]
-.ROLE-02 DDD 详细交互
-image::v33/role-02-ddd.svg[ROLE-02 DDD 详细交互,width=100%]
 --
 
 
@@ -1396,15 +1202,6 @@ image::v33/role-04-structured.svg[ROLE-04 结构化 详细交互,width=100%]
 [[fig-role-04-ddd]]
 .ROLE-04 DDD 详细交互
 image::v33/role-04-ddd.svg[ROLE-04 DDD 详细交互,width=100%]
---
-
-
-
-[.diagram.plate]
---
-[[fig-role-04-ddd-domain]]
-.ROLE-04 DDD 聚合修改与保存
-image::v33/role-04-ddd-domain.svg[ROLE-04 DDD 聚合修改与保存,width=100%]
 --
 
 
@@ -1462,11 +1259,11 @@ image::v33/role-06-ddd.svg[ROLE-06 DDD 详细交互,width=100%]
 
 ===== ROLE-07 授予角色权限
 
-校验角色和权限存在，重复授予保持 204。
+通过 permissionId 新建直接授权；重复提交返回 409。
 
-输入：路径 id、permissionId。无请求体。
+输入：ManagementDTOs.GrantPermissionDTO：permissionId。
 
-成功结果：204。权限：role.manage。
+成功结果：201。权限：role.manage。
 
 
 [.diagram.plate]
@@ -1524,8 +1321,8 @@ image::v33/role-08-ddd.svg[ROLE-08 DDD 详细交互,width=100%]
 [.diagram.plate]
 --
 [[fig-sys-05-shared]]
-.SYS-05 共享认证交互
-image::v33/sys-05-shared.svg[SYS-05 共享认证交互,width=100%]
+.SYS-05 详细交互
+image::v33/sys-05-shared.svg[SYS-05 详细交互,width=100%]
 --
 
 
@@ -1541,8 +1338,8 @@ image::v33/sys-05-shared.svg[SYS-05 共享认证交互,width=100%]
 [.diagram.plate]
 --
 [[fig-perm-05-shared]]
-.PERM-05 共享认证交互
-image::v33/perm-05-shared.svg[PERM-05 共享认证交互,width=100%]
+.PERM-05 详细交互
+image::v33/perm-05-shared.svg[PERM-05 详细交互,width=100%]
 --
 
 
@@ -1581,8 +1378,7 @@ image::v33/class-ddd-role.svg[角色授权 DDD 模块类图,width=100%]
 |*主成功场景：* |*信息*
 |1. 检查分配操作权限并读取用户、角色。 |操作者身份来自认证上下文。
 |2. 校验操作者、目标用户和角色同部门。 |部门与角色的一对多关系限定可分配范围。
-|3. 检查用户尚未持有该角色。 |DDD 由 User.assignRole 检查集合重复和部门。
-|4. 事务内新增 user_role 并提交。 |联合主键裁决并发重复分配。
+|3. 事务内新增 user_role 并提交。 |DDD User 校验角色归属，联合主键拒绝重复分配。
 |*扩展场景：* |*处理及信息*
 |无操作许可或跨部门 |403，不写入关系。
 |用户或角色不存在 |404。
@@ -1688,8 +1484,8 @@ image::v33/user-07-ddd-domain.svg[USER-07 DDD 聚合修改与保存,width=100%]
 [.diagram.plate]
 --
 [[fig-role-09-shared]]
-.ROLE-09 共享认证交互
-image::v33/role-09-shared.svg[ROLE-09 共享认证交互,width=100%]
+.ROLE-09 详细交互
+image::v33/role-09-shared.svg[ROLE-09 详细交互,width=100%]
 --
 
 
@@ -1767,7 +1563,7 @@ image::v33/user-08-ddd.svg[USER-08 DDD 详细交互,width=100%]
 2+|*触发事件：* 平台或课程系统准备执行受控操作。
 2+|*前置条件：* 签名、会话、账号及当前系统 login 权限有效。
 |*主成功场景：* |*信息*
-|1. 从令牌和数据库会话确定用户及系统。 |调用方只提交权限码、operationId 或身份编号。
+|1. 用签名令牌确定目标系统，用会话校验登录有效性。 |调用方只提交权限码、operationId 或身份编号。
 |2. 读取当前用户角色及角色权限并集。 |按当前 audience 限定权限命名空间。
 |3. 返回 allowed 或统一用户资料。 |未知 operationId 返回 404。课程身份目录要求 TEC。
 |*扩展场景：* |*处理及信息*
@@ -1808,8 +1604,8 @@ image::v33/user-08-ddd.svg[USER-08 DDD 详细交互,width=100%]
 [.diagram.plate]
 --
 [[fig-auth-05-shared]]
-.AUTH-05 共享认证交互
-image::v33/auth-05-shared.svg[AUTH-05 共享认证交互,width=100%]
+.AUTH-05 详细交互
+image::v33/auth-05-shared.svg[AUTH-05 详细交互,width=100%]
 --
 
 
@@ -1825,8 +1621,8 @@ AuthService 将两系统 operationId 映射到 API 权限；未知操作返回 4
 [.diagram.plate]
 --
 [[fig-auth-06-shared]]
-.AUTH-06 共享认证交互
-image::v33/auth-06-shared.svg[AUTH-06 共享认证交互,width=100%]
+.AUTH-06 详细交互
+image::v33/auth-06-shared.svg[AUTH-06 详细交互,width=100%]
 --
 
 
@@ -1842,8 +1638,8 @@ image::v33/auth-06-shared.svg[AUTH-06 共享认证交互,width=100%]
 [.diagram.plate]
 --
 [[fig-auth-07-shared]]
-.AUTH-07 共享认证交互
-image::v33/auth-07-shared.svg[AUTH-07 共享认证交互,width=100%]
+.AUTH-07 详细交互
+image::v33/auth-07-shared.svg[AUTH-07 详细交互,width=100%]
 --
 
 
@@ -1859,8 +1655,8 @@ image::v33/auth-07-shared.svg[AUTH-07 共享认证交互,width=100%]
 [.diagram.plate]
 --
 [[fig-auth-08-shared]]
-.AUTH-08 共享认证交互
-image::v33/auth-08-shared.svg[AUTH-08 共享认证交互,width=100%]
+.AUTH-08 详细交互
+image::v33/auth-08-shared.svg[AUTH-08 详细交互,width=100%]
 --
 
 
@@ -1876,8 +1672,8 @@ image::v33/auth-08-shared.svg[AUTH-08 共享认证交互,width=100%]
 [.diagram.plate]
 --
 [[fig-auth-09-shared]]
-.AUTH-09 共享认证交互
-image::v33/auth-09-shared.svg[AUTH-09 共享认证交互,width=100%]
+.AUTH-09 详细交互
+image::v33/auth-09-shared.svg[AUTH-09 详细交互,width=100%]
 --
 
 
@@ -1913,7 +1709,7 @@ image::v33/class-identity-directory.svg[统一身份目录类图,width=100%]
 2+|*前置条件：* 已登录，具有 API 许可，前端控件还需要 ui.role.inheritance。
 |*主成功场景：* |*信息*
 |1. 查询直接基础角色及有效权限。 |直接边与传递闭包分开显示。
-|2. 添加继承边。 |事务先锁部门，再读取当前图；两套实现调用 RoleHierarchy，检查基础角色能否走回高级角色。
+|2. 添加继承边。 |从基础角色展开继承关系。若能走回高级角色则拒绝。组合主键拒绝重复新增。
 |3. 解除指定继承边。 |其他路径及直接授权继续有效；JWT 不缓存权限。
 |*扩展场景：* |*处理及信息*
 |自环或间接环 |409 ROLE_CYCLE，事务不落边。
@@ -1933,7 +1729,7 @@ image::v33/class-identity-directory.svg[统一身份目录类图,width=100%]
 |===
 |图中处理／实际方法 |调用说明 URL |功能
 |`RoleController.inheritedRoles` |`GET /api/roles/{id}/inherited-roles` |同部门范围；返回直接继承边，不混入用户直接分配关系。
-|`RoleController.inherit` |`PUT /api/roles/{id}/inherited-roles/{juniorId}` |高级角色 id 获得基础角色 juniorId 的直接和间接权限；同部门、无环，多路径去重，重复请求幂等。
+|`RoleController.inherit` |`POST /api/roles/{id}/inherited-roles` |从高级角色指向 juniorId；同部门且无环。组合主键拒绝重复继承。
 |`RoleController.uninherit` |`DELETE /api/roles/{id}/inherited-roles/{juniorId}` |只解除指定直接边，其他路径继续有效；下次请求实时计算权限，重复解除幂等。
 |`RoleController.effectivePermissions` |`GET /api/roles/{id}/effective-permissions` |返回直接授权与全部可达基础角色权限的去重并集，权限保留系统编号。
 |===
@@ -1968,11 +1764,11 @@ image::v33/role-10-ddd.svg[ROLE-10 DDD 详细交互,width=100%]
 
 ===== ROLE-11 添加角色继承
 
-高级角色 id 获得基础角色 juniorId 的直接和间接权限；同部门、无环，多路径去重，重复请求幂等。
+从高级角色指向 juniorId；同部门且无环。组合主键拒绝重复继承。
 
-输入：路径 id 为高级角色、juniorId 为基础角色，均为正整数；无请求体。
+输入：ManagementDTOs.InheritRoleDTO：juniorId。
 
-成功结果：204。权限：role.manage。
+成功结果：201。权限：role.manage。
 
 
 [.diagram.plate]
@@ -2064,9 +1860,9 @@ image::v33/class-hierarchy-ddd.svg[RBAC1 DDD 角色继承类图,width=100%]
 
 ==== 课程管理系统接入
 
-需求 REQ-F-07。课程前端直接向平台 /auth/login 登录，携带 course-project-management audience 的令牌调用老师后端。反向代理把 /course-api/ 前缀剥离后转发。老师的业务规则保留，适配层完成验签、实时身份与 API 权限查询。
+需求 REQ-F-07。课程前端使用老师原版 web，调用 POST /course-api/login。老师后端先校验本地工号或学号，再用账号、手机号和目标系统调用平台 /auth/login。老师的业务规则保留，适配层完成验签、实时身份与 API 权限查询。
 
-登录后先读取平台 /auth/me，再通过 /course-api/me 调用课程 GET /me，合并老师系统的本地教师资料与当前界面权限。课程 teacher.user_id 对应平台用户编号；未关联本地资料时老师接口返回 403。演示部署使用 integrations/course-project-mgt/link-demo-teachers.sql 按实际账号编号关联教师，正式账号按真实教师资料关联。
+登录成功后，前端通过 /course-api/me 取得本地资料和当前界面权限。课程 teacher.user_id 对应平台用户编号。演示工号与平台用户名一致，教师账号拥有 teacher 角色。演示部署使用 integrations/course-project-mgt/link-demo-teachers.sql 按实际账号编号关联教师，正式账号按真实教师资料关联。
 
 
 [cols="1,1",frame=all,grid=all,role="use-case"]
@@ -2210,228 +2006,21 @@ image::v33/course-08.svg[getCurrentUser 本地资料与界面权限交互,width=
 --
 
 
+===== COURSE-09 课程登录
+
+POST /course-api/login 接收 role、account、password，成功进入对应工作台。
+
+
+[.diagram.plate]
+--
+[[fig-course-09]]
+.老师原版前端与统一身份的登录交互
+image::v33/course-09.svg[老师原版前端与统一身份的登录交互,width=100%]
+--
+
+
 [.course-note]
-课程列表 page 从 1 开始，courseStatus 为 1 申请、2 待审核、3 已开课。审核输入 decision 为 approved 或 rejected，驳回必须填写 comment。菜单与 API 分别检查权限。接入补丁固定到 ca90f1c，保留 MIT 许可及老师原业务规则，演示路由按本版接入范围开放。
-
-
-=== 两套架构设计
-
-==== 分层与运行装配
-
-两套业务实现共用 API 输入层、Service Port 和 Infrastructure。结构化服务在事务内组织规则与存储调用；DDD 应用服务通过领域对象处理资料和角色归属规则。两套实现都通过存储端口调用 Spring Data JPA，查询返回共享 Data record。
-
-[.diagram.plate]
---
-[[fig-packages-structured]]
-.结构化设计 分层包图
-image::v33/packages-structured.svg[结构化设计 分层包图,width=100%]
---
-
-[.diagram.plate]
---
-[[fig-packages-ddd]]
-.DDD设计 分层包图
-image::v33/packages-ddd.svg[DDD设计 分层包图,width=100%]
---
-
-[.diagram.plate]
---
-[[fig-architecture-runtime]]
-.运行装配与依赖结构
-image::v33/architecture-runtime.svg[运行装配与依赖结构,width=100%]
---
-[source,yaml]
-----
-app:
-  backend-strategy: ${BACKEND_STRATEGY:structured}
-----
-
-app.backend-strategy 接受 structured 或 ddd。@ConditionalOnProperty 按配置注册五个用例端口的实现；默认 structured。切换后 API、数据库迁移及前端保持相同契约。认证 AuthService 与两种策略共用，应用重新启动后才使用新配置。
-
-==== 系统总体架构类图
-
-下列两图完整列出五类资源的 Controller、UseCase、Service 以及共享存储契约，说明类之间的依赖和实现关系。运行装配图说明策略选择，模块类图进一步展示输入、数据对象、权限策略和 JPA 适配器。
-
-[.diagram.plate]
---
-[[fig-architecture-classes-structured]]
-.系统总体架构类图 结构化
-image::v33/architecture-classes-structured.svg[系统总体架构类图 结构化,width=100%]
---
-
-[.diagram.plate]
---
-[[fig-architecture-classes-ddd]]
-.系统总体架构类图 DDD
-image::v33/architecture-classes-ddd.svg[系统总体架构类图 DDD,width=100%]
---
-==== 领域对象与数据契约
-
-DDD User 持有原 Data.User 和当前 Profile。Role、Department、System 和 Permission 维护名称，编号及归属由共享 Data record 表达。应用服务检查权限、对象存在性和部门范围，并通过存储端口保存直接授权关系。
-
-[.diagram.plate]
---
-[[fig-domain]]
-.DDD 领域对象完整类图
-image::v33/domain.svg[DDD 领域对象完整类图,width=100%]
---
-
-[cols="2,3,5",options="header"]
-|===
-|领域对象 |实际状态 |行为与职责
-|User |Data.User、Data.Profile |changeProfile 合并允许修改的字段；requireRoleInDepartment 校验目标角色的部门。用户角色关联由应用服务保存。
-|Role |name |rename 更新名称。权限授予与撤销通过关联仓储执行，由联合主键维持唯一。重复授予通过角色行锁在事务中合并。
-|Department / System / Permission |name |rename 改名；固定字段、对象存在性及引用约束由应用服务和存储协作。
-|Data.User / Role / Department / System / Permission |编号、名称、归属及固定业务字段 |共享不可变 record，用作查询结果、持久化契约与领域构造输入。
-|===
-==== 共享持久化与适配器
-
-ManagementStore 提供业务对象、直接授权与继承边的读写。EffectiveAccessStore 查询有效角色和有效权限，SessionStore 维护技术会话。三个适配器委托给 Spring Data JPA 仓储。新增通过 save 接收自增编号，更新由事务提交时同步受管实体的变化。用户删除依次清理会话、用户角色和账号。Hibernate 启动时校验 Flyway 维护的表结构。
-
-[.diagram.plate]
---
-[[fig-class-persistence]]
-.共享持久化适配器 类图
-image::v33/class-persistence.svg[共享持久化适配器 类图,width=100%]
---
-
-[.diagram.plate]
---
-[[fig-adapter-insert]]
-.JPA 用户适配器 新建顺序图
-image::v33/adapter-insert.svg[JPA 用户适配器 新建顺序图,width=100%]
---
-
-[.diagram.plate]
---
-[[fig-adapter-update]]
-.JPA 用户适配器 更新顺序图
-image::v33/adapter-update.svg[JPA 用户适配器 更新顺序图,width=100%]
---
-
-[.diagram.plate]
---
-[[fig-adapter-delete]]
-.JPA 用户关联清理与删除 顺序图
-image::v33/adapter-delete.svg[JPA 用户关联清理与删除 顺序图,width=100%]
---
-==== 完整包图与文件组织
-
-完整包图按 API、契约、业务实现与基础设施四列展开；同一真实 Java 包可按职责多处呈现。包内列出当前类名。入口与实现分图放大展示相关包依赖，源文件图列出 Java、资源、前端、部署及集成目录。
-
-[.diagram.plate]
---
-[[fig-packages-full-structured]]
-.系统完整 结构化 UML 包图
-image::v33/packages-full-structured.svg[系统完整 结构化 UML 包图,width=100%]
---
-
-[.diagram.plate]
---
-[[fig-packages-structured-entry]]
-.结构化 包图 入口与用例契约
-image::v33/packages-structured-entry.svg[结构化 包图 入口与用例契约,width=100%]
---
-
-[.diagram.plate]
---
-[[fig-packages-structured-implementation]]
-.结构化 包图 服务与基础设施
-image::v33/packages-structured-implementation.svg[结构化 包图 服务与基础设施,width=100%]
---
-
-[.diagram.plate]
---
-[[fig-packages-full-ddd]]
-.系统完整 DDD UML 包图
-image::v33/packages-full-ddd.svg[系统完整 DDD UML 包图,width=100%]
---
-
-[.diagram.plate]
---
-[[fig-packages-ddd-entry]]
-.DDD 包图 入口与用例契约
-image::v33/packages-ddd-entry.svg[DDD 包图 入口与用例契约,width=100%]
---
-
-[.diagram.plate]
---
-[[fig-packages-ddd-implementation]]
-.DDD 包图 服务与基础设施
-image::v33/packages-ddd-implementation.svg[DDD 包图 服务与基础设施,width=100%]
---
-
-[.diagram.plate]
---
-[[fig-packages-files]]
-.源文件与配置文件组织
-image::v33/packages-files.svg[源文件与配置文件组织,width=100%]
---
-==== 认证与授权关系
-
-共享认证模块类图位于运行时鉴权功能下，覆盖 AuthController、AuthService、账号查询、有效授权、会话端口及 JWT 签发。用户角色和角色权限分别由 UserUseCase、RoleUseCase 提供方法，在两套业务服务中保持相同外部行为。
-
-[.diagram.plate]
---
-[[fig-class-auth-request]]
-.Bearer 认证与实时鉴权 类图
-image::v33/class-auth-request.svg[Bearer 认证与实时鉴权 类图,width=100%]
---
-
-[.diagram.plate]
---
-[[fig-class-relations-structured]]
-.授权关系 结构化 类图
-image::v33/class-relations-structured.svg[授权关系 结构化 类图,width=100%]
---
-
-[.diagram.plate]
---
-[[fig-class-relations-ddd]]
-.授权关系 DDD 类图
-image::v33/class-relations-ddd.svg[授权关系 DDD 类图,width=100%]
---
-==== 公共请求 拷贝与事务边界
-
-BearerFilter 在进入 Controller 前检查签名、过期时间、会话绑定、账号及本系统 login 权限，CurrentIdentity 提供本次身份。Controller 按 @Valid、路径约束和字段白名单校验输入，使用 CloneFactory 将专用请求 record 转为 Data 输入契约。Service 继续核对具体操作许可及部门范围。
-
-[.diagram.plate]
---
-[[fig-flow-preflight]]
-.受保护请求 校验顺序图
-image::v33/flow-preflight.svg[受保护请求 校验顺序图,width=100%]
---
-
-[.diagram.plate]
---
-[[fig-flow-copy]]
-.API 边界对象拷贝 顺序图
-image::v33/flow-copy.svg[API 边界对象拷贝 顺序图,width=100%]
---
-
-[.diagram.plate]
---
-[[fig-flow-adapter]]
-.持久化读取与数据映射 顺序图
-image::v33/flow-adapter.svg[持久化读取与数据映射 顺序图,width=100%]
---
-公开写服务方法使用 @Transactional。Controller 接收到服务结果时事务已完成；保存或提交失败时回滚。唯一及引用约束冲突映射为 409，数据库故障映射为 503，其他未预期错误映射为 500。普通查询和关联查询返回共享 Data，DDD 从 Data 构造领域对象并调用行为。
-
-==== 对象拷贝与运行日志
-
-老师的 CloneFactory 0.0.2 作为编译期注解处理器使用，Requests record 通过 @CopyTo 声明到 Data.CreateUser、Profile、Name 等六组目标类型。生成的 CloneFactory.copy 返回目标 record。Data.Profile 使用 @CopyNotNullFrom，资料更新通过 CloneFactory.copyNotNull 保留未提交字段。上游 master 40583ff 的工具版本仍为 0.0.2，已逐文件校验源码一致。JPA 将数据库记录映射为持久化实体，适配器将实体转换为 Data，领域对象由应用服务构造。
-
-[cols="2,5,2",options="header"]
-|===
-|可执行层 |日志内容 |级别
-|API |方法、路由、响应结果、耗时；规则拒绝信息。 |DEBUG / WARN
-|结构化服务 |用例、操作者与目标编号，执行结果。 |DEBUG / WARN
-|DDD 应用服务 |用例编排、领域行为结果及事务异常。 |DEBUG / WARN
-|DDD 领域对象 |由应用服务记录行为结果，领域保持框架无关。 |应用服务记录
-|Infrastructure |存储方法、结果、耗时及数据库异常。 |DEBUG / ERROR
-|===
-
-各执行层通过 SLF4J 输出到 Logback 控制台与滚动文件；LayerLogging 覆盖 Controller、业务和存储方法。切面记录操作、耗时和异常类型。认证过滤器记录请求路径及状态。
+课程列表 page 从 1 开始，courseStatus 为 1 申请、2 待审核、3 已开课。审核输入 decision 为 approved 或 rejected，驳回必须填写 comment。菜单与 API 分别检查权限。接入补丁固定到 990cea2，保留 MIT 许可及老师原业务规则，演示路由按本版接入范围开放。
 
 
 === 接口与输入设计
@@ -2442,7 +2031,7 @@ image::v33/flow-adapter.svg[持久化读取与数据映射 顺序图,width=100%]
 
 路径编号要求正整数。用户名长度 1 至 64，名称 1 至 100，手机号为中国大陆 11 位数字格式。系统标识使用小写字母、数字和连字符；权限码允许大小写字母、数字、点、冒号、下划线和连字符，以兼容 TC、CR 等编码。
 
-创建、资料修改、重命名和分配角色使用不同 DTO。未声明字段返回 400。普通资料修改只接受 name、phone，空修改返回 400；未提交字段保持原值。手机号变更后新登录使用新手机号，当前会话保留至撤销或到期。
+新建资源、改名和新增关联使用专用 DTO。未声明字段返回 400。授予权限提交 permissionId，继承角色提交 juniorId。
 
 ==== 认证与异常
 
@@ -2476,10 +2065,10 @@ JWT 使用 RS256，携带 iss、sub、aud、jti、iat 和 exp，默认有效期 
 |界面 |菜单码 |按钮码 |后端 API 码
 |课程管理 |MCO |MCOR 审核 |CV 查询/详情；CR 审核
 |学期维护 |MTR |MTRC 新建；MTRE 修改；MTRD 删除 |login 查询；TC 新建；TE 修改；TD 删除
-|用户 |ui.users |ui.user.create/edit/delete/roles |user.view/create/edit/delete/role.assign
+|用户 |ui.users |ui.user.roles |user.view / user.role.assign
 |角色 |ui.roles |ui.role.create/edit/delete/permissions/inheritance |role.manage
-|部门 |ui.departments |ui.department.create/edit/delete |department.manage
-|业务系统 |ui.systems |ui.system.create/edit/delete |system.manage
+|部门 |ui.departments |目录只读 |department.manage
+|业务系统 |ui.systems |ui.system.create / ui.system.delete |system.manage
 |权限目录 |ui.permissions |ui.permission.create/edit/delete |permission.manage
 |===
 
@@ -2510,7 +2099,7 @@ image::v33/flow-ui-api.svg[界面码与 API 码独立检查 交互图,width=100%
 
 ===== 数据库升级
 
-Flyway V2 在现有 permission 与 role_permission 中补齐旧版既有界面的独立码和对应演示授权，不增表。迁移只执行一次；之后撤销 UI 码与 API 码各自生效。空演示库由 DemoData 分别初始化两套码。
+Flyway V2 在现有 permission 与 role_permission 中补齐旧版既有界面的独立码和对应演示授权，不增表。迁移只执行一次；之后撤销 UI 码与 API 码各自生效。Flyway V5 移除停用的管理操作权限码和会话里的 system_key。空演示库手动导入 demo.sql。
 
 ==== 输入对象与字段白名单
 
@@ -2518,13 +2107,12 @@ Flyway V2 在现有 permission 与 role_permission 中补齐旧版既有界面�
 |===
 |输入对象 |接收字段 |固定或推导字段
 |LoginDTO |username、password、systems |逐一检查各目标系统的登录许可。
-|ManagementDTOs.CreateUserDTO |username、name、phone |编号生成，departmentId 取当前身份。
-|ManagementDTOs.ProfileDTO |name、phone，至少一项 |用户编号、用户名、部门固定。
-|ManagementDTOs.CreateDepartmentDTO |name、parentId |parentId 可空；创建后固定。
 |ManagementDTOs.CreateSystemDTO |systemKey、name |systemKey 创建后固定。
 |ManagementDTOs.CreatePermissionDTO |code、name |systemId 来自路径；code 固定。
-|ManagementDTOs.NameDTO |name |用于角色创建及各目录重命名。
+|ManagementDTOs.NameDTO |name |用于角色新建、角色改名及权限改名。
 |ManagementDTOs.AssignRoleDTO |roleId |目标用户来自路径，操作者来自认证上下文。
+|ManagementDTOs.GrantPermissionDTO |permissionId |目标角色来自路径。
+|ManagementDTOs.InheritRoleDTO |juniorId |高级角色来自路径。
 |===
 
 
@@ -2536,35 +2124,25 @@ Flyway V2 在现有 permission 与 role_permission 中补齐旧版既有界面�
 |AUTH-01 |POST /auth/login |目标系统 login |200 LoginResult
 |AUTH-02 |GET /auth/me |有效登录 |200 CurrentUserVO
 |AUTH-03 |POST /auth/logout |有效登录 |204
-|AUTH-04 |PATCH /auth/me |有效登录 |204
 |AUTH-05 |GET /auth/permissions/{permission} |有效登录 |200 allowed
 |AUTH-06 |GET /auth/api-permissions/{operationId} |有效登录 |200 allowed
 |AUTH-07 |GET /auth/users/{userId} |user.view 或 TEC |200 IdentityUser
 |AUTH-08 |GET /auth/departments |department.manage 或 TEC |200 IdentityDepartmentPage
 |AUTH-09 |GET /auth/departments/{departmentId}/users |user.view 或 TEC |200 IdentityDepartmentUserPage
 |USER-01 |GET /api/users |user.view |200 Page<User>
-|USER-02 |GET /api/users/{id} |user.view |200 User
-|USER-03 |POST /api/users |user.create |201 User
-|USER-04 |PATCH /api/users/{id} |user.edit |204
-|USER-05 |DELETE /api/users/{id} |user.delete |204
 |USER-06 |GET /api/users/{id}/roles |user.role.assign |200 List<Role>
 |USER-07 |POST /api/users/{id}/roles |user.role.assign |201
 |USER-08 |DELETE /api/users/{id}/roles/{roleId} |user.role.assign |204
 |ROLE-01 |GET /api/roles |role.manage |200 Page<Role>
-|ROLE-02 |GET /api/roles/{id} |role.manage |200 Role
 |ROLE-03 |POST /api/roles |role.manage |201 Role
 |ROLE-04 |PATCH /api/roles/{id} |role.manage |204
 |ROLE-05 |DELETE /api/roles/{id} |role.manage |204
 |ROLE-06 |GET /api/roles/{id}/permissions |role.manage |200 List<Permission>
-|ROLE-07 |PUT /api/roles/{id}/permissions/{permissionId} |role.manage |204
+|ROLE-07 |POST /api/roles/{id}/permissions |role.manage |201
 |ROLE-08 |DELETE /api/roles/{id}/permissions/{permissionId} |role.manage |204
 |DEPT-01 |GET /api/departments |department.manage |200 Page
-|DEPT-02 |POST /api/departments |department.manage |201
-|DEPT-03 |PATCH /api/departments/{id} |department.manage |204
-|DEPT-04 |DELETE /api/departments/{id} |department.manage |204
 |SYS-01 |GET /api/systems |system.manage |200 Page
 |SYS-02 |POST /api/systems |system.manage |201
-|SYS-03 |PATCH /api/systems/{id} |system.manage |204
 |SYS-04 |DELETE /api/systems/{id} |system.manage |204
 |PERM-01 |GET /api/systems/{systemId}/permissions |permission.manage |200 Page
 |PERM-02 |POST /api/systems/{systemId}/permissions |permission.manage |201
@@ -2574,7 +2152,7 @@ Flyway V2 在现有 permission 与 role_permission 中补齐旧版既有界面�
 |SYS-05 |GET /api/systems/options |role.manage 或 permission.manage |200 Page<System>
 |PERM-05 |GET /api/permissions/options |role.manage |200 Page<Permission>
 |ROLE-10 |GET /api/roles/{id}/inherited-roles |role.manage |200 List<Role>
-|ROLE-11 |PUT /api/roles/{id}/inherited-roles/{juniorId} |role.manage |204
+|ROLE-11 |POST /api/roles/{id}/inherited-roles |role.manage |201
 |ROLE-12 |DELETE /api/roles/{id}/inherited-roles/{juniorId} |role.manage |204
 |ROLE-13 |GET /api/roles/{id}/effective-permissions |role.manage |200 List<Permission>
 |===
@@ -2629,7 +2207,6 @@ Flyway V2 在现有 permission 与 role_permission 中补齐旧版既有界面�
 |DB_URL / DB_USER / DB_PASSWORD |RBAC 数据库连接，凭据由环境或 Secret 注入。
 |JWT_PRIVATE_KEY / JWT_PUBLIC_KEY |持久化 RSA 签名密钥和校验公钥的 Resource 路径。
 |app.jwt.lifetime |令牌及数据库会话的有效期，默认 30 分钟。
-|app.demo.enabled / app.demo.phone |空库演示初始化。
 |logging.config / LOG_PATH |Logback 及滚动日志目录。
 |===
 
@@ -2640,7 +2217,7 @@ Flyway V2 在现有 permission 与 role_permission 中补齐旧版既有界面�
 
 部署复用现有三节点 Swarm，第四台作为辅助节点。管理节点运行两个 JVM 和 Nginx，第一个工作节点运行 MySQL，第二个工作节点保留原应用。数据库及日志使用独立卷，密钥和数据库密码使用 Docker Secret。
 
-演示入口采用 IP 加 HTTP。数据库不发布公网端口，服务通过加密 Overlay 通信。备份在辅助节点保存，恢复验证使用独立临时数据库。单管理节点和单数据库实例的故障范围在概要设计中列为架构风险。
+演示入口采用 IP 加 HTTP。数据库不发布公网端口，服务通过加密 Overlay 通信。数据需要恢复时，由组员按部署说明手动执行。单管理节点和单数据库实例的故障范围在概要设计中列为架构风险。
 
 === 图文与构建产物
 
@@ -2656,9 +2233,9 @@ Flyway V2 在现有 permission 与 role_permission 中补齐旧版既有界面�
 |===
 |编号 |场景 |通过条件
 |ACC-01 |两种业务策略 |同一契约套件在 structured、ddd 下通过。
-|ACC-02 |RBAC1 与部门边界 |多级、多路径继承去重；跨部门返回 403，成环返回 409；并发反向连边仅一条成功。
+|ACC-02 |RBAC1 与部门边界 |多级、多路径继承去重；跨部门返回 403，成环返回 409；重复继承返回 409。
 |ACC-03 |输入与数据库 |非法、未知字段拒绝；唯一和引用冲突返回 409。
-|ACC-04 |会话及撤权 |退出、到期、用户删除和权限撤销对后续请求生效。
+|ACC-04 |会话及撤权 |退出、到期和权限撤销对后续请求生效。
 |ACC-05 |课程接入 |真实学期 CRUD、课程列表和审核；撤权后原令牌被拒绝。
 |ACC-06 |日志 |浏览器功能请求可对应 API、Service 和存储层日志，凭据不进入日志。
 |ACC-07 |恢复和性能 |记录实际恢复时长及两种配置的相同负载结果。
@@ -2668,39 +2245,39 @@ Flyway V2 在现有 permission 与 role_permission 中补齐旧版既有界面�
 
 === 需求到测试方法与页面行为
 
-共同测试位于 backend/src/test/java/cn/edu/xmu/rbac/ContractSuite.java，StructuredContractTest 和 DddContractTest 各执行同一套契约。表内方法均为源码中的实际名称；同一方法可覆盖多项需求。
+共同契约按 IdentityContract、ManagementContract 与 RbacContract 分组，两个配置运行相同方法，共用 ContractFixture 的 MySQL 测试库和初始化数据。
 
 
 [cols="3,7,5",options="header"]
 |===
 |需求 |具体测试方法 / 复现 |前端可观察结果
-|REQ-F-01 认证与鉴权 |authenticatesAndRejectsBadCredentials；tokensContainIdentityAndAudienceWithoutPermissions；logoutExpiryAndDeletionInvalidateSession。 |用户名手机号登录；错误凭据提示；退出后受保护页面拒绝访问。
+|REQ-F-01 认证与鉴权 |authenticatesAndRejectsBadCredentials；tokensContainIdentityAndAudienceWithoutPermissions；logoutAndExpiryInvalidateSession。 |用户名手机号登录；错误凭据提示；退出后受保护页面拒绝访问。
 |REQ-F-01 身份目录 |listsIdentityDepartmentsByLevelAndKeyword、listsOnlyIdentityFieldsForDepartmentUsers、looksUpIdentityUserUnderTeacherCreationPermission、authenticatesEachRequestedAudienceAndRevokesWholeToken。 |逐层查询部门及所属候选人，按目标系统判权。
-|REQ-F-02 用户 |createsUpdatesAndDeletesUserWithGeneratedIdentity；assignsAndRevokesRoleWithConflictAndIdempotence；validatesInputAndProtectedFields。 |单项新建、修改、删除及分配撤销；资料编辑不能修改部门和编号。
-|REQ-F-03 角色与权限 |directoryCrudHonoursReferencesAndCaseSensitiveCodes；revocationIsVisibleToExistingTokenAndSystemsAreIsolated；concurrentGrantsOfSamePermissionAreIdempotent。 |角色权限配置、引用冲突提示；旧令牌按当前许可执行。
-|REQ-F-03 RBAC1 |inheritsAcrossMultiplePathsAndRevokesForExistingTokens；rejectsHierarchyCyclesScopeAndReferences；serializesConcurrentOppositeInheritanceWrites。 |配置继承、有效权限并集、解除继承；自环和间接环 409，跨部门 403；并发反向连边仅一条成功。
+|REQ-F-02 用户 |assignsAndRevokesRoleWithConflictAndIdempotence；validatesInputAndRemovedEndpoints。 |分页查看本部门账号，分配或撤销本部门角色。
+|REQ-F-03 角色与权限 |directoryCrudHonoursReferencesAndCaseSensitiveCodes；revocationIsVisibleToExistingTokenAndSystemsAreIsolated。 |角色权限配置、引用冲突提示；旧令牌按当前许可执行。
+|REQ-F-03 RBAC1 |inheritsAcrossMultiplePathsAndRevokesForExistingTokens；rejectsHierarchyCyclesScopeAndReferences。 |配置继承、有效权限并集、解除继承；自环和间接环 409，跨部门 403。
 |REQ-F-04 部门 |enforcesDirectDepartmentScope；directoryCrudHonoursReferencesAndCaseSensitiveCodes。 |部门树只表达组织；管理员管理本部门直接成员。
 |REQ-F-05 系统 / REQ-F-06 权限目录 |directoryCrudHonoursReferencesAndCaseSensitiveCodes；isolatesUiAndApiPermissionsAndSupportsNarrowSelections。 |系统与权限目录维护；授权下拉分页完整加载，不依赖无关目录管理权。
-|REQ-F-07 课程接入 |tooling/acceptance.py 对已部署的老师后端调用 /me、学期 CRUD、课程列表与详情、无权审核、撤权及退出。 |课程和学期菜单分别受 UI 码控制；API 许可独立检查。
+|REQ-F-07 课程接入 |tooling/acceptance.py 对已部署的老师后端调用 /login、/me、学期维护、课程列表与详情、无权审核、撤权及退出。 |课程和学期菜单分别受 UI 码控制；API 许可独立检查。
 |REQ-N-01 安全 |isolatesUiAndApiPermissionsAndSupportsNarrowSelections；upgradesExistingGrantsOnceAndKeepsUiRevocationIndependent；frontend/src/permissions.test.ts。 |无菜单码时禁用菜单，无按钮码时禁用按钮；仅有 API 码也不能启用控件。
 |REQ-N-02 性能 |tooling/benchmark.py；assets/v33/performance-baseline.json 为 v3.3.0 历史测量。 |分页有界；当前版本性能需按相同数据与负载重新测量后比较。
-|REQ-N-03 可用性 |tooling/resilience.py 与历史恢复记录；上一版有 Swarm 健康与会话实测。 |依赖故障拒绝业务；恢复后刷新页面与会话。
-|REQ-N-04 可修改性 |StructuredContractTest / DddContractTest；tooling/check-architecture.py；Swarm 同镜像切换业务策略。 |切换后同一套页面和 HTTP 请求继续工作。
+|REQ-N-03 可用性 |Swarm 健康检查和历史会话恢复记录。 |依赖故障拒绝业务；恢复后刷新页面与会话。
+|REQ-N-04 可修改性 |Structured 与 Ddd 的六个契约测试类；tooling/check-architecture.py；Swarm 同镜像切换业务策略。 |切换后同一套页面和 HTTP 请求继续工作。
 |REQ-N-05 交付与运行 |Maven verify、tooling/check-copy-artifact.py、build-api.py、build-design.sh；Swarm 镜像与服务记录。 |两个前端、API 文档、覆盖率报告可访问；菜单请求对应后端日志。
 |===
 
 === 本轮测试与交付入口
 
-v3.6.2 平台测试 43 项、老师 CloneFactory 测试 5 项和前端组件测试 4 项全部通过。JaCoCo 0.8.14 的平台行覆盖率 88.59%，分支覆盖率 72.44%；生成的 CloneFactory 工具类单独由拷贝测试与运行包检查验证，覆盖率排除该生成类。
+v3.7.0 平台测试 37 项、老师 CloneFactory 测试 5 项和前端组件测试 3 项全部通过。JaCoCo 0.8.14 的平台行覆盖率 93.48%，分支覆盖率 70.34%；生成的 CloneFactory 工具类单独由拷贝测试与运行包检查验证，覆盖率排除该生成类。
 
 
 [cols="3,7",options="header"]
 |===
 |产物 |访问与复现
-|权限后台 v3.5.0 |http://113.44.144.119/platform/
-|老师课程系统接入 v3.5.0 |http://113.44.144.119/course/
+|权限后台 |/platform/
+|老师原版课程前端 |/course/
 |平台 API 文档 |运行 npm ci --prefix docs/api 后执行 python3 tooling/build-api.py。
 |覆盖率报告 |执行 ./mvnw verify 生成 backend/target/site/jacoco/。
-|部署与验收证据 |已上线 v3.5.0 的 Swarm 证据见该版本整改报告。当前契约回归见 docs/implementation/test-summary-v3.6.2.json。
+|部署与验收证据 |已上线 v3.5.0 的 Swarm 证据见该版本整改报告。当前契约回归见 docs/implementation/test-summary-v3.7.0.json。
 |课程提交 |代码推送 GitHub，由已配置的自动同步更新 Gitee；课程网站提交与口试预约由组员完成。
 |===

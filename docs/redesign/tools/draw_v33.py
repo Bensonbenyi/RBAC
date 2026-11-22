@@ -22,10 +22,10 @@ def architecture():
  box(d,80,890,740,90,'MySQL 8.4',['八张业务表和一张技术会话表'])
  for a,b in [(200,240),(360,400),(850,890)]:d.line([(450,a+5),(450,b-10)],'dep')
  for x in [252,647]:d.line([(x,495),(x,520)],'dep');d.line([(x,695),(x,720)],'dep')
- d.note(80,1010,740,['app.backend-strategy 在启动时选择一套业务实现。','认证、存储及外部契约共用。'])
+ d.note(80,1010,740,['app.backend-strategy 在启动时选择一套业务实现。','认证、目录、存储及外部契约共用。'])
  d=D('packages','系统 UML 包图与依赖',900,1120,'UMLPackageDiagram')
  nodes={}
- for key,title,x,y,w,h,body in [('api','api',80,120,740,130,['auth  user  role  department  system  permission  identity']),('port','service.port',80,300,740,130,['五个 UseCase  Data  三个存储端口']),('structured','service.structured',80,500,345,150,['五个 Structured Service']),('ddd','service.ddd',475,500,345,150,['应用服务  domain']),('infra','infrastructure',80,770,740,140,['persistence  security  logging  bootstrap'])]:nodes[key]=d.node(title,x,y,w,h,'UMLPackage',body=body)
+ for key,title,x,y,w,h,body in [('api','api',80,120,740,130,['auth  user  role  department  system  permission  identity']),('port','service.port',80,300,740,130,['五个 UseCase  Data  三个存储端口']),('structured','service.structured',80,500,345,150,['StructuredUserService  StructuredRoleService']),('ddd','service.ddd',475,500,345,150,['DddUserService  DddRoleService  domain']),('infra','infrastructure',80,770,740,140,['persistence  security  logging'])]:nodes[key]=d.node(title,x,y,w,h,'UMLPackage',body=body)
  d.edge(nodes['api'],nodes['port'],[(450,250),(450,290)])
  d.edge(nodes['structured'],nodes['port'],[(250,500),(250,440)])
  d.edge(nodes['ddd'],nodes['port'],[(650,500),(650,440)])
@@ -35,7 +35,7 @@ def architecture():
 def domain_relations():
  d=D('domain-relations','核心业务对象关系模型',900,1100)
  items={}
- for name,x,y,ops in [('Department',40,120,[('rename','')]),('User',520,120,[('changeProfile',''),('requireRoleInDepartment','')]),('Role',40,510,[('rename','')]),('Permission',520,510,[('rename','')]),('System',520,850,[('rename','')])]:items[name]=d.node(name,x,y,340,170 if name in ['User','Role'] else 140,ops=ops)
+ for name,x,y,ops in [('Department',40,120,[]),('User',520,120,[('requireRoleInDepartment','')]),('Role',40,510,[('requireBaseRole','')]),('Permission',520,510,[]),('System',520,850,[])]:items[name]=d.node(name,x,y,340,170 if name in ['User','Role'] else 140,ops=ops)
  def association(a,b,pts,ma,mb,label,labels):
   m=d.model('UMLAssociation',name=label)
   m['end1']=u.obj('UMLAssociationEnd',m,reference=u.ref(items[a][0]),multiplicity=ma,aggregation='none',navigable='unspecified')
@@ -55,7 +55,7 @@ def core_classes():
  for mode,prefix in [('structured','Structured'),('ddd','Ddd')]:
   for name in ['UserController','UserUseCase','ManagementStore','User','Role']:u.CLASSES.pop(name,None)
   d=D('core-'+mode,('结构化' if mode=='structured' else 'DDD')+' 核心设计类图',900,1180)
-  specs=[('UserController',[],[('assign','user: Identifier;role: Identifier','void')],'boundary'),('UserUseCase',[],[('assign','actor: Identity;user: Identifier;role: Identifier','void')],''),(prefix+'UserService',[],[('assign','actor: Identity;user: Identifier;role: Identifier','void')],'control'),('ManagementStore',[],[('user','id: Identifier','UserData'),('assignRole','user: Identifier;role: Identifier','void')],''),('User',[('username','String'),('name','String'),('phone','String')],[('changeProfile','name: String;phone: String','void'),('requireRoleInDepartment','role: Data.Role','void')] if mode=='ddd' else [],'entity'),('Role',[('name','String')],[('rename','name: String','void')] if mode=='ddd' else [],'entity')]
+  specs=[('UserController',[],[('assign','user: Identifier;role: Identifier','void')],'boundary'),('UserUseCase',[],[('assign','actor: Identity;user: Identifier;role: Identifier','void')],''),(prefix+'UserService',[],[('assign','actor: Identity;user: Identifier;role: Identifier','void')],'control'),('ManagementStore',[],[('user','id: Identifier','UserData'),('assignRole','user: Identifier;role: Identifier','void')],''),('User',[('username','String'),('name','String'),('phone','String')],[('requireRoleInDepartment','role: Data.Role','void')] if mode=='ddd' else [],'entity'),('Role',[('name','String')],[('requireBaseRole','baseRole: Data.Role','void')] if mode=='ddd' else [],'entity')]
   nodes={}
   # Short diagram method signatures keep prose at subsystem level elsewhere.
   for name,attrs,methods,stereo in specs:
@@ -83,36 +83,7 @@ def sequence_for(op,mode):
   return service_sequence(op,mode)
  if op.key in {'AUTH-07','AUTH-08','AUTH-09'}:
   return identity_directory_sequence(op)
- if op.key=='AUTH-04':
-  return profile_sequence(op,mode)
  return auth_sequence(op)
-
-def profile_sequence(op,mode):
- stem=op.key.lower()+'-'+mode
- if mode=='ddd':
-  parts=[('api','AuthController'),('app','DddUserService'),('domain','User'),('store','ManagementStore')]
-  s=Sequence(stem,f'{op.key} DDD {op.title}',parts,height=1280,created={2:560})
-  s.msg(0,1,300,'updateMe(actor, command)',end=1090)
-  s.msg(1,3,405,'user(actor.userId)',end=500)
-  s.msg(3,1,500,'当前用户',reply=True)
-  s.msg(1,2,560,'«create» User(data)',create=True)
-  s.msg(1,2,755,'changeProfile(command)',end=850)
-  s.msg(2,1,850,'更新后的 profile()',reply=True)
-  s.msg(1,3,950,'updateUser(actor.userId, profile)',end=1020)
-  s.msg(3,1,1020,'持久化完成',reply=True)
-  s.msg(1,0,1090,op.result,reply=True)
-  s.note(1160,'本人编号来自认证上下文。User 保留未提交的字段，应用服务保存资料。')
-  return
- parts=[('client','Browser'),('api','AuthController'),('service','StructuredUserService'),('store','ManagementStore')]
- s=Sequence(stem,f'{op.key} 结构化 {op.title}',parts,height=1140)
- s.msg(0,1,300,op.method+' '+op.route,end=940)
- s.msg(1,2,410,'updateMe(actor, command)',end=880)
- s.msg(2,3,560,'user(actor.userId)',end=630)
- s.msg(2,2,695,'copyNotNull(当前资料, command)',end=745)
- s.msg(2,3,800,'updateUser(actor.userId, profile)',end=850)
- s.msg(2,1,900,'更新完成',reply=True)
- s.msg(1,0,970,op.result,reply=True)
- s.note(1040,'本人编号来自认证上下文；资料仅含姓名和手机号。')
 
 def auth_sequence(op):
  calls={
@@ -166,7 +137,7 @@ def lifecycle():
  transition((initial,iv),states['有效'],[(450,155),(450,270)],'登录校验通过 / 保存会话');d.text(475,220,'登录校验通过 / 保存会话',19)
  transition(states['有效'],states['已撤销'],[(350,415),(220,640)],'logout / 记录撤销时间');d.text(80,520,'logout / 记录撤销时间',20)
  transition(states['有效'],states['已过期'],[(550,415),(680,640)],'at(expiresAt)');d.text(610,520,'at(expiresAt)',20)
- d.note(60,850,780,['状态由撤销时间和过期时间推导；不增加业务用户状态。','已撤销和已过期均拒绝认证。删除用户同时清理其会话。'])
+ d.note(60,850,780,['状态由撤销时间和过期时间推导；不增加业务用户状态。','已撤销和已过期均拒绝认证。'])
 
 def deployment():
  d=D('deployment','Docker Swarm 物理部署',900,1230,'UMLDeploymentDiagram')
@@ -273,7 +244,7 @@ def utility():
 def dataflow():
  for level in [0,1]:
   d=D('dfd-'+str(level),'系统级数据流图 '+('顶层' if level==0 else '第一层'),900,1190)
-  flows=[('管理用户','登录及本人资料请求','凭据及本人资料结果','P1','认证会话'),('管理用户','账号与目录维护请求','账号与目录维护结果','P2','目录维护'),('管理用户','角色授权请求','角色授权结果','P3','角色授权'),('课程管理系统','身份与鉴权请求','身份与鉴权结果','P4','身份鉴权')]
+  flows=[('管理用户','登录及本人资料请求','凭据及本人资料结果','P1','认证会话'),('管理用户','用户与目录请求','用户与目录结果','P2','目录维护'),('管理用户','角色授权请求','角色授权结果','P3','角色授权'),('课程管理系统','身份与鉴权请求','身份与鉴权结果','P4','身份鉴权')]
   def flow(pts,text,x,y):d.line(pts,'flow');d.text(x,y,text,17,True,bg=True)
   if level==0:
    d.rect(530,100,310,1000,round=20);d.view('RoundRectView',left=530,top=100,width=310,height=1000)
@@ -301,7 +272,7 @@ def analysis():
  for name,x,y in [('管理用户',80,340),('业务系统',740,700)]:
   m=d.model('UMLActor',name=name);v=d.view('UMLActorView',m,left=x,top=y,width=80,height=110);actors.append((m,v))
   d.svg.append(f'<circle cx="{x+40}" cy="{y+15}" r="14" fill="white" stroke="black"/>');d.line([(x+40,y+29),(x+40,y+68)]);d.line([(x+15,y+40),(x+65,y+40)]);d.line([(x+40,y+68),(x+17,y+94)]);d.line([(x+40,y+68),(x+63,y+94)]);d.text(x+40,y+125,name,21,True)
- for i,title in enumerate(['登录与退出','维护本部门用户','维护角色与授权','维护目录','查询身份与权限']):
+ for i,title in enumerate(['登录与退出','查询用户与分配角色','维护角色与授权','维护目录','查询身份与权限']):
   y=120+i*165;m=d.model('UMLUseCase',name=title);v=d.view('UMLUseCaseView',m,left=270,top=y,width=360,height=110)
   d.svg.append(f'<ellipse cx="450" cy="{y+55}" rx="180" ry="55" fill="white" stroke="black"/>');d.text(450,y+62,title,22,True)
   actor=actors[1] if i==4 else actors[0];x0=actor[1]['left']+(0 if i==4 else 80);y0=actor[1]['top']+55;x1=630 if i==4 else 270
@@ -341,7 +312,7 @@ if __name__=='__main__':
  from draw_detail_v331 import classes as detailed_classes, supporting
  architecture();detailed_classes();domain_relations();core_classes();supporting();overview_sequences();lifecycle();deployment();files_and_integration();identity_directory_class();utility();dataflow();analysis()
  for op in OPS:
-  if (op.module=='Auth' and op.function!='updateMe') or op.function=='options':sequence_for(op,'shared')
+  if op.module in ['Auth','Department','System','Permission'] or op.function=='options':sequence_for(op,'shared')
   else:
    sequence_for(op,'structured');sequence_for(op,'ddd')
  from v34_sequences import ui_sequences

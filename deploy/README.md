@@ -11,12 +11,10 @@
 ./tooling/test.sh
 ./mvnw install -DskipTests
 mvn -f .integrations/course-project-mgt/backend/pom.xml -s .mvn/settings.xml package -DskipTests
-npm ci --prefix .integrations/course-project-mgt/web
-VITE_API_BASE_URL=/course-api npm run build --prefix .integrations/course-project-mgt/web -- --base=/course/
 ./tooling/build-images.sh
 ```
 
-构建工具读取 `docs/redesign/VERSION`，用同一个版本标记 amd64 镜像 `rbac/backend`、`rbac/course` 和 `rbac/web`。MySQL 使用 `rbac/mysql:8.4.13-amd64`。将前三个镜像通过 `docker save`、文件传输及 `docker load` 载入 Manager，将 MySQL 镜像载入数据库 Worker。当前 Stack 使用本地镜像，更新前需在放置节点载入相同版本。
+构建工具将课程前端的业务和身份地址都设置为同源 `/course-api`，读取 `docs/redesign/VERSION`，用同一个版本标记 amd64 镜像 `rbac/backend`、`rbac/course` 和 `rbac/web`。MySQL 使用 `rbac/mysql:8.4.13-amd64`。将前三个镜像通过 `docker save`、文件传输及 `docker load` 载入 Manager，将 MySQL 镜像载入数据库 Worker。当前 Stack 使用本地镜像，更新前需在放置节点载入相同版本。
 
 ## 初始化与部署
 

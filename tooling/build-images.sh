@@ -2,6 +2,10 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 version="$(cat docs/redesign/VERSION)"
+course_web=.integrations/course-project-mgt/web
+npm ci --prefix "$course_web"
+VITE_API_BASE_URL=/course-api VITE_IDENTITY_BASE_URL=/course-api \
+  npm run build --prefix "$course_web" -- --base=/course/
 npm ci --prefix docs/api
 python3 tooling/build-api.py
 test -f backend/target/site/jacoco/index.html

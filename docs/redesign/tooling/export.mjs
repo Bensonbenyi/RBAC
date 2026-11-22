@@ -17,7 +17,7 @@ const out=path.join(root,'build');fs.mkdirSync(out,{recursive:true});
 const pdf=path.join(root,`${title}-v${version}.pdf`);
 const doc=asciidoctor.loadFile(source,{safe:'safe',standalone:true});
 if(doc.getRevisionNumber()!==version)throw Error('Document revision does not match VERSION');
-if(doc.getSections().length!==(title.includes('概要')?9:7))throw Error('Unexpected chapter count');
+if(doc.getSections().length!==(title.includes('概要')?9:8))throw Error('Unexpected chapter count');
 let html=doc.convert();
 html=html.replace(`<h1>${title}</h1>`,`<h1>统一权限管理系统<br>${title.replace('统一权限管理系统','')}</h1>`)
  .replace(/version 3\.\d+\.\d+,?/,`版本 ${version}`)

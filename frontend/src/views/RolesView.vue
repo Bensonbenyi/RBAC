@@ -53,7 +53,12 @@ async function save() {
       editing.value ? 'PATCH' : 'POST',
       { name: name.value },
     );
-    if (editing.value && auth.me?.roles.includes(editing.value.name)) await refresh();
+    if (editing.value) {
+      const role = { ...editing.value, name: name.value };
+      if (selected.value?.id === role.id) selected.value = role;
+      if (hierarchyRole.value?.id === role.id) hierarchyRole.value = role;
+      if (auth.me?.roles.includes(editing.value.name)) await refresh();
+    }
     editing.value = null;
     name.value = '';
     await load();
@@ -63,6 +68,8 @@ async function remove(role: Role) {
   if (confirm(`删除角色 ${role.name}？请先处理关联。`))
     await run(async () => {
       await request(`/api/roles/${role.id}`, 'DELETE');
+      if (selected.value?.id === role.id) selected.value = null;
+      if (hierarchyRole.value?.id === role.id) hierarchyRole.value = null;
       await load();
     });
 }
@@ -167,7 +174,7 @@ onMounted(() => run(load));
   </table>
   <div class="pager">
     <button
-      :disabled="page === 0"
+      :disabled="busy || page === 0"
       @click="
         page--;
         run(load);
@@ -176,7 +183,7 @@ onMounted(() => run(load));
       上一页</button
     ><span>第 {{ page + 1 }} 页 共 {{ total }} 个</span
     ><button
-      :disabled="(page + 1) * 20 >= total"
+      :disabled="busy || (page + 1) * 20 >= total"
       @click="
         page++;
         run(load);

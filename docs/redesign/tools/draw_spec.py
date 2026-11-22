@@ -87,7 +87,9 @@ class D:
   self.rect(x,y,w,h)
   if typ=='UMLPackage':
    self.rect(x,y-18,min(w*.5,180),18)
-   self.text(x+w/2,y+32,name,21,True,True,False)
+   size=min(21,int((w-18)/sum(1 if ord(c)>255 else .62 for c in name)))
+   self.text(x+w/2,y+32,name,size,True,True,False)
+   for part in comp['subViews']:part['font']=f'PingFang SC;{size};1'
    for i,s in enumerate(body or []):self.text(x+w/2,y+65+26*i,s,17,True,native=False)
    if body:
     for i,s in enumerate(body):self.text(x+w/2,y+65+26*i,s,17,True,native=True);self.svg.pop()

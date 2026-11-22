@@ -35,6 +35,7 @@ async function load() {
 async function showRoles(user: User) {
   await run(async () => {
     selected.value = user;
+    roleId.value = '';
     assigned.value = await request<Role[]>(`/api/users/${user.id}/roles`);
     roles.value = await allPages<Role>('/api/roles/options');
   });
@@ -88,7 +89,7 @@ onMounted(() => run(load));
   </table>
   <div class="pager">
     <button
-      :disabled="page === 0"
+      :disabled="busy || page === 0"
       @click="
         page--;
         run(load);
@@ -97,7 +98,7 @@ onMounted(() => run(load));
       上一页</button
     ><span>第 {{ page + 1 }} 页 共 {{ total }} 人</span
     ><button
-      :disabled="(page + 1) * 20 >= total"
+      :disabled="busy || (page + 1) * 20 >= total"
       @click="
         page++;
         run(load);

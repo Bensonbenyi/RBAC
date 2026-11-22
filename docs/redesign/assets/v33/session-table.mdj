@@ -375,7 +375,7 @@
               "left": 100,
               "top": 360,
               "width": 700,
-              "height": 240
+              "height": 210
             },
             {
               "_type": "UMLTextView",
@@ -688,7 +688,7 @@
               "top": 515,
               "width": 170,
               "height": 25,
-              "text": "system_key",
+              "text": "expires_at",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
@@ -707,9 +707,9 @@
               "font": "PingFang SC;15;0",
               "left": 275,
               "top": 517,
-              "width": 105,
+              "width": 135,
               "height": 23,
-              "text": "VARCHAR",
+              "text": "TIMESTAMP",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
@@ -767,7 +767,7 @@
               "top": 545,
               "width": 170,
               "height": 25,
-              "text": "expires_at",
+              "text": "revoked_at",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
@@ -809,13 +809,13 @@
               "top": 548,
               "width": 60,
               "height": 22,
-              "text": "NN",
+              "text": "可空",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
             },
             {
-              "_type": "FreelineEdgeView",
+              "_type": "UMLTextView",
               "_id": "session-table-v33-41",
               "_parent": {
                 "$ref": "session-table-v33"
@@ -825,10 +825,15 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;18;0",
-              "points": "100:570;800:570",
-              "lineStyle": 1,
-              "lineMode": 0
+              "font": "PingFang SC;19;0",
+              "left": 100,
+              "top": 601,
+              "width": 532,
+              "height": 27,
+              "text": "会话用 JWT 的 jti 查询，核对用户编号及有效期。",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
             },
             {
               "_type": "UMLTextView",
@@ -841,96 +846,12 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;17;0",
-              "left": 110,
-              "top": 575,
-              "width": 170,
-              "height": 25,
-              "text": "revoked_at",
-              "wordWrap": false,
-              "horzAlign": 0,
-              "vertAlign": 5
-            },
-            {
-              "_type": "UMLTextView",
-              "_id": "session-table-v33-43",
-              "_parent": {
-                "$ref": "session-table-v33"
-              },
-              "parentStyle": false,
-              "showShadow": false,
-              "lineColor": "#000000",
-              "fontColor": "#000000",
-              "fillColor": "#ffffff",
-              "font": "PingFang SC;15;0",
-              "left": 275,
-              "top": 577,
-              "width": 135,
-              "height": 23,
-              "text": "TIMESTAMP",
-              "wordWrap": false,
-              "horzAlign": 0,
-              "vertAlign": 5
-            },
-            {
-              "_type": "UMLTextView",
-              "_id": "session-table-v33-44",
-              "_parent": {
-                "$ref": "session-table-v33"
-              },
-              "parentStyle": false,
-              "showShadow": false,
-              "lineColor": "#000000",
-              "fontColor": "#000000",
-              "fillColor": "#ffffff",
-              "font": "PingFang SC;14;0",
-              "left": 388,
-              "top": 578,
-              "width": 60,
-              "height": 22,
-              "text": "可空",
-              "wordWrap": false,
-              "horzAlign": 0,
-              "vertAlign": 5
-            },
-            {
-              "_type": "UMLTextView",
-              "_id": "session-table-v33-45",
-              "_parent": {
-                "$ref": "session-table-v33"
-              },
-              "parentStyle": false,
-              "showShadow": false,
-              "lineColor": "#000000",
-              "fontColor": "#000000",
-              "fillColor": "#ffffff",
               "font": "PingFang SC;19;0",
               "left": 100,
-              "top": 671,
-              "width": 475,
+              "top": 636,
+              "width": 380,
               "height": 27,
-              "text": "用户删除时同事务清理会话。令牌只携带随机会话编号。",
-              "wordWrap": false,
-              "horzAlign": 0,
-              "vertAlign": 5
-            },
-            {
-              "_type": "UMLTextView",
-              "_id": "session-table-v33-46",
-              "_parent": {
-                "$ref": "session-table-v33"
-              },
-              "parentStyle": false,
-              "showShadow": false,
-              "lineColor": "#000000",
-              "fontColor": "#000000",
-              "fillColor": "#ffffff",
-              "font": "PingFang SC;19;0",
-              "left": 100,
-              "top": 716,
-              "width": 456,
-              "height": 27,
-              "text": "JWT 与会话的用户、目标系统和有效期共同校验。",
+              "text": "目标系统来自通过验签的 JWT aud。",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5

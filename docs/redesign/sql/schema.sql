@@ -101,7 +101,6 @@ CREATE TABLE role_inheritance (
 CREATE TABLE login_session (
  id CHAR(36) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
  user_id BIGINT NOT NULL,
- system_key VARCHAR(64) CHARACTER SET ascii COLLATE ascii_bin NOT NULL,
  expires_at TIMESTAMP(6) NOT NULL,
  revoked_at TIMESTAMP(6) NULL,
  PRIMARY KEY(id), KEY idx_session_user(user_id), KEY idx_session_expiry(expires_at),

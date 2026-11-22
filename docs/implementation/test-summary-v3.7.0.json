@@ -1,0 +1,105 @@
+{
+  "version": "3.7.0",
+  "date": "2026-11-22",
+  "platformTests": 37,
+  "platformSuites": [
+    {
+      "name": "cn.edu.xmu.rbac.CopyTest",
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "cn.edu.xmu.rbac.DddIdentityContractTest",
+      "tests": "9",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "cn.edu.xmu.rbac.DddManagementContractTest",
+      "tests": "5",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "cn.edu.xmu.rbac.DddRbacContractTest",
+      "tests": "3",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "cn.edu.xmu.rbac.DomainTest",
+      "tests": "2",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "cn.edu.xmu.rbac.StructuredIdentityContractTest",
+      "tests": "9",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "cn.edu.xmu.rbac.StructuredManagementContractTest",
+      "tests": "5",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "name": "cn.edu.xmu.rbac.StructuredRbacContractTest",
+      "tests": "3",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    }
+  ],
+  "cloneFactoryTests": 5,
+  "frontendTests": 3,
+  "courseFrontendTests": 56,
+  "coverage": {
+    "INSTRUCTION": {
+      "covered": 4182,
+      "missed": 266,
+      "percent": 94.02
+    },
+    "BRANCH": {
+      "covered": 83,
+      "missed": 35,
+      "percent": 70.34
+    },
+    "LINE": {
+      "covered": 789,
+      "missed": 55,
+      "percent": 93.48
+    },
+    "COMPLEXITY": {
+      "covered": 293,
+      "missed": 48,
+      "percent": 85.92
+    },
+    "METHOD": {
+      "covered": 262,
+      "missed": 19,
+      "percent": 93.24
+    },
+    "CLASS": {
+      "covered": 83,
+      "missed": 0,
+      "percent": 100.0
+    }
+  },
+  "checks": [
+    "MySQL Flyway schema and JPA validation",
+    "Six HTTP contract suites under the two strategies",
+    "Google Java Format and Checkstyle",
+    "Compiled CloneFactory runtime artifact",
+    "Vue component tests, type checks and production builds"
+  ]
+}

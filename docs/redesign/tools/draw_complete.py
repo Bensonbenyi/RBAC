@@ -26,8 +26,8 @@ class Sequence:
   self.owner=obj('UMLInteraction',u.MODEL,name=title,ownedElements=[],participants=[],messages=[],fragments=[])
   u.MODEL['ownedElements'].append(self.owner)
   self.d=D(stem,title,900,height,'UMLSequenceDiagram',self.owner)
-  self.parts=[];self.n=0;self.created=created or {};self.activations=[];self.execution_views=[];self.hw=75 if len(parts)==5 else 95
-  xs={2:[220,680],3:[120,450,780],4:[105,335,565,795],5:[90,270,450,630,810]}[len(parts)]
+  self.parts=[];self.n=0;self.created=created or {};self.activations=[];self.execution_views=[];self.hw={5:75,6:64}.get(len(parts),95)
+  xs={2:[220,680],3:[120,450,780],4:[105,335,565,795],5:[90,270,450,630,810],6:[76,226,376,526,676,826]}[len(parts)]
   for i,((name,typ),x) in enumerate(zip(parts,xs)):
    u.classifier(typ);top=self.created.get(i,100)
    attr=obj('UMLAttribute',self.owner,name=name,type=ref(u.CLASSES[typ]));self.owner['ownedElements'].append(attr)

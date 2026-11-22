@@ -4,15 +4,10 @@ from draw_complete import Sequence
 # Entries are concrete calls; each call owns its execution specification.
 READS={
  'USER-01':['result = users(actor.departmentId, page, size)'],
- 'USER-02':['user = user(id)'],
- 'USER-03':['result = createUser(actor.departmentId, command)'],
- 'USER-04':['user = user(id)'],
- 'USER-05':['user = user(id)'],
  'USER-06':['user = user(id)'],
  'USER-07':['user = user(userId)','role = role(roleId)'],
  'USER-08':['user = user(userId)','role = role(roleId)'],
  'ROLE-01':['result = roles(actor.departmentId, page, size)'],
- 'ROLE-02':['role = role(id)'],
  'ROLE-03':['result = createRole(actor.departmentId, command.name)'],
  'ROLE-04':['role = role(id)'],
  'ROLE-05':['role = role(id)'],
@@ -21,18 +16,14 @@ READS={
  'ROLE-08':['role = role(id)','permission = permission(permissionId)'],
 }
 WRITES={
- 'USER-04':'updateUser(id, profile)', 'USER-05':'deleteUser(id)',
  'USER-06':'result = userRoles(id)', 'USER-07':'assignRole(userId, roleId)',
  'USER-08':'revokeRole(userId, roleId)', 'ROLE-04':'renameRole(id, name)',
  'ROLE-05':'deleteRole(id)', 'ROLE-06':'result = rolePermissions(id)',
  'ROLE-07':'grantPermission(id, permissionId)', 'ROLE-08':'revokePermission(id, permissionId)'}
-DOMAIN={
- 'USER-04':'changeProfile(command)', 'USER-07':'requireRoleInDepartment(role)',
- 'ROLE-04':'rename(command.name)',
- 'DEPT-03':'rename(command.name)', 'SYS-03':'rename(command.name)', 'PERM-03':'rename(command.name)'}
+DOMAIN={'USER-07':'requireRoleInDepartment(role)'}
 
 def service_sequence(op,mode):
- prefix='Structured' if mode=='structured' else 'Ddd'
+ prefix={'structured':'Structured','ddd':'Ddd','shared':''}[mode]
  domain=mode=='ddd' and op.key in DOMAIN
  module=op.module;plural={'Department':'departments','System':'systems','Permission':'permissions'}.get(module)
  calls=list(READS.get(op.key,[]));write=WRITES.get(op.key)
@@ -46,12 +37,12 @@ def service_sequence(op,mode):
  scoped=module in ['User','Role'] and op.function not in ['list','create']
  scope_height=(205 if op.key in ["USER-07","USER-08"] and not (domain and op.key=="USER-07") else 115) if scoped else 0
  final_y=575+115*(len(calls))+scope_height+(285 if domain else 0)+(115 if write else 0)
- height=max(1150,final_y+210)
+ height=max(900,final_y+165)
  if domain:height=575+115*(len(calls))+scope_height+340
  parts=[('obj','Caller'),('service',prefix+module+'Service'),('access','AccessPolicy'),('store','ManagementStore')]
  # Domain changes are expanded in a separate interaction plate.
  # Domain objects are created after the queries, not at the top of the interaction.
- seq=Sequence(op.key.lower()+'-'+mode,op.key+' '+('DDD' if mode=='ddd' else '结构化')+' '+op.title,parts,height=height,created=None)
+ seq=Sequence(op.key.lower()+'-'+mode,op.key+' '+{'ddd':'DDD','structured':'结构化','shared':'共享'}[mode]+' '+op.title,parts,height=height,created=None)
  seq.msg(0,1,290,op.function+'(actor, 输入)',end=height-170)
  seq.msg(1,2,400,'require(actor, '+op.permission+')',end=445)
  seq.frame(460,80,'opt','无操作许可')
@@ -77,7 +68,7 @@ def service_sequence(op,mode):
   sub.msg(2,0,795,'«exception» BusinessException',reply=True)
   sub.msg(1,3,890,write,end=935)
   sub.msg(1,0,980,'返回结果；事务结束',reply=True)
-  sub.note(1050,'与前图属于同一事务；业务状态及集合由领域对象维护，保存失败时整体回滚。')
+  sub.note(1050,'与前图属于同一事务；领域对象校验角色归属，保存失败时整体回滚。')
   y+=20
   seq.d.rect(35,y+35,830,95);seq.d.text(65,y+70,'ref',20,native=False)
   seq.d.text(450,y+105,'聚合修改与保存（见续图）',20,True,native=False)
@@ -110,6 +101,18 @@ def ui_sequences():
  seq.msg(1,0,795,'«exception» ForbiddenException',reply=True)
  seq.msg(1,0,1040,'CurrentUserResult（本地资料、角色、界面码）',reply=True)
  seq.note(1140,'入口沿用课程适配器的 Bearer、会话及 API 检查；两种 CurrentUserService 实现共用端口和本地资料网关。')
+ seq=Sequence('course-09','COURSE-09 课程登录',[
+  ('web','CourseWeb'),('api','LoginController'),('svc','LoginUseCase'),
+  ('db','CourseRepository'),('auth','UnifiedIdentityClient')],height=1230)
+ seq.msg(0,1,285,'POST /course-api/login',end=1050)
+ seq.msg(1,2,390,'login(role, account, password)',end=995)
+ seq.msg(2,3,490,'按工号或学号查询本地资料',end=540)
+ seq.msg(2,4,620,'POST /auth/login',end=675)
+ seq.msg(2,4,750,'GET /auth/me',end=805)
+ seq.msg(2,2,885,'核对登录角色并绑定 userId',end=930)
+ seq.msg(2,1,1000,'LoginResult',reply=True)
+ seq.msg(1,0,1060,'200 accessToken  currentUser',reply=True)
+ seq.note(1140,'Vite 原版课程前端发起登录。平台用用户名和手机号认证，通过角色判断课程系统登录许可。')
  seq=Sequence('flow-ui-api','界面码与 API 码分别判断',[('page','Browser'),('auth','AuthService'),('adapter','CourseAdapter'),('service','CourseService')],height=1300)
  seq.msg(0,1,300,'me(actor) -> permissions（仅界面码）',end=355)
  seq.msg(0,0,440,'依据 MCOR 设置审核按钮 disabled',end=490)
