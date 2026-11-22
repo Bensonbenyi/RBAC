@@ -32,11 +32,11 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;26;1",
-              "left": 294.0,
+              "left": 242.0,
               "top": 14,
-              "width": 312,
+              "width": 416,
               "height": 34,
-              "text": "八张业务表 数据库关系图",
+              "text": "统一权限管理系统 数据库表关系图",
               "wordWrap": false,
               "horzAlign": 2,
               "vertAlign": 5
@@ -53,7 +53,7 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "points": "410:220;490:220",
+              "points": "110:85;110:51;12:51;12:192;52:192",
               "lineStyle": 1,
               "lineMode": 2
             },
@@ -69,12 +69,12 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "points": "419.0:212.0;419.0:228.0",
+              "points": "102.0:76.0;118.0:76.0",
               "lineStyle": 1,
               "lineMode": 0
             },
             {
-              "_type": "FreelineEdgeView",
+              "_type": "EllipseView",
               "_id": "relational-v33-3",
               "_parent": {
                 "$ref": "relational-v33"
@@ -85,9 +85,10 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "points": "429.0:212.0;429.0:228.0",
-              "lineStyle": 1,
-              "lineMode": 0
+              "left": 105.0,
+              "top": 53.0,
+              "width": 10,
+              "height": 10
             },
             {
               "_type": "FreelineEdgeView",
@@ -101,7 +102,7 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "points": "490.0:229.0;471.0:220.0;490.0:211.0",
+              "points": "52.0:201.0;33.0:192.0;52.0:183.0",
               "lineStyle": 1,
               "lineMode": 0
             },
@@ -117,13 +118,13 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "left": 453.0,
-              "top": 215.0,
+              "left": 15.0,
+              "top": 187.0,
               "width": 10,
               "height": 10
             },
             {
-              "_type": "UMLTextView",
+              "_type": "FreelineEdgeView",
               "_id": "relational-v33-6",
               "_parent": {
                 "$ref": "relational-v33"
@@ -133,15 +134,10 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;16;0",
-              "left": 420.0,
-              "top": 179,
-              "width": 60,
-              "height": 24,
-              "text": "属于",
-              "wordWrap": false,
-              "horzAlign": 2,
-              "vertAlign": 5
+              "font": "PingFang SC;18;0",
+              "points": "221:222;221:313",
+              "lineStyle": 1,
+              "lineMode": 2
             },
             {
               "_type": "FreelineEdgeView",
@@ -155,9 +151,9 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "points": "210:300;210:460",
+              "points": "229.0:231.0;213.0:231.0",
               "lineStyle": 1,
-              "lineMode": 2
+              "lineMode": 0
             },
             {
               "_type": "FreelineEdgeView",
@@ -171,7 +167,7 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "points": "218.0:309.0;202.0:309.0",
+              "points": "229.0:241.0;213.0:241.0",
               "lineStyle": 1,
               "lineMode": 0
             },
@@ -187,12 +183,12 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "points": "218.0:319.0;202.0:319.0",
+              "points": "212.0:313.0;221.0:294.0;230.0:313.0",
               "lineStyle": 1,
               "lineMode": 0
             },
             {
-              "_type": "FreelineEdgeView",
+              "_type": "EllipseView",
               "_id": "relational-v33-10",
               "_parent": {
                 "$ref": "relational-v33"
@@ -203,12 +199,13 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "points": "201.0:460.0;210.0:441.0;219.0:460.0",
-              "lineStyle": 1,
-              "lineMode": 0
+              "left": 216.0,
+              "top": 276.0,
+              "width": 10,
+              "height": 10
             },
             {
-              "_type": "EllipseView",
+              "_type": "FreelineEdgeView",
               "_id": "relational-v33-11",
               "_parent": {
                 "$ref": "relational-v33"
@@ -219,13 +216,12 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "left": 205.0,
-              "top": 423.0,
-              "width": 10,
-              "height": 10
+              "points": "412:170;450:170;450:387;488:387",
+              "lineStyle": 1,
+              "lineMode": 2
             },
             {
-              "_type": "UMLTextView",
+              "_type": "FreelineEdgeView",
               "_id": "relational-v33-12",
               "_parent": {
                 "$ref": "relational-v33"
@@ -235,15 +231,10 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;16;0",
-              "left": 240,
-              "top": 389,
-              "width": 60,
-              "height": 24,
-              "text": "部门",
-              "wordWrap": false,
-              "horzAlign": 0,
-              "vertAlign": 5
+              "font": "PingFang SC;18;0",
+              "points": "421.0:162.0;421.0:178.0",
+              "lineStyle": 1,
+              "lineMode": 0
             },
             {
               "_type": "FreelineEdgeView",
@@ -257,7 +248,7 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "points": "680:396;680:460",
+              "points": "431.0:162.0;431.0:178.0",
               "lineStyle": 1,
               "lineMode": 0
             },
@@ -273,12 +264,12 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "points": "688.0:405.0;672.0:405.0",
+              "points": "488.0:396.0;469.0:387.0;488.0:378.0",
               "lineStyle": 1,
               "lineMode": 0
             },
             {
-              "_type": "FreelineEdgeView",
+              "_type": "EllipseView",
               "_id": "relational-v33-15",
               "_parent": {
                 "$ref": "relational-v33"
@@ -289,9 +280,10 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "points": "688.0:415.0;672.0:415.0",
-              "lineStyle": 1,
-              "lineMode": 0
+              "left": 451.0,
+              "top": 382.0,
+              "width": 10,
+              "height": 10
             },
             {
               "_type": "FreelineEdgeView",
@@ -305,12 +297,12 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "points": "671.0:460.0;680.0:441.0;689.0:460.0",
+              "points": "675:313;675:247",
               "lineStyle": 1,
-              "lineMode": 0
+              "lineMode": 2
             },
             {
-              "_type": "EllipseView",
+              "_type": "FreelineEdgeView",
               "_id": "relational-v33-17",
               "_parent": {
                 "$ref": "relational-v33"
@@ -321,10 +313,9 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "left": 675.0,
-              "top": 423.0,
-              "width": 10,
-              "height": 10
+              "points": "667.0:304.0;683.0:304.0",
+              "lineStyle": 1,
+              "lineMode": 0
             },
             {
               "_type": "FreelineEdgeView",
@@ -338,7 +329,7 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "points": "410:550;490:550",
+              "points": "667.0:294.0;683.0:294.0",
               "lineStyle": 1,
               "lineMode": 0
             },
@@ -354,12 +345,12 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "points": "419.0:542.0;419.0:558.0",
+              "points": "684.0:247.0;675.0:266.0;666.0:247.0",
               "lineStyle": 1,
               "lineMode": 0
             },
             {
-              "_type": "FreelineEdgeView",
+              "_type": "EllipseView",
               "_id": "relational-v33-20",
               "_parent": {
                 "$ref": "relational-v33"
@@ -370,9 +361,10 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "points": "429.0:542.0;429.0:558.0",
-              "lineStyle": 1,
-              "lineMode": 0
+              "left": 670.0,
+              "top": 274.0,
+              "width": 10,
+              "height": 10
             },
             {
               "_type": "FreelineEdgeView",
@@ -386,12 +378,12 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "points": "490.0:559.0;471.0:550.0;490.0:541.0",
+              "points": "675:527;675:594",
               "lineStyle": 1,
               "lineMode": 0
             },
             {
-              "_type": "EllipseView",
+              "_type": "FreelineEdgeView",
               "_id": "relational-v33-22",
               "_parent": {
                 "$ref": "relational-v33"
@@ -402,13 +394,12 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "left": 453.0,
-              "top": 545.0,
-              "width": 10,
-              "height": 10
+              "points": "683.0:536.0;667.0:536.0",
+              "lineStyle": 1,
+              "lineMode": 0
             },
             {
-              "_type": "UMLTextView",
+              "_type": "FreelineEdgeView",
               "_id": "relational-v33-23",
               "_parent": {
                 "$ref": "relational-v33"
@@ -418,15 +409,10 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;16;0",
-              "left": 420.0,
-              "top": 509,
-              "width": 60,
-              "height": 24,
-              "text": "角色",
-              "wordWrap": false,
-              "horzAlign": 2,
-              "vertAlign": 5
+              "font": "PingFang SC;18;0",
+              "points": "683.0:546.0;667.0:546.0",
+              "lineStyle": 1,
+              "lineMode": 0
             },
             {
               "_type": "FreelineEdgeView",
@@ -440,12 +426,12 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "points": "210:676;210:790",
+              "points": "666.0:594.0;675.0:575.0;684.0:594.0",
               "lineStyle": 1,
               "lineMode": 0
             },
             {
-              "_type": "FreelineEdgeView",
+              "_type": "EllipseView",
               "_id": "relational-v33-25",
               "_parent": {
                 "$ref": "relational-v33"
@@ -456,9 +442,10 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "points": "218.0:685.0;202.0:685.0",
-              "lineStyle": 1,
-              "lineMode": 0
+              "left": 670.0,
+              "top": 557.0,
+              "width": 10,
+              "height": 10
             },
             {
               "_type": "FreelineEdgeView",
@@ -472,7 +459,7 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "points": "218.0:695.0;202.0:695.0",
+              "points": "412:426;448:426;448:620;488:620",
               "lineStyle": 1,
               "lineMode": 0
             },
@@ -488,12 +475,12 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "points": "201.0:790.0;210.0:771.0;219.0:790.0",
+              "points": "421.0:418.0;421.0:434.0",
               "lineStyle": 1,
               "lineMode": 0
             },
             {
-              "_type": "EllipseView",
+              "_type": "FreelineEdgeView",
               "_id": "relational-v33-28",
               "_parent": {
                 "$ref": "relational-v33"
@@ -504,10 +491,9 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "left": 205.0,
-              "top": 753.0,
-              "width": 10,
-              "height": 10
+              "points": "431.0:418.0;431.0:434.0",
+              "lineStyle": 1,
+              "lineMode": 0
             },
             {
               "_type": "FreelineEdgeView",
@@ -521,12 +507,12 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "points": "410:880;490:880",
+              "points": "488.0:629.0;469.0:620.0;488.0:611.0",
               "lineStyle": 1,
               "lineMode": 0
             },
             {
-              "_type": "FreelineEdgeView",
+              "_type": "EllipseView",
               "_id": "relational-v33-30",
               "_parent": {
                 "$ref": "relational-v33"
@@ -537,12 +523,13 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "points": "410.0:871.0;429.0:880.0;410.0:889.0",
-              "lineStyle": 1,
-              "lineMode": 0
+              "left": 451.0,
+              "top": 615.0,
+              "width": 10,
+              "height": 10
             },
             {
-              "_type": "EllipseView",
+              "_type": "FreelineEdgeView",
               "_id": "relational-v33-31",
               "_parent": {
                 "$ref": "relational-v33"
@@ -553,10 +540,9 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "left": 437.0,
-              "top": 875.0,
-              "width": 10,
-              "height": 10
+              "points": "149:477;149:594",
+              "lineStyle": 1,
+              "lineMode": 0
             },
             {
               "_type": "FreelineEdgeView",
@@ -570,7 +556,7 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "points": "481.0:888.0;481.0:872.0",
+              "points": "157.0:486.0;141.0:486.0",
               "lineStyle": 1,
               "lineMode": 0
             },
@@ -586,12 +572,12 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "points": "471.0:888.0;471.0:872.0",
+              "points": "157.0:496.0;141.0:496.0",
               "lineStyle": 1,
               "lineMode": 0
             },
             {
-              "_type": "UMLTextView",
+              "_type": "FreelineEdgeView",
               "_id": "relational-v33-34",
               "_parent": {
                 "$ref": "relational-v33"
@@ -601,18 +587,13 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;16;0",
-              "left": 420.0,
-              "top": 839,
-              "width": 60,
-              "height": 24,
-              "text": "权限",
-              "wordWrap": false,
-              "horzAlign": 2,
-              "vertAlign": 5
+              "font": "PingFang SC;18;0",
+              "points": "140.0:594.0;149.0:575.0;158.0:594.0",
+              "lineStyle": 1,
+              "lineMode": 0
             },
             {
-              "_type": "FreelineEdgeView",
+              "_type": "EllipseView",
               "_id": "relational-v33-35",
               "_parent": {
                 "$ref": "relational-v33"
@@ -623,9 +604,10 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "points": "680:1036;680:1170",
-              "lineStyle": 1,
-              "lineMode": 2
+              "left": 144.0,
+              "top": 557.0,
+              "width": 10,
+              "height": 10
             },
             {
               "_type": "FreelineEdgeView",
@@ -639,12 +621,12 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "points": "689.0:1036.0;680.0:1055.0;671.0:1036.0",
+              "points": "311:477;311:594",
               "lineStyle": 1,
               "lineMode": 0
             },
             {
-              "_type": "EllipseView",
+              "_type": "FreelineEdgeView",
               "_id": "relational-v33-37",
               "_parent": {
                 "$ref": "relational-v33"
@@ -655,10 +637,9 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "left": 675.0,
-              "top": 1063.0,
-              "width": 10,
-              "height": 10
+              "points": "319.0:486.0;303.0:486.0",
+              "lineStyle": 1,
+              "lineMode": 0
             },
             {
               "_type": "FreelineEdgeView",
@@ -672,7 +653,7 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "points": "672.0:1161.0;688.0:1161.0",
+              "points": "319.0:496.0;303.0:496.0",
               "lineStyle": 1,
               "lineMode": 0
             },
@@ -688,12 +669,12 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "points": "672.0:1151.0;688.0:1151.0",
+              "points": "302.0:594.0;311.0:575.0;320.0:594.0",
               "lineStyle": 1,
               "lineMode": 0
             },
             {
-              "_type": "UMLTextView",
+              "_type": "EllipseView",
               "_id": "relational-v33-40",
               "_parent": {
                 "$ref": "relational-v33"
@@ -703,18 +684,14 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;16;0",
-              "left": 710,
-              "top": 1094,
-              "width": 60,
-              "height": 24,
-              "text": "系统",
-              "wordWrap": false,
-              "horzAlign": 0,
-              "vertAlign": 5
+              "font": "PingFang SC;18;0",
+              "left": 306.0,
+              "top": 557.0,
+              "width": 10,
+              "height": 10
             },
             {
-              "_type": "FreelineEdgeView",
+              "_type": "UMLTextView",
               "_id": "relational-v33-41",
               "_parent": {
                 "$ref": "relational-v33"
@@ -724,13 +701,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;18;0",
-              "points": "100:120;100:80;25:80;25:260;30:260",
-              "lineStyle": 1,
-              "lineMode": 2
+              "font": "PingFang SC;16;0",
+              "left": 166,
+              "top": 522,
+              "width": 64,
+              "height": 24,
+              "text": "高级角色",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
             },
             {
-              "_type": "FreelineEdgeView",
+              "_type": "UMLTextView",
               "_id": "relational-v33-42",
               "_parent": {
                 "$ref": "relational-v33"
@@ -740,13 +722,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;18;0",
-              "points": "92.0:111.0;108.0:111.0",
-              "lineStyle": 1,
-              "lineMode": 0
+              "font": "PingFang SC;16;0",
+              "left": 327,
+              "top": 522,
+              "width": 64,
+              "height": 24,
+              "text": "基础角色",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
             },
             {
-              "_type": "EllipseView",
+              "_type": "FreelineEdgeView",
               "_id": "relational-v33-43",
               "_parent": {
                 "$ref": "relational-v33"
@@ -757,10 +744,9 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "left": 95.0,
-              "top": 88.0,
-              "width": 10,
-              "height": 10
+              "points": "52:393;12:393;12:807;52:807",
+              "lineStyle": 1,
+              "lineMode": 0
             },
             {
               "_type": "FreelineEdgeView",
@@ -774,12 +760,12 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "points": "30.0:269.0;11.0:260.0;30.0:251.0",
+              "points": "43.0:401.0;43.0:385.0",
               "lineStyle": 1,
               "lineMode": 0
             },
             {
-              "_type": "EllipseView",
+              "_type": "FreelineEdgeView",
               "_id": "relational-v33-45",
               "_parent": {
                 "$ref": "relational-v33"
@@ -790,13 +776,12 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "left": -7.0,
-              "top": 255.0,
-              "width": 10,
-              "height": 10
+              "points": "33.0:401.0;33.0:385.0",
+              "lineStyle": 1,
+              "lineMode": 0
             },
             {
-              "_type": "RectangleView",
+              "_type": "FreelineEdgeView",
               "_id": "relational-v33-46",
               "_parent": {
                 "$ref": "relational-v33"
@@ -807,13 +792,12 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "left": 30,
-              "top": 120,
-              "width": 380,
-              "height": 180
+              "points": "52.0:816.0;33.0:807.0;52.0:798.0",
+              "lineStyle": 1,
+              "lineMode": 0
             },
             {
-              "_type": "UMLTextView",
+              "_type": "EllipseView",
               "_id": "relational-v33-47",
               "_parent": {
                 "$ref": "relational-v33"
@@ -823,18 +807,14 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;21;1",
-              "left": 42,
-              "top": 125,
-              "width": 60,
-              "height": 29,
-              "text": "部门",
-              "wordWrap": false,
-              "horzAlign": 0,
-              "vertAlign": 5
+              "font": "PingFang SC;18;0",
+              "left": 15.0,
+              "top": 802.0,
+              "width": 10,
+              "height": 10
             },
             {
-              "_type": "UMLTextView",
+              "_type": "FreelineEdgeView",
               "_id": "relational-v33-48",
               "_parent": {
                 "$ref": "relational-v33"
@@ -845,14 +825,9 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "left": 42,
-              "top": 154,
-              "width": 180,
-              "height": 26,
-              "text": "department",
-              "wordWrap": false,
-              "horzAlign": 0,
-              "vertAlign": 5
+              "points": "412:810;488:810",
+              "lineStyle": 1,
+              "lineMode": 0
             },
             {
               "_type": "FreelineEdgeView",
@@ -866,12 +841,12 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "points": "30:184;410:184",
+              "points": "412.0:801.0;431.0:810.0;412.0:819.0",
               "lineStyle": 1,
               "lineMode": 0
             },
             {
-              "_type": "UMLTextView",
+              "_type": "EllipseView",
               "_id": "relational-v33-50",
               "_parent": {
                 "$ref": "relational-v33"
@@ -881,18 +856,14 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;16;1",
-              "left": 40,
-              "top": 189,
-              "width": 60,
-              "height": 24,
-              "text": "字段",
-              "wordWrap": false,
-              "horzAlign": 0,
-              "vertAlign": 5
+              "font": "PingFang SC;18;0",
+              "left": 439.0,
+              "top": 805.0,
+              "width": 10,
+              "height": 10
             },
             {
-              "_type": "UMLTextView",
+              "_type": "FreelineEdgeView",
               "_id": "relational-v33-51",
               "_parent": {
                 "$ref": "relational-v33"
@@ -902,18 +873,13 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;16;1",
-              "left": 205,
-              "top": 189,
-              "width": 60,
-              "height": 24,
-              "text": "类型",
-              "wordWrap": false,
-              "horzAlign": 0,
-              "vertAlign": 5
+              "font": "PingFang SC;18;0",
+              "points": "479.0:818.0;479.0:802.0",
+              "lineStyle": 1,
+              "lineMode": 0
             },
             {
-              "_type": "UMLTextView",
+              "_type": "FreelineEdgeView",
               "_id": "relational-v33-52",
               "_parent": {
                 "$ref": "relational-v33"
@@ -923,15 +889,10 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;16;1",
-              "left": 318,
-              "top": 189,
-              "width": 60,
-              "height": 24,
-              "text": "约束",
-              "wordWrap": false,
-              "horzAlign": 0,
-              "vertAlign": 5
+              "font": "PingFang SC;18;0",
+              "points": "469.0:818.0;469.0:802.0",
+              "lineStyle": 1,
+              "lineMode": 0
             },
             {
               "_type": "FreelineEdgeView",
@@ -945,12 +906,12 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "points": "30:210;410:210",
+              "points": "675:1020;675:954",
               "lineStyle": 1,
-              "lineMode": 0
+              "lineMode": 2
             },
             {
-              "_type": "UMLTextView",
+              "_type": "FreelineEdgeView",
               "_id": "relational-v33-54",
               "_parent": {
                 "$ref": "relational-v33"
@@ -960,18 +921,13 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;17;0",
-              "left": 40,
-              "top": 215,
-              "width": 60,
-              "height": 25,
-              "text": "id",
-              "wordWrap": false,
-              "horzAlign": 0,
-              "vertAlign": 5
+              "font": "PingFang SC;18;0",
+              "points": "667.0:1011.0;683.0:1011.0",
+              "lineStyle": 1,
+              "lineMode": 0
             },
             {
-              "_type": "UMLTextView",
+              "_type": "FreelineEdgeView",
               "_id": "relational-v33-55",
               "_parent": {
                 "$ref": "relational-v33"
@@ -981,18 +937,13 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;15;0",
-              "left": 205,
-              "top": 217,
-              "width": 90,
-              "height": 23,
-              "text": "BIGINT",
-              "wordWrap": false,
-              "horzAlign": 0,
-              "vertAlign": 5
+              "font": "PingFang SC;18;0",
+              "points": "667.0:1001.0;683.0:1001.0",
+              "lineStyle": 1,
+              "lineMode": 0
             },
             {
-              "_type": "UMLTextView",
+              "_type": "FreelineEdgeView",
               "_id": "relational-v33-56",
               "_parent": {
                 "$ref": "relational-v33"
@@ -1002,18 +953,13 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;14;0",
-              "left": 318,
-              "top": 218,
-              "width": 70,
-              "height": 22,
-              "text": "PK NN",
-              "wordWrap": false,
-              "horzAlign": 0,
-              "vertAlign": 5
+              "font": "PingFang SC;18;0",
+              "points": "684.0:954.0;675.0:973.0;666.0:954.0",
+              "lineStyle": 1,
+              "lineMode": 0
             },
             {
-              "_type": "FreelineEdgeView",
+              "_type": "EllipseView",
               "_id": "relational-v33-57",
               "_parent": {
                 "$ref": "relational-v33"
@@ -1024,12 +970,13 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "points": "30:240;410:240",
-              "lineStyle": 1,
-              "lineMode": 0
+              "left": 670.0,
+              "top": 981.0,
+              "width": 10,
+              "height": 10
             },
             {
-              "_type": "UMLTextView",
+              "_type": "RectangleView",
               "_id": "relational-v33-58",
               "_parent": {
                 "$ref": "relational-v33"
@@ -1039,15 +986,11 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;17;0",
-              "left": 40,
-              "top": 245,
-              "width": 68,
-              "height": 25,
-              "text": "name",
-              "wordWrap": false,
-              "horzAlign": 0,
-              "vertAlign": 5
+              "font": "PingFang SC;18;0",
+              "left": 52,
+              "top": 85,
+              "width": 360,
+              "height": 137
             },
             {
               "_type": "UMLTextView",
@@ -1060,12 +1003,12 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;15;0",
-              "left": 205,
-              "top": 247,
-              "width": 105,
-              "height": 23,
-              "text": "VARCHAR",
+              "font": "PingFang SC;20;1",
+              "left": 62,
+              "top": 91,
+              "width": 200,
+              "height": 28,
+              "text": "department",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
@@ -1081,14 +1024,14 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;14;0",
-              "left": 318,
-              "top": 248,
+              "font": "PingFang SC;16;0",
+              "left": 335.0,
+              "top": 95,
               "width": 60,
-              "height": 22,
-              "text": "NN",
+              "height": 24,
+              "text": "部门",
               "wordWrap": false,
-              "horzAlign": 0,
+              "horzAlign": 2,
               "vertAlign": 5
             },
             {
@@ -1103,7 +1046,7 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "points": "30:270;410:270",
+              "points": "52:120;412:120",
               "lineStyle": 1,
               "lineMode": 0
             },
@@ -1118,12 +1061,12 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;17;0",
-              "left": 40,
-              "top": 275,
-              "width": 153,
-              "height": 25,
-              "text": "parent_id",
+              "font": "PingFang SC;16;1",
+              "left": 62,
+              "top": 124,
+              "width": 60,
+              "height": 24,
+              "text": "字段",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
@@ -1139,12 +1082,12 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;15;0",
-              "left": 205,
-              "top": 277,
-              "width": 90,
-              "height": 23,
-              "text": "BIGINT",
+              "font": "PingFang SC;16;1",
+              "left": 200,
+              "top": 124,
+              "width": 128,
+              "height": 24,
+              "text": "MySQL 类型",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
@@ -1160,18 +1103,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;14;0",
-              "left": 318,
-              "top": 278,
+              "font": "PingFang SC;16;1",
+              "left": 327,
+              "top": 124,
               "width": 60,
-              "height": 22,
-              "text": "FK",
+              "height": 24,
+              "text": "约束",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
             },
             {
-              "_type": "RectangleView",
+              "_type": "FreelineEdgeView",
               "_id": "relational-v33-65",
               "_parent": {
                 "$ref": "relational-v33"
@@ -1182,10 +1125,9 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "left": 490,
-              "top": 120,
-              "width": 380,
-              "height": 276
+              "points": "52:147;412:147",
+              "lineStyle": 1,
+              "lineMode": 0
             },
             {
               "_type": "UMLTextView",
@@ -1198,12 +1140,12 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;21;1",
-              "left": 502,
-              "top": 125,
-              "width": 84,
-              "height": 29,
-              "text": "用户账号",
+              "font": "PingFang SC;16;0",
+              "left": 62,
+              "top": 149,
+              "width": 60,
+              "height": 24,
+              "text": "id",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
@@ -1219,18 +1161,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;18;0",
-              "left": 502,
-              "top": 154,
-              "width": 144,
-              "height": 26,
-              "text": "app_user",
+              "font": "PingFang SC;16;0",
+              "left": 200,
+              "top": 149,
+              "width": 96,
+              "height": 24,
+              "text": "BIGINT",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
             },
             {
-              "_type": "FreelineEdgeView",
+              "_type": "UMLTextView",
               "_id": "relational-v33-68",
               "_parent": {
                 "$ref": "relational-v33"
@@ -1240,13 +1182,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;18;0",
-              "points": "490:184;870:184",
-              "lineStyle": 1,
-              "lineMode": 0
+              "font": "PingFang SC;16;0",
+              "left": 327,
+              "top": 149,
+              "width": 80,
+              "height": 24,
+              "text": "PK NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
             },
             {
-              "_type": "UMLTextView",
+              "_type": "FreelineEdgeView",
               "_id": "relational-v33-69",
               "_parent": {
                 "$ref": "relational-v33"
@@ -1256,15 +1203,10 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;16;1",
-              "left": 500,
-              "top": 189,
-              "width": 60,
-              "height": 24,
-              "text": "字段",
-              "wordWrap": false,
-              "horzAlign": 0,
-              "vertAlign": 5
+              "font": "PingFang SC;18;0",
+              "points": "52:172;412:172",
+              "lineStyle": 1,
+              "lineMode": 0
             },
             {
               "_type": "UMLTextView",
@@ -1277,12 +1219,12 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;16;1",
-              "left": 665,
-              "top": 189,
-              "width": 60,
+              "font": "PingFang SC;16;0",
+              "left": 62,
+              "top": 174,
+              "width": 64,
               "height": 24,
-              "text": "类型",
+              "text": "name",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
@@ -1298,18 +1240,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;16;1",
-              "left": 778,
-              "top": 189,
-              "width": 60,
+              "font": "PingFang SC;16;0",
+              "left": 200,
+              "top": 174,
+              "width": 192,
               "height": 24,
-              "text": "约束",
+              "text": "VARCHAR(100)",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
             },
             {
-              "_type": "FreelineEdgeView",
+              "_type": "UMLTextView",
               "_id": "relational-v33-72",
               "_parent": {
                 "$ref": "relational-v33"
@@ -1319,13 +1261,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;18;0",
-              "points": "490:210;870:210",
-              "lineStyle": 1,
-              "lineMode": 0
+              "font": "PingFang SC;16;0",
+              "left": 327,
+              "top": 174,
+              "width": 60,
+              "height": 24,
+              "text": "NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
             },
             {
-              "_type": "UMLTextView",
+              "_type": "FreelineEdgeView",
               "_id": "relational-v33-73",
               "_parent": {
                 "$ref": "relational-v33"
@@ -1335,15 +1282,10 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;17;0",
-              "left": 500,
-              "top": 215,
-              "width": 60,
-              "height": 25,
-              "text": "id",
-              "wordWrap": false,
-              "horzAlign": 0,
-              "vertAlign": 5
+              "font": "PingFang SC;18;0",
+              "points": "52:197;412:197",
+              "lineStyle": 1,
+              "lineMode": 0
             },
             {
               "_type": "UMLTextView",
@@ -1356,12 +1298,12 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;15;0",
-              "left": 665,
-              "top": 217,
-              "width": 90,
-              "height": 23,
-              "text": "BIGINT",
+              "font": "PingFang SC;16;0",
+              "left": 62,
+              "top": 199,
+              "width": 144,
+              "height": 24,
+              "text": "parent_id",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
@@ -1377,18 +1319,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;14;0",
-              "left": 778,
-              "top": 218,
-              "width": 70,
-              "height": 22,
-              "text": "PK NN",
+              "font": "PingFang SC;16;0",
+              "left": 200,
+              "top": 199,
+              "width": 96,
+              "height": 24,
+              "text": "BIGINT",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
             },
             {
-              "_type": "FreelineEdgeView",
+              "_type": "UMLTextView",
               "_id": "relational-v33-76",
               "_parent": {
                 "$ref": "relational-v33"
@@ -1398,13 +1340,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;18;0",
-              "points": "490:240;870:240",
-              "lineStyle": 1,
-              "lineMode": 0
+              "font": "PingFang SC;16;0",
+              "left": 327,
+              "top": 199,
+              "width": 60,
+              "height": 24,
+              "text": "FK",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
             },
             {
-              "_type": "UMLTextView",
+              "_type": "RectangleView",
               "_id": "relational-v33-77",
               "_parent": {
                 "$ref": "relational-v33"
@@ -1414,15 +1361,11 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;17;0",
-              "left": 500,
-              "top": 245,
-              "width": 136,
-              "height": 25,
-              "text": "username",
-              "wordWrap": false,
-              "horzAlign": 0,
-              "vertAlign": 5
+              "font": "PingFang SC;18;0",
+              "left": 488,
+              "top": 85,
+              "width": 360,
+              "height": 162
             },
             {
               "_type": "UMLTextView",
@@ -1435,12 +1378,12 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;15;0",
-              "left": 665,
-              "top": 247,
-              "width": 105,
-              "height": 23,
-              "text": "VARCHAR",
+              "font": "PingFang SC;20;1",
+              "left": 498,
+              "top": 91,
+              "width": 260,
+              "height": 28,
+              "text": "login_session",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
@@ -1456,14 +1399,14 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;14;0",
-              "left": 778,
-              "top": 248,
-              "width": 60,
-              "height": 22,
-              "text": "NN",
+              "font": "PingFang SC;16;0",
+              "left": 769.0,
+              "top": 95,
+              "width": 64,
+              "height": 24,
+              "text": "登录会话",
               "wordWrap": false,
-              "horzAlign": 0,
+              "horzAlign": 2,
               "vertAlign": 5
             },
             {
@@ -1478,7 +1421,7 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "points": "490:270;870:270",
+              "points": "488:120;848:120",
               "lineStyle": 1,
               "lineMode": 0
             },
@@ -1493,12 +1436,12 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;17;0",
-              "left": 500,
-              "top": 275,
-              "width": 68,
-              "height": 25,
-              "text": "name",
+              "font": "PingFang SC;16;1",
+              "left": 498,
+              "top": 124,
+              "width": 60,
+              "height": 24,
+              "text": "字段",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
@@ -1514,12 +1457,12 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;15;0",
-              "left": 665,
-              "top": 277,
-              "width": 105,
-              "height": 23,
-              "text": "VARCHAR",
+              "font": "PingFang SC;16;1",
+              "left": 636,
+              "top": 124,
+              "width": 128,
+              "height": 24,
+              "text": "MySQL 类型",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
@@ -1535,12 +1478,12 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;14;0",
-              "left": 778,
-              "top": 278,
+              "font": "PingFang SC;16;1",
+              "left": 763,
+              "top": 124,
               "width": 60,
-              "height": 22,
-              "text": "NN",
+              "height": 24,
+              "text": "约束",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
@@ -1557,7 +1500,7 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "points": "490:300;870:300",
+              "points": "488:147;848:147",
               "lineStyle": 1,
               "lineMode": 0
             },
@@ -1572,12 +1515,12 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;17;0",
-              "left": 500,
-              "top": 305,
-              "width": 85,
-              "height": 25,
-              "text": "phone",
+              "font": "PingFang SC;16;0",
+              "left": 498,
+              "top": 149,
+              "width": 60,
+              "height": 24,
+              "text": "id",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
@@ -1593,12 +1536,12 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;15;0",
-              "left": 665,
-              "top": 307,
-              "width": 105,
-              "height": 23,
-              "text": "VARCHAR",
+              "font": "PingFang SC;16;0",
+              "left": 636,
+              "top": 149,
+              "width": 128,
+              "height": 24,
+              "text": "CHAR(36)",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
@@ -1614,12 +1557,12 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;14;0",
-              "left": 778,
-              "top": 308,
-              "width": 60,
-              "height": 22,
-              "text": "NN",
+              "font": "PingFang SC;16;0",
+              "left": 763,
+              "top": 149,
+              "width": 80,
+              "height": 24,
+              "text": "PK NN",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
@@ -1636,7 +1579,7 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "points": "490:330;870:330",
+              "points": "488:172;848:172",
               "lineStyle": 1,
               "lineMode": 0
             },
@@ -1651,12 +1594,12 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;17;0",
-              "left": 500,
-              "top": 335,
-              "width": 221,
-              "height": 25,
-              "text": "department_id",
+              "font": "PingFang SC;16;0",
+              "left": 498,
+              "top": 174,
+              "width": 112,
+              "height": 24,
+              "text": "user_id",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
@@ -1672,11 +1615,11 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;15;0",
-              "left": 665,
-              "top": 337,
-              "width": 90,
-              "height": 23,
+              "font": "PingFang SC;16;0",
+              "left": 636,
+              "top": 174,
+              "width": 96,
+              "height": 24,
               "text": "BIGINT",
               "wordWrap": false,
               "horzAlign": 0,
@@ -1693,11 +1636,11 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;14;0",
-              "left": 778,
-              "top": 338,
-              "width": 70,
-              "height": 22,
+              "font": "PingFang SC;16;0",
+              "left": 763,
+              "top": 174,
+              "width": 80,
+              "height": 24,
               "text": "FK NN",
               "wordWrap": false,
               "horzAlign": 0,
@@ -1715,7 +1658,7 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "points": "490:360;870:360",
+              "points": "488:197;848:197",
               "lineStyle": 1,
               "lineMode": 0
             },
@@ -1730,18 +1673,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;15;0",
-              "left": 500,
-              "top": 369,
-              "width": 165,
-              "height": 23,
-              "text": "唯一：username",
+              "font": "PingFang SC;16;0",
+              "left": 498,
+              "top": 199,
+              "width": 160,
+              "height": 24,
+              "text": "expires_at",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
             },
             {
-              "_type": "RectangleView",
+              "_type": "UMLTextView",
               "_id": "relational-v33-94",
               "_parent": {
                 "$ref": "relational-v33"
@@ -1751,11 +1694,15 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;18;0",
-              "left": 30,
-              "top": 460,
-              "width": 380,
-              "height": 216
+              "font": "PingFang SC;16;0",
+              "left": 636,
+              "top": 199,
+              "width": 192,
+              "height": 24,
+              "text": "TIMESTAMP(6)",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
             },
             {
               "_type": "UMLTextView",
@@ -1768,18 +1715,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;21;1",
-              "left": 42,
-              "top": 465,
+              "font": "PingFang SC;16;0",
+              "left": 763,
+              "top": 199,
               "width": 60,
-              "height": 29,
-              "text": "角色",
+              "height": 24,
+              "text": "NN",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
             },
             {
-              "_type": "UMLTextView",
+              "_type": "FreelineEdgeView",
               "_id": "relational-v33-96",
               "_parent": {
                 "$ref": "relational-v33"
@@ -1790,17 +1737,12 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "left": 42,
-              "top": 494,
-              "width": 72,
-              "height": 26,
-              "text": "role",
-              "wordWrap": false,
-              "horzAlign": 0,
-              "vertAlign": 5
+              "points": "488:222;848:222",
+              "lineStyle": 1,
+              "lineMode": 0
             },
             {
-              "_type": "FreelineEdgeView",
+              "_type": "UMLTextView",
               "_id": "relational-v33-97",
               "_parent": {
                 "$ref": "relational-v33"
@@ -1810,10 +1752,15 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;18;0",
-              "points": "30:524;410:524",
-              "lineStyle": 1,
-              "lineMode": 0
+              "font": "PingFang SC;16;0",
+              "left": 498,
+              "top": 224,
+              "width": 160,
+              "height": 24,
+              "text": "revoked_at",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
             },
             {
               "_type": "UMLTextView",
@@ -1826,12 +1773,12 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;16;1",
-              "left": 40,
-              "top": 529,
-              "width": 60,
+              "font": "PingFang SC;16;0",
+              "left": 636,
+              "top": 224,
+              "width": 192,
               "height": 24,
-              "text": "字段",
+              "text": "TIMESTAMP(6)",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
@@ -1847,18 +1794,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;16;1",
-              "left": 205,
-              "top": 529,
+              "font": "PingFang SC;16;0",
+              "left": 763,
+              "top": 224,
               "width": 60,
               "height": 24,
-              "text": "类型",
+              "text": "可空",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
             },
             {
-              "_type": "UMLTextView",
+              "_type": "RectangleView",
               "_id": "relational-v33-100",
               "_parent": {
                 "$ref": "relational-v33"
@@ -1868,18 +1815,14 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;16;1",
-              "left": 318,
-              "top": 529,
-              "width": 60,
-              "height": 24,
-              "text": "约束",
-              "wordWrap": false,
-              "horzAlign": 0,
-              "vertAlign": 5
+              "font": "PingFang SC;18;0",
+              "left": 52,
+              "top": 313,
+              "width": 360,
+              "height": 164
             },
             {
-              "_type": "FreelineEdgeView",
+              "_type": "UMLTextView",
               "_id": "relational-v33-101",
               "_parent": {
                 "$ref": "relational-v33"
@@ -1889,10 +1832,15 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;18;0",
-              "points": "30:550;410:550",
-              "lineStyle": 1,
-              "lineMode": 0
+              "font": "PingFang SC;20;1",
+              "left": 62,
+              "top": 319,
+              "width": 80,
+              "height": 28,
+              "text": "role",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
             },
             {
               "_type": "UMLTextView",
@@ -1905,18 +1853,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;17;0",
-              "left": 40,
-              "top": 555,
+              "font": "PingFang SC;16;0",
+              "left": 335.0,
+              "top": 323,
               "width": 60,
-              "height": 25,
-              "text": "id",
+              "height": 24,
+              "text": "角色",
               "wordWrap": false,
-              "horzAlign": 0,
+              "horzAlign": 2,
               "vertAlign": 5
             },
             {
-              "_type": "UMLTextView",
+              "_type": "FreelineEdgeView",
               "_id": "relational-v33-103",
               "_parent": {
                 "$ref": "relational-v33"
@@ -1926,15 +1874,10 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;15;0",
-              "left": 205,
-              "top": 557,
-              "width": 90,
-              "height": 23,
-              "text": "BIGINT",
-              "wordWrap": false,
-              "horzAlign": 0,
-              "vertAlign": 5
+              "font": "PingFang SC;18;0",
+              "points": "52:348;412:348",
+              "lineStyle": 1,
+              "lineMode": 0
             },
             {
               "_type": "UMLTextView",
@@ -1947,18 +1890,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;14;0",
-              "left": 318,
-              "top": 558,
-              "width": 70,
-              "height": 22,
-              "text": "PK NN",
+              "font": "PingFang SC;16;1",
+              "left": 62,
+              "top": 352,
+              "width": 60,
+              "height": 24,
+              "text": "字段",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
             },
             {
-              "_type": "FreelineEdgeView",
+              "_type": "UMLTextView",
               "_id": "relational-v33-105",
               "_parent": {
                 "$ref": "relational-v33"
@@ -1968,10 +1911,15 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;18;0",
-              "points": "30:580;410:580",
-              "lineStyle": 1,
-              "lineMode": 0
+              "font": "PingFang SC;16;1",
+              "left": 200,
+              "top": 352,
+              "width": 128,
+              "height": 24,
+              "text": "MySQL 类型",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
             },
             {
               "_type": "UMLTextView",
@@ -1984,18 +1932,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;17;0",
-              "left": 40,
-              "top": 585,
-              "width": 68,
-              "height": 25,
-              "text": "name",
+              "font": "PingFang SC;16;1",
+              "left": 327,
+              "top": 352,
+              "width": 60,
+              "height": 24,
+              "text": "约束",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
             },
             {
-              "_type": "UMLTextView",
+              "_type": "FreelineEdgeView",
               "_id": "relational-v33-107",
               "_parent": {
                 "$ref": "relational-v33"
@@ -2005,15 +1953,10 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;15;0",
-              "left": 205,
-              "top": 587,
-              "width": 105,
-              "height": 23,
-              "text": "VARCHAR",
-              "wordWrap": false,
-              "horzAlign": 0,
-              "vertAlign": 5
+              "font": "PingFang SC;18;0",
+              "points": "52:375;412:375",
+              "lineStyle": 1,
+              "lineMode": 0
             },
             {
               "_type": "UMLTextView",
@@ -2026,18 +1969,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;14;0",
-              "left": 318,
-              "top": 588,
+              "font": "PingFang SC;16;0",
+              "left": 62,
+              "top": 377,
               "width": 60,
-              "height": 22,
-              "text": "NN",
+              "height": 24,
+              "text": "id",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
             },
             {
-              "_type": "FreelineEdgeView",
+              "_type": "UMLTextView",
               "_id": "relational-v33-109",
               "_parent": {
                 "$ref": "relational-v33"
@@ -2047,10 +1990,15 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;18;0",
-              "points": "30:610;410:610",
-              "lineStyle": 1,
-              "lineMode": 0
+              "font": "PingFang SC;16;0",
+              "left": 200,
+              "top": 377,
+              "width": 96,
+              "height": 24,
+              "text": "BIGINT",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
             },
             {
               "_type": "UMLTextView",
@@ -2063,18 +2011,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;17;0",
-              "left": 40,
-              "top": 615,
-              "width": 221,
-              "height": 25,
-              "text": "department_id",
+              "font": "PingFang SC;16;0",
+              "left": 327,
+              "top": 377,
+              "width": 80,
+              "height": 24,
+              "text": "PK NN",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
             },
             {
-              "_type": "UMLTextView",
+              "_type": "FreelineEdgeView",
               "_id": "relational-v33-111",
               "_parent": {
                 "$ref": "relational-v33"
@@ -2084,15 +2032,10 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;15;0",
-              "left": 205,
-              "top": 617,
-              "width": 90,
-              "height": 23,
-              "text": "BIGINT",
-              "wordWrap": false,
-              "horzAlign": 0,
-              "vertAlign": 5
+              "font": "PingFang SC;18;0",
+              "points": "52:400;412:400",
+              "lineStyle": 1,
+              "lineMode": 0
             },
             {
               "_type": "UMLTextView",
@@ -2105,18 +2048,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;14;0",
-              "left": 318,
-              "top": 618,
-              "width": 70,
-              "height": 22,
-              "text": "FK NN",
+              "font": "PingFang SC;16;0",
+              "left": 62,
+              "top": 402,
+              "width": 64,
+              "height": 24,
+              "text": "name",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
             },
             {
-              "_type": "FreelineEdgeView",
+              "_type": "UMLTextView",
               "_id": "relational-v33-113",
               "_parent": {
                 "$ref": "relational-v33"
@@ -2126,10 +2069,15 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;18;0",
-              "points": "30:640;410:640",
-              "lineStyle": 1,
-              "lineMode": 0
+              "font": "PingFang SC;16;0",
+              "left": 200,
+              "top": 402,
+              "width": 192,
+              "height": 24,
+              "text": "VARCHAR(100)",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
             },
             {
               "_type": "UMLTextView",
@@ -2142,18 +2090,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;15;0",
-              "left": 40,
-              "top": 649,
-              "width": 345,
-              "height": 23,
-              "text": "唯一：department_id + name",
+              "font": "PingFang SC;16;0",
+              "left": 327,
+              "top": 402,
+              "width": 60,
+              "height": 24,
+              "text": "NN",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
             },
             {
-              "_type": "RectangleView",
+              "_type": "FreelineEdgeView",
               "_id": "relational-v33-115",
               "_parent": {
                 "$ref": "relational-v33"
@@ -2164,10 +2112,9 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "left": 490,
-              "top": 460,
-              "width": 380,
-              "height": 150
+              "points": "52:425;412:425",
+              "lineStyle": 1,
+              "lineMode": 0
             },
             {
               "_type": "UMLTextView",
@@ -2180,12 +2127,12 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;21;1",
-              "left": 502,
-              "top": 465,
-              "width": 84,
-              "height": 29,
-              "text": "用户角色",
+              "font": "PingFang SC;16;0",
+              "left": 62,
+              "top": 427,
+              "width": 208,
+              "height": 24,
+              "text": "department_id",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
@@ -2201,18 +2148,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;18;0",
-              "left": 502,
-              "top": 494,
-              "width": 162,
-              "height": 26,
-              "text": "user_role",
+              "font": "PingFang SC;16;0",
+              "left": 200,
+              "top": 427,
+              "width": 96,
+              "height": 24,
+              "text": "BIGINT",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
             },
             {
-              "_type": "FreelineEdgeView",
+              "_type": "UMLTextView",
               "_id": "relational-v33-118",
               "_parent": {
                 "$ref": "relational-v33"
@@ -2222,13 +2169,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;18;0",
-              "points": "490:524;870:524",
-              "lineStyle": 1,
-              "lineMode": 0
+              "font": "PingFang SC;16;0",
+              "left": 327,
+              "top": 427,
+              "width": 80,
+              "height": 24,
+              "text": "FK NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
             },
             {
-              "_type": "UMLTextView",
+              "_type": "FreelineEdgeView",
               "_id": "relational-v33-119",
               "_parent": {
                 "$ref": "relational-v33"
@@ -2238,15 +2190,10 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;16;1",
-              "left": 500,
-              "top": 529,
-              "width": 60,
-              "height": 24,
-              "text": "字段",
-              "wordWrap": false,
-              "horzAlign": 0,
-              "vertAlign": 5
+              "font": "PingFang SC;18;0",
+              "points": "52:450;412:450",
+              "lineStyle": 1,
+              "lineMode": 0
             },
             {
               "_type": "UMLTextView",
@@ -2259,18 +2206,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;16;1",
-              "left": 665,
-              "top": 529,
-              "width": 60,
+              "font": "PingFang SC;16;0",
+              "left": 62,
+              "top": 453,
+              "width": 368,
               "height": 24,
-              "text": "类型",
+              "text": "唯一（department_id, name）",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
             },
             {
-              "_type": "UMLTextView",
+              "_type": "RectangleView",
               "_id": "relational-v33-121",
               "_parent": {
                 "$ref": "relational-v33"
@@ -2280,18 +2227,14 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;16;1",
-              "left": 778,
-              "top": 529,
-              "width": 60,
-              "height": 24,
-              "text": "约束",
-              "wordWrap": false,
-              "horzAlign": 0,
-              "vertAlign": 5
+              "font": "PingFang SC;18;0",
+              "left": 488,
+              "top": 313,
+              "width": 360,
+              "height": 214
             },
             {
-              "_type": "FreelineEdgeView",
+              "_type": "UMLTextView",
               "_id": "relational-v33-122",
               "_parent": {
                 "$ref": "relational-v33"
@@ -2301,10 +2244,15 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;18;0",
-              "points": "490:550;870:550",
-              "lineStyle": 1,
-              "lineMode": 0
+              "font": "PingFang SC;20;1",
+              "left": 498,
+              "top": 319,
+              "width": 160,
+              "height": 28,
+              "text": "app_user",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
             },
             {
               "_type": "UMLTextView",
@@ -2317,18 +2265,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;17;0",
-              "left": 500,
-              "top": 555,
-              "width": 119,
-              "height": 25,
-              "text": "user_id",
+              "font": "PingFang SC;16;0",
+              "left": 769.0,
+              "top": 323,
+              "width": 64,
+              "height": 24,
+              "text": "用户账号",
               "wordWrap": false,
-              "horzAlign": 0,
+              "horzAlign": 2,
               "vertAlign": 5
             },
             {
-              "_type": "UMLTextView",
+              "_type": "FreelineEdgeView",
               "_id": "relational-v33-124",
               "_parent": {
                 "$ref": "relational-v33"
@@ -2338,15 +2286,10 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;15;0",
-              "left": 665,
-              "top": 557,
-              "width": 90,
-              "height": 23,
-              "text": "BIGINT",
-              "wordWrap": false,
-              "horzAlign": 0,
-              "vertAlign": 5
+              "font": "PingFang SC;18;0",
+              "points": "488:348;848:348",
+              "lineStyle": 1,
+              "lineMode": 0
             },
             {
               "_type": "UMLTextView",
@@ -2359,18 +2302,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;14;0",
-              "left": 778,
-              "top": 558,
-              "width": 112,
-              "height": 22,
-              "text": "PK FK NN",
+              "font": "PingFang SC;16;1",
+              "left": 498,
+              "top": 352,
+              "width": 60,
+              "height": 24,
+              "text": "字段",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
             },
             {
-              "_type": "FreelineEdgeView",
+              "_type": "UMLTextView",
               "_id": "relational-v33-126",
               "_parent": {
                 "$ref": "relational-v33"
@@ -2380,10 +2323,15 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;18;0",
-              "points": "490:580;870:580",
-              "lineStyle": 1,
-              "lineMode": 0
+              "font": "PingFang SC;16;1",
+              "left": 636,
+              "top": 352,
+              "width": 128,
+              "height": 24,
+              "text": "MySQL 类型",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
             },
             {
               "_type": "UMLTextView",
@@ -2396,18 +2344,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;17;0",
-              "left": 500,
-              "top": 585,
-              "width": 119,
-              "height": 25,
-              "text": "role_id",
+              "font": "PingFang SC;16;1",
+              "left": 763,
+              "top": 352,
+              "width": 60,
+              "height": 24,
+              "text": "约束",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
             },
             {
-              "_type": "UMLTextView",
+              "_type": "FreelineEdgeView",
               "_id": "relational-v33-128",
               "_parent": {
                 "$ref": "relational-v33"
@@ -2417,15 +2365,10 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;15;0",
-              "left": 665,
-              "top": 587,
-              "width": 90,
-              "height": 23,
-              "text": "BIGINT",
-              "wordWrap": false,
-              "horzAlign": 0,
-              "vertAlign": 5
+              "font": "PingFang SC;18;0",
+              "points": "488:375;848:375",
+              "lineStyle": 1,
+              "lineMode": 0
             },
             {
               "_type": "UMLTextView",
@@ -2438,18 +2381,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;14;0",
-              "left": 778,
-              "top": 588,
-              "width": 112,
-              "height": 22,
-              "text": "PK FK NN",
+              "font": "PingFang SC;16;0",
+              "left": 498,
+              "top": 377,
+              "width": 60,
+              "height": 24,
+              "text": "id",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
             },
             {
-              "_type": "RectangleView",
+              "_type": "UMLTextView",
               "_id": "relational-v33-130",
               "_parent": {
                 "$ref": "relational-v33"
@@ -2459,11 +2402,15 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;18;0",
-              "left": 30,
-              "top": 790,
-              "width": 380,
-              "height": 150
+              "font": "PingFang SC;16;0",
+              "left": 636,
+              "top": 377,
+              "width": 96,
+              "height": 24,
+              "text": "BIGINT",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
             },
             {
               "_type": "UMLTextView",
@@ -2476,18 +2423,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;21;1",
-              "left": 42,
-              "top": 795,
-              "width": 84,
-              "height": 29,
-              "text": "角色权限",
+              "font": "PingFang SC;16;0",
+              "left": 763,
+              "top": 377,
+              "width": 80,
+              "height": 24,
+              "text": "PK NN",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
             },
             {
-              "_type": "UMLTextView",
+              "_type": "FreelineEdgeView",
               "_id": "relational-v33-132",
               "_parent": {
                 "$ref": "relational-v33"
@@ -2498,17 +2445,12 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "left": 42,
-              "top": 824,
-              "width": 270,
-              "height": 26,
-              "text": "role_permission",
-              "wordWrap": false,
-              "horzAlign": 0,
-              "vertAlign": 5
+              "points": "488:400;848:400",
+              "lineStyle": 1,
+              "lineMode": 0
             },
             {
-              "_type": "FreelineEdgeView",
+              "_type": "UMLTextView",
               "_id": "relational-v33-133",
               "_parent": {
                 "$ref": "relational-v33"
@@ -2518,10 +2460,15 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;18;0",
-              "points": "30:854;410:854",
-              "lineStyle": 1,
-              "lineMode": 0
+              "font": "PingFang SC;16;0",
+              "left": 498,
+              "top": 402,
+              "width": 128,
+              "height": 24,
+              "text": "username",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
             },
             {
               "_type": "UMLTextView",
@@ -2534,12 +2481,12 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;16;1",
-              "left": 40,
-              "top": 859,
-              "width": 60,
+              "font": "PingFang SC;16;0",
+              "left": 636,
+              "top": 402,
+              "width": 176,
               "height": 24,
-              "text": "字段",
+              "text": "VARCHAR(64)",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
@@ -2555,18 +2502,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;16;1",
-              "left": 205,
-              "top": 859,
+              "font": "PingFang SC;16;0",
+              "left": 763,
+              "top": 402,
               "width": 60,
               "height": 24,
-              "text": "类型",
+              "text": "NN",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
             },
             {
-              "_type": "UMLTextView",
+              "_type": "FreelineEdgeView",
               "_id": "relational-v33-136",
               "_parent": {
                 "$ref": "relational-v33"
@@ -2576,18 +2523,13 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;16;1",
-              "left": 318,
-              "top": 859,
-              "width": 60,
-              "height": 24,
-              "text": "约束",
-              "wordWrap": false,
-              "horzAlign": 0,
-              "vertAlign": 5
+              "font": "PingFang SC;18;0",
+              "points": "488:425;848:425",
+              "lineStyle": 1,
+              "lineMode": 0
             },
             {
-              "_type": "FreelineEdgeView",
+              "_type": "UMLTextView",
               "_id": "relational-v33-137",
               "_parent": {
                 "$ref": "relational-v33"
@@ -2597,10 +2539,15 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;18;0",
-              "points": "30:880;410:880",
-              "lineStyle": 1,
-              "lineMode": 0
+              "font": "PingFang SC;16;0",
+              "left": 498,
+              "top": 427,
+              "width": 64,
+              "height": 24,
+              "text": "name",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
             },
             {
               "_type": "UMLTextView",
@@ -2613,12 +2560,12 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;17;0",
-              "left": 40,
-              "top": 885,
-              "width": 119,
-              "height": 25,
-              "text": "role_id",
+              "font": "PingFang SC;16;0",
+              "left": 636,
+              "top": 427,
+              "width": 192,
+              "height": 24,
+              "text": "VARCHAR(100)",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
@@ -2634,18 +2581,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;15;0",
-              "left": 205,
-              "top": 887,
-              "width": 90,
-              "height": 23,
-              "text": "BIGINT",
+              "font": "PingFang SC;16;0",
+              "left": 763,
+              "top": 427,
+              "width": 60,
+              "height": 24,
+              "text": "NN",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
             },
             {
-              "_type": "UMLTextView",
+              "_type": "FreelineEdgeView",
               "_id": "relational-v33-140",
               "_parent": {
                 "$ref": "relational-v33"
@@ -2655,18 +2602,13 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;14;0",
-              "left": 318,
-              "top": 888,
-              "width": 112,
-              "height": 22,
-              "text": "PK FK NN",
-              "wordWrap": false,
-              "horzAlign": 0,
-              "vertAlign": 5
+              "font": "PingFang SC;18;0",
+              "points": "488:450;848:450",
+              "lineStyle": 1,
+              "lineMode": 0
             },
             {
-              "_type": "FreelineEdgeView",
+              "_type": "UMLTextView",
               "_id": "relational-v33-141",
               "_parent": {
                 "$ref": "relational-v33"
@@ -2676,10 +2618,15 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;18;0",
-              "points": "30:910;410:910",
-              "lineStyle": 1,
-              "lineMode": 0
+              "font": "PingFang SC;16;0",
+              "left": 498,
+              "top": 452,
+              "width": 80,
+              "height": 24,
+              "text": "phone",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
             },
             {
               "_type": "UMLTextView",
@@ -2692,12 +2639,12 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;17;0",
-              "left": 40,
-              "top": 915,
-              "width": 221,
-              "height": 25,
-              "text": "permission_id",
+              "font": "PingFang SC;16;0",
+              "left": 636,
+              "top": 452,
+              "width": 176,
+              "height": 24,
+              "text": "VARCHAR(20)",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
@@ -2713,18 +2660,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;15;0",
-              "left": 205,
-              "top": 917,
-              "width": 90,
-              "height": 23,
-              "text": "BIGINT",
+              "font": "PingFang SC;16;0",
+              "left": 763,
+              "top": 452,
+              "width": 60,
+              "height": 24,
+              "text": "NN",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
             },
             {
-              "_type": "UMLTextView",
+              "_type": "FreelineEdgeView",
               "_id": "relational-v33-144",
               "_parent": {
                 "$ref": "relational-v33"
@@ -2734,18 +2681,13 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;14;0",
-              "left": 318,
-              "top": 918,
-              "width": 112,
-              "height": 22,
-              "text": "PK FK NN",
-              "wordWrap": false,
-              "horzAlign": 0,
-              "vertAlign": 5
+              "font": "PingFang SC;18;0",
+              "points": "488:475;848:475",
+              "lineStyle": 1,
+              "lineMode": 0
             },
             {
-              "_type": "RectangleView",
+              "_type": "UMLTextView",
               "_id": "relational-v33-145",
               "_parent": {
                 "$ref": "relational-v33"
@@ -2755,11 +2697,15 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;18;0",
-              "left": 490,
-              "top": 790,
-              "width": 380,
-              "height": 246
+              "font": "PingFang SC;16;0",
+              "left": 498,
+              "top": 477,
+              "width": 208,
+              "height": 24,
+              "text": "department_id",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
             },
             {
               "_type": "UMLTextView",
@@ -2772,12 +2718,12 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;21;1",
-              "left": 502,
-              "top": 795,
-              "width": 84,
-              "height": 29,
-              "text": "操作权限",
+              "font": "PingFang SC;16;0",
+              "left": 636,
+              "top": 477,
+              "width": 96,
+              "height": 24,
+              "text": "BIGINT",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
@@ -2793,12 +2739,12 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;18;0",
-              "left": 502,
-              "top": 824,
-              "width": 180,
-              "height": 26,
-              "text": "permission",
+              "font": "PingFang SC;16;0",
+              "left": 763,
+              "top": 477,
+              "width": 80,
+              "height": 24,
+              "text": "FK NN",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
@@ -2815,7 +2761,7 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "points": "490:854;870:854",
+              "points": "488:500;848:500",
               "lineStyle": 1,
               "lineMode": 0
             },
@@ -2830,18 +2776,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;16;1",
-              "left": 500,
-              "top": 859,
-              "width": 60,
+              "font": "PingFang SC;16;0",
+              "left": 498,
+              "top": 503,
+              "width": 192,
               "height": 24,
-              "text": "字段",
+              "text": "唯一（username）",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
             },
             {
-              "_type": "UMLTextView",
+              "_type": "RectangleView",
               "_id": "relational-v33-150",
               "_parent": {
                 "$ref": "relational-v33"
@@ -2851,15 +2797,11 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;16;1",
-              "left": 665,
-              "top": 859,
-              "width": 60,
-              "height": 24,
-              "text": "类型",
-              "wordWrap": false,
-              "horzAlign": 0,
-              "vertAlign": 5
+              "font": "PingFang SC;18;0",
+              "left": 52,
+              "top": 594,
+              "width": 360,
+              "height": 112
             },
             {
               "_type": "UMLTextView",
@@ -2872,18 +2814,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;16;1",
-              "left": 778,
-              "top": 859,
-              "width": 60,
-              "height": 24,
-              "text": "约束",
+              "font": "PingFang SC;20;1",
+              "left": 62,
+              "top": 600,
+              "width": 320,
+              "height": 28,
+              "text": "role_inheritance",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
             },
             {
-              "_type": "FreelineEdgeView",
+              "_type": "UMLTextView",
               "_id": "relational-v33-152",
               "_parent": {
                 "$ref": "relational-v33"
@@ -2893,13 +2835,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;18;0",
-              "points": "490:880;870:880",
-              "lineStyle": 1,
-              "lineMode": 0
+              "font": "PingFang SC;16;0",
+              "left": 333.0,
+              "top": 604,
+              "width": 64,
+              "height": 24,
+              "text": "角色继承",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
             },
             {
-              "_type": "UMLTextView",
+              "_type": "FreelineEdgeView",
               "_id": "relational-v33-153",
               "_parent": {
                 "$ref": "relational-v33"
@@ -2909,15 +2856,10 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;17;0",
-              "left": 500,
-              "top": 885,
-              "width": 60,
-              "height": 25,
-              "text": "id",
-              "wordWrap": false,
-              "horzAlign": 0,
-              "vertAlign": 5
+              "font": "PingFang SC;18;0",
+              "points": "52:629;412:629",
+              "lineStyle": 1,
+              "lineMode": 0
             },
             {
               "_type": "UMLTextView",
@@ -2930,12 +2872,12 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;15;0",
-              "left": 665,
-              "top": 887,
-              "width": 90,
-              "height": 23,
-              "text": "BIGINT",
+              "font": "PingFang SC;16;1",
+              "left": 62,
+              "top": 633,
+              "width": 60,
+              "height": 24,
+              "text": "字段",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
@@ -2951,18 +2893,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;14;0",
-              "left": 778,
-              "top": 888,
-              "width": 70,
-              "height": 22,
-              "text": "PK NN",
+              "font": "PingFang SC;16;1",
+              "left": 200,
+              "top": 633,
+              "width": 128,
+              "height": 24,
+              "text": "MySQL 类型",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
             },
             {
-              "_type": "FreelineEdgeView",
+              "_type": "UMLTextView",
               "_id": "relational-v33-156",
               "_parent": {
                 "$ref": "relational-v33"
@@ -2972,13 +2914,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;18;0",
-              "points": "490:910;870:910",
-              "lineStyle": 1,
-              "lineMode": 0
+              "font": "PingFang SC;16;1",
+              "left": 327,
+              "top": 633,
+              "width": 60,
+              "height": 24,
+              "text": "约束",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
             },
             {
-              "_type": "UMLTextView",
+              "_type": "FreelineEdgeView",
               "_id": "relational-v33-157",
               "_parent": {
                 "$ref": "relational-v33"
@@ -2988,15 +2935,10 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;17;0",
-              "left": 500,
-              "top": 915,
-              "width": 153,
-              "height": 25,
-              "text": "system_id",
-              "wordWrap": false,
-              "horzAlign": 0,
-              "vertAlign": 5
+              "font": "PingFang SC;18;0",
+              "points": "52:656;412:656",
+              "lineStyle": 1,
+              "lineMode": 0
             },
             {
               "_type": "UMLTextView",
@@ -3009,12 +2951,12 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;15;0",
-              "left": 665,
-              "top": 917,
-              "width": 90,
-              "height": 23,
-              "text": "BIGINT",
+              "font": "PingFang SC;16;0",
+              "left": 62,
+              "top": 658,
+              "width": 224,
+              "height": 24,
+              "text": "senior_role_id",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
@@ -3030,18 +2972,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;14;0",
-              "left": 778,
-              "top": 918,
-              "width": 70,
-              "height": 22,
-              "text": "FK NN",
+              "font": "PingFang SC;16;0",
+              "left": 200,
+              "top": 658,
+              "width": 96,
+              "height": 24,
+              "text": "BIGINT",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
             },
             {
-              "_type": "FreelineEdgeView",
+              "_type": "UMLTextView",
               "_id": "relational-v33-160",
               "_parent": {
                 "$ref": "relational-v33"
@@ -3051,13 +2993,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;18;0",
-              "points": "490:940;870:940",
-              "lineStyle": 1,
-              "lineMode": 0
+              "font": "PingFang SC;16;0",
+              "left": 327,
+              "top": 658,
+              "width": 128,
+              "height": 24,
+              "text": "PK FK NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
             },
             {
-              "_type": "UMLTextView",
+              "_type": "FreelineEdgeView",
               "_id": "relational-v33-161",
               "_parent": {
                 "$ref": "relational-v33"
@@ -3067,15 +3014,10 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;17;0",
-              "left": 500,
-              "top": 945,
-              "width": 68,
-              "height": 25,
-              "text": "code",
-              "wordWrap": false,
-              "horzAlign": 0,
-              "vertAlign": 5
+              "font": "PingFang SC;18;0",
+              "points": "52:681;412:681",
+              "lineStyle": 1,
+              "lineMode": 0
             },
             {
               "_type": "UMLTextView",
@@ -3088,12 +3030,12 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;15;0",
-              "left": 665,
-              "top": 947,
-              "width": 105,
-              "height": 23,
-              "text": "VARCHAR",
+              "font": "PingFang SC;16;0",
+              "left": 62,
+              "top": 683,
+              "width": 224,
+              "height": 24,
+              "text": "junior_role_id",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
@@ -3109,18 +3051,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;14;0",
-              "left": 778,
-              "top": 948,
-              "width": 60,
-              "height": 22,
-              "text": "NN",
+              "font": "PingFang SC;16;0",
+              "left": 200,
+              "top": 683,
+              "width": 96,
+              "height": 24,
+              "text": "BIGINT",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
             },
             {
-              "_type": "FreelineEdgeView",
+              "_type": "UMLTextView",
               "_id": "relational-v33-164",
               "_parent": {
                 "$ref": "relational-v33"
@@ -3130,13 +3072,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;18;0",
-              "points": "490:970;870:970",
-              "lineStyle": 1,
-              "lineMode": 0
+              "font": "PingFang SC;16;0",
+              "left": 327,
+              "top": 683,
+              "width": 128,
+              "height": 24,
+              "text": "PK FK NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
             },
             {
-              "_type": "UMLTextView",
+              "_type": "RectangleView",
               "_id": "relational-v33-165",
               "_parent": {
                 "$ref": "relational-v33"
@@ -3146,15 +3093,11 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;17;0",
-              "left": 500,
-              "top": 975,
-              "width": 68,
-              "height": 25,
-              "text": "name",
-              "wordWrap": false,
-              "horzAlign": 0,
-              "vertAlign": 5
+              "font": "PingFang SC;18;0",
+              "left": 488,
+              "top": 594,
+              "width": 360,
+              "height": 112
             },
             {
               "_type": "UMLTextView",
@@ -3167,12 +3110,12 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;15;0",
-              "left": 665,
-              "top": 977,
-              "width": 105,
-              "height": 23,
-              "text": "VARCHAR",
+              "font": "PingFang SC;20;1",
+              "left": 498,
+              "top": 600,
+              "width": 180,
+              "height": 28,
+              "text": "user_role",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
@@ -3188,14 +3131,14 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;14;0",
-              "left": 778,
-              "top": 978,
-              "width": 60,
-              "height": 22,
-              "text": "NN",
+              "font": "PingFang SC;16;0",
+              "left": 769.0,
+              "top": 604,
+              "width": 64,
+              "height": 24,
+              "text": "用户角色",
               "wordWrap": false,
-              "horzAlign": 0,
+              "horzAlign": 2,
               "vertAlign": 5
             },
             {
@@ -3210,7 +3153,7 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "points": "490:1000;870:1000",
+              "points": "488:629;848:629",
               "lineStyle": 1,
               "lineMode": 0
             },
@@ -3225,18 +3168,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;15;0",
-              "left": 500,
-              "top": 1009,
-              "width": 285,
-              "height": 23,
-              "text": "唯一：system_id + code",
+              "font": "PingFang SC;16;1",
+              "left": 498,
+              "top": 633,
+              "width": 60,
+              "height": 24,
+              "text": "字段",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
             },
             {
-              "_type": "RectangleView",
+              "_type": "UMLTextView",
               "_id": "relational-v33-170",
               "_parent": {
                 "$ref": "relational-v33"
@@ -3246,11 +3189,15 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;18;0",
-              "left": 490,
-              "top": 1170,
-              "width": 380,
-              "height": 216
+              "font": "PingFang SC;16;1",
+              "left": 636,
+              "top": 633,
+              "width": 128,
+              "height": 24,
+              "text": "MySQL 类型",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
             },
             {
               "_type": "UMLTextView",
@@ -3263,18 +3210,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;21;1",
-              "left": 502,
-              "top": 1175,
-              "width": 84,
-              "height": 29,
-              "text": "业务系统",
+              "font": "PingFang SC;16;1",
+              "left": 763,
+              "top": 633,
+              "width": 60,
+              "height": 24,
+              "text": "约束",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
             },
             {
-              "_type": "UMLTextView",
+              "_type": "FreelineEdgeView",
               "_id": "relational-v33-172",
               "_parent": {
                 "$ref": "relational-v33"
@@ -3285,17 +3232,12 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "left": 502,
-              "top": 1204,
-              "width": 270,
-              "height": 26,
-              "text": "business_system",
-              "wordWrap": false,
-              "horzAlign": 0,
-              "vertAlign": 5
+              "points": "488:656;848:656",
+              "lineStyle": 1,
+              "lineMode": 0
             },
             {
-              "_type": "FreelineEdgeView",
+              "_type": "UMLTextView",
               "_id": "relational-v33-173",
               "_parent": {
                 "$ref": "relational-v33"
@@ -3305,10 +3247,15 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;18;0",
-              "points": "490:1234;870:1234",
-              "lineStyle": 1,
-              "lineMode": 0
+              "font": "PingFang SC;16;0",
+              "left": 498,
+              "top": 658,
+              "width": 112,
+              "height": 24,
+              "text": "user_id",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
             },
             {
               "_type": "UMLTextView",
@@ -3321,12 +3268,12 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;16;1",
-              "left": 500,
-              "top": 1239,
-              "width": 60,
+              "font": "PingFang SC;16;0",
+              "left": 636,
+              "top": 658,
+              "width": 96,
               "height": 24,
-              "text": "字段",
+              "text": "BIGINT",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
@@ -3342,18 +3289,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;16;1",
-              "left": 665,
-              "top": 1239,
-              "width": 60,
+              "font": "PingFang SC;16;0",
+              "left": 763,
+              "top": 658,
+              "width": 128,
               "height": 24,
-              "text": "类型",
+              "text": "PK FK NN",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
             },
             {
-              "_type": "UMLTextView",
+              "_type": "FreelineEdgeView",
               "_id": "relational-v33-176",
               "_parent": {
                 "$ref": "relational-v33"
@@ -3363,18 +3310,13 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;16;1",
-              "left": 778,
-              "top": 1239,
-              "width": 60,
-              "height": 24,
-              "text": "约束",
-              "wordWrap": false,
-              "horzAlign": 0,
-              "vertAlign": 5
+              "font": "PingFang SC;18;0",
+              "points": "488:681;848:681",
+              "lineStyle": 1,
+              "lineMode": 0
             },
             {
-              "_type": "FreelineEdgeView",
+              "_type": "UMLTextView",
               "_id": "relational-v33-177",
               "_parent": {
                 "$ref": "relational-v33"
@@ -3384,10 +3326,15 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;18;0",
-              "points": "490:1260;870:1260",
-              "lineStyle": 1,
-              "lineMode": 0
+              "font": "PingFang SC;16;0",
+              "left": 498,
+              "top": 683,
+              "width": 112,
+              "height": 24,
+              "text": "role_id",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
             },
             {
               "_type": "UMLTextView",
@@ -3400,12 +3347,12 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;17;0",
-              "left": 500,
-              "top": 1265,
-              "width": 60,
-              "height": 25,
-              "text": "id",
+              "font": "PingFang SC;16;0",
+              "left": 636,
+              "top": 683,
+              "width": 96,
+              "height": 24,
+              "text": "BIGINT",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
@@ -3421,18 +3368,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;15;0",
-              "left": 665,
-              "top": 1267,
-              "width": 90,
-              "height": 23,
-              "text": "BIGINT",
+              "font": "PingFang SC;16;0",
+              "left": 763,
+              "top": 683,
+              "width": 128,
+              "height": 24,
+              "text": "PK FK NN",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
             },
             {
-              "_type": "UMLTextView",
+              "_type": "RectangleView",
               "_id": "relational-v33-180",
               "_parent": {
                 "$ref": "relational-v33"
@@ -3442,18 +3389,14 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;14;0",
-              "left": 778,
-              "top": 1268,
-              "width": 70,
-              "height": 22,
-              "text": "PK NN",
-              "wordWrap": false,
-              "horzAlign": 0,
-              "vertAlign": 5
+              "font": "PingFang SC;18;0",
+              "left": 52,
+              "top": 765,
+              "width": 360,
+              "height": 112
             },
             {
-              "_type": "FreelineEdgeView",
+              "_type": "UMLTextView",
               "_id": "relational-v33-181",
               "_parent": {
                 "$ref": "relational-v33"
@@ -3463,10 +3406,15 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;18;0",
-              "points": "490:1290;870:1290",
-              "lineStyle": 1,
-              "lineMode": 0
+              "font": "PingFang SC;20;1",
+              "left": 62,
+              "top": 771,
+              "width": 300,
+              "height": 28,
+              "text": "role_permission",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
             },
             {
               "_type": "UMLTextView",
@@ -3479,18 +3427,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;17;0",
-              "left": 500,
-              "top": 1295,
-              "width": 170,
-              "height": 25,
-              "text": "system_key",
+              "font": "PingFang SC;16;0",
+              "left": 333.0,
+              "top": 775,
+              "width": 64,
+              "height": 24,
+              "text": "角色权限",
               "wordWrap": false,
-              "horzAlign": 0,
+              "horzAlign": 2,
               "vertAlign": 5
             },
             {
-              "_type": "UMLTextView",
+              "_type": "FreelineEdgeView",
               "_id": "relational-v33-183",
               "_parent": {
                 "$ref": "relational-v33"
@@ -3500,15 +3448,10 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;15;0",
-              "left": 665,
-              "top": 1297,
-              "width": 105,
-              "height": 23,
-              "text": "VARCHAR",
-              "wordWrap": false,
-              "horzAlign": 0,
-              "vertAlign": 5
+              "font": "PingFang SC;18;0",
+              "points": "52:800;412:800",
+              "lineStyle": 1,
+              "lineMode": 0
             },
             {
               "_type": "UMLTextView",
@@ -3521,18 +3464,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;14;0",
-              "left": 778,
-              "top": 1298,
+              "font": "PingFang SC;16;1",
+              "left": 62,
+              "top": 804,
               "width": 60,
-              "height": 22,
-              "text": "NN",
+              "height": 24,
+              "text": "字段",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
             },
             {
-              "_type": "FreelineEdgeView",
+              "_type": "UMLTextView",
               "_id": "relational-v33-185",
               "_parent": {
                 "$ref": "relational-v33"
@@ -3542,10 +3485,15 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;18;0",
-              "points": "490:1320;870:1320",
-              "lineStyle": 1,
-              "lineMode": 0
+              "font": "PingFang SC;16;1",
+              "left": 200,
+              "top": 804,
+              "width": 128,
+              "height": 24,
+              "text": "MySQL 类型",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
             },
             {
               "_type": "UMLTextView",
@@ -3558,18 +3506,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;17;0",
-              "left": 500,
-              "top": 1325,
-              "width": 68,
-              "height": 25,
-              "text": "name",
+              "font": "PingFang SC;16;1",
+              "left": 327,
+              "top": 804,
+              "width": 60,
+              "height": 24,
+              "text": "约束",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
             },
             {
-              "_type": "UMLTextView",
+              "_type": "FreelineEdgeView",
               "_id": "relational-v33-187",
               "_parent": {
                 "$ref": "relational-v33"
@@ -3579,15 +3527,10 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;15;0",
-              "left": 665,
-              "top": 1327,
-              "width": 105,
-              "height": 23,
-              "text": "VARCHAR",
-              "wordWrap": false,
-              "horzAlign": 0,
-              "vertAlign": 5
+              "font": "PingFang SC;18;0",
+              "points": "52:827;412:827",
+              "lineStyle": 1,
+              "lineMode": 0
             },
             {
               "_type": "UMLTextView",
@@ -3600,18 +3543,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;14;0",
-              "left": 778,
-              "top": 1328,
-              "width": 60,
-              "height": 22,
-              "text": "NN",
+              "font": "PingFang SC;16;0",
+              "left": 62,
+              "top": 829,
+              "width": 112,
+              "height": 24,
+              "text": "role_id",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
             },
             {
-              "_type": "FreelineEdgeView",
+              "_type": "UMLTextView",
               "_id": "relational-v33-189",
               "_parent": {
                 "$ref": "relational-v33"
@@ -3621,10 +3564,15 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;18;0",
-              "points": "490:1350;870:1350",
-              "lineStyle": 1,
-              "lineMode": 0
+              "font": "PingFang SC;16;0",
+              "left": 200,
+              "top": 829,
+              "width": 96,
+              "height": 24,
+              "text": "BIGINT",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
             },
             {
               "_type": "UMLTextView",
@@ -3637,12 +3585,12 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;15;0",
-              "left": 500,
-              "top": 1359,
-              "width": 195,
-              "height": 23,
-              "text": "唯一：system_key",
+              "font": "PingFang SC;16;0",
+              "left": 327,
+              "top": 829,
+              "width": 128,
+              "height": 24,
+              "text": "PK FK NN",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
@@ -3659,12 +3607,12 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "points": "30:550;15:550;15:1240;30:1240",
+              "points": "52:852;412:852",
               "lineStyle": 1,
               "lineMode": 0
             },
             {
-              "_type": "FreelineEdgeView",
+              "_type": "UMLTextView",
               "_id": "relational-v33-192",
               "_parent": {
                 "$ref": "relational-v33"
@@ -3674,13 +3622,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;18;0",
-              "points": "21.0:558.0;21.0:542.0",
-              "lineStyle": 1,
-              "lineMode": 0
+              "font": "PingFang SC;16;0",
+              "left": 62,
+              "top": 854,
+              "width": 208,
+              "height": 24,
+              "text": "permission_id",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
             },
             {
-              "_type": "FreelineEdgeView",
+              "_type": "UMLTextView",
               "_id": "relational-v33-193",
               "_parent": {
                 "$ref": "relational-v33"
@@ -3690,13 +3643,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;18;0",
-              "points": "11.0:558.0;11.0:542.0",
-              "lineStyle": 1,
-              "lineMode": 0
+              "font": "PingFang SC;16;0",
+              "left": 200,
+              "top": 854,
+              "width": 96,
+              "height": 24,
+              "text": "BIGINT",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
             },
             {
-              "_type": "FreelineEdgeView",
+              "_type": "UMLTextView",
               "_id": "relational-v33-194",
               "_parent": {
                 "$ref": "relational-v33"
@@ -3706,13 +3664,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;18;0",
-              "points": "30.0:1249.0;11.0:1240.0;30.0:1231.0",
-              "lineStyle": 1,
-              "lineMode": 0
+              "font": "PingFang SC;16;0",
+              "left": 327,
+              "top": 854,
+              "width": 128,
+              "height": 24,
+              "text": "PK FK NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
             },
             {
-              "_type": "EllipseView",
+              "_type": "RectangleView",
               "_id": "relational-v33-195",
               "_parent": {
                 "$ref": "relational-v33"
@@ -3723,13 +3686,13 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "left": -7.0,
-              "top": 1235.0,
-              "width": 10,
-              "height": 10
+              "left": 488,
+              "top": 765,
+              "width": 360,
+              "height": 189
             },
             {
-              "_type": "FreelineEdgeView",
+              "_type": "UMLTextView",
               "_id": "relational-v33-196",
               "_parent": {
                 "$ref": "relational-v33"
@@ -3739,13 +3702,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;18;0",
-              "points": "300:676;300:720;450:720;450:1290;410:1290",
-              "lineStyle": 1,
-              "lineMode": 0
+              "font": "PingFang SC;20;1",
+              "left": 498,
+              "top": 771,
+              "width": 200,
+              "height": 28,
+              "text": "permission",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
             },
             {
-              "_type": "FreelineEdgeView",
+              "_type": "UMLTextView",
               "_id": "relational-v33-197",
               "_parent": {
                 "$ref": "relational-v33"
@@ -3755,10 +3723,15 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;18;0",
-              "points": "308.0:685.0;292.0:685.0",
-              "lineStyle": 1,
-              "lineMode": 0
+              "font": "PingFang SC;16;0",
+              "left": 769.0,
+              "top": 775,
+              "width": 64,
+              "height": 24,
+              "text": "操作权限",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
             },
             {
               "_type": "FreelineEdgeView",
@@ -3772,12 +3745,12 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "points": "308.0:695.0;292.0:695.0",
+              "points": "488:800;848:800",
               "lineStyle": 1,
               "lineMode": 0
             },
             {
-              "_type": "FreelineEdgeView",
+              "_type": "UMLTextView",
               "_id": "relational-v33-199",
               "_parent": {
                 "$ref": "relational-v33"
@@ -3787,13 +3760,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;18;0",
-              "points": "410.0:1281.0;429.0:1290.0;410.0:1299.0",
-              "lineStyle": 1,
-              "lineMode": 0
+              "font": "PingFang SC;16;1",
+              "left": 498,
+              "top": 804,
+              "width": 60,
+              "height": 24,
+              "text": "字段",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
             },
             {
-              "_type": "EllipseView",
+              "_type": "UMLTextView",
               "_id": "relational-v33-200",
               "_parent": {
                 "$ref": "relational-v33"
@@ -3803,14 +3781,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;18;0",
-              "left": 437.0,
-              "top": 1285.0,
-              "width": 10,
-              "height": 10
+              "font": "PingFang SC;16;1",
+              "left": 636,
+              "top": 804,
+              "width": 128,
+              "height": 24,
+              "text": "MySQL 类型",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
             },
             {
-              "_type": "RectangleView",
+              "_type": "UMLTextView",
               "_id": "relational-v33-201",
               "_parent": {
                 "$ref": "relational-v33"
@@ -3820,14 +3802,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;18;0",
-              "left": 30,
-              "top": 1170,
-              "width": 380,
-              "height": 150
+              "font": "PingFang SC;16;1",
+              "left": 763,
+              "top": 804,
+              "width": 60,
+              "height": 24,
+              "text": "约束",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
             },
             {
-              "_type": "UMLTextView",
+              "_type": "FreelineEdgeView",
               "_id": "relational-v33-202",
               "_parent": {
                 "$ref": "relational-v33"
@@ -3837,15 +3823,10 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;21;1",
-              "left": 42,
-              "top": 1175,
-              "width": 84,
-              "height": 29,
-              "text": "角色继承",
-              "wordWrap": false,
-              "horzAlign": 0,
-              "vertAlign": 5
+              "font": "PingFang SC;18;0",
+              "points": "488:827;848:827",
+              "lineStyle": 1,
+              "lineMode": 0
             },
             {
               "_type": "UMLTextView",
@@ -3858,18 +3839,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;18;0",
-              "left": 42,
-              "top": 1204,
-              "width": 288,
-              "height": 26,
-              "text": "role_inheritance",
+              "font": "PingFang SC;16;0",
+              "left": 498,
+              "top": 829,
+              "width": 60,
+              "height": 24,
+              "text": "id",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
             },
             {
-              "_type": "FreelineEdgeView",
+              "_type": "UMLTextView",
               "_id": "relational-v33-204",
               "_parent": {
                 "$ref": "relational-v33"
@@ -3879,10 +3860,15 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;18;0",
-              "points": "30:1234;410:1234",
-              "lineStyle": 1,
-              "lineMode": 0
+              "font": "PingFang SC;16;0",
+              "left": 636,
+              "top": 829,
+              "width": 96,
+              "height": 24,
+              "text": "BIGINT",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
             },
             {
               "_type": "UMLTextView",
@@ -3895,18 +3881,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;16;1",
-              "left": 40,
-              "top": 1239,
-              "width": 60,
+              "font": "PingFang SC;16;0",
+              "left": 763,
+              "top": 829,
+              "width": 80,
               "height": 24,
-              "text": "字段",
+              "text": "PK NN",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
             },
             {
-              "_type": "UMLTextView",
+              "_type": "FreelineEdgeView",
               "_id": "relational-v33-206",
               "_parent": {
                 "$ref": "relational-v33"
@@ -3916,15 +3902,10 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;16;1",
-              "left": 205,
-              "top": 1239,
-              "width": 60,
-              "height": 24,
-              "text": "类型",
-              "wordWrap": false,
-              "horzAlign": 0,
-              "vertAlign": 5
+              "font": "PingFang SC;18;0",
+              "points": "488:852;848:852",
+              "lineStyle": 1,
+              "lineMode": 0
             },
             {
               "_type": "UMLTextView",
@@ -3937,18 +3918,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;16;1",
-              "left": 318,
-              "top": 1239,
-              "width": 60,
+              "font": "PingFang SC;16;0",
+              "left": 498,
+              "top": 854,
+              "width": 144,
               "height": 24,
-              "text": "约束",
+              "text": "system_id",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
             },
             {
-              "_type": "FreelineEdgeView",
+              "_type": "UMLTextView",
               "_id": "relational-v33-208",
               "_parent": {
                 "$ref": "relational-v33"
@@ -3958,10 +3939,15 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;18;0",
-              "points": "30:1260;410:1260",
-              "lineStyle": 1,
-              "lineMode": 0
+              "font": "PingFang SC;16;0",
+              "left": 636,
+              "top": 854,
+              "width": 96,
+              "height": 24,
+              "text": "BIGINT",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
             },
             {
               "_type": "UMLTextView",
@@ -3974,18 +3960,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;17;0",
-              "left": 40,
-              "top": 1265,
-              "width": 238,
-              "height": 25,
-              "text": "senior_role_id",
+              "font": "PingFang SC;16;0",
+              "left": 763,
+              "top": 854,
+              "width": 80,
+              "height": 24,
+              "text": "FK NN",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
             },
             {
-              "_type": "UMLTextView",
+              "_type": "FreelineEdgeView",
               "_id": "relational-v33-210",
               "_parent": {
                 "$ref": "relational-v33"
@@ -3995,15 +3981,10 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;15;0",
-              "left": 205,
-              "top": 1267,
-              "width": 90,
-              "height": 23,
-              "text": "BIGINT",
-              "wordWrap": false,
-              "horzAlign": 0,
-              "vertAlign": 5
+              "font": "PingFang SC;18;0",
+              "points": "488:877;848:877",
+              "lineStyle": 1,
+              "lineMode": 0
             },
             {
               "_type": "UMLTextView",
@@ -4016,18 +3997,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;14;0",
-              "left": 318,
-              "top": 1268,
-              "width": 112,
-              "height": 22,
-              "text": "PK FK NN",
+              "font": "PingFang SC;16;0",
+              "left": 498,
+              "top": 879,
+              "width": 64,
+              "height": 24,
+              "text": "code",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
             },
             {
-              "_type": "FreelineEdgeView",
+              "_type": "UMLTextView",
               "_id": "relational-v33-212",
               "_parent": {
                 "$ref": "relational-v33"
@@ -4037,10 +4018,15 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;18;0",
-              "points": "30:1290;410:1290",
-              "lineStyle": 1,
-              "lineMode": 0
+              "font": "PingFang SC;16;0",
+              "left": 636,
+              "top": 879,
+              "width": 192,
+              "height": 24,
+              "text": "VARCHAR(100)",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
             },
             {
               "_type": "UMLTextView",
@@ -4053,18 +4039,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;17;0",
-              "left": 40,
-              "top": 1295,
-              "width": 238,
-              "height": 25,
-              "text": "junior_role_id",
+              "font": "PingFang SC;16;0",
+              "left": 763,
+              "top": 879,
+              "width": 60,
+              "height": 24,
+              "text": "NN",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
             },
             {
-              "_type": "UMLTextView",
+              "_type": "FreelineEdgeView",
               "_id": "relational-v33-214",
               "_parent": {
                 "$ref": "relational-v33"
@@ -4074,15 +4060,10 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;15;0",
-              "left": 205,
-              "top": 1297,
-              "width": 90,
-              "height": 23,
-              "text": "BIGINT",
-              "wordWrap": false,
-              "horzAlign": 0,
-              "vertAlign": 5
+              "font": "PingFang SC;18;0",
+              "points": "488:902;848:902",
+              "lineStyle": 1,
+              "lineMode": 0
             },
             {
               "_type": "UMLTextView",
@@ -4095,12 +4076,12 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;14;0",
-              "left": 318,
-              "top": 1298,
-              "width": 112,
-              "height": 22,
-              "text": "PK FK NN",
+              "font": "PingFang SC;16;0",
+              "left": 498,
+              "top": 904,
+              "width": 64,
+              "height": 24,
+              "text": "name",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
@@ -4116,12 +4097,12 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;17;0",
-              "left": 40,
-              "top": 1373,
-              "width": 323,
-              "height": 25,
-              "text": "PK 主键  FK 外键  NN 非空",
+              "font": "PingFang SC;16;0",
+              "left": 636,
+              "top": 904,
+              "width": 192,
+              "height": 24,
+              "text": "VARCHAR(100)",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
@@ -4137,18 +4118,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;17;0",
-              "left": 40,
-              "top": 1413,
-              "width": 289,
-              "height": 25,
-              "text": "继承的两端均引用 role.id。",
+              "font": "PingFang SC;16;0",
+              "left": 763,
+              "top": 904,
+              "width": 60,
+              "height": 24,
+              "text": "NN",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
             },
             {
-              "_type": "UMLTextView",
+              "_type": "FreelineEdgeView",
               "_id": "relational-v33-218",
               "_parent": {
                 "$ref": "relational-v33"
@@ -4158,15 +4139,10 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;17;0",
-              "left": 40,
-              "top": 1453,
-              "width": 221,
-              "height": 25,
-              "text": "实线：FK 属于子表主键。",
-              "wordWrap": false,
-              "horzAlign": 0,
-              "vertAlign": 5
+              "font": "PingFang SC;18;0",
+              "points": "488:927;848:927",
+              "lineStyle": 1,
+              "lineMode": 0
             },
             {
               "_type": "UMLTextView",
@@ -4179,18 +4155,18 @@
               "lineColor": "#000000",
               "fontColor": "#000000",
               "fillColor": "#ffffff",
-              "font": "PingFang SC;17;0",
-              "left": 40,
-              "top": 1493,
-              "width": 238,
-              "height": 25,
-              "text": "虚线：FK 不属于子表主键。",
+              "font": "PingFang SC;16;0",
+              "left": 498,
+              "top": 930,
+              "width": 304,
+              "height": 24,
+              "text": "唯一（system_id, code）",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5
             },
             {
-              "_type": "UMLTextView",
+              "_type": "RectangleView",
               "_id": "relational-v33-220",
               "_parent": {
                 "$ref": "relational-v33"
@@ -4201,11 +4177,528 @@
               "fontColor": "#000000",
               "fillColor": "#ffffff",
               "font": "PingFang SC;18;0",
-              "left": 40,
-              "top": 1562,
-              "width": 612,
-              "height": 26,
-              "text": "MySQL 8.4 InnoDB；八张业务表，登录会话技术结构单列。",
+              "left": 488,
+              "top": 1020,
+              "width": 360,
+              "height": 164
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-221",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;20;1",
+              "left": 498,
+              "top": 1026,
+              "width": 300,
+              "height": 28,
+              "text": "business_system",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-222",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;0",
+              "left": 769.0,
+              "top": 1030,
+              "width": 64,
+              "height": 24,
+              "text": "业务系统",
+              "wordWrap": false,
+              "horzAlign": 2,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-223",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "488:1055;848:1055",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-224",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;1",
+              "left": 498,
+              "top": 1059,
+              "width": 60,
+              "height": 24,
+              "text": "字段",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-225",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;1",
+              "left": 636,
+              "top": 1059,
+              "width": 128,
+              "height": 24,
+              "text": "MySQL 类型",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-226",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;1",
+              "left": 763,
+              "top": 1059,
+              "width": 60,
+              "height": 24,
+              "text": "约束",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-227",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "488:1082;848:1082",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-228",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;0",
+              "left": 498,
+              "top": 1084,
+              "width": 60,
+              "height": 24,
+              "text": "id",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-229",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;0",
+              "left": 636,
+              "top": 1084,
+              "width": 96,
+              "height": 24,
+              "text": "BIGINT",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-230",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;0",
+              "left": 763,
+              "top": 1084,
+              "width": 80,
+              "height": 24,
+              "text": "PK NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-231",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "488:1107;848:1107",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-232",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;0",
+              "left": 498,
+              "top": 1109,
+              "width": 160,
+              "height": 24,
+              "text": "system_key",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-233",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;0",
+              "left": 636,
+              "top": 1109,
+              "width": 176,
+              "height": 24,
+              "text": "VARCHAR(64)",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-234",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;0",
+              "left": 763,
+              "top": 1109,
+              "width": 60,
+              "height": 24,
+              "text": "NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-235",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "488:1132;848:1132",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-236",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;0",
+              "left": 498,
+              "top": 1134,
+              "width": 64,
+              "height": 24,
+              "text": "name",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-237",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;0",
+              "left": 636,
+              "top": 1134,
+              "width": 192,
+              "height": 24,
+              "text": "VARCHAR(100)",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-238",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;0",
+              "left": 763,
+              "top": 1134,
+              "width": 60,
+              "height": 24,
+              "text": "NN",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "FreelineEdgeView",
+              "_id": "relational-v33-239",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;18;0",
+              "points": "488:1157;848:1157",
+              "lineStyle": 1,
+              "lineMode": 0
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-240",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;16;0",
+              "left": 498,
+              "top": 1160,
+              "width": 224,
+              "height": 24,
+              "text": "唯一（system_key）",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-241",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;19;1",
+              "left": 52,
+              "top": 959,
+              "width": 60,
+              "height": 27,
+              "text": "图例",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-242",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;17;0",
+              "left": 52,
+              "top": 998,
+              "width": 357,
+              "height": 25,
+              "text": "PK 主键   FK 外键   NN 非空",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-243",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;17;0",
+              "left": 52,
+              "top": 1033,
+              "width": 255,
+              "height": 25,
+              "text": "实线：外键是子表主键的一部分。",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-244",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;17;0",
+              "left": 52,
+              "top": 1068,
+              "width": 221,
+              "height": 25,
+              "text": "虚线：外键未纳入子表主键。",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-245",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;17;0",
+              "left": 52,
+              "top": 1103,
+              "width": 289,
+              "height": 25,
+              "text": "同表多个 PK 字段组成联合主键。",
+              "wordWrap": false,
+              "horzAlign": 0,
+              "vertAlign": 5
+            },
+            {
+              "_type": "UMLTextView",
+              "_id": "relational-v33-246",
+              "_parent": {
+                "$ref": "relational-v33"
+              },
+              "parentStyle": false,
+              "showShadow": false,
+              "lineColor": "#000000",
+              "fontColor": "#000000",
+              "fillColor": "#ffffff",
+              "font": "PingFang SC;17;0",
+              "left": 52,
+              "top": 1138,
+              "width": 238,
+              "height": 25,
+              "text": "八张业务表和一张技术会话表。",
               "wordWrap": false,
               "horzAlign": 0,
               "vertAlign": 5

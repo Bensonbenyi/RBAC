@@ -9,8 +9,7 @@
 | 两份同名 `.adoc` | 可编辑正文 |
 | [UML 模型](assets/v33/rbac-spec.mdj) | 架构、包、类、活动、状态和时序图 |
 | [陈氏 ER 图](assets/v33/chen.mdj) | 业务实体与关系 |
-| [表关系图](assets/v33/schema.mdj) | 八张业务表与主外键关系 |
-| [技术会话表](assets/v33/session-table.mdj) | 会话存储及用户引用 |
+| [数据库表关系图](assets/v33/schema.mdj) | 八张业务表及技术会话表、主外键关系 |
 | [设计源文件包](统一权限管理系统设计-v3.7.0.zip) | PDF、AsciiDoc、模型、SVG、PNG、SQL 与生成工具 |
 
 用户和角色均归属单个部门，授权采用用户角色、角色权限两组多对多关系，并用角色继承表表达同部门无环层次。平台自身和老师课程系统作为两个业务系统接入。登录请求沿用老师的 username、password、systems 约定，password 承载手机号；成功后使用 Bearer JWT 和持久化技术会话。

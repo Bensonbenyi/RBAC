@@ -25,56 +25,88 @@ def chen():
  d.text(65,880,'M 高级',17,'middle');d.text(270,880,'N 基础',17,'middle')
  d.text(450,1200,'键属性加下划线；双线为全参与；用户与角色均属于一个部门。',17,'middle');d.save('chen')
 
-def table(d,x,y,name,title,fields,width=380,footer=''):
- h=90+30*len(fields)+(36 if footer else 0);d.rect(x,y,width,h);d.text(x+12,y+26,title,21,bold=True);d.text(x+12,y+52,name,18)
- d.line([(x,y+64),(x+width,y+64)]);d.text(x+10,y+85,'字段',16,bold=True);d.text(x+175,y+85,'类型',16,bold=True);d.text(x+288,y+85,'约束',16,bold=True)
- for i,(field,typ,constraint) in enumerate(fields):
-  yy=y+90+i*30;d.line([(x,yy),(x+width,yy)]);d.text(x+10,yy+22,field,17);d.text(x+175,yy+22,typ,15);d.text(x+288,yy+22,constraint,14)
- if footer:d.line([(x,y+90+30*len(fields)),(x+width,y+90+30*len(fields))]);d.text(x+10,y+h-12,footer,15)
- return h
+def table(d, x, y, name, title, fields, unique=''):
+    width = 360
+    height = 62 + 25 * len(fields) + (27 if unique else 0)
+    d.rect(x, y, width, height)
+    d.text(x + 10, y + 26, name, 20, bold=True)
+    d.text(x + width - 47, y + 26, title, 16, 'middle')
+    d.line([(x, y + 35), (x + width, y + 35)])
+    columns = (x + 10, x + 148, x + 275)
+    for column, label in zip(columns, ('字段', 'MySQL 类型', '约束')):
+        d.text(column, y + 55, label, 16, bold=True)
+    for i, (field, data_type, constraint) in enumerate(fields):
+        row = y + 62 + i * 25
+        d.line([(x, row), (x + width, row)])
+        for column, value in zip(columns, (field, data_type, constraint)):
+            d.text(column, row + 18, value, 16)
+    if unique:
+        line = y + height - 27
+        d.line([(x, line), (x + width, line)])
+        d.text(x + 10, line + 19, f'唯一（{unique}）', 16)
+
 
 def physical():
- d=Figure(900,1640,'relational-v33');d.text(450,40,'八张业务表 数据库关系图',26,'middle',True)
- fields={
- 'department': [('id','BIGINT','PK NN'),('name','VARCHAR','NN'),('parent_id','BIGINT','FK')],
- 'app_user':[('id','BIGINT','PK NN'),('username','VARCHAR','NN'),('name','VARCHAR','NN'),('phone','VARCHAR','NN'),('department_id','BIGINT','FK NN')],
- 'role':[('id','BIGINT','PK NN'),('name','VARCHAR','NN'),('department_id','BIGINT','FK NN')],
- 'user_role':[('user_id','BIGINT','PK FK NN'),('role_id','BIGINT','PK FK NN')],
- 'role_permission':[('role_id','BIGINT','PK FK NN'),('permission_id','BIGINT','PK FK NN')],
- 'permission':[('id','BIGINT','PK NN'),('system_id','BIGINT','FK NN'),('code','VARCHAR','NN'),('name','VARCHAR','NN')],
- 'business_system':[('id','BIGINT','PK NN'),('system_key','VARCHAR','NN'),('name','VARCHAR','NN')]
- }
- # Relationship routes occupy gaps; table positions remain fixed.
- d.relation([(410,220),(490,220)],'one','many');d.text(450,195,'属于',16,'middle')
- d.relation([(210,300),(210,460)],'one','many');d.text(240,405,'部门',16)
- d.relation([(680,396),(680,460)],'one','many',True)
- d.relation([(410,550),(490,550)],'one','many',True);d.text(450,525,'角色',16,'middle')
- d.relation([(210,676),(210,790)],'one','many',True)
- d.relation([(410,880),(490,880)],'many','one',True);d.text(450,855,'权限',16,'middle')
- d.relation([(680,1036),(680,1170)],'many','one');d.text(710,1110,'系统',16)
- d.relation([(100,120),(100,80),(25,80),(25,260),(30,260)],'optional','many')
- table(d,30,120,'department','部门',fields['department'])
- table(d,490,120,'app_user','用户账号',fields['app_user'],'',) if False else None
- table(d,490,120,'app_user','用户账号',fields['app_user'],footer='唯一：username')
- table(d,30,460,'role','角色',fields['role'],footer='唯一：department_id + name')
- table(d,490,460,'user_role','用户角色',fields['user_role'])
- table(d,30,790,'role_permission','角色权限',fields['role_permission'])
- table(d,490,790,'permission','操作权限',fields['permission'],footer='唯一：system_id + code')
- table(d,490,1170,'business_system','业务系统',fields['business_system'],footer='唯一：system_key')
- d.relation([(30,550),(15,550),(15,1240),(30,1240)],'one','many',True)
- d.relation([(300,676),(300,720),(450,720),(450,1290),(410,1290)],'one','many',True)
- table(d,30,1170,'role_inheritance','角色继承',[('senior_role_id','BIGINT','PK FK NN'),('junior_role_id','BIGINT','PK FK NN')])
- d.text(40,1390,'PK 主键  FK 外键  NN 非空',17)
- d.text(40,1430,'继承的两端均引用 role.id。',17)
- d.text(40,1470,'实线：FK 属于子表主键。',17)
- d.text(40,1510,'虚线：FK 不属于子表主键。',17)
- d.text(40,1580,'MySQL 8.4 InnoDB；八张业务表，登录会话技术结构单列。',18)
- d.save('schema')
- d=Figure(900,710,'session-table-v33');d.text(450,40,'登录会话 技术表与用户关系',26,'middle',True)
- table(d,260,110,'app_user','用户账号',[('id','BIGINT','PK NN')])
- d.relation([(450,230),(450,360)],'one','many');d.text(480,310,'user_id',18)
- table(d,100,360,'login_session','技术登录会话',[('id','CHAR(36)','PK NN'),('user_id','BIGINT','FK NN'),('expires_at','TIMESTAMP','NN'),('revoked_at','TIMESTAMP','可空')],700)
- d.text(100,620,'会话用 JWT 的 jti 查询，核对用户编号及有效期。',19)
- d.text(100,655,'目标系统来自通过验签的 JWT aud。',19)
- d.save('session-table')
+    d = Figure(900, 1220, 'relational-v33')
+    d.text(450, 40, '统一权限管理系统 数据库表关系图', 26, 'middle', True)
+
+    # Foreign-key routes run between the table edges. The two inheritance
+    # legs refer to distinct columns of the same relationship table.
+    d.relation([(110, 85), (110, 51), (12, 51), (12, 192), (52, 192)], 'optional', 'many')
+    d.relation([(221, 222), (221, 313)], 'one', 'many')
+    d.relation([(412, 170), (450, 170), (450, 387), (488, 387)], 'one', 'many')
+    d.relation([(675, 313), (675, 247)], 'one', 'many')
+    d.relation([(675, 527), (675, 594)], 'one', 'many', True)
+    d.relation([(412, 426), (448, 426), (448, 620), (488, 620)], 'one', 'many', True)
+    d.relation([(149, 477), (149, 594)], 'one', 'many', True)
+    d.relation([(311, 477), (311, 594)], 'one', 'many', True)
+    d.text(166, 538, '高级角色', 16)
+    d.text(327, 538, '基础角色', 16)
+    d.relation([(52, 393), (12, 393), (12, 807), (52, 807)], 'one', 'many', True)
+    d.relation([(412, 810), (488, 810)], 'many', 'one', True)
+    d.relation([(675, 1020), (675, 954)], 'one', 'many')
+
+    table(d, 52, 85, 'department', '部门', [
+        ('id', 'BIGINT', 'PK NN'), ('name', 'VARCHAR(100)', 'NN'), ('parent_id', 'BIGINT', 'FK'),
+    ])
+    table(d, 488, 85, 'login_session', '登录会话', [
+        ('id', 'CHAR(36)', 'PK NN'), ('user_id', 'BIGINT', 'FK NN'),
+        ('expires_at', 'TIMESTAMP(6)', 'NN'), ('revoked_at', 'TIMESTAMP(6)', '可空'),
+    ])
+    table(d, 52, 313, 'role', '角色', [
+        ('id', 'BIGINT', 'PK NN'), ('name', 'VARCHAR(100)', 'NN'),
+        ('department_id', 'BIGINT', 'FK NN'),
+    ], unique='department_id, name')
+    table(d, 488, 313, 'app_user', '用户账号', [
+        ('id', 'BIGINT', 'PK NN'), ('username', 'VARCHAR(64)', 'NN'),
+        ('name', 'VARCHAR(100)', 'NN'), ('phone', 'VARCHAR(20)', 'NN'),
+        ('department_id', 'BIGINT', 'FK NN'),
+    ], unique='username')
+    table(d, 52, 594, 'role_inheritance', '角色继承', [
+        ('senior_role_id', 'BIGINT', 'PK FK NN'), ('junior_role_id', 'BIGINT', 'PK FK NN'),
+    ])
+    table(d, 488, 594, 'user_role', '用户角色', [
+        ('user_id', 'BIGINT', 'PK FK NN'), ('role_id', 'BIGINT', 'PK FK NN'),
+    ])
+    table(d, 52, 765, 'role_permission', '角色权限', [
+        ('role_id', 'BIGINT', 'PK FK NN'), ('permission_id', 'BIGINT', 'PK FK NN'),
+    ])
+    table(d, 488, 765, 'permission', '操作权限', [
+        ('id', 'BIGINT', 'PK NN'), ('system_id', 'BIGINT', 'FK NN'),
+        ('code', 'VARCHAR(100)', 'NN'), ('name', 'VARCHAR(100)', 'NN'),
+    ], unique='system_id, code')
+    table(d, 488, 1020, 'business_system', '业务系统', [
+        ('id', 'BIGINT', 'PK NN'), ('system_key', 'VARCHAR(64)', 'NN'),
+        ('name', 'VARCHAR(100)', 'NN'),
+    ], unique='system_key')
+
+    d.text(52, 978, '图例', 19, bold=True)
+    d.text(52, 1015, 'PK 主键   FK 外键   NN 非空', 17)
+    d.text(52, 1050, '实线：外键是子表主键的一部分。', 17)
+    d.text(52, 1085, '虚线：外键未纳入子表主键。', 17)
+    d.text(52, 1120, '同表多个 PK 字段组成联合主键。', 17)
+    d.text(52, 1155, '八张业务表和一张技术会话表。', 17)
+    d.save('schema')
+
+
 if __name__=='__main__':chen();physical()

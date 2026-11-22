@@ -21,8 +21,8 @@ CASES = [
  [('字段缺失、格式错误或目标系统重复','400，不调用登录服务。'),('账号不存在或手机号错误','401，返回统一凭据错误。'),('目标系统不存在或无 login 权限','403，不建立成功会话。')],
  '成功后客户端持有目标系统的 Bearer 凭据；JWT 只保存身份及会话信息。','activity-login',None),
  ('AUTH-002','查看本人资料与退出','REQ-F-01',['AUTH-02','AUTH-03'],'当前用户','已登录用户','查看个人资料、角色和当前系统界面权限，或退出本次会话。','用户进入个人资料页或点击退出。','令牌签名有效，会话存在且未过期。',[
- ('读取认证上下文中的本人编号。','按当前目标系统查询界面权限。'),('退出时撤销当前会话。','写入 revoked_at，原令牌下次请求返回 401。')],
- [('令牌失效或会话已撤销','401。'),('当前系统登录许可已撤销','资料查询返回 403，用户仍可退出。')],
+ ('平台前端读取本人编号、账号、姓名和部门，并刷新界面授权。','课程后端调用同一接口读取统一身份。'),('退出时撤销当前会话。','写入 revoked_at，原令牌下次请求返回 401。')],
+ [('令牌失效或会话已撤销','401。'),('目标系统与令牌不符或登录许可已撤销','资料查询返回 403。对当前令牌中有效目标系统发起退出仍可撤销会话。')],
  '本人资料来自当前账号，退出后本次登录凭据失效。',None,None),
  ('USER-001','查询本部门用户','REQ-F-02',['USER-01'],'用户管理','持有 user.view 的管理用户','分页查询本部门直接成员，选择角色分配对象。','管理用户打开用户列表。','已登录 rbac，具有用户查询权限。',[
  ('校验 user.view。','部门从当前操作者身份取得。'),('分页返回本部门用户。','记录包含账号、姓名和部门编号。')],
@@ -33,7 +33,7 @@ CASES = [
  [('无目录许可','403。'),('分页参数无效','400。')],
  '页面显示多级部门。部门数据通过 SQL 维护。',None,'Department'),
  ('SYS-001','业务系统维护','REQ-F-05',['SYS-01','SYS-02','SYS-04'],'系统目录','持有 system.manage 的管理用户','登记和维护平台自身及课程系统的标识与名称。','管理员进入系统目录并选择维护操作。','已登录 rbac 并通过系统管理权限检查。',[
- ('读取系统列表或提交 systemKey 与 name。','系统标识全局唯一。'),('新建系统。','系统标识创建后固定，名称由 SQL 维护。'),('检查权限引用后删除系统。','先处理所属权限，数据库限制被引用系统删除。')],
+ ('读取系统列表或提交 systemKey 与 name。','系统标识全局唯一。'),('新建系统。','系统标识固定，登记后的名称通过 SQL 维护。'),('检查权限引用后删除系统。','先处理所属权限，数据库限制被引用系统删除。')],
  [('系统标识重复','409。'),('目标不存在','404。'),('系统仍有权限定义','409。')],
  '系统目录更新，权限仍由角色权限关系授予。',None,'System'),
  ('PERM-001','操作权限维护','REQ-F-06',['PERM-01','PERM-02','PERM-03','PERM-04'],'权限目录','持有 permission.manage 的管理用户','在所属业务系统内查询、新建、改名及删除权限。','管理员选择一个系统的权限目录。','已登录 rbac，具有权限管理许可。',[
@@ -64,7 +64,7 @@ CASES.append(('HIERARCHY-001','角色继承管理','REQ-F-03',['ROLE-10','ROLE-1
 
 INPUTS = {
  'AUTH-01': 'LoginDTO 接收 username、password 与非空且无重复的 systems。',
- 'AUTH-02':'无请求体；身份来自 Bearer。','AUTH-03':'无请求体；撤销当前 JWT 对应会话。',
+ 'AUTH-02':'请求头 Authorization 携带 Bearer 令牌。X-Target-System 可选择令牌 aud 内的系统，省略时使用 aud 首项。无请求体。','AUTH-03':'无请求体；撤销当前 JWT 对应会话。',
  'AUTH-05':'路径 permission；身份和目标系统来自令牌。','AUTH-06':'路径 operationId；由映射表定位权限码。','AUTH-07':'路径 userId 为字符串。','AUTH-08':'parentId 可空，keyword 可选，page 从 1 开始，pageSize 默认为 20。','AUTH-09':'departmentId 为正整数，支持 keyword、page、pageSize。','USER-07':'ManagementDTOs.AssignRoleDTO：roleId；目标用户来自路径。',
  'ROLE-07':'ManagementDTOs.GrantPermissionDTO：permissionId。','ROLE-11':'ManagementDTOs.InheritRoleDTO：juniorId。',
  'ROLE-03':'ManagementDTOs.NameDTO：name。','ROLE-04':'ManagementDTOs.NameDTO：name。','SYS-02':'ManagementDTOs.CreateSystemDTO：systemKey、name。','PERM-02':'ManagementDTOs.CreatePermissionDTO：code、name；systemId 来自路径。','PERM-03':'ManagementDTOs.NameDTO：name。'}

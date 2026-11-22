@@ -117,8 +117,8 @@
         "tags": [
           "统一身份鉴权"
         ],
-        "summary": "读取本人资料和权限",
-        "description": "返回 subject、姓名、工号或学号、部门及当前系统界面权限；权限实时查询。\n\nAPI 许可：有效登录",
+        "summary": "读取当前身份和界面权限",
+        "description": "返回 subject、no、name、departmentId、roles 和目标系统的界面权限 permissions。no 来自平台用户名，对接课程时用作工号或学号。\n\nAPI 许可：目标系统 login",
         "parameters": [
           {
             "name": "X-Target-System",

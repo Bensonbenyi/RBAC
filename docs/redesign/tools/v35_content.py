@@ -30,7 +30,12 @@ Spring MVC 处理 HTTP，Jakarta Validation 校验 Controller 输入，Spring Io
 
 def verification(table):
  version=(R/'redesign/VERSION').read_text().strip()
- data=json.loads((R/f'implementation/test-summary-v{version}.json').read_text())
+ test_report=f'implementation/test-summary-v{version}.json'
+ deployment_report=f'implementation/deployment-v{version}.json'
+ data=json.loads((R/test_report).read_text())
+ evidence=f'本版契约回归见 docs/{test_report}。'
+ if (R/deployment_report).is_file():
+  evidence=f'本版 Swarm 部署及线上联调见 docs/{deployment_report}。'+evidence
  return '''=== 需求到测试方法与页面行为
 
 共同契约按 IdentityContract、ManagementContract 与 RbacContract 分组，两个配置运行相同方法，共用 ContractFixture 的 MySQL 测试库和初始化数据。
@@ -58,5 +63,5 @@ v{version} 平台测试 {data['platformTests']} 项、老师 CloneFactory 测试
  ('老师原版课程前端','/course/'),
  ('平台 API 文档','运行 npm ci --prefix docs/api 后执行 python3 tooling/build-api.py。'),
  ('覆盖率报告','执行 ./mvnw verify 生成 backend/target/site/jacoco/。'),
- ('部署与验收证据',f'已上线 v3.5.0 的 Swarm 证据见该版本整改报告。当前契约回归见 docs/implementation/test-summary-v{version}.json。'),
+ ('部署与验收证据',evidence),
  ('课程提交','代码推送 GitHub，由已配置的自动同步更新 Gitee；课程网站提交与口试预约由组员完成。')],'3,7')

@@ -3,18 +3,29 @@
   "pdfs": [
     {
       "name": "统一权限管理系统概要设计说明书-v3.7.0.pdf",
-      "pages": 38,
+      "pages": 39,
       "pageSize": "A4 portrait",
-      "linkTargets": 57
+      "linkTargets": 57,
+      "figurePages": {
+        "chenEr": 30,
+        "databaseTables": 31
+      }
     },
     {
       "name": "统一权限管理系统需求与详细设计说明书-v3.7.0.pdf",
-      "pages": 153,
+      "pages": 152,
       "pageSize": "A4 portrait",
-      "linkTargets": 76
+      "linkTargets": 76,
+      "figurePages": {
+        "chenEr": 13,
+        "databaseTables": 14,
+        "dataDictionary": 15,
+        "systemUseCases": 18,
+        "currentIdentity": 54
+      }
     }
   ],
-  "figures": 115,
+  "figures": 114,
   "openApiOperations": 34,
   "starUmlModels": [
     {
@@ -23,15 +34,11 @@
     },
     {
       "name": "rbac-spec.mdj",
-      "elements": 10903
+      "elements": 10949
     },
     {
       "name": "schema.mdj",
-      "elements": 224
-    },
-    {
-      "name": "session-table.mdj",
-      "elements": 46
+      "elements": 250
     }
   ],
   "svgBounds": "passed",

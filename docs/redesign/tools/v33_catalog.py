@@ -13,7 +13,7 @@ class Operation:
     rule:str
 OPS=[
  Operation('AUTH-01','Auth','POST','/auth/login','login','登录','目标系统 login','200 LoginResult','按用户名和手机号认证，逐一校验所请求系统的 login，保存会话并签发 JWT。'),
- Operation('AUTH-02','Auth','GET','/auth/me','me','读取本人资料和权限','有效登录','200 CurrentUserVO','返回 subject、姓名、工号或学号、部门及当前系统界面权限；权限实时查询。'),
+ Operation('AUTH-02','Auth','GET','/auth/me','me','读取当前身份和界面权限','目标系统 login','200 CurrentUserVO','返回 subject、no、name、departmentId、roles 和目标系统的界面权限 permissions。no 来自平台用户名，对接课程时用作工号或学号。'),
  Operation('AUTH-03','Auth','POST','/auth/logout','logout','退出','有效登录','204','更新当前会话 revoked_at；原令牌随后返回 401。'),
  Operation('AUTH-05','Auth','GET','/auth/permissions/{permission}','check','检查界面权限','有效登录','200 allowed','系统标识取自 audience；仅检查已登记界面码；API 码在此接口返回 false。'),
  Operation('AUTH-06','Auth','GET','/auth/api-permissions/{operationId}','api','检查接入 API 权限','有效登录','200 allowed','AuthService 将两系统 operationId 映射到 API 权限；未知操作返回 404 API_OPERATION_NOT_FOUND。'),

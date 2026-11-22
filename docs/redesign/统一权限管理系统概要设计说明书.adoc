@@ -447,7 +447,7 @@ image::v33/story-availability.svg[S3 / U-A1 应用恢复与会话,width=100%]
 
 硬件接口：本章节不适用，原因：当前系统通过浏览器与服务器网络通信，不接入专用硬件设备。
 
-第三方软件接口为老师课程管理系统，使用 HTTP/JSON 和 Authorization Bearer。课程前端向平台申请目标系统令牌，课程后端验签并查询当前身份和操作许可。对应 REQ-F-07、AD-07。
+第三方软件接口为老师课程管理系统，使用 HTTP/JSON 和 Authorization Bearer。课程前端请求课程后端登录，课程后端向平台申请目标系统令牌。后续业务请求由课程后端验签，并向平台查询当前身份和操作许可。对应 REQ-F-07、AD-07。
 
 
 界面权限与 API 权限共用 RBAC 关系并分别授权。界面使用独立菜单和按钮码，无权限控件 disabled；接口按 operationId 对应的 API 码及对象规则决定是否执行。授权表单使用三个只读候选查询，避免依赖无关目录管理权限。课程页面初始化还调用 GET /course-api/me，读取与平台 userId 关联的本地教师资料和当前界面权限；未关联时返回 403。
@@ -488,13 +488,22 @@ image::v33/story-availability.svg[S3 / U-A1 应用恢复与会话,width=100%]
 
 === 全局逻辑结构
 
-实体关系见 <<OV-ER-01>>。部门构成树，用户和角色各属于一个部门；用户与角色、角色与权限均为多对多。业务系统拥有权限。登录会话作为技术结构关联用户与目标系统。
+实体关系见 <<OV-ER-01>>。部门构成树，用户和角色各属于一个部门。用户与角色、角色与权限均为多对多。业务系统拥有权限。登录会话关联用户，适用的目标系统保存在已签发令牌的 aud 中。
 
 [.diagram.plate]
 --
 [[OV-ER-01]]
 .OV-ER-01 高层陈氏 ER 图
 image::v33/chen.svg[OV-ER-01 高层陈氏 ER 图,width=100%]
+--
+
+
+
+[.diagram.plate]
+--
+[[fig-schema]]
+.数据库表关系图
+image::v33/schema.svg[数据库表关系图,width=100%]
 --
 
 
@@ -570,7 +579,7 @@ image::v33/deployment.svg[OV-DEPLOY-01 Docker Swarm 部署,width=100%]
 
 === 架构验证结果
 
-以下为 v3.3.0 在 2026-11-17 的历史部署测量。v3.5.0 的 Swarm 继承验收及 v3.6.0 的本地身份联调结果分别见对应版本的整改报告。原始记录和复现条件保存在实施报告。
+下表保留 v3.3.0 的部署实测基线。本版的代码回归和线上联调见附录的交付记录。
 
 [cols="2,7",options="header"]
 |===
@@ -613,7 +622,7 @@ image::v33/deployment.svg[OV-DEPLOY-01 Docker Swarm 部署,width=100%]
 [cols="3,4,5",options="header"]
 |===
 |图编号 |模型 |转换与使用
-|AN-UC-01 |当前基线用例图 |第 3 章职责分配与功能追溯
+|AN-UC-01 |系统用例图 |第 3 章职责分配与功能追溯
 |AN-ACT-01 |登录活动 |认证模块和运行时消息
 |AN-ACT-02 |角色分配活动 |用户、角色及边界规则
 |AN-CC-01 |概念实体关系 |核心设计类图与全局 ER
@@ -657,6 +666,6 @@ v3.7.0 平台测试 37 项、老师 CloneFactory 测试 5 项和前端组件测�
 |老师原版课程前端 |/course/
 |平台 API 文档 |运行 npm ci --prefix docs/api 后执行 python3 tooling/build-api.py。
 |覆盖率报告 |执行 ./mvnw verify 生成 backend/target/site/jacoco/。
-|部署与验收证据 |已上线 v3.5.0 的 Swarm 证据见该版本整改报告。当前契约回归见 docs/implementation/test-summary-v3.7.0.json。
+|部署与验收证据 |本版 Swarm 部署及线上联调见 docs/implementation/deployment-v3.7.0.json。本版契约回归见 docs/implementation/test-summary-v3.7.0.json。
 |课程提交 |代码推送 GitHub，由已配置的自动同步更新 Gitee；课程网站提交与口试预约由组员完成。
 |===

@@ -65,7 +65,7 @@ v3.7.0, 2026-11-22
 
 === 功能与非功能需求
 
-当前功能包括认证与鉴权、本部门用户维护、部门目录、角色和授权、系统与权限目录，以及课程系统的学期维护与课程审核接入。审计、批量、导入导出、部门调动、账号启停和 OAuth/OIDC 保持已确认的范围决定。
+平台提供登录和鉴权、本部门用户查询与角色分配、部门树查询、角色与授权管理、业务系统登记与删除、权限目录维护，并接入课程系统的学期维护与课程审核。
 
 
 
@@ -99,7 +99,7 @@ v3.7.0, 2026-11-22
 |BR-05 |用户名全局唯一、部门内角色名唯一、系统内权限码唯一、系统标识唯一。
 |BR-06 |用户名、部门、系统标识、权限所属系统和权限码创建后固定；普通编辑使用字段白名单。
 |BR-07 |登录使用用户名和手机号，password 字段承载手机号；systems 接受一组不重复的目标系统。
-|BR-08 |成功登录必须拥有目标系统 login 权限；每个受保护请求实时检查会话及登录许可。
+|BR-08 |访问目标系统须有有效会话和该系统的 login 权限。退出只需有效会话及令牌所含的目标系统。
 |BR-09 |JWT 保存身份和目标系统，会话保存在 MySQL；权限按当前授权关系读取。
 |BR-10 |用户和部门通过 SQL 维护。删除角色、权限或业务系统前先处理引用。
 |BR-11 |结构化与 DDD 共用输入输出、存储端口和数据库约束；切换配置保持外部行为一致。
@@ -123,15 +123,6 @@ Flyway 建表后，在空演示库手动导入 demo.sql。账号资料和部门�
 
 [.diagram.plate]
 --
-[[AN-UC-01]]
-.AN-UC-01 当前基线用例图
-image::v33/usecases.svg[AN-UC-01 当前基线用例图,width=100%]
---
-
-
-
-[.diagram.plate]
---
 [[AN-ACT-01]]
 .AN-ACT-01 登录活动
 image::v33/activity-login.svg[AN-ACT-01 登录活动,width=100%]
@@ -144,15 +135,6 @@ image::v33/activity-login.svg[AN-ACT-01 登录活动,width=100%]
 [[AN-ACT-02]]
 .AN-ACT-02 角色分配活动
 image::v33/activity-assign.svg[AN-ACT-02 角色分配活动,width=100%]
---
-
-
-
-[.diagram.plate]
---
-[[AN-CC-01]]
-.AN-CC-01 概念实体关系
-image::v33/chen.svg[AN-CC-01 概念实体关系,width=100%]
 --
 
 
@@ -187,24 +169,24 @@ image::v33/dfd-1.svg[AN-DFD-01 第一层数据流,width=100%]
 
 === 概念与关系模型
 
-五类业务实体为部门、用户、角色、权限和业务系统。用户角色与角色权限两组联系分别落为关联表，角色继承自联系落为 role_inheritance。登录会话是实现认证撤销和恢复的技术结构，单列说明。关系模型见 <<fig-schema>> 与 <<fig-session-table>>。
+五类业务实体为部门、用户、角色、权限和业务系统。用户角色、角色权限和角色继承分别对应三张关联表。登录会话是技术表，通过 user_id 关联账号。
+
+
+
+[.diagram.plate]
+--
+[[AN-CC-01]]
+.AN-CC-01 陈氏 ER 图
+image::v33/chen.svg[AN-CC-01 陈氏 ER 图,width=100%]
+--
 
 
 
 [.diagram.plate]
 --
 [[fig-schema]]
-.业务数据库表关系
-image::v33/schema.svg[业务数据库表关系,width=100%]
---
-
-
-
-[.diagram.plate]
---
-[[fig-session-table]]
-.技术会话表关系
-image::v33/session-table.svg[技术会话表关系,width=100%]
+.数据库表关系图
+image::v33/schema.svg[数据库表关系图,width=100%]
 --
 
 
@@ -213,11 +195,20 @@ image::v33/session-table.svg[技术会话表关系,width=100%]
 高级角色通过 role_inheritance 指向基础角色，获得其直接与间接权限。角色层次与部门层次独立；所有继承边限定同部门。新增边前从基础角色逐层读取继承关系。能走回高级角色时返回 409 ROLE_CYCLE。有效权限查询复用相同的遍历，多路径通过集合去重。移除一条边时其他路径继续有效。
 
 
+=== 索引、事务与删除
+
+数据库采用 MySQL 8.4 InnoDB，文本使用区分大小写的排序规则。用户名和系统标识建立唯一索引，角色名及权限编码采用所属范围内的联合唯一索引。两组授权和角色继承关联表使用联合主键，并为反向关联列建立索引。
+
+写用例在 Service 事务边界内执行。角色、权限和业务系统存在引用时返回冲突。账号与部门通过 SQL 维护，外键约束仍生效。
+
+关联查询从用户直接角色出发，递归展开 role_inheritance，再通过角色权限读取去重并集。每个鉴权请求检查已提交的授权关系；已进入事务的请求按数据库事务可见性完成。新增授权及继承用 POST，组合主键拒绝重复关系并返回 409。删除关联重复调用仍返回 204。课程演示按单人操作安排。
+
 === 数据字典
+
 
 ==== role_inheritance 角色继承
 
-[cols="18,23,10,29,32",options="header"]
+[cols="22,21,8,23,26",options="header"]
 |===
 |字段 |类型 |可空 |约束 |含义
 |senior_role_id |BIGINT |否 |联合主键及外键 role.id |获得权限的高级角色
@@ -227,7 +218,7 @@ image::v33/session-table.svg[技术会话表关系,width=100%]
 
 ==== department 部门
 
-[cols="18,23,10,29,32",options="header"]
+[cols="22,21,8,23,26",options="header"]
 |===
 |字段 |类型 |可空 |约束 |含义
 |id |BIGINT |否 |主键，自增 |部门编号
@@ -238,7 +229,7 @@ image::v33/session-table.svg[技术会话表关系,width=100%]
 
 ==== app_user 用户
 
-[cols="18,23,10,29,32",options="header"]
+[cols="22,21,8,23,26",options="header"]
 |===
 |字段 |类型 |可空 |约束 |含义
 |id |BIGINT |否 |主键，自增 |用户编号
@@ -251,7 +242,7 @@ image::v33/session-table.svg[技术会话表关系,width=100%]
 
 ==== role 角色
 
-[cols="18,23,10,29,32",options="header"]
+[cols="22,21,8,23,26",options="header"]
 |===
 |字段 |类型 |可空 |约束 |含义
 |id |BIGINT |否 |主键，自增 |角色编号
@@ -262,7 +253,7 @@ image::v33/session-table.svg[技术会话表关系,width=100%]
 
 ==== business_system 业务系统
 
-[cols="18,23,10,29,32",options="header"]
+[cols="22,21,8,23,26",options="header"]
 |===
 |字段 |类型 |可空 |约束 |含义
 |id |BIGINT |否 |主键，自增 |系统编号
@@ -273,7 +264,7 @@ image::v33/session-table.svg[技术会话表关系,width=100%]
 
 ==== permission 操作权限
 
-[cols="18,23,10,29,32",options="header"]
+[cols="22,21,8,23,26",options="header"]
 |===
 |字段 |类型 |可空 |约束 |含义
 |id |BIGINT |否 |主键，自增 |权限编号
@@ -285,7 +276,7 @@ image::v33/session-table.svg[技术会话表关系,width=100%]
 
 ==== user_role 用户角色关联
 
-[cols="18,23,10,29,32",options="header"]
+[cols="22,21,8,23,26",options="header"]
 |===
 |字段 |类型 |可空 |约束 |含义
 |user_id |BIGINT |否 |联合主键，外键 app_user.id |被授权用户
@@ -295,7 +286,7 @@ image::v33/session-table.svg[技术会话表关系,width=100%]
 
 ==== role_permission 角色权限关联
 
-[cols="18,23,10,29,32",options="header"]
+[cols="22,21,8,23,26",options="header"]
 |===
 |字段 |类型 |可空 |约束 |含义
 |role_id |BIGINT |否 |联合主键，外键 role.id |持有权限的角色
@@ -305,7 +296,7 @@ image::v33/session-table.svg[技术会话表关系,width=100%]
 
 ==== login_session 技术会话
 
-[cols="18,23,10,29,32",options="header"]
+[cols="22,21,8,23,26",options="header"]
 |===
 |字段 |类型 |可空 |约束 |含义
 |id |CHAR(36) |否 |主键，ASCII UUID |对应 JWT jti
@@ -315,13 +306,16 @@ image::v33/session-table.svg[技术会话表关系,width=100%]
 |===
 
 
-=== 索引、事务与删除
+=== 系统用例图
 
-数据库采用 MySQL 8.4 InnoDB，文本使用区分大小写的排序规则。用户名和系统标识建立唯一索引，角色名及权限编码采用所属范围内的联合唯一索引。两组授权和角色继承关联表使用联合主键，并为反向关联列建立索引。
 
-写用例在 Service 事务边界内执行。角色、权限和业务系统存在引用时返回冲突。账号与部门通过 SQL 维护，外键约束仍生效。
+[.diagram.plate]
+--
+[[AN-UC-01]]
+.AN-UC-01 系统用例图
+image::v33/usecases.svg[AN-UC-01 系统用例图,width=100%]
+--
 
-关联查询从用户直接角色出发，递归展开 role_inheritance，再通过角色权限读取去重并集。每个鉴权请求检查已提交的授权关系；已进入事务的请求按数据库事务可见性完成。新增授权及继承用 POST，组合主键拒绝重复关系并返回 409。删除关联重复调用仍返回 204。课程演示按单人操作安排。
 
 == 总体架构
 
@@ -660,11 +654,11 @@ image::v33/flow-login-session.svg[建立登录会话与签发凭据,width=100%]
 2+|*触发事件：* 用户进入个人资料页或点击退出。
 2+|*前置条件：* 令牌签名有效，会话存在且未过期。
 |*主成功场景：* |*信息*
-|1. 读取认证上下文中的本人编号。 |按当前目标系统查询界面权限。
+|1. 平台前端读取本人编号、账号、姓名和部门，并刷新界面授权。 |课程后端调用同一接口读取统一身份。
 |2. 退出时撤销当前会话。 |写入 revoked_at，原令牌下次请求返回 401。
 |*扩展场景：* |*处理及信息*
 |令牌失效或会话已撤销 |401。
-|当前系统登录许可已撤销 |资料查询返回 403，用户仍可退出。
+|目标系统与令牌不符或登录许可已撤销 |资料查询返回 403。对当前令牌中有效目标系统发起退出仍可撤销会话。
 2+|*后置条件：* 本人资料来自当前账号，退出后本次登录凭据失效。
 |===
 
@@ -677,19 +671,21 @@ image::v33/flow-login-session.svg[建立登录会话与签发凭据,width=100%]
 [cols="3,4,3",options="header",frame=all,grid=all]
 |===
 |图中处理／实际方法 |调用说明 URL |功能
-|`AuthController.me` |`GET /auth/me` |返回 subject、姓名、工号或学号、部门及当前系统界面权限；权限实时查询。
+|`AuthController.me` |`GET /auth/me` |返回 subject、no、name、departmentId、roles 和目标系统的界面权限 permissions。no 来自平台用户名，对接课程时用作工号或学号。
 |`AuthController.logout` |`POST /auth/logout` |更新当前会话 revoked_at；原令牌随后返回 401。
 |===
 --
 
 
-===== AUTH-02 读取本人资料和权限
+===== AUTH-02 读取当前身份和界面权限
 
-返回 subject、姓名、工号或学号、部门及当前系统界面权限；权限实时查询。
+返回 subject、no、name、departmentId、roles 和目标系统的界面权限 permissions。no 来自平台用户名，对接课程时用作工号或学号。
 
-输入：无请求体；身份来自 Bearer。
+输入：请求头 Authorization 携带 Bearer 令牌。X-Target-System 可选择令牌 aud 内的系统，省略时使用 aud 首项。无请求体。
 
-成功结果：200 CurrentUserVO。权限：有效登录。
+成功结果：200 CurrentUserVO。权限：目标系统 login。
+
+令牌、会话和登录许可的校验见 <<fig-flow-preflight>>。
 
 
 [.diagram.plate]
@@ -875,7 +871,7 @@ image::v33/class-shared-department.svg[部门目录 共享 模块类图,width=10
 2+|*前置条件：* 已登录 rbac 并通过系统管理权限检查。
 |*主成功场景：* |*信息*
 |1. 读取系统列表或提交 systemKey 与 name。 |系统标识全局唯一。
-|2. 新建系统。 |系统标识创建后固定，名称由 SQL 维护。
+|2. 新建系统。 |系统标识固定，登记后的名称通过 SQL 维护。
 |3. 检查权限引用后删除系统。 |先处理所属权限，数据库限制被引用系统删除。
 |*扩展场景：* |*处理及信息*
 |系统标识重复 |409。
@@ -2029,7 +2025,7 @@ image::v33/course-09.svg[老师原版前端与统一身份的登录交互,width=
 
 平台列表 page 从 0 开始，size 默认为 20、最大 100，page 最大 1000000。平台实体编号在 JSON 中为十进制字符串，避免前端精度损失。老师课程接口保留原分页及编号格式。
 
-路径编号要求正整数。用户名长度 1 至 64，名称 1 至 100，手机号为中国大陆 11 位数字格式。系统标识使用小写字母、数字和连字符；权限码允许大小写字母、数字、点、冒号、下划线和连字符，以兼容 TC、CR 等编码。
+路径编号要求正整数。登录参数 username 和 password 非空，长度上限分别为 128 和 256。平台账号的用户名最多 64 个字符，演示账号以 11 位手机号作为密码。管理接口的名称长度为 1 至 100。系统标识使用小写字母、数字和连字符，权限码支持大小写字母、数字、点、冒号、下划线和连字符。
 
 新建资源、改名和新增关联使用专用 DTO。未声明字段返回 400。授予权限提交 permissionId，继承角色提交 juniorId。
 
@@ -2122,7 +2118,7 @@ Flyway V2 在现有 permission 与 role_permission 中补齐旧版既有界面�
 |===
 |编号 |方法与路径 |操作许可 |成功响应
 |AUTH-01 |POST /auth/login |目标系统 login |200 LoginResult
-|AUTH-02 |GET /auth/me |有效登录 |200 CurrentUserVO
+|AUTH-02 |GET /auth/me |目标系统 login |200 CurrentUserVO
 |AUTH-03 |POST /auth/logout |有效登录 |204
 |AUTH-05 |GET /auth/permissions/{permission} |有效登录 |200 allowed
 |AUTH-06 |GET /auth/api-permissions/{operationId} |有效登录 |200 allowed
@@ -2278,6 +2274,6 @@ v3.7.0 平台测试 37 项、老师 CloneFactory 测试 5 项和前端组件测�
 |老师原版课程前端 |/course/
 |平台 API 文档 |运行 npm ci --prefix docs/api 后执行 python3 tooling/build-api.py。
 |覆盖率报告 |执行 ./mvnw verify 生成 backend/target/site/jacoco/。
-|部署与验收证据 |已上线 v3.5.0 的 Swarm 证据见该版本整改报告。当前契约回归见 docs/implementation/test-summary-v3.7.0.json。
+|部署与验收证据 |本版 Swarm 部署及线上联调见 docs/implementation/deployment-v3.7.0.json。本版契约回归见 docs/implementation/test-summary-v3.7.0.json。
 |课程提交 |代码推送 GitHub，由已配置的自动同步更新 Gitee；课程网站提交与口试预约由组员完成。
 |===

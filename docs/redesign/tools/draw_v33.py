@@ -83,14 +83,33 @@ def sequence_for(op,mode):
   return service_sequence(op,mode)
  if op.key in {'AUTH-07','AUTH-08','AUTH-09'}:
   return identity_directory_sequence(op)
+ if op.key=='AUTH-02':
+  return current_user_sequence(op)
  return auth_sequence(op)
+
+def current_user_sequence(op):
+ s=Sequence('auth-02-shared',f'{op.key} {op.title}',[
+  ('client','Caller'),('api','AuthController'),('current','CurrentIdentity'),
+  ('service','AuthService'),('store','ManagementStore'),('effective','EffectiveAccessStore'),
+ ],height=944)
+ s.msg(0,1,255,'GET /auth/me',end=824)
+ s.msg(1,2,308,'get()',end=340)
+ s.msg(2,1,344,'actor',reply=True)
+ s.msg(1,3,394,'me(actor)',end=766)
+ s.msg(3,4,452,'user(actor.userId())',end=484)
+ s.msg(4,3,489,'Data.User',reply=True)
+ s.msg(3,5,547,'rolesForUser(actor.userId())',end=580)
+ s.msg(5,3,587,'角色名称',reply=True)
+ s.msg(3,5,661,'permissionsForUser(user.id(), actor.systemKey())',end=693)
+ s.msg(5,3,700,'有效权限码',reply=True)
+ s.msg(3,1,767,'CurrentUserResult',reply=True)
+ s.msg(1,0,825,'200 CurrentUserVO',reply=True)
+ s.note(874,'课程端按契约转换角色，响应只带当前系统界面码。')
 
 def auth_sequence(op):
  calls={
   'AUTH-01':[('store','ManagementStore','userByUsername(username)；核对手机号'),
              ('access','AccessPolicy','allowed(userId, 每个目标系统, login)')],
-  'AUTH-02':[('store','ManagementStore','user(actor.userId)'),
-             ('effective','EffectiveAccessStore','rolesForUser；permissionsForUser')],
   'AUTH-03':[('sessions','SessionStore','revoke(sessionId, now)')],
   'AUTH-05':[('access','AccessPolicy','[界面码] allowed(userId, system, code)')],
   'AUTH-06':[('access','AccessPolicy','[操作已知] allowed(userId, system, code)')],
@@ -266,13 +285,13 @@ def dataflow():
   d.note(30,1120,840,['外部实体同名表示同一实体；D1 为八张业务表，D2 为会话表。'])
 
 def analysis():
- d=D('usecases','当前基线用例图',900,1080,'UMLUseCaseDiagram')
+ d=D('usecases','系统用例图',900,1080,'UMLUseCaseDiagram')
  # Native actors, use cases and associations retain their UML semantics.
  actors=[]
  for name,x,y in [('管理用户',80,340),('业务系统',740,700)]:
   m=d.model('UMLActor',name=name);v=d.view('UMLActorView',m,left=x,top=y,width=80,height=110);actors.append((m,v))
   d.svg.append(f'<circle cx="{x+40}" cy="{y+15}" r="14" fill="white" stroke="black"/>');d.line([(x+40,y+29),(x+40,y+68)]);d.line([(x+15,y+40),(x+65,y+40)]);d.line([(x+40,y+68),(x+17,y+94)]);d.line([(x+40,y+68),(x+63,y+94)]);d.text(x+40,y+125,name,21,True)
- for i,title in enumerate(['登录与退出','查询用户与分配角色','维护角色与授权','维护目录','查询身份与权限']):
+ for i,title in enumerate(['登录、查看本人资料与退出','查询用户与分配角色','维护角色与授权','查看部门与维护系统权限目录','查询身份与权限']):
   y=120+i*165;m=d.model('UMLUseCase',name=title);v=d.view('UMLUseCaseView',m,left=270,top=y,width=360,height=110)
   d.svg.append(f'<ellipse cx="450" cy="{y+55}" rx="180" ry="55" fill="white" stroke="black"/>');d.text(450,y+62,title,22,True)
   actor=actors[1] if i==4 else actors[0];x0=actor[1]['left']+(0 if i==4 else 80);y0=actor[1]['top']+55;x1=630 if i==4 else 270
