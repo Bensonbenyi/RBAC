@@ -1,6 +1,6 @@
 FROM docker.m.daocloud.io/library/nginx:1.28-alpine
 COPY frontend/dist/ /usr/share/nginx/html/platform/
-COPY frontend/dist-course/ /usr/share/nginx/html/course/
+COPY .integrations/course-project-mgt/web/dist/ /usr/share/nginx/html/course/
 COPY .runtime/api-site/ /usr/share/nginx/html/api-docs/
 COPY backend/target/site/jacoco/ /usr/share/nginx/html/coverage/
 COPY deploy/nginx.conf /etc/nginx/conf.d/default.conf

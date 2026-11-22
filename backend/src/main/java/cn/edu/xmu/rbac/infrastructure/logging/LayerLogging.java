@@ -18,6 +18,7 @@ public class LayerLogging {
       "execution(public * cn.edu.xmu.rbac.api..*Controller.*(..)) || execution(public *"
           + " cn.edu.xmu.rbac.infrastructure.persistence..*(..)) || execution(public *"
           + " cn.edu.xmu.rbac.service.auth..*(..)) || execution(public *"
+          + " cn.edu.xmu.rbac.service.catalog..*(..)) || execution(public *"
           + " cn.edu.xmu.rbac.service.structured..*(..)) || execution(public *"
           + " cn.edu.xmu.rbac.service.ddd.Ddd*Service.*(..))")
   public Object measure(ProceedingJoinPoint call) throws Throwable {

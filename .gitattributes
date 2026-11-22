@@ -2,3 +2,6 @@
 *.pdf binary
 *.png binary
 *.zip binary
+
+# Unified diff context includes its leading space and the upstream indentation.
+integrations/course-project-mgt/patches/*.patch -whitespace

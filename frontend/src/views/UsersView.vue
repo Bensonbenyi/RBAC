@@ -1,12 +1,20 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { request, allowed, allPages, refresh, type Page, type User, type Role } from '../auth';
+import {
+  request,
+  allowed,
+  allPages,
+  refresh,
+  auth,
+  type Page,
+  type User,
+  type Role,
+} from '../auth';
 const users = ref<User[]>([]),
   page = ref(0),
   total = ref(0),
   error = ref(''),
-  editing = ref<User | null>(null),
-  form = ref({ username: '', name: '', phone: '' });
+  busy = ref(false);
 const selected = ref<User | null>(null),
   assigned = ref<Role[]>([]),
   roles = ref<Role[]>([]),
@@ -24,32 +32,6 @@ async function load() {
   users.value = data.items;
   total.value = data.total;
 }
-function edit(user: User) {
-  editing.value = user;
-  form.value = { username: user.username, name: user.name, phone: user.phone };
-}
-function reset() {
-  editing.value = null;
-  form.value = { username: '', name: '', phone: '' };
-}
-async function save() {
-  await run(async () => {
-    await request(
-      editing.value ? `/api/users/${editing.value.id}` : '/api/users',
-      editing.value ? 'PATCH' : 'POST',
-      editing.value ? { name: form.value.name, phone: form.value.phone } : form.value,
-    );
-    reset();
-    await load();
-  });
-}
-async function remove(user: User) {
-  if (confirm(`删除用户 ${user.name}？`))
-    await run(async () => {
-      await request(`/api/users/${user.id}`, 'DELETE');
-      await load();
-    });
-}
 async function showRoles(user: User) {
   await run(async () => {
     selected.value = user;
@@ -57,21 +39,25 @@ async function showRoles(user: User) {
     roles.value = await allPages<Role>('/api/roles/options');
   });
 }
-async function assign() {
-  await run(async () => {
-    if (!selected.value || !roleId.value) return;
-    await request(`/api/users/${selected.value.id}/roles`, 'POST', { roleId: roleId.value });
-    await showRoles(selected.value);
-    await refresh();
-  });
-}
-async function revoke(role: Role) {
-  await run(async () => {
-    if (!selected.value) return;
-    await request(`/api/users/${selected.value.id}/roles/${role.id}`, 'DELETE');
-    await showRoles(selected.value);
-    await refresh();
-  });
+async function changeRole(id: string, method: 'POST' | 'DELETE') {
+  const user = selected.value;
+  if (!user || busy.value || !id) return;
+  busy.value = true;
+  try {
+    await run(async () => {
+      const path = `/api/users/${user.id}/roles`;
+      if (method === 'POST') {
+        await request(path, method, { roleId: id });
+        roleId.value = '';
+      } else {
+        await request(`${path}/${id}`, method);
+      }
+      if (user.id === auth.me?.subject) await refresh();
+      assigned.value = await request<Role[]>(path);
+    });
+  } finally {
+    busy.value = false;
+  }
 }
 onMounted(() => run(load));
 </script>
@@ -93,9 +79,9 @@ onMounted(() => run(load));
         <td>{{ user.name }}</td>
         <td>{{ user.phone }}</td>
         <td>
-          <button :disabled="!allowed('ui.user.edit')" @click="edit(user)">修改资料</button
-          ><button :disabled="!allowed('ui.user.roles')" @click="showRoles(user)">分配角色</button
-          ><button :disabled="!allowed('ui.user.delete')" @click="remove(user)">删除</button>
+          <button :disabled="busy || !allowed('ui.user.roles')" @click="showRoles(user)">
+            分配角色
+          </button>
         </td>
       </tr>
     </tbody>
@@ -120,38 +106,27 @@ onMounted(() => run(load));
       下一页
     </button>
   </div>
-  <section>
-    <h3>{{ editing ? '修改资料' : '新建用户' }}</h3>
-    <form @submit.prevent="save">
-      <label
-        >用户名<input
-          v-model.trim="form.username"
-          :disabled="!!editing"
-          required
-          maxlength="64" /></label
-      ><label>姓名<input v-model.trim="form.name" required maxlength="100" /></label
-      ><label>手机号<input v-model="form.phone" required pattern="1[3-9][0-9]{9}" /></label
-      ><button :disabled="!(editing ? allowed('ui.user.edit') : allowed('ui.user.create'))">
-        保存</button
-      ><button type="button" @click="reset">取消</button>
-    </form>
-  </section>
   <section v-if="selected">
     <h3>{{ selected.name }} 的角色</h3>
     <ul>
       <li v-for="role in assigned" :key="role.id">
         {{ role.name }}
-        <button :disabled="!allowed('ui.user.roles')" @click="revoke(role)">撤销</button>
+        <button
+          :disabled="busy || !allowed('ui.user.roles')"
+          @click="changeRole(role.id, 'DELETE')"
+        >
+          撤销
+        </button>
       </li>
     </ul>
-    <form @submit.prevent="assign">
+    <form @submit.prevent="changeRole(roleId, 'POST')">
       <label
         >角色<select v-model="roleId" required>
           <option value="">请选择</option>
           <option v-for="role in roles" :key="role.id" :value="role.id">{{ role.name }}</option>
         </select></label
-      ><button :disabled="!allowed('ui.user.roles')">分配</button
-      ><button type="button" @click="selected = null">关闭</button>
+      ><button :disabled="busy || !allowed('ui.user.roles')">分配</button
+      ><button type="button" :disabled="busy" @click="selected = null">关闭</button>
     </form>
   </section>
 </template>

@@ -2,7 +2,7 @@
 import { beforeEach, expect, test, vi } from 'vitest';
 import { mount, flushPromises } from '@vue/test-utils';
 import { auth } from './auth';
-import CourseView from './views/CourseView.vue';
+import DepartmentView from './views/DepartmentView.vue';
 import UsersView from './views/UsersView.vue';
 import RolesView from './views/RolesView.vue';
 
@@ -32,50 +32,55 @@ beforeEach(() => {
   );
 });
 
-test('API codes alone never open course menus or send business requests', async () => {
-  auth.me!.permissions = ['CV', 'TC', 'CR'];
-  const view = mount(CourseView);
-  await flushPromises();
-  expect(view.text()).not.toContain('学期维护');
-  expect(fetch).not.toHaveBeenCalled();
-  view.unmount();
-});
-
-test('one menu code shows both menus with native disabled and keeps review buttons visible', async () => {
-  auth.me!.permissions = ['MCO'];
-  const view = mount(CourseView);
-  await flushPromises();
-  const term = view.findAll('button').find((b) => b.text() === '学期维护')!;
-  expect((term.element as HTMLButtonElement).disabled).toBe(true);
-  for (const label of ['通过', '驳回']) {
-    const button = view.findAll('button').find((b) => b.text() === label)!;
-    expect((button.element as HTMLButtonElement).disabled).toBe(true);
-    await button.trigger('click');
-  }
-  expect(vi.mocked(fetch).mock.calls.every((call) => !call[0].toString().includes('/review'))).toBe(
-    true,
+test('role assignment requires the independent UI code', async () => {
+  auth.me!.permissions = ['user.role.assign'];
+  vi.stubGlobal(
+    'fetch',
+    vi.fn(
+      async () =>
+        new Response(
+          JSON.stringify({
+            items: [{ id: '1', name: '测试用户', username: 'test', departmentId: '1' }],
+            page: 0,
+            size: 20,
+            total: 1,
+          }),
+        ),
+    ),
   );
-  auth.me!.permissions = ['MCO', 'MCOR'];
-  await flushPromises();
-  expect(
-    (view.findAll('button').find((b) => b.text() === '通过')!.element as HTMLButtonElement)
-      .disabled,
-  ).toBe(false);
-  auth.me!.permissions = [];
-  await flushPromises();
-  expect(view.find('table').exists()).toBe(false);
-  view.unmount();
-});
-
-test('user buttons and submit use independent UI permissions', async () => {
-  auth.me!.permissions = ['user.create'];
   const view = mount(UsersView);
   await flushPromises();
-  const save = view.findAll('button').find((b) => b.text() === '保存')!;
-  expect((save.element as HTMLButtonElement).disabled).toBe(true);
-  auth.me!.permissions = ['ui.user.create'];
+  const button = view.findAll('button').find((b) => b.text() === '分配角色')!;
+  expect((button.element as HTMLButtonElement).disabled).toBe(true);
+  auth.me!.permissions = ['ui.user.roles'];
   await flushPromises();
-  expect((save.element as HTMLButtonElement).disabled).toBe(false);
+  expect((button.element as HTMLButtonElement).disabled).toBe(false);
+  view.unmount();
+});
+
+test('department tree shows child departments under their parent', async () => {
+  vi.stubGlobal(
+    'fetch',
+    vi.fn(
+      async () =>
+        new Response(
+          JSON.stringify({
+            items: [
+              { id: '1', name: '教学部', parentId: null },
+              { id: '2', name: '教务部', parentId: '1' },
+            ],
+            page: 0,
+            size: 100,
+            total: 2,
+          }),
+        ),
+    ),
+  );
+  const view = mount(DepartmentView);
+  await flushPromises();
+  expect(view.find('details summary').text()).toContain('教学部');
+  expect(view.find('details ul li').text()).toContain('教务部');
+  expect(view.find('form').exists()).toBe(false);
   view.unmount();
 });
 
@@ -88,8 +93,12 @@ test('inheritance controls require their own UI code and refresh effective permi
   vi.stubGlobal(
     'fetch',
     vi.fn(async (url: string, init?: RequestInit) => {
-      if (url.endsWith('/inherited-roles/20')) {
-        linked = init?.method === 'PUT';
+      if (url.endsWith('/inherited-roles') && init?.method === 'POST') {
+        linked = true;
+        return new Response(null, { status: 201 });
+      }
+      if (url.endsWith('/inherited-roles/20') && init?.method === 'DELETE') {
+        linked = false;
         return new Response(null, { status: 204 });
       }
       const data =
@@ -132,7 +141,10 @@ test('inheritance controls require their own UI code and refresh effective permi
     vi
       .mocked(fetch)
       .mock.calls.some(
-        ([url, init]) => url === '/api/roles/10/inherited-roles/20' && init?.method === 'PUT',
+        ([url, init]) =>
+          url === '/api/roles/10/inherited-roles' &&
+          init?.method === 'POST' &&
+          init?.body === JSON.stringify({ juniorId: '20' }),
       ),
   ).toBe(true);
   await view

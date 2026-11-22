@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, computed, watch } from 'vue';
-import { auth, isCourse, request, saveToken, clearToken, refresh, allowed } from './auth';
+import { auth, request, saveToken, clearToken, refresh, allowed } from './auth';
 import { platformMenus, canEnter } from './permissions';
 import { useRouter, useRoute } from 'vue-router';
 const router = useRouter(),
@@ -17,7 +17,7 @@ async function syncPermissions() {
 watch(
   () => auth.me,
   () => {
-    if (!isCourse && !canEnter(route.path)) void router.replace('/profile');
+    if (!canEnter(route.path)) void router.replace('/profile');
   },
 );
 onMounted(() => window.addEventListener('focus', syncPermissions));
@@ -33,7 +33,7 @@ async function login() {
     const result = await request<{ accessToken: string }>('/auth/login', 'POST', {
       username: username.value,
       password: password.value,
-      systems: [isCourse ? 'course-project-management' : 'rbac'],
+      systems: ['rbac'],
     });
     saveToken(result.accessToken);
     password.value = '';
@@ -54,19 +54,10 @@ async function logout() {
     clearToken();
   }
 }
-onMounted(async () => {
-  if (auth.token)
-    try {
-      await refresh();
-    } catch (e) {
-      error.value = (e as Error).message;
-      clearToken();
-    }
-});
 </script>
 <template>
   <header>
-    <h1>{{ isCourse ? '课程管理系统' : '统一权限管理系统' }}</h1>
+    <h1>统一权限管理系统</h1>
     <div v-if="auth.me">{{ auth.me.name }} <button @click="logout">退出</button></div>
   </header>
   <main v-if="!auth.me" class="login">
@@ -91,7 +82,7 @@ onMounted(async () => {
     <p role="alert" class="error">{{ error }}</p>
   </main>
   <template v-else
-    ><nav v-if="!isCourse">
+    ><nav>
       <RouterLink to="/profile">个人资料</RouterLink
       ><template v-if="showManagement"
         ><button

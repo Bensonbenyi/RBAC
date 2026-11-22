@@ -6,8 +6,6 @@ import java.util.List;
 public interface RoleUseCase {
   Data.Page<Data.Role> list(Data.Identity actor, int page, int size);
 
-  Data.Role get(Data.Identity actor, Long id);
-
   Data.Role create(Data.Identity actor, Data.Name command);
 
   void update(Data.Identity actor, Long id, Data.Name command);

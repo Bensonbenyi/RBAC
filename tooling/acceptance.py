@@ -58,8 +58,13 @@ assigned = False
 stamp = str(int(time.time()))
 try:
     admin = login('admin', 'rbac')
-    reviewer = login('reviewer', 'course-project-management')
-    viewer = login('viewer', 'course-project-management')
+    reviewer = call('/course-api/login', 'POST', {
+        'role': 'teacher', 'account': 'reviewer', 'password': phone})['accessToken']
+    viewer = call('/course-api/login', 'POST', {
+        'role': 'teacher', 'account': 'viewer', 'password': phone})['accessToken']
+    call('/course-api/teacher/courses', token=reviewer)
+    assert call('/course-api/auth/permissions/MCO', token=viewer)['allowed']
+    assert not call('/course-api/auth/permissions/MTR', token=viewer)['allowed']
     me = call('/course-api/me', token=viewer)
     assert 'MCO' in me['permissions'] and 'CV' not in me['permissions']
     call('/api/users', token=admin)
@@ -81,17 +86,18 @@ try:
         roles.append(call('/api/roles', 'POST', {'name': '验收 ' + stamp + ' ' + name}, admin, 201)['id'])
     senior, middle, base = roles
     for code in ['TC', 'MTR', 'MTRC']:
-        path = f'/api/roles/{base}/permissions/{codes[code]}'
-        call(path, 'PUT', token=admin, expected=204)
-        grants.append(path)
+        path = f'/api/roles/{base}/permissions'
+        call(path, 'POST', {'permissionId': codes[code]}, admin, 201)
+        grants.append(f'{path}/{codes[code]}')
+    call(path, 'POST', {'permissionId': codes[code]}, admin, 409)
     for a, b in [(senior, middle), (middle, base), (senior, base)]:
-        path = f'/api/roles/{a}/inherited-roles/{b}'
-        call(path, 'PUT', token=admin, expected=204)
-        links.append(path)
-    call(f'/api/roles/{senior}/inherited-roles/{base}', 'PUT', token=admin, expected=204)
-    cycle = call(f'/api/roles/{base}/inherited-roles/{senior}', 'PUT', token=admin, expected=409)
+        path = f'/api/roles/{a}/inherited-roles'
+        call(path, 'POST', {'juniorId': b}, admin, 201)
+        links.append(f'{path}/{b}')
+    call(f'/api/roles/{senior}/inherited-roles', 'POST', {'juniorId': base}, admin, 409)
+    cycle = call(f'/api/roles/{base}/inherited-roles', 'POST', {'juniorId': senior}, admin, 409)
     assert cycle['code'] == 'ROLE_CYCLE'
-    call(f'/api/roles/{senior}/inherited-roles/{senior}', 'PUT', token=admin, expected=409)
+    call(f'/api/roles/{senior}/inherited-roles', 'POST', {'juniorId': senior}, admin, 409)
     call(f'/api/roles/{senior}', 'DELETE', token=admin, expected=409)
     effective = call(f'/api/roles/{senior}/effective-permissions', token=admin)
     assert len(effective) == 3 and {p['code'] for p in effective} == {'TC', 'MTR', 'MTRC'}

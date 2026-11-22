@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -58,11 +57,6 @@ public class RoleController {
     return ManagementVOs.page(service.list(current.get(), page, size), ManagementVOs::role);
   }
 
-  @GetMapping("/{id}")
-  public ManagementVOs.RoleVO get(@PathVariable @Positive Long id) {
-    return ManagementVOs.role(service.get(current.get(), id));
-  }
-
   /** 创建当前部门的角色. */
   @PostMapping
   public ResponseEntity<ManagementVOs.RoleVO> create(
@@ -90,10 +84,15 @@ public class RoleController {
     return service.permissions(current.get(), id).stream().map(ManagementVOs::permission).toList();
   }
 
-  @PutMapping("/{id}/permissions/{permissionId}")
-  @ResponseStatus(org.springframework.http.HttpStatus.NO_CONTENT)
-  public void grant(@PathVariable @Positive Long id, @PathVariable @Positive Long permissionId) {
-    service.grant(current.get(), id, permissionId);
+  /** 新建直接授权关系。再次提交由关联主键判定冲突. */
+  @PostMapping("/{id}/permissions")
+  public ResponseEntity<Void> grant(
+      @PathVariable @Positive Long id,
+      @RequestBody @Valid ManagementDTOs.GrantPermissionDTO request) {
+    service.grant(current.get(), id, request.permissionId());
+    return ResponseEntity.created(
+            URI.create("/api/roles/" + id + "/permissions/" + request.permissionId()))
+        .build();
   }
 
   @DeleteMapping("/{id}/permissions/{permissionId}")
@@ -116,10 +115,14 @@ public class RoleController {
         .toList();
   }
 
-  @PutMapping("/{id}/inherited-roles/{juniorId}")
-  @ResponseStatus(org.springframework.http.HttpStatus.NO_CONTENT)
-  public void inherit(@PathVariable @Positive Long id, @PathVariable @Positive Long juniorId) {
-    service.inherit(current.get(), id, juniorId);
+  /** 添加从高级角色指向基础角色的继承边. */
+  @PostMapping("/{id}/inherited-roles")
+  public ResponseEntity<Void> inherit(
+      @PathVariable @Positive Long id, @RequestBody @Valid ManagementDTOs.InheritRoleDTO request) {
+    service.inherit(current.get(), id, request.juniorId());
+    return ResponseEntity.created(
+            URI.create("/api/roles/" + id + "/inherited-roles/" + request.juniorId()))
+        .build();
   }
 
   @DeleteMapping("/{id}/inherited-roles/{juniorId}")

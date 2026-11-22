@@ -7,16 +7,13 @@ import cn.edu.xmu.rbac.api.shared.dto.ManagementDTOs;
 import cn.edu.xmu.rbac.service.port.Data;
 import org.junit.jupiter.api.Test;
 
-/** 验证教师处理器生成的 record 拷贝和 PATCH 空字段保留. */
+/** 验证教师处理器生成的请求 DTO 到命令对象的拷贝. */
 class CopyTest {
   @Test
-  void copiesRecordAndKeepsUnsubmittedFields() {
-    Data.Profile command =
-        CloneFactory.copy(new Data.Profile(null, null), new ManagementDTOs.ProfileDTO("新姓名", null));
-    Data.Profile old = new Data.Profile("原姓名", "13800000000");
-    Data.Profile merged = CloneFactory.copyNotNull(old, command);
-    assertEquals(new Data.Profile("新姓名", "13800000000"), merged);
-    assertEquals(new Data.Profile("原姓名", "13800000000"), old);
-    assertEquals(old, CloneFactory.copyNotNull(old, new Data.Profile(null, null)));
+  void copiesImmutableRecord() {
+    var request = new ManagementDTOs.CreatePermissionDTO("CR", "课程审核");
+    var target = new Data.CreatePermission(null, null);
+    assertEquals(new Data.CreatePermission("CR", "课程审核"), CloneFactory.copy(target, request));
+    assertEquals(new Data.CreatePermission(null, null), target);
   }
 }

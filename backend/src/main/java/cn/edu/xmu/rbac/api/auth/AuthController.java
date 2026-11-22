@@ -1,24 +1,19 @@
 package cn.edu.xmu.rbac.api.auth;
 
-import cn.edu.xmu.clonefactory.util.CloneFactory;
 import cn.edu.xmu.rbac.api.auth.dto.LoginDTO;
 import cn.edu.xmu.rbac.api.auth.vo.IdentityVOs.AllowedVO;
 import cn.edu.xmu.rbac.api.auth.vo.IdentityVOs.CurrentUserVO;
 import cn.edu.xmu.rbac.api.auth.vo.IdentityVOs.LoginVO;
-import cn.edu.xmu.rbac.api.shared.dto.ManagementDTOs;
 import cn.edu.xmu.rbac.infrastructure.security.CurrentIdentity;
 import cn.edu.xmu.rbac.service.auth.AuthService;
 import cn.edu.xmu.rbac.service.auth.AuthService.CurrentUserResult;
 import cn.edu.xmu.rbac.service.auth.AuthService.LoginResult;
-import cn.edu.xmu.rbac.service.port.Data;
-import cn.edu.xmu.rbac.service.port.UserUseCase;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,13 +28,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
   private final AuthService service;
   private final CurrentIdentity current;
-  private final UserUseCase users;
 
-  /** 注入身份服务及个人资料用例. */
-  public AuthController(AuthService service, CurrentIdentity current, UserUseCase users) {
+  /** 注入身份服务与当前身份上下文. */
+  public AuthController(AuthService service, CurrentIdentity current) {
     this.service = service;
     this.current = current;
-    this.users = users;
   }
 
   /** 校验登录参数并返回签发结果. */
@@ -60,13 +53,6 @@ public class AuthController {
         result.departmentId(),
         result.roles(),
         result.permissions());
-  }
-
-  /** 保存当前用户允许修改的资料字段. */
-  @PatchMapping("/me")
-  @ResponseStatus(HttpStatus.NO_CONTENT)
-  public void updateMe(@RequestBody @Valid ManagementDTOs.ProfileDTO request) {
-    users.updateMe(current.get(), CloneFactory.copy(new Data.Profile(null, null), request));
   }
 
   /** 撤销当前令牌对应的会话. */

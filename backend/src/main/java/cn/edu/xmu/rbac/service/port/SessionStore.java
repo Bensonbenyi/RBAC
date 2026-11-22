@@ -5,7 +5,7 @@ import java.time.Instant;
 /** 登录会话持久化端口. */
 public interface SessionStore {
   /** Session 数据契约. */
-  record Session(String id, Long userId, String systemKey, Instant expiresAt, Instant revokedAt) {}
+  record Session(String id, Long userId, Instant expiresAt, Instant revokedAt) {}
 
   void save(Session session);
 

@@ -1,11 +1,11 @@
 {
   "name": "rbac-frontend",
-  "version": "3.6.2",
+  "version": "3.7.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
-    "build": "vue-tsc --noEmit && vite build --base=/platform/ && vite build --base=/course/ --outDir dist-course",
+    "build": "vue-tsc --noEmit && vite build --base=/platform/",
     "format": "prettier --write \"src/**/*.{ts,vue,css}\" \"*.{json,ts}\"",
     "format:check": "prettier --check \"src/**/*.{ts,vue,css}\" \"*.{json,ts}\"",
     "test": "vitest run"

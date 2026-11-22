@@ -27,12 +27,11 @@ schemas={
  'IdentityDepartmentUser':obj({'userId':string,'no':string,'name':string,'departmentId':integer_id,'departmentName':string},['userId','no','name','departmentId','departmentName']),
  'Error':obj({'code':string,'message':string}),
  'Name':obj({'name':name},['name']),
- 'Profile':dict(obj({'name':dict(name,nullable=True),'phone':dict(phone,nullable=True)}),anyOf=[{'required':['name'],'properties':{'name':name}},{'required':['phone'],'properties':{'phone':phone}}]),
- 'CreateUser':obj({'username':{'type':'string','minLength':1,'maxLength':64,'pattern':r'.*\S.*'},'name':name,'phone':phone},['username','name','phone']),
- 'CreateDepartment':obj({'name':name,'parentId':{'type':'integer','format':'int64','minimum':1,'nullable':True}},['name']),
  'CreateSystem':obj({'systemKey':{'type':'string','minLength':1,'maxLength':64,'pattern':'^[a-z0-9-]+$'},'name':name},['systemKey','name']),
  'CreatePermission':obj({'code':{'type':'string','minLength':1,'maxLength':100,'pattern':'^[a-zA-Z0-9.:_-]+$'},'name':name},['code','name']),
- 'AssignRole':obj({'roleId':{'type':'integer','format':'int64','minimum':1}},['roleId'])}
+ 'AssignRole':obj({'roleId':{'type':'integer','format':'int64','minimum':1}},['roleId']),
+ 'GrantPermission':obj({'permissionId':integer_id},['permissionId']),
+ 'InheritRole':obj({'juniorId':integer_id},['juniorId'])}
 for entity,fields in {'User':['id','username','name','phone','departmentId'],'Role':['id','name','departmentId'],'Department':['id','name','parentId'],'System':['id','systemKey','name'],'Permission':['id','systemId','code','name']}.items():
  schemas[entity]=obj({n:(dict(id_schema,nullable=True) if n=='parentId' else id_schema if n=='id' or n.endswith('Id') else string) for n in fields})
  schemas['Page'+entity]=obj({'items':arr(entity),'page':{'type':'integer'},'size':{'type':'integer'},'total':{'type':'integer','format':'int64'}})
@@ -62,7 +61,7 @@ for op in OPS:
  if op.function in ['list','options']:
   for n,default,minimum,maximum in [('page',0,0,1000000),('size',20,1,100)]:operation['parameters'].append({'name':n,'in':'query','schema':{'type':'integer','default':default,'minimum':minimum,'maximum':maximum}})
  if op.key=='PERM-05':operation['parameters'].append({'name':'systemId','in':'query','required':True,'schema':{'type':'integer','format':'int64','minimum':1}})
- body={'AUTH-01':'Login','AUTH-04':'Profile','USER-03':'CreateUser','USER-04':'Profile','USER-07':'AssignRole','ROLE-03':'Name','ROLE-04':'Name','DEPT-02':'CreateDepartment','DEPT-03':'Name','SYS-02':'CreateSystem','SYS-03':'Name','PERM-02':'CreatePermission','PERM-03':'Name'}.get(op.key)
+ body={'AUTH-01':'Login','USER-07':'AssignRole','ROLE-03':'Name','ROLE-04':'Name','ROLE-07':'GrantPermission','ROLE-11':'InheritRole','SYS-02':'CreateSystem','PERM-02':'CreatePermission','PERM-03':'Name'}.get(op.key)
  if body:operation['requestBody']={'required':True,'content':{'application/json':{'schema':ref(body)}}}
  status=op.result.split()[0]
  result={'AUTH-01':'LoginResult','AUTH-02':'Me','AUTH-05':'Allowed','AUTH-06':'Allowed','AUTH-07':'IdentityUser','AUTH-08':'IdentityDepartmentPage','AUTH-09':'IdentityDepartmentUserPage'}.get(op.key)

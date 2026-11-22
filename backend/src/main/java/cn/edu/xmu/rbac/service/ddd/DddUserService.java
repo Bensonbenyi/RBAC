@@ -35,40 +35,6 @@ public class DddUserService implements UserUseCase {
     return store.users(actor.departmentId(), page, size);
   }
 
-  public Data.User get(Data.Identity actor, Long id) {
-    access.require(actor, "user.view");
-    return scoped(actor, id);
-  }
-
-  /** 校验输入后创建对象. */
-  public Data.User create(Data.Identity actor, Data.CreateUser command) {
-    access.require(actor, "user.create");
-    return store.createUser(actor.departmentId(), command);
-  }
-
-  /** 修改白名单字段并保持归属不变. */
-  public void update(Data.Identity actor, Long id, Data.Profile command) {
-    access.require(actor, "user.edit");
-    User user = new User(scoped(actor, id));
-    user.changeProfile(command);
-    store.updateUser(id, user.profile());
-  }
-
-  /** 修改当前用户的姓名和手机号. */
-  public void updateMe(Data.Identity actor, Data.Profile command) {
-    Long id = actor.userId();
-    User user = new User(store.user(id));
-    user.changeProfile(command);
-    store.updateUser(id, user.profile());
-  }
-
-  /** 检查引用关系后删除对象. */
-  public void delete(Data.Identity actor, Long id) {
-    access.require(actor, "user.delete");
-    scoped(actor, id);
-    store.deleteUser(id);
-  }
-
   /** 查询用户已分配角色. */
   public List<Data.Role> roles(Data.Identity actor, Long id) {
     access.require(actor, "user.role.assign");

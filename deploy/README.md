@@ -4,15 +4,15 @@
 
 ## 构建
 
-构建主机需要 Java 21、Docker、Node.js 和 Maven Wrapper。教师仓库由固定提交及补丁准备。
+构建主机需要 Java 21、Docker、Node.js 24.15 和 Maven 3.9。教师仓库由固定提交及补丁准备。
 
 ```sh
 ./tooling/prepare-course.sh
 ./tooling/test.sh
 ./mvnw install -DskipTests
 mvn -f .integrations/course-project-mgt/backend/pom.xml -s .mvn/settings.xml package -DskipTests
-npm ci --prefix frontend
-npm run build --prefix frontend
+npm ci --prefix .integrations/course-project-mgt/web
+VITE_API_BASE_URL=/course-api npm run build --prefix .integrations/course-project-mgt/web -- --base=/course/
 ./tooling/build-images.sh
 ```
 
@@ -23,7 +23,7 @@ npm run build --prefix frontend
 在 Manager 创建以下外部 Secret。`SECRET_DIR` 指向权限为 700 的凭据目录，其文件权限为 600；文件保存各自的值。
 
 ```sh
-for name in mysql_root_password rbac_db_password course_db_password private_key public_key demo_phone; do
+for name in mysql_root_password rbac_db_password course_db_password private_key public_key; do
   docker secret create "rbac_v33_$name" "$SECRET_DIR/$name"
 done
 ```
@@ -38,24 +38,26 @@ RBAC_VERSION="$(cat docs/redesign/VERSION)" docker stack deploy --resolve-image 
 docker stack services rbac_v33
 ```
 
-默认 `BACKEND_STRATEGY=structured`。设置为 `ddd` 后重部署，可同时选择平台与教师应用各自的 DDD 实现。两种实现使用相同接口和数据库。Stack 更新为 stop-first；等待新任务的环境与 health 都符合目标配置，再执行验收。入口 `/platform/`、`/course/`，反向代理将 `/course-api/` 剥离前缀交给教师后端。
+默认 `BACKEND_STRATEGY=structured`。设置为 `ddd` 后重部署，可同时选择平台与教师应用各自的 DDD 实现。两种实现使用相同接口和数据库。Stack 更新为 stop-first；等待新任务的环境与 health 都符合目标配置，再执行验收。入口 `/platform/`、`/course/`，反向代理将 `/course-api/auth/*` 转到平台认证接口，其余 `/course-api/*` 去掉前缀后交给教师后端。
 
-演示课程种子为 `integrations/course-project-mgt/demo-data.sql`，在课程数据库执行。脚本只添加缺失的合成课程，保留已有审核结果。平台空库在显式启用演示初始化后创建合成角色与账号，已有用户时跳过初始化。
-
-两个应用完成初始化后，使用具备跨库读取权限的初始化账号执行 `integrations/course-project-mgt/link-demo-teachers.sql`，将 admin、reviewer、viewer 的实际平台编号关联至课程 `teacher.user_id`。脚本保留已有教师关联。课程 `GET /me` 需要本地教师或学生资料，未关联时返回 403；正式账号使用对应的真实资料。通过数据库命令行执行中文种子时设置 `--default-character-set=utf8mb4`。
-
-Flyway V2 在既有平台库补齐独立界面码，此后两类权限可以分别撤销。已部署版本和验收记录见 [v3.5.0 部署记录](../docs/implementation/整改报告-v3.5.0.md)。
-
-## 备份与恢复校验
-
-在数据库 Worker 执行：
+应用完成 Flyway 迁移后，在数据库 Worker 借助 MySQL 容器导入演示数据。空平台库先执行 `deploy/mysql/demo.sql`。课程库执行 `integrations/course-project-mgt/demo-data.sql`，再跨库执行 `integrations/course-project-mgt/link-demo-teachers.sql`。已有演示库升级时从课程数据和教师关联两步开始。关联脚本将演示工号与平台用户名对齐，确保课程的 `POST /login` 能找到本地教师。
 
 ```sh
-bash /opt/rbac-v33/backup.sh /opt/rbac-v33/backups
-bash /opt/rbac-v33/restore-check.sh /opt/rbac-v33/backups/指定备份.sql.gz
+db="$(docker ps -q --filter label=com.docker.swarm.service.name=rbac_v33_db)"
+docker exec -i "$db" sh -c 'MYSQL_PWD="$(cat /run/secrets/mysql_root_password)" exec mysql -uroot --default-character-set=utf8mb4 rbac' < deploy/mysql/demo.sql
+docker exec -i "$db" sh -c 'MYSQL_PWD="$(cat /run/secrets/mysql_root_password)" exec mysql -uroot --default-character-set=utf8mb4 course_project' < integrations/course-project-mgt/demo-data.sql
+docker exec -i "$db" sh -c 'MYSQL_PWD="$(cat /run/secrets/mysql_root_password)" exec mysql -uroot --default-character-set=utf8mb4' < integrations/course-project-mgt/link-demo-teachers.sql
 ```
 
-备份脚本在容器内读取 Secret。恢复检查使用本地 amd64 MySQL 镜像，新建 `rbac-v33-restore-check` 容器和 `rbac_v33_restore_check` 卷；名称已有占用时退出。隔离容器无网络和发布端口，导入后比较源库与恢复库的规范化数据摘要，并清理本次创建的临时资源。源库在备份与比较期间保持无写入，以便比较同一份数据。需要正式恢复时，以验证后的转储恢复数据库，同时提供原 JWT 签名密钥。
+Flyway V5 移除已停用的管理权限码和会话表的目标系统列。请求从已验签的 JWT 读取目标系统，沿用旧会话的 jti、账号、到期时间及撤销状态。
+
+## 手动备份与恢复
+
+在数据库 Worker 执行 `bash deploy/backup.sh` 导出两个数据库。需要恢复时，在选定的 MySQL 实例导入备份，再核对账号、授权关系和两套系统的登录。要继续验证原有会话，应用需使用备份前的签名密钥。
+
+```sh
+gzip -dc /绝对路径/所选备份.sql.gz | docker exec -i "$db" sh -c 'MYSQL_PWD="$(cat /run/secrets/mysql_root_password)" exec mysql -uroot --default-character-set=utf8mb4'
+```
 
 ## 测量
 

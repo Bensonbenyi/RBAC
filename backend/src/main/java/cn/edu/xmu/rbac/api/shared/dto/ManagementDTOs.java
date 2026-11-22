@@ -2,7 +2,6 @@ package cn.edu.xmu.rbac.api.shared.dto;
 
 import cn.edu.xmu.clonefactory.CopyTo;
 import cn.edu.xmu.rbac.service.port.Data;
-import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -13,32 +12,9 @@ import jakarta.validation.constraints.Size;
 public final class ManagementDTOs {
   private ManagementDTOs() {}
 
-  /** CreateUser 数据契约. */
-  @CopyTo({Data.CreateUser.class})
-  public record CreateUserDTO(
-      @NotBlank @Size(max = 64) String username,
-      @NotBlank @Size(max = 100) String name,
-      @NotNull @Pattern(regexp = "1[3-9][0-9]{9}") String phone) {}
-
-  /** Profile 数据契约. */
-  @CopyTo({Data.Profile.class})
-  public record ProfileDTO(
-      @Size(min = 1, max = 100) @Pattern(regexp = ".*\\S.*") String name,
-      @Pattern(regexp = "1[3-9][0-9]{9}") String phone) {
-    @AssertTrue
-    public boolean isNonEmpty() {
-      return name != null || phone != null;
-    }
-  }
-
   /** Name 数据契约. */
   @CopyTo({Data.Name.class})
   public record NameDTO(@NotBlank @Size(max = 100) String name) {}
-
-  /** CreateDepartment 数据契约. */
-  @CopyTo({Data.CreateDepartment.class})
-  public record CreateDepartmentDTO(
-      @NotBlank @Size(max = 100) String name, @Positive Long parentId) {}
 
   /** CreateSystem 数据契约. */
   @CopyTo({Data.CreateSystem.class})
@@ -54,4 +30,10 @@ public final class ManagementDTOs {
 
   /** AssignRole 数据契约. */
   public record AssignRoleDTO(@NotNull @Positive Long roleId) {}
+
+  /** 新建角色与权限的直接关联. */
+  public record GrantPermissionDTO(@NotNull @Positive Long permissionId) {}
+
+  /** 指定要继承的基础角色. */
+  public record InheritRoleDTO(@NotNull @Positive Long juniorId) {}
 }

@@ -35,7 +35,7 @@ call(a.course,path,'POST',body,viewer,403)
 relation='/api/roles/'+role['id']+'/permissions/'+permission['id']
 call(a.base,relation,'DELETE',token=admin,status=204)
 try:call(a.course,path,'POST',body,reviewer,403)
-finally:call(a.base,relation,'PUT',token=admin,status=204)
+finally:call(a.base,relation.rsplit('/',1)[0],'POST',{'permissionId':permission['id']},admin,201)
 reviewed=call(a.course,path,'POST',body,reviewer);assert reviewed['courseStatus']==3
 call(a.base,'/auth/logout','POST',token=viewer,status=204);call(a.course,'/terms',token=viewer,status=401)
 from pathlib import Path

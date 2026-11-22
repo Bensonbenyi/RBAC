@@ -81,7 +81,7 @@ public class AuthService {
     String id = UUID.randomUUID().toString();
     Instant now = Instant.now();
     Instant end = now.plus(lifetime);
-    sessions.save(new SessionStore.Session(id, user.id(), systems.getFirst(), end, null));
+    sessions.save(new SessionStore.Session(id, user.id(), end, null));
     JwtClaimsSet claims =
         JwtClaimsSet.builder()
             .issuer(issuer)

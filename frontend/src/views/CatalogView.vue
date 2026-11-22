@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
 import { request, allowed, allPages, type Page, type Named, type System } from '../auth';
-const props = defineProps<{ kind: 'departments' | 'systems' | 'permissions' }>();
+const props = defineProps<{ kind: 'systems' | 'permissions' }>();
 interface Entry extends Named {
-  parentId?: string;
   systemKey?: string;
   code?: string;
 }
-const titles = { departments: '部门', systems: '业务系统', permissions: '权限目录' };
+const titles = { systems: '业务系统', permissions: '权限目录' };
 const rows = ref<Entry[]>([]),
   page = ref(0),
   total = ref(0),
@@ -15,9 +14,9 @@ const rows = ref<Entry[]>([]),
   systemId = ref(''),
   name = ref(''),
   code = ref(''),
-  parentId = ref(''),
   editing = ref<Entry | null>(null),
-  error = ref('');
+  error = ref(''),
+  busy = ref(false);
 function can(action: string) {
   return allowed(`ui.${props.kind.slice(0, -1)}.${action}`);
 }
@@ -27,11 +26,15 @@ function endpoint() {
     : `/api/${props.kind}`;
 }
 async function run(action: () => Promise<void>) {
+  if (busy.value) return;
+  busy.value = true;
   error.value = '';
   try {
     await action();
   } catch (e) {
     error.value = (e as Error).message;
+  } finally {
+    busy.value = false;
   }
 }
 async function load() {
@@ -47,17 +50,14 @@ function reset() {
   editing.value = null;
   name.value = '';
   code.value = '';
-  parentId.value = '';
 }
 async function save() {
   await run(async () => {
     const body = editing.value
       ? { name: name.value }
-      : props.kind === 'departments'
-        ? { name: name.value, parentId: parentId.value || null }
-        : props.kind === 'systems'
-          ? { name: name.value, systemKey: code.value }
-          : { name: name.value, code: code.value };
+      : props.kind === 'systems'
+        ? { name: name.value, systemKey: code.value }
+        : { name: name.value, code: code.value };
     await request(
       editing.value ? `/api/${props.kind}/${editing.value.id}` : endpoint(),
       editing.value ? 'PATCH' : 'POST',
@@ -106,7 +106,7 @@ onMounted(() =>
       <tr>
         <th>编号</th>
         <th>名称</th>
-        <th>{{ kind === 'departments' ? '父部门编号' : '标识或编码' }}</th>
+        <th>标识或编码</th>
         <th>操作</th>
       </tr>
     </thead>
@@ -114,17 +114,18 @@ onMounted(() =>
       <tr v-for="row in rows" :key="row.id">
         <td>{{ row.id }}</td>
         <td>{{ row.name }}</td>
-        <td>{{ row.parentId || row.systemKey || row.code || '根部门' }}</td>
+        <td>{{ row.systemKey || row.code }}</td>
         <td>
           <button
-            :disabled="!can('edit')"
+            v-if="kind === 'permissions'"
+            :disabled="busy || !can('edit')"
             @click="
               editing = row;
               name = row.name;
             "
           >
             重命名</button
-          ><button :disabled="!can('delete')" @click="remove(row)">删除</button>
+          ><button :disabled="busy || !can('delete')" @click="remove(row)">删除</button>
         </td>
       </tr>
     </tbody>
@@ -152,16 +153,12 @@ onMounted(() =>
   <h3>{{ editing ? '重命名' : '新建' }}</h3>
   <form @submit.prevent="save">
     <label>名称<input v-model.trim="name" required maxlength="100" /></label
-    ><label v-if="!editing && kind === 'departments'"
-      >父部门编号<input
-        v-model="parentId"
-        inputmode="numeric"
-        pattern="[1-9][0-9]*"
-        placeholder="留空创建根部门" /></label
-    ><label v-if="!editing && kind !== 'departments'"
+    ><label v-if="!editing"
       >{{ kind === 'systems' ? '系统标识' : '权限编码'
       }}<input v-model.trim="code" required :maxlength="kind === 'systems' ? 64 : 100" /></label
-    ><button :disabled="!can(editing ? 'edit' : 'create') || (kind === 'permissions' && !systemId)">
+    ><button
+      :disabled="busy || !can(editing ? 'edit' : 'create') || (kind === 'permissions' && !systemId)"
+    >
       保存</button
     ><button type="button" @click="reset">取消</button>
   </form>

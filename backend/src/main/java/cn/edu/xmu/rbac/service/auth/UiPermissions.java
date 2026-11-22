@@ -9,9 +9,6 @@ public final class UiPermissions {
   public static final Set<String> PLATFORM =
       Set.of(
           "ui.users",
-          "ui.user.create",
-          "ui.user.edit",
-          "ui.user.delete",
           "ui.user.roles",
           "ui.roles",
           "ui.role.create",
@@ -20,12 +17,8 @@ public final class UiPermissions {
           "ui.role.permissions",
           "ui.role.inheritance",
           "ui.departments",
-          "ui.department.create",
-          "ui.department.edit",
-          "ui.department.delete",
           "ui.systems",
           "ui.system.create",
-          "ui.system.edit",
           "ui.system.delete",
           "ui.permissions",
           "ui.permission.create",

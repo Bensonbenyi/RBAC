@@ -16,7 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -64,13 +63,6 @@ public class SystemController {
             current.get(), CloneFactory.copy(new Data.CreateSystem(null, null), request));
     return ResponseEntity.created(URI.create("/api/systems/" + entity.id()))
         .body(ManagementVOs.system(entity));
-  }
-
-  @PatchMapping("/api/systems/{id}")
-  @ResponseStatus(org.springframework.http.HttpStatus.NO_CONTENT)
-  public void update(
-      @PathVariable @Positive Long id, @RequestBody @Valid ManagementDTOs.NameDTO request) {
-    service.update(current.get(), id, CloneFactory.copy(new Data.Name(null), request));
   }
 
   @DeleteMapping("/api/systems/{id}")

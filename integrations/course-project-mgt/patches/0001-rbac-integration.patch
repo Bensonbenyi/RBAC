@@ -1,22 +1,25 @@
 diff --git a/backend/pom.xml b/backend/pom.xml
-index eafc391..4296cd9 100644
+index dcc3376..751a598 100644
 --- a/backend/pom.xml
 +++ b/backend/pom.xml
-@@ -32,6 +32,7 @@
- 		<clonefactory.version>0.0.2</clonefactory.version>
- 	</properties>
- 	<dependencies>
-+<dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-security-oauth2-resource-server</artifactId></dependency>
+@@ -67,6 +67,10 @@
+ 			<groupId>org.springframework.boot</groupId>
+ 			<artifactId>spring-boot-starter-security</artifactId>
+ 		</dependency>
++		<dependency>
++			<groupId>org.springframework.boot</groupId>
++			<artifactId>spring-boot-starter-security-oauth2-resource-server</artifactId>
++		</dependency>
  		<dependency>
  			<groupId>org.springframework.boot</groupId>
- 			<artifactId>spring-boot-starter-actuator</artifactId>
+ 			<artifactId>spring-boot-starter-validation</artifactId>
 diff --git a/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/identity/IdentityHttpClientConfiguration.java b/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/identity/IdentityHttpClientConfiguration.java
 index 6e94e4a..cff235c 100644
 --- a/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/identity/IdentityHttpClientConfiguration.java
 +++ b/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/identity/IdentityHttpClientConfiguration.java
 @@ -1,6 +1,7 @@
  package cn.edu.xmu.projectmgt.infrastructure.identity;
-
+ 
  import cn.edu.xmu.projectmgt.infrastructure.http.ExternalRestClientFactory;
 +import cn.edu.xmu.projectmgt.infrastructure.identity.client.ApiAuthorityClient;
  import cn.edu.xmu.projectmgt.infrastructure.identity.client.UnifiedIdentityClient;
@@ -70,27 +73,18 @@ index 0000000..60c38c9
 +    }
 +}
 diff --git a/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/identity/client/UnifiedIdentityClient.java b/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/identity/client/UnifiedIdentityClient.java
-index 71b6e5a..b13831e 100644
+index fc8c142..78a0d53 100644
 --- a/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/identity/client/UnifiedIdentityClient.java
 +++ b/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/identity/client/UnifiedIdentityClient.java
-@@ -9,7 +9,7 @@ import org.springframework.web.service.annotation.HttpExchange;
+@@ -11,7 +11,7 @@ import org.springframework.web.service.annotation.PostExchange;
  /**
   * 统一身份认证系统 HTTP 客户端。
   */
 -@HttpExchange
 +@HttpExchange(headers = "X-Target-System=course-project-management")
  public interface UnifiedIdentityClient {
-
+ 
      /**
-@@ -24,7 +24,7 @@ public interface UnifiedIdentityClient {
-     /**
-      * 按统一身份用户标识查询姓名和工号。
-      */
--    @GetExchange("/identity/users/{userId}")
-+    @GetExchange("/auth/users/{userId}")
-     IdentityUserResponse lookupUser(
-             @RequestHeader(HttpHeaders.AUTHORIZATION)
-             String authorization,
 diff --git a/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/security/RbacIntegrationConfiguration.java b/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/security/RbacIntegrationConfiguration.java
 new file mode 100644
 index 0000000..355c9fb
@@ -147,10 +141,10 @@ index 0000000..355c9fb
 +}
 diff --git a/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/security/RbacIntegrationFilter.java b/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/security/RbacIntegrationFilter.java
 new file mode 100644
-index 0000000..1b4f49c
+index 0000000..6093ff4
 --- /dev/null
 +++ b/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/security/RbacIntegrationFilter.java
-@@ -0,0 +1,154 @@
+@@ -0,0 +1,158 @@
 +package cn.edu.xmu.projectmgt.infrastructure.security;
 +
 +import cn.edu.xmu.projectmgt.infrastructure.identity.client.ApiAuthorityClient;
@@ -192,7 +186,8 @@ index 0000000..1b4f49c
 +      throws ServletException, IOException {
 +    long start = System.nanoTime();
 +    try {
-+      if (request.getRequestURI().equals("/actuator/health")) {
++      if (request.getRequestURI().equals("/actuator/health")
++          || (request.getMethod().equals("POST") && request.getRequestURI().equals("/login"))) {
 +        chain.doFilter(request, response);
 +        return;
 +      }
@@ -265,6 +260,9 @@ index 0000000..1b4f49c
 +    if (path.equals("/me") && method.equals("GET")) {
 +      return "getCurrentUser";
 +    }
++    if (path.equals("/teacher/courses") && method.equals("GET")) {
++      return "listTeacherCourses";
++    }
 +    if (path.equals("/terms")) {
 +      return switch (method) {
 +        case "GET" -> "listTerms";
@@ -306,7 +304,7 @@ index 0000000..1b4f49c
 +  }
 +}
 diff --git a/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/security/SecurityConfiguration.java b/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/security/SecurityConfiguration.java
-index 7a79fad..4c6c535 100644
+index c325028..6ac0842 100644
 --- a/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/security/SecurityConfiguration.java
 +++ b/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/security/SecurityConfiguration.java
 @@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
@@ -325,3 +323,42 @@ index 7a79fad..4c6c535 100644
  @EnableWebSecurity
  @RequiredArgsConstructor
  public class SecurityConfiguration {
+diff --git a/backend/src/main/java/cn/edu/xmu/projectmgt/service/ddd/application/auth/DddLoginService.java b/backend/src/main/java/cn/edu/xmu/projectmgt/service/ddd/application/auth/DddLoginService.java
+index f967249..8c2fe20 100644
+--- a/backend/src/main/java/cn/edu/xmu/projectmgt/service/ddd/application/auth/DddLoginService.java
++++ b/backend/src/main/java/cn/edu/xmu/projectmgt/service/ddd/application/auth/DddLoginService.java
+@@ -49,7 +49,7 @@ public class DddLoginService implements LoginUseCase {
+         } else {
+             result = loginTeacher(command);
+         }
+-        log.debug("login: result = {}",result);
++        log.debug("login: role={}", command.role());
+         return result;
+     }
+ 
+diff --git a/backend/src/main/java/cn/edu/xmu/projectmgt/service/structured/auth/StructuredLoginService.java b/backend/src/main/java/cn/edu/xmu/projectmgt/service/structured/auth/StructuredLoginService.java
+index 32523ed..3030e9f 100644
+--- a/backend/src/main/java/cn/edu/xmu/projectmgt/service/structured/auth/StructuredLoginService.java
++++ b/backend/src/main/java/cn/edu/xmu/projectmgt/service/structured/auth/StructuredLoginService.java
+@@ -55,7 +55,7 @@ public class StructuredLoginService implements LoginUseCase {
+         } else {
+             result = loginTeacher(command);
+         }
+-        log.debug("login: result = {}",result);
++        log.debug("login: role={}", command.role());
+         return result;
+     }
+ 
+diff --git a/web/src/router.ts b/web/src/router.ts
+index 8a55ee0..143538d 100644
+--- a/web/src/router.ts
++++ b/web/src/router.ts
+@@ -33,7 +33,7 @@ import TeacherCourseMilestonesView from '@/views/TeacherCourseMilestonesView.vue
+ 
+ export const router = createRouter({
+ 
+-  history: createWebHistory(),
++  history: createWebHistory(import.meta.env.BASE_URL),
+   routes: [
+     {
+       path: '/',

@@ -9,7 +9,6 @@ import cn.edu.xmu.rbac.service.security.AccessPolicy;
 import java.util.List;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 /** Role 用例的结构化事务脚本实现. */
@@ -41,11 +40,6 @@ public class StructuredRoleService implements RoleUseCase {
     return store.roles(actor.departmentId(), page, size);
   }
 
-  public Data.Role get(Data.Identity actor, Long id) {
-    access.require(actor, "role.manage");
-    return scoped(actor, id);
-  }
-
   /** 校验输入后创建对象. */
   public Data.Role create(Data.Identity actor, Data.Name command) {
     access.require(actor, "role.manage");
@@ -73,8 +67,7 @@ public class StructuredRoleService implements RoleUseCase {
     return store.rolePermissions(id);
   }
 
-  /** 授予指定权限，重复授予保持幂等. */
-  @Transactional(isolation = Isolation.READ_COMMITTED)
+  /** 写入直接授权，组合主键拒绝重复记录. */
   public void grant(Data.Identity actor, Long id, Long permissionId) {
     access.require(actor, "role.manage");
     scoped(actor, id);
@@ -104,15 +97,12 @@ public class StructuredRoleService implements RoleUseCase {
     return effectiveAccess.effectiveRolePermissions(id);
   }
 
-  /** 同部门串行写入，避免两次并发新增共同形成环. */
-  @Transactional(isolation = Isolation.READ_COMMITTED)
+  /** 校验同部门并检查添加继承边后是否形成环. */
   public void inherit(Data.Identity actor, Long id, Long juniorId) {
     access.require(actor, "role.manage");
-    store.lockHierarchy(actor.departmentId());
     scoped(actor, id);
     scoped(actor, juniorId);
-    List<Data.Inheritance> edges = store.inheritanceEdges(actor.departmentId());
-    RoleHierarchy.requireAcyclic(edges, id, juniorId);
+    RoleHierarchy.requireAcyclic(effectiveAccess.reachableRoles(List.of(juniorId)), id);
     store.inheritRole(id, juniorId);
   }
 

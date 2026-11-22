@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue';
 import {
   request,
   refresh,
+  auth,
   allowed,
   allPages,
   type Page,
@@ -26,13 +27,18 @@ const roles = ref<Role[]>([]),
   effective = ref<Permission[]>([]),
   hierarchyRole = ref<Role | null>(null),
   juniorId = ref(''),
-  error = ref('');
+  error = ref(''),
+  busy = ref(false);
 async function run(action: () => Promise<void>) {
+  if (busy.value) return;
+  busy.value = true;
   error.value = '';
   try {
     await action();
   } catch (e) {
     error.value = (e as Error).message;
+  } finally {
+    busy.value = false;
   }
 }
 async function load() {
@@ -47,6 +53,7 @@ async function save() {
       editing.value ? 'PATCH' : 'POST',
       { name: name.value },
     );
+    if (editing.value && auth.me?.roles.includes(editing.value.name)) await refresh();
     editing.value = null;
     name.value = '';
     await load();
@@ -74,32 +81,50 @@ async function loadPermissions() {
       : [];
   });
 }
-async function changePermission(id: string, method: 'PUT' | 'DELETE') {
+async function refreshEffective(role: Role) {
+  effective.value = await request<Permission[]>(`/api/roles/${role.id}/effective-permissions`);
+}
+
+async function changePermission(id: string, method: 'POST' | 'DELETE') {
   await run(async () => {
-    if (!selected.value || !id) return;
-    const roleId = selected.value.id;
-    const url = `/api/roles/${roleId}/permissions`;
-    await request(`${url}/${id}`, method);
-    const directPermissions = await request<Permission[]>(url);
-    if (selected.value?.id === roleId) assigned.value = directPermissions;
-    await refresh();
+    const role = selected.value;
+    if (!role || !id) return;
+    const path = `/api/roles/${role.id}/permissions`;
+    if (method === 'POST') {
+      await request(path, method, { permissionId: id });
+      permissionId.value = '';
+    } else {
+      await request(`${path}/${id}`, method);
+    }
+    if (auth.me?.roles.includes(role.name)) await refresh();
+    assigned.value = await request<Permission[]>(path);
+    if (hierarchyRole.value) await refreshEffective(hierarchyRole.value);
   });
 }
+
 async function selectHierarchy(role: Role) {
   await run(async () => {
     hierarchyRole.value = role;
     inherited.value = await request<Role[]>(`/api/roles/${role.id}/inherited-roles`);
-    effective.value = await request<Permission[]>(`/api/roles/${role.id}/effective-permissions`);
+    await refreshEffective(role);
     candidates.value = (await allPages<Role>('/api/roles')).filter((item) => item.id !== role.id);
   });
 }
-async function changeInheritance(id: string, method: 'PUT' | 'DELETE') {
+
+async function changeInheritance(id: string, method: 'POST' | 'DELETE') {
   await run(async () => {
-    if (!hierarchyRole.value || !id) return;
-    await request(`/api/roles/${hierarchyRole.value.id}/inherited-roles/${id}`, method);
-    juniorId.value = '';
-    await selectHierarchy(hierarchyRole.value);
-    await refresh();
+    const role = hierarchyRole.value;
+    if (!role || !id) return;
+    const path = `/api/roles/${role.id}/inherited-roles`;
+    if (method === 'POST') {
+      await request(path, method, { juniorId: id });
+      juniorId.value = '';
+    } else {
+      await request(`${path}/${id}`, method);
+    }
+    if (auth.me?.roles.includes(role.name)) await refresh();
+    inherited.value = await request<Role[]>(path);
+    await refreshEffective(role);
   });
 }
 onMounted(() => run(load));
@@ -119,18 +144,23 @@ onMounted(() => run(load));
         <td>{{ role.name }}</td>
         <td>
           <button
-            :disabled="!allowed('ui.role.edit')"
+            :disabled="busy || !allowed('ui.role.edit')"
             @click="
               editing = role;
               name = role.name;
             "
           >
             重命名</button
-          ><button :disabled="!allowed('ui.role.permissions')" @click="select(role)">
+          ><button :disabled="busy || !allowed('ui.role.permissions')" @click="select(role)">
             配置权限</button
-          ><button :disabled="!allowed('ui.role.inheritance')" @click="selectHierarchy(role)">
+          ><button
+            :disabled="busy || !allowed('ui.role.inheritance')"
+            @click="selectHierarchy(role)"
+          >
             配置继承</button
-          ><button :disabled="!allowed('ui.role.delete')" @click="remove(role)">删除</button>
+          ><button :disabled="busy || !allowed('ui.role.delete')" @click="remove(role)">
+            删除
+          </button>
         </td>
       </tr>
     </tbody>
@@ -159,7 +189,7 @@ onMounted(() => run(load));
     <label
       >{{ editing ? '重命名角色' : '新建角色'
       }}<input v-model.trim="name" required maxlength="100" /></label
-    ><button :disabled="!allowed(editing ? 'ui.role.edit' : 'ui.role.create')">保存</button
+    ><button :disabled="busy || !allowed(editing ? 'ui.role.edit' : 'ui.role.create')">保存</button
     ><button
       type="button"
       @click="
@@ -177,14 +207,14 @@ onMounted(() => run(load));
       <li v-for="role in inherited" :key="role.id">
         {{ role.name }}
         <button
-          :disabled="!allowed('ui.role.inheritance')"
+          :disabled="busy || !allowed('ui.role.inheritance')"
           @click="changeInheritance(role.id, 'DELETE')"
         >
           解除继承
         </button>
       </li>
     </ul>
-    <form @submit.prevent="changeInheritance(juniorId, 'PUT')">
+    <form @submit.prevent="changeInheritance(juniorId, 'POST')">
       <label
         >基础角色<select v-model="juniorId" required>
           <option value="">请选择基础角色</option>
@@ -193,8 +223,8 @@ onMounted(() => run(load));
           </option>
         </select></label
       >
-      <button :disabled="!allowed('ui.role.inheritance')">添加继承</button>
-      <button type="button" @click="hierarchyRole = null">关闭</button>
+      <button :disabled="busy || !allowed('ui.role.inheritance')">添加继承</button>
+      <button type="button" :disabled="busy" @click="hierarchyRole = null">关闭</button>
     </form>
     <h4>有效权限 直接授权与继承的并集</h4>
     <table>
@@ -232,7 +262,7 @@ onMounted(() => run(load));
           <td>{{ permission.name }}</td>
           <td>
             <button
-              :disabled="!allowed('ui.role.permissions')"
+              :disabled="busy || !allowed('ui.role.permissions')"
               @click="changePermission(permission.id, 'DELETE')"
             >
               撤销
@@ -241,7 +271,7 @@ onMounted(() => run(load));
         </tr>
       </tbody>
     </table>
-    <form @submit.prevent="changePermission(permissionId, 'PUT')">
+    <form @submit.prevent="changePermission(permissionId, 'POST')">
       <label
         >系统<select v-model="systemId" required @change="loadPermissions">
           <option value="">请选择</option>
@@ -256,8 +286,8 @@ onMounted(() => run(load));
             {{ permission.code }} {{ permission.name }}
           </option>
         </select></label
-      ><button :disabled="!allowed('ui.role.permissions')">授予</button
-      ><button type="button" @click="selected = null">关闭</button>
+      ><button :disabled="busy || !allowed('ui.role.permissions')">授予</button
+      ><button type="button" :disabled="busy" @click="selected = null">关闭</button>
     </form>
   </section>
 </template>

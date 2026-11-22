@@ -35,7 +35,6 @@ services:
       JWT_PRIVATE_KEY: file:/run/secrets/private_key
       JWT_PUBLIC_KEY: file:/run/secrets/public_key
       BACKEND_STRATEGY: ${BACKEND_STRATEGY:-structured}
-      APP_DEMO_ENABLED: 'true'
       JAVA_TOOL_OPTIONS: '-Xmx192m -XX:MaxMetaspaceSize=128m -XX:ReservedCodeCacheSize=48m'
       LOG_PATH: /logs
     secrets:
@@ -43,7 +42,6 @@ services:
         target: db_password
       - private_key
       - public_key
-      - demo_phone
     volumes: ['rbac_logs:/logs']
     networks: [project]
     healthcheck:
@@ -127,4 +125,3 @@ secrets:
   course_db_password: {external: true, name: rbac_v33_course_db_password}
   private_key: {external: true, name: rbac_v33_private_key}
   public_key: {external: true, name: rbac_v33_public_key}
-  demo_phone: {external: true, name: rbac_v33_demo_phone}

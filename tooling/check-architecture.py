@@ -15,8 +15,10 @@ for path in root.rglob('*.java'):
         assert 'org.springframework' not in source and '.infrastructure' not in source,path
     if '/service/structured/' in str(path) or '/service/ddd/Ddd' in str(path):
         assert '.infrastructure' not in source,path
-for module in ['User','Role','Department','System','Permission']:
-    for mode,prefix in [('structured','Structured'),('ddd','Ddd')]:
-        assert (root/f'service/{mode}/{prefix}{module}Service.java').exists()
-assert '<artifactId>spring-boot-starter-data-jpa</artifactId>' in (backend/'pom.xml').read_text()
-print('Architecture boundaries: passed; Spring Data JPA persistence; five business ports each have two implementations')
+for module in ['User', 'Role']:
+    for mode, prefix in [('structured', 'Structured'), ('ddd', 'Ddd')]:
+        assert (root / f'service/{mode}/{prefix}{module}Service.java').exists()
+for module in ['Department', 'System', 'Permission']:
+    assert (root / f'service/catalog/{module}Service.java').exists()
+assert '<artifactId>spring-boot-starter-data-jpa</artifactId>' in (backend / 'pom.xml').read_text()
+print('Architecture boundaries: passed; Spring Data JPA; two strategies and shared catalogs')

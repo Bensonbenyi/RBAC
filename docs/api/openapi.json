@@ -2,7 +2,7 @@
   "openapi": "3.0.3",
   "info": {
     "title": "统一权限管理平台 API",
-    "version": "3.6.2",
+    "version": "3.7.0",
     "description": "RBAC1 双实现契约。高级角色继承基础角色；界面码与 API 码独立。切换策略保持 HTTP 行为一致。"
   },
   "servers": [
@@ -212,105 +212,6 @@
             "Bearer": []
           }
         ]
-      },
-      "patch": {
-        "operationId": "auth.updateMe",
-        "tags": [
-          "Auth"
-        ],
-        "summary": "修改本人资料",
-        "description": "本人编号取自认证上下文，仅接收姓名和手机号。\n\nAPI 许可：有效登录",
-        "parameters": [],
-        "responses": {
-          "204": {
-            "description": "204"
-          },
-          "400": {
-            "description": "输入校验失败",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "凭据或会话无效",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "无操作许可或越界",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "对象不存在",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "405": {
-            "description": "HTTP 方法不支持",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "重复、引用冲突或 ROLE_CYCLE",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "503": {
-            "description": "数据库不可用",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "Bearer": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Profile"
-              }
-            }
-          }
-        }
       }
     },
     "/auth/logout": {
@@ -1184,439 +1085,6 @@
             "Bearer": []
           }
         ]
-      },
-      "post": {
-        "operationId": "user.create",
-        "tags": [
-          "User"
-        ],
-        "summary": "新建用户",
-        "description": "部门取自操作者；用户名全局唯一，编号由数据库生成。\n\nAPI 许可：user.create",
-        "parameters": [],
-        "responses": {
-          "201": {
-            "description": "201 User",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/User"
-                }
-              }
-            },
-            "headers": {
-              "Location": {
-                "description": "新资源地址",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "输入校验失败",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "凭据或会话无效",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "无操作许可或越界",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "对象不存在",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "405": {
-            "description": "HTTP 方法不支持",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "重复、引用冲突或 ROLE_CYCLE",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "503": {
-            "description": "数据库不可用",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "Bearer": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateUser"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/users/{id}": {
-      "get": {
-        "operationId": "user.get",
-        "tags": [
-          "User"
-        ],
-        "summary": "查询用户详情",
-        "description": "校验对象部门等于操作者部门。\n\nAPI 许可：user.view",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64",
-              "minimum": 1
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "200 User",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/User"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "输入校验失败",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "凭据或会话无效",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "无操作许可或越界",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "对象不存在",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "405": {
-            "description": "HTTP 方法不支持",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "重复、引用冲突或 ROLE_CYCLE",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "503": {
-            "description": "数据库不可用",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "Bearer": []
-          }
-        ]
-      },
-      "patch": {
-        "operationId": "user.update",
-        "tags": [
-          "User"
-        ],
-        "summary": "修改用户资料",
-        "description": "仅更新出现的姓名和手机号，保留未提交字段。\n\nAPI 许可：user.edit",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64",
-              "minimum": 1
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "204"
-          },
-          "400": {
-            "description": "输入校验失败",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "凭据或会话无效",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "无操作许可或越界",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "对象不存在",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "405": {
-            "description": "HTTP 方法不支持",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "重复、引用冲突或 ROLE_CYCLE",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "503": {
-            "description": "数据库不可用",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "Bearer": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Profile"
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "operationId": "user.delete",
-        "tags": [
-          "User"
-        ],
-        "summary": "删除用户",
-        "description": "同事务删除其登录会话、用户角色关联及用户。\n\nAPI 许可：user.delete",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64",
-              "minimum": 1
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "204"
-          },
-          "400": {
-            "description": "输入校验失败",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "凭据或会话无效",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "无操作许可或越界",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "对象不存在",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "405": {
-            "description": "HTTP 方法不支持",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "重复、引用冲突或 ROLE_CYCLE",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "503": {
-            "description": "数据库不可用",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "Bearer": []
-          }
-        ]
       }
     },
     "/api/users/{id}/roles": {
@@ -2195,113 +1663,6 @@
       }
     },
     "/api/roles/{id}": {
-      "get": {
-        "operationId": "role.get",
-        "tags": [
-          "Role"
-        ],
-        "summary": "查询角色详情",
-        "description": "校验角色属于本部门。\n\nAPI 许可：role.manage",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64",
-              "minimum": 1
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "200 Role",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Role"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "输入校验失败",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "凭据或会话无效",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "无操作许可或越界",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "对象不存在",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "405": {
-            "description": "HTTP 方法不支持",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "重复、引用冲突或 ROLE_CYCLE",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "503": {
-            "description": "数据库不可用",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "Bearer": []
-          }
-        ]
-      },
       "patch": {
         "operationId": "role.update",
         "tags": [
@@ -2623,16 +1984,14 @@
             "Bearer": []
           }
         ]
-      }
-    },
-    "/api/roles/{id}/permissions/{permissionId}": {
-      "put": {
+      },
+      "post": {
         "operationId": "role.grant",
         "tags": [
           "Role"
         ],
         "summary": "授予角色权限",
-        "description": "校验角色和权限存在，重复授予保持 204。\n\nAPI 许可：role.manage",
+        "description": "通过 permissionId 新建直接授权；重复提交返回 409。\n\nAPI 许可：role.manage",
         "parameters": [
           {
             "name": "id",
@@ -2643,21 +2002,19 @@
               "format": "int64",
               "minimum": 1
             }
-          },
-          {
-            "name": "permissionId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64",
-              "minimum": 1
-            }
           }
         ],
         "responses": {
-          "204": {
-            "description": "204"
+          "201": {
+            "description": "201",
+            "headers": {
+              "Location": {
+                "description": "新资源地址",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
           },
           "400": {
             "description": "输入校验失败",
@@ -2734,8 +2091,20 @@
           {
             "Bearer": []
           }
-        ]
-      },
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GrantPermission"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/roles/{id}/permissions/{permissionId}": {
       "delete": {
         "operationId": "role.revoke",
         "tags": [
@@ -2887,332 +2256,6 @@
                 }
               }
             }
-          },
-          "400": {
-            "description": "输入校验失败",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "凭据或会话无效",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "无操作许可或越界",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "对象不存在",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "405": {
-            "description": "HTTP 方法不支持",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "重复、引用冲突或 ROLE_CYCLE",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "503": {
-            "description": "数据库不可用",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "Bearer": []
-          }
-        ]
-      },
-      "post": {
-        "operationId": "department.create",
-        "tags": [
-          "Department"
-        ],
-        "summary": "新建部门",
-        "description": "校验名称及可选父部门，保存层级归属。\n\nAPI 许可：department.manage",
-        "parameters": [],
-        "responses": {
-          "201": {
-            "description": "201",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Department"
-                }
-              }
-            },
-            "headers": {
-              "Location": {
-                "description": "新资源地址",
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "输入校验失败",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "凭据或会话无效",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "无操作许可或越界",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "对象不存在",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "405": {
-            "description": "HTTP 方法不支持",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "重复、引用冲突或 ROLE_CYCLE",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "503": {
-            "description": "数据库不可用",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "Bearer": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/CreateDepartment"
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/departments/{id}": {
-      "patch": {
-        "operationId": "department.update",
-        "tags": [
-          "Department"
-        ],
-        "summary": "重命名部门",
-        "description": "仅修改名称，父部门创建后固定。\n\nAPI 许可：department.manage",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64",
-              "minimum": 1
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "204"
-          },
-          "400": {
-            "description": "输入校验失败",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "凭据或会话无效",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "无操作许可或越界",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "对象不存在",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "405": {
-            "description": "HTTP 方法不支持",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "重复、引用冲突或 ROLE_CYCLE",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "503": {
-            "description": "数据库不可用",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "Bearer": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Name"
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "operationId": "department.delete",
-        "tags": [
-          "Department"
-        ],
-        "summary": "删除部门",
-        "description": "有引用时返回 409；不存在返回 404。\n\nAPI 许可：department.manage",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64",
-              "minimum": 1
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "204"
           },
           "400": {
             "description": "输入校验失败",
@@ -3526,116 +2569,6 @@
       }
     },
     "/api/systems/{id}": {
-      "patch": {
-        "operationId": "system.update",
-        "tags": [
-          "System"
-        ],
-        "summary": "重命名业务系统",
-        "description": "仅修改名称，系统标识创建后固定。\n\nAPI 许可：system.manage",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64",
-              "minimum": 1
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "204"
-          },
-          "400": {
-            "description": "输入校验失败",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "凭据或会话无效",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "无操作许可或越界",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "对象不存在",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "405": {
-            "description": "HTTP 方法不支持",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "409": {
-            "description": "重复、引用冲突或 ROLE_CYCLE",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "503": {
-            "description": "数据库不可用",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "Bearer": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/Name"
-              }
-            }
-          }
-        }
-      },
       "delete": {
         "operationId": "system.delete",
         "tags": [
@@ -4680,16 +3613,14 @@
             "Bearer": []
           }
         ]
-      }
-    },
-    "/api/roles/{id}/inherited-roles/{juniorId}": {
-      "put": {
+      },
+      "post": {
         "operationId": "role.inherit",
         "tags": [
           "Role"
         ],
         "summary": "添加角色继承",
-        "description": "高级角色 id 获得基础角色 juniorId 的直接和间接权限；同部门、无环，多路径去重，重复请求幂等。\n\nAPI 许可：role.manage",
+        "description": "从高级角色指向 juniorId；同部门且无环。组合主键拒绝重复继承。\n\nAPI 许可：role.manage",
         "parameters": [
           {
             "name": "id",
@@ -4700,21 +3631,19 @@
               "format": "int64",
               "minimum": 1
             }
-          },
-          {
-            "name": "juniorId",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64",
-              "minimum": 1
-            }
           }
         ],
         "responses": {
-          "204": {
-            "description": "204"
+          "201": {
+            "description": "201",
+            "headers": {
+              "Location": {
+                "description": "新资源地址",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
           },
           "400": {
             "description": "输入校验失败",
@@ -4791,8 +3720,20 @@
           {
             "Bearer": []
           }
-        ]
-      },
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InheritRole"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/roles/{id}/inherited-roles/{juniorId}": {
       "delete": {
         "operationId": "role.uninherit",
         "tags": [
@@ -5242,98 +4183,6 @@
           "name"
         ]
       },
-      "Profile": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 100,
-            "pattern": ".*\\S.*",
-            "nullable": true
-          },
-          "phone": {
-            "type": "string",
-            "pattern": "^1[3-9][0-9]{9}$",
-            "nullable": true
-          }
-        },
-        "additionalProperties": false,
-        "anyOf": [
-          {
-            "required": [
-              "name"
-            ],
-            "properties": {
-              "name": {
-                "type": "string",
-                "minLength": 1,
-                "maxLength": 100,
-                "pattern": ".*\\S.*"
-              }
-            }
-          },
-          {
-            "required": [
-              "phone"
-            ],
-            "properties": {
-              "phone": {
-                "type": "string",
-                "pattern": "^1[3-9][0-9]{9}$"
-              }
-            }
-          }
-        ]
-      },
-      "CreateUser": {
-        "type": "object",
-        "properties": {
-          "username": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 64,
-            "pattern": ".*\\S.*"
-          },
-          "name": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 100,
-            "pattern": ".*\\S.*"
-          },
-          "phone": {
-            "type": "string",
-            "pattern": "^1[3-9][0-9]{9}$"
-          }
-        },
-        "additionalProperties": false,
-        "required": [
-          "username",
-          "name",
-          "phone"
-        ]
-      },
-      "CreateDepartment": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 100,
-            "pattern": ".*\\S.*"
-          },
-          "parentId": {
-            "type": "integer",
-            "format": "int64",
-            "minimum": 1,
-            "nullable": true
-          }
-        },
-        "additionalProperties": false,
-        "required": [
-          "name"
-        ]
-      },
       "CreateSystem": {
         "type": "object",
         "properties": {
@@ -5390,6 +4239,34 @@
         "additionalProperties": false,
         "required": [
           "roleId"
+        ]
+      },
+      "GrantPermission": {
+        "type": "object",
+        "properties": {
+          "permissionId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "permissionId"
+        ]
+      },
+      "InheritRole": {
+        "type": "object",
+        "properties": {
+          "juniorId": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          }
+        },
+        "additionalProperties": false,
+        "required": [
+          "juniorId"
         ]
       },
       "User": {

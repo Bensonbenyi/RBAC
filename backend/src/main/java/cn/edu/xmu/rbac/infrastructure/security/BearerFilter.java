@@ -67,8 +67,7 @@ public class BearerFilter extends OncePerRequestFilter {
       if (session == null
           || session.revokedAt() != null
           || !Instant.now().isBefore(session.expiresAt())
-          || !Objects.equals(session.userId().toString(), token.getSubject())
-          || !Objects.equals(session.systemKey(), token.getAudience().getFirst())) {
+          || !Objects.equals(session.userId().toString(), token.getSubject())) {
         throw AuthService.unauthenticated();
       }
       Data.User user;
@@ -79,7 +78,7 @@ public class BearerFilter extends OncePerRequestFilter {
       }
       String target = request.getHeader("X-Target-System");
       if (target == null) {
-        target = session.systemKey();
+        target = token.getAudience().getFirst();
       }
       // 登录许可被撤销后，持有该令牌的用户仍可结束会话。
       boolean logout = path.equals("/auth/logout") && request.getMethod().equals("POST");

@@ -1,6 +1,5 @@
 import { reactive } from 'vue';
-export const isCourse = import.meta.env.BASE_URL.includes('course');
-const key = isCourse ? 'course-token' : 'rbac-token';
+const key = 'rbac-token';
 export interface Me {
   subject: string;
   no: string;
@@ -29,7 +28,7 @@ export async function request<T>(path: string, method = 'GET', body?: unknown): 
   });
   if (!response.ok) {
     if (response.status === 401) clearToken();
-    if (response.status === 403 && path !== '/auth/me' && path !== '/course-api/me')
+    if (response.status === 403 && path !== '/auth/me')
       await refresh().catch(() => {
         auth.me = null;
       });
@@ -40,12 +39,7 @@ export async function request<T>(path: string, method = 'GET', body?: unknown): 
   return text ? (JSON.parse(text) as T) : (undefined as T);
 }
 export async function refresh() {
-  const identity = await request<Me>('/auth/me');
-  if (isCourse) {
-    const local = await request<{ permissions: string[] }>('/course-api/me');
-    identity.permissions = local.permissions;
-  }
-  auth.me = identity;
+  auth.me = await request<Me>('/auth/me');
 }
 export function allowed(code: string) {
   return auth.me?.permissions.includes(code) || false;
@@ -59,6 +53,10 @@ export interface Page<T> {
 export interface Named {
   id: string;
   name: string;
+}
+export interface DepartmentNode extends Named {
+  parentId: string | null;
+  children: DepartmentNode[];
 }
 export interface User extends Named {
   username: string;

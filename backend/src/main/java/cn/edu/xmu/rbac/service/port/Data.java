@@ -1,6 +1,5 @@
 package cn.edu.xmu.rbac.service.port;
 
-import cn.edu.xmu.clonefactory.CopyNotNullFrom;
 import java.util.List;
 
 /** 双实现共享的不可变数据契约. */
@@ -30,21 +29,8 @@ public final class Data {
   /** 权限领域对象，维护名称. */
   public record Permission(Long id, Long systemId, String code, String name) {}
 
-  /** 高级角色继承基础角色的有向边. */
-  public record Inheritance(Long seniorRoleId, Long juniorRoleId) {}
-
-  /** CreateUser 数据契约. */
-  public record CreateUser(String username, String name, String phone) {}
-
-  /** PATCH 的空字段保持原值；编译期生成不可变对象拷贝. */
-  @CopyNotNullFrom({Profile.class})
-  public record Profile(String name, String phone) {}
-
   /** Name 数据契约. */
   public record Name(String name) {}
-
-  /** CreateDepartment 数据契约. */
-  public record CreateDepartment(String name, Long parentId) {}
 
   /** CreateSystem 数据契约. */
   public record CreateSystem(String systemKey, String name) {}
