@@ -32,7 +32,14 @@ public class BearerFilter extends OncePerRequestFilter {
   private final ManagementStore store;
   private final EffectiveAccessStore effectiveAccess;
 
-  /** 构造请求鉴权过滤器，账号、会话及当前授权分别查询. */
+  /**
+   * 构造请求鉴权过滤器，账号、会话及当前授权分别查询.
+   *
+   * @param decoder 验证并解析 JWT 的组件
+   * @param sessions 查询和撤销登录会话的端口
+   * @param store 管理数据读写端口
+   * @param effectiveAccess 查询角色继承与有效权限的端口
+   */
   public BearerFilter(
       JwtDecoder decoder,
       SessionStore sessions,
@@ -44,6 +51,15 @@ public class BearerFilter extends OncePerRequestFilter {
     this.effectiveAccess = effectiveAccess;
   }
 
+  /**
+   * 为受保护请求验证令牌并建立当前线程身份.
+   *
+   * @param request 用于区分接口路径的 HTTP 请求
+   * @param response 当前 HTTP 响应
+   * @param chain 后续过滤器和业务请求处理链
+   * @throws ServletException 请求继续交由 Servlet 链处理时失败
+   * @throws IOException 读写请求或响应时失败
+   */
   @Override
   protected void doFilterInternal(
       HttpServletRequest request, HttpServletResponse response, FilterChain chain)
@@ -113,6 +129,15 @@ public class BearerFilter extends OncePerRequestFilter {
     }
   }
 
+  /**
+   * 写入与鉴权失败对应的 JSON 响应.
+   *
+   * @param response 当前 HTTP 响应
+   * @param status 对外返回的 HTTP 状态码
+   * @param code 提供给客户端的业务错误码
+   * @param message 提供给调用方的错误说明
+   * @throws IOException 向客户端写入响应失败
+   */
   private void error(HttpServletResponse response, int status, String code, String message)
       throws IOException {
     response.setStatus(status);

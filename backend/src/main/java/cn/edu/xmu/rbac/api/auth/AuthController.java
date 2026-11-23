@@ -30,20 +30,34 @@ public class AuthController {
   private final AuthService service;
   private final CurrentIdentity current;
 
-  /** 注入身份服务与当前身份上下文. */
+  /**
+   * 注入身份服务与当前身份上下文.
+   *
+   * @param service 处理当前资源用例的服务
+   * @param current 读取请求中已认证身份的组件
+   */
   public AuthController(AuthService service, CurrentIdentity current) {
     this.service = service;
     this.current = current;
   }
 
-  /** 校验登录参数并返回签发结果. */
+  /**
+   * 提交登录凭据与目标系统并签发令牌.
+   *
+   * @param request 包含账号、手机号及目标系统的登录输入
+   * @return 包含访问令牌和有效期的响应
+   */
   @PostMapping("/login")
   public LoginVO login(@RequestBody @Valid LoginDTO request) {
     LoginResult result = service.login(request.username(), request.password(), request.systems());
     return new LoginVO(result.accessToken(), result.tokenType(), result.expiresIn());
   }
 
-  /** 查询当前身份及目标系统的界面权限. */
+  /**
+   * 查询当前账号在目标系统中的身份和权限.
+   *
+   * @return 当前身份、角色及界面权限
+   */
   @GetMapping("/me")
   public CurrentUserVO me() {
     CurrentUserResult result = service.me(current.get());
@@ -56,20 +70,30 @@ public class AuthController {
         result.permissions());
   }
 
-  /** 撤销当前令牌对应的会话. */
+  /** 撤销当前 Bearer 令牌对应的会话. */
   @PostMapping("/logout")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void logout() {
     service.logout(current.get());
   }
 
-  /** 查询一项界面权限. */
+  /**
+   * 查询当前账号能否使用指定界面权限.
+   *
+   * @param permission 待检查的界面权限码
+   * @return 界面许可结果
+   */
   @GetMapping("/permissions/{permission}")
   public AllowedVO check(@PathVariable @NotBlank String permission) {
     return new AllowedVO(service.uiAllowed(current.get(), permission));
   }
 
-  /** 按 OpenAPI 的操作标识查询 API 权限. */
+  /**
+   * 查询当前账号能否执行 API 操作.
+   *
+   * @param operationId API 操作的唯一标识
+   * @return 操作标识及 API 许可结果
+   */
   @GetMapping("/api-permissions/{operationId}")
   public ApiAuthorityVO api(@PathVariable @NotBlank @Size(max = 128) String operationId) {
     return new ApiAuthorityVO(operationId, service.apiAllowed(current.get(), operationId));

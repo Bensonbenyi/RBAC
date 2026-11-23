@@ -5,6 +5,7 @@ import java.util.Set;
 
 /** 将两个接入系统的 operationId 映射到后端权限；未知操作拒绝. */
 public final class OperationPermissions {
+  /** 隐藏工具类构造入口. */
   private OperationPermissions() {}
 
   // 来自课程 OpenAPI 990cea2 的全局操作许可。对象级规则由课程服务判断。
@@ -131,7 +132,13 @@ public final class OperationPermissions {
           Map.entry("system.list", "system.manage"),
           Map.entry("permission.list", "permission.manage"));
 
-  /** 按目标系统映射操作标识到 API 权限码，未知操作返回 null. */
+  /**
+   * 按目标系统把 API 操作映射到授权码.
+   *
+   * @param system 目标系统的唯一标识
+   * @param operation 调用方登记的 API 操作标识
+   * @return 已登记的权限码，未知操作返回 null
+   */
   public static String code(String system, String operation) {
     return switch (system) {
       case "course-project-management" ->

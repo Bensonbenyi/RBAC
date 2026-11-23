@@ -21,7 +21,13 @@ public class PermissionController {
   private final CurrentIdentity current;
   private final SelectionService selections;
 
-  /** 装配PermissionController所需依赖. */
+  /**
+   * 注入当前 HTTP 资源的用例和身份组件.
+   *
+   * @param service 处理当前资源用例的服务
+   * @param current 读取请求中已认证身份的组件
+   * @param selections 提供授权表单候选项的服务
+   */
   public PermissionController(
       PermissionUseCase service, CurrentIdentity current, SelectionService selections) {
     this.service = service;
@@ -29,7 +35,14 @@ public class PermissionController {
     this.selections = selections;
   }
 
-  /** 返回当前授权任务可用的候选项，分页上限为 100. */
+  /**
+   * 返回当前授权任务可用的候选项，分页上限为 100.
+   *
+   * @param systemId 权限所属的业务系统编号
+   * @param page 从 0 开始的页号
+   * @param size 每页记录数
+   * @return 包含当前页记录及总数的分页结果
+   */
   @GetMapping("/api/permissions/options")
   public ManagementVOs.PageVO<ManagementVOs.PermissionVO> options(
       @RequestParam @Positive Long systemId,
@@ -39,6 +52,14 @@ public class PermissionController {
         selections.permissions(current.get(), systemId, page, size), ManagementVOs::permission);
   }
 
+  /**
+   * 分页查询权限.
+   *
+   * @param systemId 权限所属的业务系统编号
+   * @param page 从 0 开始的页号
+   * @param size 每页记录数
+   * @return 包含当前页记录及总数的分页结果
+   */
   @GetMapping("/api/systems/{systemId}/permissions")
   public ManagementVOs.PageVO<ManagementVOs.PermissionVO> list(
       @PathVariable @Positive Long systemId,

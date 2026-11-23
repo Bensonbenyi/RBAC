@@ -18,8 +18,14 @@ public class SystemEntity {
   String systemKey;
   String name;
 
+  /** 供 Hibernate 加载持久化实体. */
   protected SystemEntity() {}
 
+  /**
+   * 将实体转换为业务层使用的数据快照.
+   *
+   * @return 业务系统资料
+   */
   public Data.System toData() {
     return new Data.System(id, systemKey, name);
   }

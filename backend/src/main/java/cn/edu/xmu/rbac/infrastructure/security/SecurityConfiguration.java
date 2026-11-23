@@ -18,6 +18,18 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 /** Spring Security 由 BearerFilter 建立每个请求的身份. */
 @Configuration
 public class SecurityConfiguration {
+  /**
+   * 配置身份 CORS 预检和Bearer 令牌过滤器.
+   *
+   * @param http Spring Security 的 HTTP 配置
+   * @param decoder 验证并解析 JWT 的组件
+   * @param sessions 查询和撤销登录会话的端口
+   * @param store 管理数据读写端口
+   * @param effectiveAccess 查询角色继承与有效权限的端口
+   * @param allowedOrigins 允许跨域访问统一身份接口的网页来源
+   * @return 用于当前 HTTP 请求的 Spring Security 过滤链
+   * @throws Exception 安全配置或密钥加载失败
+   */
   @Bean
   SecurityFilterChain securityFilterChain(
       HttpSecurity http,

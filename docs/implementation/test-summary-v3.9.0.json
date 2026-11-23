@@ -1,7 +1,7 @@
 {
   "version": "3.9.0",
   "date": "2026-11-23",
-  "platformTests": 39,
+  "platformTests": 56,
   "platformSuites": [
     {
       "name": "cn.edu.xmu.rbac.CopyTest",
@@ -12,14 +12,14 @@
     },
     {
       "name": "cn.edu.xmu.rbac.DddIdentityContractTest",
-      "tests": "10",
+      "tests": "11",
       "failures": "0",
       "errors": "0",
       "skipped": "0"
     },
     {
       "name": "cn.edu.xmu.rbac.DddManagementContractTest",
-      "tests": "5",
+      "tests": "8",
       "failures": "0",
       "errors": "0",
       "skipped": "0"
@@ -39,15 +39,22 @@
       "skipped": "0"
     },
     {
+      "name": "cn.edu.xmu.rbac.SecurityBoundaryTest",
+      "tests": "7",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
       "name": "cn.edu.xmu.rbac.StructuredIdentityContractTest",
-      "tests": "10",
+      "tests": "11",
       "failures": "0",
       "errors": "0",
       "skipped": "0"
     },
     {
       "name": "cn.edu.xmu.rbac.StructuredManagementContractTest",
-      "tests": "5",
+      "tests": "8",
       "failures": "0",
       "errors": "0",
       "skipped": "0"
@@ -58,6 +65,13 @@
       "failures": "0",
       "errors": "0",
       "skipped": "0"
+    },
+    {
+      "name": "cn.edu.xmu.rbac.api.shared.ApiErrorsTest",
+      "tests": "2",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
     }
   ],
   "cloneFactoryTests": 5,
@@ -65,29 +79,29 @@
   "courseFrontendTests": 56,
   "coverage": {
     "INSTRUCTION": {
-      "covered": 3985,
-      "missed": 224,
-      "percent": 94.68
+      "covered": 4209,
+      "missed": 0,
+      "percent": 100.0
     },
     "BRANCH": {
-      "covered": 83,
-      "missed": 35,
-      "percent": 70.34
+      "covered": 118,
+      "missed": 0,
+      "percent": 100.0
     },
     "LINE": {
-      "covered": 733,
-      "missed": 49,
-      "percent": 93.73
+      "covered": 782,
+      "missed": 0,
+      "percent": 100.0
     },
     "COMPLEXITY": {
-      "covered": 275,
-      "missed": 45,
-      "percent": 85.94
+      "covered": 320,
+      "missed": 0,
+      "percent": 100.0
     },
     "METHOD": {
-      "covered": 244,
-      "missed": 16,
-      "percent": 93.85
+      "covered": 260,
+      "missed": 0,
+      "percent": 100.0
     },
     "CLASS": {
       "covered": 80,
@@ -95,5 +109,6 @@
       "percent": 100.0
     }
   },
-  "courseBackendTests": 497
+  "courseBackendTests": 497,
+  "platformVerifiedOn": "2026-11-24"
 }

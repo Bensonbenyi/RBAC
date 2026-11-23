@@ -2,6 +2,7 @@ package cn.edu.xmu.rbac;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import cn.edu.xmu.rbac.service.port.EffectiveAccessStore;
 import cn.edu.xmu.rbac.service.port.ManagementStore;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -80,6 +81,7 @@ abstract class ContractFixture {
   @Autowired PlatformTransactionManager transactions;
   @Autowired DataSource dataSource;
   @Autowired ManagementStore store;
+  @Autowired EffectiveAccessStore effectiveAccess;
   final JsonMapper json = JsonMapper.builder().build();
   final HttpClient client = HttpClient.newHttpClient();
   String token;

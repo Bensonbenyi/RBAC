@@ -8,9 +8,10 @@
 | --- | --- |
 | [统一权限管理后台](http://113.44.144.119/platform/) | 登录、用户角色分配、角色权限与继承、部门、业务系统和权限目录 |
 | [课程项目管理系统](http://113.44.144.119/course/) | 教师和学生登录、我的课程、教师目录与菜单权限 |
-| [JaCoCo 测试覆盖率报告](http://113.44.144.119/coverage/) | v3.9.0 平台后端行覆盖率 93.73%，分支覆盖率 70.34% |
+| [JaCoCo 测试覆盖率报告](http://113.44.144.119/coverage/) | v3.9.0 平台后端行覆盖率与分支覆盖率均为 100% |
 | [Apifox 公开文档](https://3wq8lbigke.apifox.cn/) / [线上 Swagger](http://113.44.144.119/api-docs/) / [OpenAPI JSON](http://113.44.144.119/api-docs/openapi.json) | 29 项接口，其中 8 项是老师约定的统一身份接口 |
 | [概要设计 AsciiDoc](docs/redesign/统一权限管理系统概要设计说明书.adoc) / [需求与详细设计 AsciiDoc](docs/redesign/统一权限管理系统需求与详细设计说明书.adoc) | 总体架构、数据库表设计、功能、接口及 UML |
+| [结构化完整包图](http://113.44.144.119/design/packages-full-structured.svg) / [DDD 完整包图](http://113.44.144.119/design/packages-full-ddd.svg) | 原尺寸四列 SVG，箭头旁标出调用、实现或数据读取 |
 | [设计交付目录](docs/redesign/README.md) / [评分办法 V4](docs/OOAD_Grading_2026_V4.pdf) | PDF、StarUML 图稿和课程验收要求 |
 
 ### 两个系统怎么测
@@ -48,6 +49,13 @@ docker stack ps rbac_v33 --filter desired-state=running
 
 两套网页的登录和页面操作可用来验证服务对外可用。[部署与联调记录](docs/implementation/deployment-v3.9.0.json)
 
+用户和角色两个用例各有结构化和 DDD 实现。Controller 通过下表的用例接口调用服务，配置 `BACKEND_STRATEGY` 在启动时选择实现。
+
+| 用例接口 | 结构化 | DDD |
+| --- | --- | --- |
+| [UserUseCase](backend/src/main/java/cn/edu/xmu/rbac/service/port/UserUseCase.java) | [StructuredUserService](backend/src/main/java/cn/edu/xmu/rbac/service/structured/StructuredUserService.java) | [DddUserService](backend/src/main/java/cn/edu/xmu/rbac/service/ddd/DddUserService.java) |
+| [RoleUseCase](backend/src/main/java/cn/edu/xmu/rbac/service/port/RoleUseCase.java) | [StructuredRoleService](backend/src/main/java/cn/edu/xmu/rbac/service/structured/StructuredRoleService.java) | [DddRoleService](backend/src/main/java/cn/edu/xmu/rbac/service/ddd/DddRoleService.java) |
+
 ### 切换菜单时怎么看 Logback
 
 用 `admin` 登录权限后台。在 Swarm Manager 的另一个终端执行以下命令，保留终端窗口并依次点击网页菜单。每次点击后，在终端看同一时间段及同一请求线程上的日志。
@@ -84,7 +92,7 @@ docker service logs --tail 0 --follow rbac_v33_rbac
 ./mvnw package -DskipTests
 ```
 
-测试使用 Testcontainers 启动独立 MySQL，验证两套实现的相同契约。单独验证后端并生成覆盖率时执行 `./mvnw verify`，打开 `backend/target/site/jacoco/index.html`。[线上 JaCoCo 报告](http://113.44.144.119/coverage/) [测试汇总](docs/implementation/test-summary-v3.9.0.json)
+测试使用 Testcontainers 启动独立 MySQL，验证两套实现的相同契约。执行 `./mvnw clean verify` 可重跑测试，打开 `backend/target/site/jacoco/index.html` 看覆盖率。构建要求平台后端行与分支均无遗漏。CloneFactory 生成代码沿用原先的统计排除规则。[线上 JaCoCo 报告](http://113.44.144.119/coverage/) [测试汇总](docs/implementation/test-summary-v3.9.0.json)
 
 ## 运行
 

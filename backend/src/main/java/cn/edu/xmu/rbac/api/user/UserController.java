@@ -30,11 +30,24 @@ public class UserController {
   private final UserUseCase service;
   private final CurrentIdentity current;
 
+  /**
+   * 注入用户所需的协作组件.
+   *
+   * @param service 处理当前资源用例的服务
+   * @param current 读取请求中已认证身份的组件
+   */
   public UserController(UserUseCase service, CurrentIdentity current) {
     this.service = service;
     this.current = current;
   }
 
+  /**
+   * 分页查询用户.
+   *
+   * @param page 从 0 开始的页号
+   * @param size 每页记录数
+   * @return 包含当前页记录及总数的分页结果
+   */
   @GetMapping
   public ManagementVOs.PageVO<ManagementVOs.UserVO> list(
       @RequestParam(defaultValue = "0") @Min(0) @Max(1000000) int page,
@@ -42,12 +55,24 @@ public class UserController {
     return ManagementVOs.page(service.list(current.get(), page, size), ManagementVOs::user);
   }
 
+  /**
+   * 查询已分配角色.
+   *
+   * @param id 用户编号
+   * @return 满足查询条件的角色列表
+   */
   @GetMapping("/{id}/roles")
   public List<ManagementVOs.RoleVO> roles(@PathVariable @Positive Long id) {
     return service.roles(current.get(), id).stream().map(ManagementVOs::role).toList();
   }
 
-  /** 在本部门范围内分配角色. */
+  /**
+   * 在本部门范围内分配角色.
+   *
+   * @param id 用户编号
+   * @param request 包含目标角色编号的请求体
+   * @return HTTP 201 和用户角色关联地址
+   */
   @PostMapping("/{id}/roles")
   public ResponseEntity<Void> assign(
       @PathVariable @Positive Long id, @RequestBody @Valid ManagementDTOs.AssignRoleDTO request) {
@@ -56,6 +81,12 @@ public class UserController {
         .build();
   }
 
+  /**
+   * 撤销用户角色关联.
+   *
+   * @param id 用户编号
+   * @param roleId 角色的唯一编号
+   */
   @DeleteMapping("/{id}/roles/{roleId}")
   @ResponseStatus(org.springframework.http.HttpStatus.NO_CONTENT)
   public void revoke(@PathVariable @Positive Long id, @PathVariable @Positive Long roleId) {

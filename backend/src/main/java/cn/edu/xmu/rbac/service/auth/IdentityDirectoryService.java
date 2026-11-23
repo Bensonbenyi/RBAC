@@ -12,20 +12,43 @@ public class IdentityDirectoryService {
   private final ManagementStore store;
   private final AccessPolicy access;
 
-  /** 注入目录查询与 RBAC 权限校验. */
+  /**
+   * 注入目录查询与 RBAC 权限校验.
+   *
+   * @param store 管理数据读写端口
+   * @param access 检查目标许可和部门归属的组件
+   */
   public IdentityDirectoryService(ManagementStore store, AccessPolicy access) {
     this.store = store;
     this.access = access;
   }
 
-  /** 查询根部门或指定上级的直接子部门. */
+  /**
+   * 查询根部门或指定上级的直接子部门.
+   *
+   * @param actor 当前已认证账号及其系统、部门和会话
+   * @param parentId 父部门编号，根层使用 null
+   * @param keyword 目录搜索词，空串表示查询当前层全部记录
+   * @param page 从 0 开始的页号
+   * @param pageSize 每页最多返回的记录数
+   * @return 包含当前页记录及总数的分页结果
+   */
   public Data.Page<Data.DirectoryDepartment> departments(
       Data.Identity actor, Long parentId, String keyword, int page, int pageSize) {
     require(actor, "department.manage");
     return store.directoryDepartments(parentId, keyword.strip(), page - 1, pageSize);
   }
 
-  /** 查询指定部门的直接成员. */
+  /**
+   * 查询指定部门的直接成员.
+   *
+   * @param actor 当前已认证账号及其系统、部门和会话
+   * @param departmentId 所属部门编号
+   * @param keyword 目录搜索词，空串表示查询当前层全部记录
+   * @param page 从 0 开始的页号
+   * @param pageSize 每页最多返回的记录数
+   * @return 包含当前页记录及总数的分页结果
+   */
   public Data.Page<Data.DirectoryUser> users(
       Data.Identity actor, Long departmentId, String keyword, int page, int pageSize) {
     require(actor, "user.view");
@@ -38,7 +61,14 @@ public class IdentityDirectoryService {
     return store.directoryUsers(departmentId, keyword.strip(), page - 1, pageSize);
   }
 
-  /** 按外部身份标识查找用户，当前标识取自账号主键. */
+  /**
+   * 按外部身份标识查找用户，当前标识取自账号主键.
+   *
+   * @param actor 当前已认证账号及其系统、部门和会话
+   * @param userId 用户的唯一编号
+   * @return 目标用户的数据
+   * @throws BusinessException 缺少许可、用户标识不存在或目标超出部门范围
+   */
   public Data.User lookup(Data.Identity actor, String userId) {
     require(actor, "user.view");
     Data.User user;
@@ -55,7 +85,12 @@ public class IdentityDirectoryService {
     return user;
   }
 
-  /** 课程教师选择沿用 TEC，平台目录使用已有的读权限. */
+  /**
+   * 使用目标系统的目录权限检查访问.
+   *
+   * @param actor 当前已认证账号及其系统、部门和会话
+   * @param platformCode 权限后台访问该目录所需的权限码
+   */
   private void require(Data.Identity actor, String platformCode) {
     String code = "course-project-management".equals(actor.systemKey()) ? "TEC" : platformCode;
     if (!access.allowed(actor.userId(), actor.systemKey(), code)) {
@@ -63,6 +98,12 @@ public class IdentityDirectoryService {
     }
   }
 
+  /**
+   * 对平台访问检查操作者和目标的部门归属.
+   *
+   * @param actor 当前已认证账号及其系统、部门和会话
+   * @param departmentId 所属部门编号
+   */
   private void scopePlatform(Data.Identity actor, Long departmentId) {
     if ("rbac".equals(actor.systemKey())) {
       access.scope(actor, departmentId);

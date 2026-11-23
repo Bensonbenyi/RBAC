@@ -14,11 +14,26 @@ public class PermissionService implements PermissionUseCase {
   private final ManagementStore store;
   private final AccessPolicy access;
 
+  /**
+   * 注入权限所需的协作组件.
+   *
+   * @param store 管理数据读写端口
+   * @param access 检查目标许可和部门归属的组件
+   */
   public PermissionService(ManagementStore store, AccessPolicy access) {
     this.store = store;
     this.access = access;
   }
 
+  /**
+   * 分页查询权限.
+   *
+   * @param actor 当前已认证账号及其系统、部门和会话
+   * @param systemId 权限所属的业务系统编号
+   * @param page 从 0 开始的页号
+   * @param size 每页记录数
+   * @return 包含当前页记录及总数的分页结果
+   */
   public Data.Page<Data.Permission> list(Data.Identity actor, Long systemId, int page, int size) {
     access.require(actor, "permission.manage");
     return store.permissions(systemId, page, size);

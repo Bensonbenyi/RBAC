@@ -13,18 +13,20 @@
     {
       "name": "统一权限管理系统需求与详细设计说明书-v3.9.0.pdf",
       "pageSize": "A4 portrait",
-      "pages": 124,
+      "pages": 122,
       "figurePages": {
-        "cors": 112,
-        "studentCourses": 113,
+        "cors": 110,
+        "studentCourses": 111,
         "chenEr": 10,
-        "databaseTables": 11
+        "databaseTables": 11,
+        "dddPackages": 27,
+        "structuredPackages": 24
       }
     }
   ],
   "starUmlModel": {
     "diagrams": 109,
-    "elements": 10760,
+    "elements": 10966,
     "references": "resolved",
     "operationSignatures": 488
   },

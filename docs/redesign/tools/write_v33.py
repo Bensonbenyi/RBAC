@@ -29,7 +29,9 @@ def table(headers, rows, cols=None, style=''):
  body = ''.join(' '.join('|' + str(x).replace('|', '\\|') for x in row) + '\n' for row in rows)
  return '\n[' + attrs + ']\n|===\n' + heading + '\n' + body + '|===\n'
 
-def fig(stem,title,anchor=None):return f'\n[.diagram.plate]\n--\n[[{anchor or "fig-"+stem}]]\n.{title}\nimage::v33/{stem}.svg[{title},width=100%]\n--\n'
+def fig(stem,title,anchor=None):
+ link=f',link={{imagesdir}}/v33/{stem}.svg' if stem.startswith('packages-') or stem=='packages' else ''
+ return f'\n[.diagram.plate]\n--\n[[{anchor or "fig-"+stem}]]\n.{title}\nimage::v33/{stem}.svg[{title},width=100%{link}]\n--\n'
 def refs():return table(['参考资料','使用范围'],[
  ('GB/T 8567—2006《计算机软件文档编制规范》','概要设计的目的、结构、接口与数据设计组织；章节对应关系见本文。'),
  ('https://www.omg.org/spec/UML/2.5.1[OMG UML 2.5.1]','类、包、状态、部署、活动、用例和时序图语义。'),

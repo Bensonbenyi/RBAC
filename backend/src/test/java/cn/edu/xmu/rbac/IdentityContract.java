@@ -18,6 +18,28 @@ import tools.jackson.databind.JsonNode;
 
 abstract class IdentityContract extends ContractFixture {
   @Test
+  void mapsMissingIdentityAndInvalidLoginToTheirContractErrors() {
+    expect(
+        401,
+        "POST",
+        LOGIN,
+        "{\"username\":\"missing\",\"password\":\"13800000000\",\"systems\":[\"rbac\"]}",
+        null);
+    expect(400, "POST", LOGIN, "{\"username\":\"admin\",\"password\":\"13800000000\"}", null);
+    expect(404, "GET", IDENTITY_USERS + "0" + userId("admin"), null, token);
+    expect(403, "GET", IDENTITY_USERS + userId("other"), null, token);
+    String course = login("admin", "course-project-management");
+    expect(403, "GET", "/api/systems/options", null, course);
+    assertEquals(
+        "API_OPERATION_NOT_FOUND",
+        expect(404, "GET", API_PERMISSIONS + "unknown", null, course).path("code").asText());
+    assertTrue(
+        expect(200, "GET", API_PERMISSIONS + "listTeacherCourses", null, course)
+            .path("allowed")
+            .asBoolean());
+  }
+
+  @Test
   @DisplayName("课程网页跨域预检通过后仍需身份和权限")
   void authorizesCourseOriginBeforeBearerAuthentication() throws Exception {
     var url = URI.create("http://localhost:" + port + "/auth/permissions/MCO");

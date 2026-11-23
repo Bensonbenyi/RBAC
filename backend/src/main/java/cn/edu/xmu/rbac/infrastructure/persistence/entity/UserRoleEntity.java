@@ -10,25 +10,45 @@ import org.springframework.data.domain.Persistable;
 @Entity
 @Table(name = "user_role")
 public class UserRoleEntity implements Persistable<UserRoleEntity.Key> {
-  /** 对应关联表的组合主键. */
+  /**
+   * 对应关联表的组合主键.
+   *
+   * @param userId 用户的唯一编号
+   * @param roleId 角色的唯一编号
+   */
   @Embeddable
   public record Key(Long userId, Long roleId) {}
 
   @EmbeddedId Key id;
 
+  /** 供 Hibernate 加载持久化实体. */
   protected UserRoleEntity() {}
 
-  /** 构造待插入的用户角色记录. */
+  /**
+   * 构造待插入的用户角色记录.
+   *
+   * @param userId 用户的唯一编号
+   * @param roleId 角色的唯一编号
+   */
   public UserRoleEntity(Long userId, Long roleId) {
     id = new Key(userId, roleId);
   }
 
+  /**
+   * 读取关联实体的复合主键.
+   *
+   * @return 关联记录的复合主键
+   */
   @Override
   public Key getId() {
     return id;
   }
 
-  /** 仓储只用这个实体插入关系；已存在的组合主键必须由数据库拒绝. */
+  /**
+   * 告知 Spring Data JPA 此关联需要执行插入.
+   *
+   * @return 始终为 true，使新增关联执行数据库插入
+   */
   @Override
   public boolean isNew() {
     return true;

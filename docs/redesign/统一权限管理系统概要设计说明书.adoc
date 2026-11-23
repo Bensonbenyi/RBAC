@@ -249,7 +249,7 @@ image::v33/utility.svg[OV-UTILITY-01 质量属性效用树,width=100%]
 --
 [[OV-PKG-01]]
 .OV-PKG-01 系统包依赖
-image::v33/packages.svg[OV-PKG-01 系统包依赖,width=100%]
+image::v33/packages.svg[OV-PKG-01 系统包依赖,width=100%,link={imagesdir}/v33/packages.svg]
 --
 
 
@@ -660,7 +660,7 @@ image::v33/deployment.svg[OV-DEPLOY-01 Docker Swarm 部署,width=100%]
 
 === 本轮测试与交付入口
 
-v3.9.0 平台后端测试 39 项、CloneFactory 测试 5 项、平台前端测试 3 项、课程后端测试 497 项、课程前端测试 56 项全部通过。JaCoCo 0.8.14 的平台行覆盖率为 93.73%，分支覆盖率为 70.34%。生成的 CloneFactory 工具类由拷贝测试与运行包检查单独验证，覆盖率按手写代码计算。
+v3.9.0 平台后端测试 56 项、CloneFactory 测试 5 项、平台前端测试 3 项、课程后端测试 497 项、课程前端测试 56 项全部通过。JaCoCo 0.8.14 的平台行覆盖率为 100.0%，分支覆盖率为 100.0%。生成的 CloneFactory 工具类由拷贝测试与运行包检查单独验证，覆盖率按手写代码计算。
 
 
 [cols="3,7",options="header"]

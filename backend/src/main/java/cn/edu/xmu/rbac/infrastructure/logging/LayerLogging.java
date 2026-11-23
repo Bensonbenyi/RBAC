@@ -13,7 +13,13 @@ import org.springframework.stereotype.Component;
 public class LayerLogging {
   private static final Logger log = LoggerFactory.getLogger(LayerLogging.class);
 
-  /** 记录调用耗时与执行结果，异常保持原样抛出. */
+  /**
+   * 记录调用耗时与执行结果，异常保持原样抛出.
+   *
+   * @param call 待执行且需要记录耗时的切点
+   * @return 被记录方法的原始返回值
+   * @throws Throwable 被记录的方法抛出异常
+   */
   @Around(
       "execution(public * cn.edu.xmu.rbac.api..*Controller.*(..)) || execution(public *"
           + " cn.edu.xmu.rbac.infrastructure.persistence..*(..)) || execution(public *"

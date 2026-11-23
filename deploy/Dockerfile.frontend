@@ -3,4 +3,5 @@ COPY frontend/dist/ /usr/share/nginx/html/platform/
 COPY .integrations/course-project-mgt/web/dist/ /usr/share/nginx/html/course/
 COPY .runtime/api-site/ /usr/share/nginx/html/api-docs/
 COPY backend/target/site/jacoco/ /usr/share/nginx/html/coverage/
+COPY docs/redesign/assets/v33/packages-full-*.svg /usr/share/nginx/html/design/
 COPY deploy/nginx.conf /etc/nginx/conf.d/default.conf

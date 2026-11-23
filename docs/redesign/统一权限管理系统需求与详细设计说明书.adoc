@@ -339,7 +339,7 @@ image::v33/architecture.svg[总体分层架构,width=100%]
 --
 [[fig-packages]]
 .系统包依赖概览
-image::v33/packages.svg[系统包依赖概览,width=100%]
+image::v33/packages.svg[系统包依赖概览,width=100%,link={imagesdir}/v33/packages.svg]
 --
 
 
@@ -353,14 +353,14 @@ image::v33/packages.svg[系统包依赖概览,width=100%]
 --
 [[fig-packages-structured]]
 .结构化设计 分层包图
-image::v33/packages-structured.svg[结构化设计 分层包图,width=100%]
+image::v33/packages-structured.svg[结构化设计 分层包图,width=100%,link={imagesdir}/v33/packages-structured.svg]
 --
 
 [.diagram.plate]
 --
 [[fig-packages-ddd]]
 .DDD设计 分层包图
-image::v33/packages-ddd.svg[DDD设计 分层包图,width=100%]
+image::v33/packages-ddd.svg[DDD设计 分层包图,width=100%,link={imagesdir}/v33/packages-ddd.svg]
 --
 
 [.diagram.plate]
@@ -445,55 +445,55 @@ image::v33/adapter-delete.svg[JPA 角色适配器 删除顺序图,width=100%]
 --
 ==== 完整包图与文件组织
 
-完整包图按 API、契约、业务实现和基础设施组织。入口与实现分图放大展示依赖。源文件图列出 Java、资源、前端、部署及集成目录。
+完整包图按 API 输入、Service Port 契约、Service 实现及 Infrastructure 分四列。每列按实际 Java 子包展开，连线旁注明调用、实现或数据读取。点击 AsciiDoc 中的图打开原尺寸 SVG。入口与实现分图展开重点依赖，源文件图交代仓库目录。
 
 [.diagram.plate]
 --
 [[fig-packages-full-structured]]
 .系统完整 结构化 UML 包图
-image::v33/packages-full-structured.svg[系统完整 结构化 UML 包图,width=100%]
+image::v33/packages-full-structured.svg[系统完整 结构化 UML 包图,width=100%,link={imagesdir}/v33/packages-full-structured.svg]
 --
 
 [.diagram.plate]
 --
 [[fig-packages-structured-entry]]
 .结构化 包图 入口与用例契约
-image::v33/packages-structured-entry.svg[结构化 包图 入口与用例契约,width=100%]
+image::v33/packages-structured-entry.svg[结构化 包图 入口与用例契约,width=100%,link={imagesdir}/v33/packages-structured-entry.svg]
 --
 
 [.diagram.plate]
 --
 [[fig-packages-structured-implementation]]
 .结构化 包图 服务与基础设施
-image::v33/packages-structured-implementation.svg[结构化 包图 服务与基础设施,width=100%]
+image::v33/packages-structured-implementation.svg[结构化 包图 服务与基础设施,width=100%,link={imagesdir}/v33/packages-structured-implementation.svg]
 --
 
 [.diagram.plate]
 --
 [[fig-packages-full-ddd]]
 .系统完整 DDD UML 包图
-image::v33/packages-full-ddd.svg[系统完整 DDD UML 包图,width=100%]
+image::v33/packages-full-ddd.svg[系统完整 DDD UML 包图,width=100%,link={imagesdir}/v33/packages-full-ddd.svg]
 --
 
 [.diagram.plate]
 --
 [[fig-packages-ddd-entry]]
 .DDD 包图 入口与用例契约
-image::v33/packages-ddd-entry.svg[DDD 包图 入口与用例契约,width=100%]
+image::v33/packages-ddd-entry.svg[DDD 包图 入口与用例契约,width=100%,link={imagesdir}/v33/packages-ddd-entry.svg]
 --
 
 [.diagram.plate]
 --
 [[fig-packages-ddd-implementation]]
 .DDD 包图 服务与基础设施
-image::v33/packages-ddd-implementation.svg[DDD 包图 服务与基础设施,width=100%]
+image::v33/packages-ddd-implementation.svg[DDD 包图 服务与基础设施,width=100%,link={imagesdir}/v33/packages-ddd-implementation.svg]
 --
 
 [.diagram.plate]
 --
 [[fig-packages-files]]
 .源文件与配置文件组织
-image::v33/packages-files.svg[源文件与配置文件组织,width=100%]
+image::v33/packages-files.svg[源文件与配置文件组织,width=100%,link={imagesdir}/v33/packages-files.svg]
 --
 ==== 认证与授权关系
 
@@ -2230,7 +2230,7 @@ Flyway V2 在现有 permission 与 role_permission 中补齐旧版既有界面�
 
 === 本轮测试与交付入口
 
-v3.9.0 平台后端测试 39 项、CloneFactory 测试 5 项、平台前端测试 3 项、课程后端测试 497 项、课程前端测试 56 项全部通过。JaCoCo 0.8.14 的平台行覆盖率为 93.73%，分支覆盖率为 70.34%。生成的 CloneFactory 工具类由拷贝测试与运行包检查单独验证，覆盖率按手写代码计算。
+v3.9.0 平台后端测试 56 项、CloneFactory 测试 5 项、平台前端测试 3 项、课程后端测试 497 项、课程前端测试 56 项全部通过。JaCoCo 0.8.14 的平台行覆盖率为 100.0%，分支覆盖率为 100.0%。生成的 CloneFactory 工具类由拷贝测试与运行包检查单独验证，覆盖率按手写代码计算。
 
 
 [cols="3,7",options="header"]

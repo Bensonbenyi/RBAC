@@ -20,8 +20,14 @@ public class UserEntity {
   String phone;
   Long departmentId;
 
+  /** 供 Hibernate 加载持久化实体. */
   protected UserEntity() {}
 
+  /**
+   * 将实体转换为业务层使用的数据快照.
+   *
+   * @return 目标用户的数据
+   */
   public Data.User toData() {
     return new Data.User(id, username, name, phone, departmentId);
   }

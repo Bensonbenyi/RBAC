@@ -4,9 +4,56 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import cn.edu.xmu.rbac.infrastructure.persistence.entity.RoleInheritanceEntity;
+import cn.edu.xmu.rbac.infrastructure.persistence.entity.RolePermissionEntity;
+import cn.edu.xmu.rbac.infrastructure.persistence.entity.UserRoleEntity;
 import org.junit.jupiter.api.Test;
 
 abstract class ManagementContract extends ContractFixture {
+  @Test
+  void returnsNoEffectivePermissionsForUserWithoutRoles() {
+    assertTrue(effectiveAccess.permissionsForUser(userId("other"), "rbac").isEmpty());
+  }
+
+  @Test
+  void loadsCompositeKeysFromPersistedAuthorizationRows() {
+    long user = userId("viewer");
+    long role = roleId("viewer");
+    long permission = permissionId("rbac", "ui.users");
+    long junior = roleId("teacher");
+    grant(201, role, permission);
+    inherit(201, role, junior);
+    assertEquals(
+        new UserRoleEntity.Key(user, role),
+        entities.find(UserRoleEntity.class, new UserRoleEntity.Key(user, role)).getId());
+    assertEquals(
+        new RolePermissionEntity.Key(role, permission),
+        entities
+            .find(RolePermissionEntity.class, new RolePermissionEntity.Key(role, permission))
+            .getId());
+    assertEquals(
+        new RoleInheritanceEntity.Key(role, junior),
+        entities
+            .find(RoleInheritanceEntity.class, new RoleInheritanceEntity.Key(role, junior))
+            .getId());
+  }
+
+  @Test
+  void listsDirectGrantsSeparatelyFromInheritedPermissions() {
+    long user = userId("viewer");
+    long role = roleId("viewer");
+    long permission = permissionId("rbac", "ui.users");
+    grant(201, role, permission);
+    assertTrue(
+        expect(200, "GET", "/api/users/" + user + "/roles", null, token)
+            .toString()
+            .contains("viewer"));
+    assertTrue(
+        expect(200, "GET", "/api/roles/" + role + "/permissions", null, token)
+            .toString()
+            .contains("ui.users"));
+  }
+
   @Test
   void preservesHttpRoutingErrors() {
     expect(404, "GET", "/api/unknown-resource", null, token);

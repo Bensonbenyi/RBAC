@@ -26,21 +26,25 @@ def architecture():
   d.line([(x,535),(x,554)],'dep')
  d.note(80,792,740,['启动时由 app.backend-strategy 选择业务实现。','两套实现共用认证、目录、存储和外部契约。'])
 
- d=D('packages','系统 UML 包图与依赖',900,694,'UMLPackageDiagram')
+ d=D('packages','系统 UML 包图与依赖',1670,650,'UMLPackageDiagram')
  nodes={}
  for key,title,x,y,w,h,body in [
-  ('api','api',80,86,740,86,['auth  user  role  department  system  permission  identity']),
-  ('port','service.port',80,222,740,86,['五个 UseCase  Data  三个存储端口']),
-  ('structured','service.structured',80,358,345,86,['StructuredUserService  StructuredRoleService']),
-  ('ddd','service.ddd',475,358,345,86,['DddUserService  DddRoleService  domain']),
-  ('infra','infrastructure',80,500,740,90,['persistence  security  logging']),
+  ('api','api',45,165,305,113,['HTTP Controller、DTO、VO']),
+  ('port','service.port',450,165,290,140,['用例接口与数据契约','管理、授权与会话端口']),
+  ('structured','service.structured',885,165,320,110,['结构化用户与角色服务']),
+  ('ddd','service.ddd',885,350,320,140,['DDD 应用服务与领域对象']),
+  ('infra','infrastructure',1320,165,305,140,['JPA、安全、分层日志']),
  ]:
   nodes[key]=d.node(title,x,y,w,h,'UMLPackage',body=body)
- d.edge(nodes['api'],nodes['port'],[(450,172),(450,217)])
- d.edge(nodes['structured'],nodes['port'],[(250,340),(250,313)])
- d.edge(nodes['ddd'],nodes['port'],[(650,340),(650,313)])
- d.edge(nodes['infra'],nodes['port'],[(825,545),(857,545),(857,263),(825,263)])
- d.note(80,610,740,['API 依赖用例端口，两套业务实现经存储端口调用底层。','Infrastructure 实现存储端口。'])
+ for a,b,points,x,y,name in [
+  ('api','port',[(350,230),(450,230)],400,217,'调用用例'),
+  ('structured','port',[(885,227),(740,227)],813,212,'实现用例'),
+  ('ddd','port',[(885,409),(790,409),(790,270),(740,270)],837,393,'实现用例'),
+  ('infra','port',[(1470,305),(1470,534),(560,534),(560,305)],1160,517,'实现存储端口'),
+ ]:
+  d.edge(nodes[a],nodes[b],points,name=name)
+  d.text(x,y,name,17,True)
+ d.note(45,570,1580,['业务实现列按 BACKEND_STRATEGY 选择。两套实现共用 API、契约和基础设施。'])
 
 def domain_relations():
  d=D('domain-relations','核心业务对象关系模型',900,1100)
@@ -235,7 +239,7 @@ def identity_directory_class():
 def files_and_integration():
  d=D('packages-files','源文件与配置文件组织',900,1180,'UMLPackageDiagram')
  for title,x,y,w,h,body in [
- ('backend/src/main/java/cn/edu/xmu/rbac',50,110,800,350,['api/auth user role department system permission identity','service/port 共享用例与存储端口','service/structured 五个事务脚本 Service','service/ddd 应用服务与 domain 领域对象','service/role 继承图防环规则','infrastructure/persistence security logging bootstrap']),
+ ('backend/src/main/java/cn/edu/xmu/rbac',50,110,800,350,['api/auth user role department system permission identity','service/port 共享用例与存储端口','service/structured 用户与角色事务脚本','service/ddd 应用服务与 domain 领域对象','service/role 继承图防环规则','infrastructure/persistence security logging']),
  ('backend/src/main/resources',50,520,800,160,['application.yaml 运行配置   logback-spring.xml 分层日志','db/migration/V1__rbac.sql 数据库迁移']),
  ('frontend/src',50,740,380,150,['App.vue 入口   auth.ts 凭据','views/ 页面   main.ts 路由']),
  ('deploy / tooling',480,740,370,150,['stack.yaml 容器编排','测试 构建 备份 部署脚本']),

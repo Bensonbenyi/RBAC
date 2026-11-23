@@ -10,6 +10,14 @@ import org.springframework.data.jpa.repository.Query;
 /** Spring Data JPA 的部门仓储. */
 public interface DepartmentJpaRepository extends JpaRepository<DepartmentEntity, Long> {
 
+  /**
+   * 按关键词分页查询统一身份目录.
+   *
+   * @param parentId 父部门编号，根层使用 null
+   * @param keyword 目录搜索词，空串表示查询当前层全部记录
+   * @param pageable JPA 分页及排序条件
+   * @return 包含当前页记录及总数的分页结果
+   */
   @Query(
       value =
           """

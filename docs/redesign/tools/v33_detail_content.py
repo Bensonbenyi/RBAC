@@ -133,7 +133,7 @@ ManagementStore 提供业务对象、直接授权与继承边的读写。Effecti
  for stem,title in [('adapter-insert','JPA 角色适配器 新建顺序图'),('adapter-update','JPA 角色适配器 更新顺序图'),('adapter-delete','JPA 角色适配器 删除顺序图')]:s+=fig(stem,title)
  s+='''==== 完整包图与文件组织
 
-完整包图按 API、契约、业务实现和基础设施组织。入口与实现分图放大展示依赖。源文件图列出 Java、资源、前端、部署及集成目录。
+完整包图按 API 输入、Service Port 契约、Service 实现及 Infrastructure 分四列。每列按实际 Java 子包展开，连线旁注明调用、实现或数据读取。点击 AsciiDoc 中的图打开原尺寸 SVG。入口与实现分图展开重点依赖，源文件图交代仓库目录。
 '''
  for mode,label in [('structured','结构化'),('ddd','DDD')]:
   s+=fig('packages-full-'+mode,'系统完整 '+label+' UML 包图')

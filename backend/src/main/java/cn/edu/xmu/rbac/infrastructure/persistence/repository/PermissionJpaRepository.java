@@ -11,8 +11,21 @@ import org.springframework.data.jpa.repository.Query;
 /** Spring Data JPA 的操作权限仓储. */
 public interface PermissionJpaRepository extends JpaRepository<PermissionEntity, Long> {
 
+  /**
+   * 按所属系统筛选权限.
+   *
+   * @param systemId 权限所属的业务系统编号
+   * @param pageable JPA 分页及排序条件
+   * @return 包含当前页记录及总数的分页结果
+   */
   Page<PermissionEntity> findBySystemId(Long systemId, Pageable pageable);
 
+  /**
+   * 查询给定角色的直接权限并去重.
+   *
+   * @param roleIds 参与查询的角色编号集合
+   * @return 满足查询条件的权限列表
+   */
   @Query(
       """
       select distinct p from PermissionEntity p
@@ -21,6 +34,13 @@ public interface PermissionJpaRepository extends JpaRepository<PermissionEntity,
       """)
   List<PermissionEntity> forRoles(Collection<Long> roleIds);
 
+  /**
+   * 读取指定角色集合在目标系统内的权限编码.
+   *
+   * @param roleIds 参与查询的角色编号集合
+   * @param systemKey 当前业务系统的唯一标识
+   * @return 满足范围条件的编号或权限编码列表
+   */
   @Query(
       """
       select distinct p.code from PermissionEntity p

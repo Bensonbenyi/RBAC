@@ -25,13 +25,26 @@ public class IdentityDepartmentController {
   private final IdentityDirectoryService service;
   private final CurrentIdentity current;
 
-  /** 注入目录服务和当前操作者. */
+  /**
+   * 注入目录服务和当前操作者.
+   *
+   * @param service 处理当前资源用例的服务
+   * @param current 读取请求中已认证身份的组件
+   */
   public IdentityDepartmentController(IdentityDirectoryService service, CurrentIdentity current) {
     this.service = service;
     this.current = current;
   }
 
-  /** 从根部门开始，按上级逐层展开. */
+  /**
+   * 分页读取根部门或所选部门的直接子部门.
+   *
+   * @param parentId 父部门编号，根层使用 null
+   * @param keyword 目录搜索词，空串表示查询当前层全部记录
+   * @param page 从 0 开始的页号
+   * @param pageSize 每页最多返回的记录数
+   * @return 从第 1 页计数的部门目录
+   */
   @GetMapping
   public PageVO<DepartmentVO> list(
       @RequestParam(required = false) @Positive Long parentId,
@@ -54,7 +67,15 @@ public class IdentityDepartmentController {
     return new PageVO<>(page, pageSize, result.total(), items);
   }
 
-  /** 查询部门下的身份候选人. */
+  /**
+   * 分页读取指定部门的直接成员.
+   *
+   * @param departmentId 所属部门编号
+   * @param keyword 目录搜索词，空串表示查询当前层全部记录
+   * @param page 从 0 开始的页号
+   * @param pageSize 每页最多返回的记录数
+   * @return 从第 1 页计数的成员目录
+   */
   @GetMapping("/{departmentId}/users")
   public PageVO<DepartmentUserVO> users(
       @PathVariable @Positive Long departmentId,

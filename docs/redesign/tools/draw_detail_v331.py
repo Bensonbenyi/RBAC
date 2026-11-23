@@ -149,61 +149,105 @@ def overall_classes():
 
 
 def package_diagrams():
- for mode in ['structured','ddd']:
-  label='结构化' if mode=='structured' else 'DDD'
-  d=D('packages-full-'+mode,'系统完整 '+label+' UML 包图',1260,1580,'UMLPackageDiagram')
+ for mode,label in [('structured','结构化'),('ddd','DDD')]:
+  layer='service.'+mode
+  prefix='Structured' if mode=='structured' else 'Ddd'
+  d=D('packages-full-'+mode,'系统完整 '+label+' UML 包图',2240,1860,'UMLPackageDiagram')
+  for x,title in [(205,'API 输入层'),(760,'Service Port 契约层'),
+                  (1330,'Service 业务实现层'),(1970,'Infrastructure 基础设施层')]:
+   d.text(x,104,title,27,True,True)
   specs=[
-   ('api',35,105,365,0,['auth / identity / shared','user / role / department','system / permission','Controller、DTO、VO']),
-   ('service.port',455,105,365,0,['UserUseCase、RoleUseCase','DepartmentUseCase、Data','SystemUseCase、PermissionUseCase','ManagementStore、SessionStore','EffectiveAccessStore','BusinessException']),
-   ('infrastructure.security',875,105,350,0,['BearerFilter、CurrentIdentity','SecurityConfiguration','TokenConfiguration']),
-   ('service.auth',35,445,365,0,['AuthService、SelectionService','IdentityDirectoryService','OperationPermissions','UiPermissions']),
-   ('service.'+mode,455,445,365,0,[('Structured' if mode=='structured' else 'Ddd')+'UserService',('Structured' if mode=='structured' else 'Ddd')+'RoleService']),
-   ('infrastructure.persistence.adapter',875,445,350,0,['JpaManagementStore','JpaEffectiveAccessStore','JpaSessionStore']),
-   ('service.security',35,735,365,0,['AccessPolicy']),
-   ('service.catalog',455,735,365,0,['DepartmentService、SystemService','PermissionService']),
-   ('infrastructure.persistence.repository',875,735,350,0,['9 个 JpaRepository','关联、目录和有效权限查询']),
-   ('service.role',35,1050,365,0,['RoleHierarchy']),
-   ('infrastructure.logging',455,1050,365,0,['LayerLogging']),
-   ('infrastructure.persistence.entity',875,1050,350,0,['8 张业务表的实体','LoginSessionEntity'])]
-  if mode=='ddd':specs.append(('service.ddd.domain',455,1320,365,0,['User、Role']))
-  n={}
-  for name,x,y,w,h,body in specs:n[name]=pack(d,name,x,y,w,body,h)
-  for a,b,points in [
-   ('api','service.port',[(400,180),(455,180)]),
-   ('api','service.auth',[(215,302),(215,445)]),
-   ('api','infrastructure.security',[(310,105),(310,80),(1050,80),(1050,105)]),
-   ('service.'+mode,'service.port',[(635,445),(635,bottom(n['service.port']))]),
-   ('service.auth','service.port',[(400,500),(420,500),(420,255),(455,255)]),
-   ('service.auth','service.security',[(215,bottom(n['service.auth'])),(215,735)]),
-   ('service.catalog','service.security',[(455,800),(400,800)]),
-   ('service.catalog','service.port',[(815,800),(845,800),(845,280),(820,280)]),
-   ('service.security','service.port',[(400,766),(438,766),(438,285),(455,285)]),
-   ('service.'+mode,'service.security',[(455,550),(426,550),(426,755),(400,755)]),
-   ('service.'+mode,'service.role',[(565,445),(565,390),(18,390),(18,1115),(35,1115)]),
-   ('infrastructure.security','service.port',[(875,205),(820,205)]),
-   ('infrastructure.security','service.auth',[(1160,105),(1160,64),(8,64),(8,478),(35,478)]),
-   ('infrastructure.persistence.adapter','service.port',[(875,515),(855,515),(855,240),(820,240)]),
-   ('infrastructure.persistence.adapter','infrastructure.persistence.repository',[(1040,bottom(n['infrastructure.persistence.adapter'])),(1040,735)]),
-   ('infrastructure.persistence.adapter','infrastructure.persistence.entity',[(1225,570),(1240,570),(1240,1125),(1225,1125)]),
-   ('infrastructure.persistence.repository','infrastructure.persistence.entity',[(1040,bottom(n['infrastructure.persistence.repository'])),(1040,1050)]),
-   ('service.role','service.port',[(35,1130),(25,1130),(25,375),(610,375),(610,bottom(n['service.port']))]),
-  ]:dep(d,n[a],n[b],points)
+   ('api.user',55,200,320,['UserController']),
+   ('api.role',55,425,320,['RoleController']),
+   ('api.department',55,686,320,['DepartmentController']),
+   ('api.system',55,825,320,['SystemController']),
+   ('api.permission',55,966,320,['PermissionController']),
+   ('api.auth',55,1140,320,['AuthController','dto / vo']),
+   ('api.identity',55,1330,320,['IdentityDepartmentController','IdentityUserController']),
+   ('api.shared',55,1580,320,['ApiErrors','api.shared.dto / api.shared.vo']),
+   ('service.port',565,200,405,['UserUseCase、RoleUseCase','DepartmentUseCase','SystemUseCase、PermissionUseCase','Data、BusinessException','ManagementStore、SessionStore','EffectiveAccessStore']),
+   (layer,1160,200,330,[prefix+'UserService',prefix+'RoleService']),
+   ('service.catalog',1160,580,330,['DepartmentService','SystemService','PermissionService']),
+   ('service.auth',1160,865,330,['AuthService、SelectionService','IdentityDirectoryService','OperationPermissions','UiPermissions']),
+   ('service.security',1160,1190,330,['AccessPolicy']),
+   ('service.role',1160,1490,330,['RoleHierarchy']),
+   ('infrastructure.persistence.adapter',1750,430,430,['JpaManagementStore','JpaEffectiveAccessStore','JpaSessionStore']),
+   ('infrastructure.persistence.repository',1750,745,430,['User / Role / Department / System','Permission / UserRole / RolePermission','RoleInheritance / LoginSession']),
+   ('infrastructure.persistence.entity',1750,1045,430,['九张表的持久化实体','三种复合主键']),
+   ('infrastructure.security',1750,1330,430,['BearerFilter、CurrentIdentity','SecurityConfiguration','TokenConfiguration']),
+   ('infrastructure.logging',1750,1600,430,['LayerLogging']),
+  ]
   if mode=='ddd':
-   dep(d,n['service.ddd'],n['service.ddd.domain'],[(820,530),(832,530),(832,1370),(820,1370)])
-   dep(d,n['service.ddd.domain'],n['service.role'],[(455,1380),(418,1380),(418,1120),(400,1120)])
-   dep(d,n['service.ddd.domain'],n['service.port'],[(820,1410),(862,1410),(862,315),(820,315)])
-  note(d,35,1490,1190,['虚线开箭头指向被依赖的包。输入、契约、业务实现及基础设施按各自实际包名标注。'])
+   specs.append(('service.ddd.domain',1160,365,330,['User、Role']))
+  n={name:pack(d,name,x,y,w,body) for name,x,y,w,body in specs}
+  annotations=[]
+  def edge(a,b,points,name,at):
+   d.edge(n[a],n[b],points,name=name)
+   annotations.append((at,name))
+  for name,y,port_y,text in [
+   ('api.user',241,241,'调用 UserUseCase'),
+   ('api.role',467,293,'调用 RoleUseCase'),
+   ('api.department',729,331,'调用 DepartmentUseCase'),
+   ('api.system',870,369,'调用 SystemUseCase'),
+   ('api.permission',1009,404,'调用 PermissionUseCase')]:
+   bend=479-(y-241)//11
+   points=[(375,y),(565,y)] if y==port_y else [(375,y),(bend,y),(bend,port_y),(565,port_y)]
+   edge(name,'service.port',points,text,(470 if y==port_y else 500,y-12))
+  edge(layer,'service.port',[(1160,249),(970,249)],'实现用户与角色用例',(1063,234))
+  edge('service.catalog','service.port',[(1160,632),(1002,632),(1002,349),(970,349)],
+       '实现三个目录用例',(1070,616))
+  edge('service.auth','service.port',[(1160,915),(995,915),(995,396),(970,396)],
+       '查询权限与会话',(1070,899))
+  edge('service.security','service.port',[(1160,1235),(982,1235),(982,425),(970,425)],
+       '读取有效授权',(1072,1219))
+  edge('api.role','api.shared',[(55,509),(28,509),(28,1618),(55,1618)],
+       '读 DTO、写 VO',(140,1535))
+  edge('api.auth','service.auth',[(375,1188),(530,1188),(530,1025),(1100,1025),(1100,952),(1160,952)],
+       '登录与鉴权',(725,1011))
+  edge('api.identity','service.auth',[(375,1377),(1060,1377),(1060,995),(1160,995)],
+       '查询统一身份目录',(702,1362))
+  edge('infrastructure.persistence.adapter','service.port',
+       [(1750,480),(1645,480),(1645,151),(930,151),(930,182)],'实现三个存储端口',(1210,139))
+  edge('infrastructure.persistence.adapter','infrastructure.persistence.repository',
+       [(1950,bottom(n['infrastructure.persistence.adapter'])),(1950,727)],
+       '委托 JPA 查询与写入',(2075,688))
+  edge('infrastructure.persistence.repository','infrastructure.persistence.entity',
+       [(1950,bottom(n['infrastructure.persistence.repository'])),(1950,1027)],
+       '映射九类实体',(2048,1001))
+  edge('infrastructure.security','service.port',
+       [(1750,1375),(1580,1375),(1580,185),(850,185),(850,200)],
+       '读取会话、账号与授权',(1160,178))
+  edge('service.catalog','service.security',
+       [(1430,bottom(n['service.catalog'])),(1430,785),(1557,785),(1557,1205),(1490,1205)],
+       '校验目录许可',(1630,1030))
+  edge('service.auth','service.security',[(1310,bottom(n['service.auth'])),(1310,1172)],
+       '检查授权',(1363,1138))
+  edge(layer,'service.security',[(1490,268),(1540,268),(1540,1235),(1490,1235)],
+       '检查操作许可与部门',(1655,1170))
+  if mode=='ddd':
+   edge(layer,'service.ddd.domain',[(1320,bottom(n[layer])),(1320,347)],
+        '校验领域规则',(1427,335))
+   edge('service.ddd.domain','service.role',[(1490,408),(1510,408),(1510,1530),(1490,1530)],
+        '校验继承无环',(1584,1533))
+  else:
+   edge(layer,'service.role',[(1490,302),(1510,302),(1510,1530),(1490,1530)],
+        '校验继承无环',(1584,1533))
+  for at,name in annotations:
+   d.text(*at,name,16,True,bg=True)
+  note(d,55,1755,2100,['虚线开箭头从引用方指向被引用的包。「实现」描述包内类实现接口，详细的 UML 实现关系见对应类图。','LayerLogging 通过 Spring AOP 匹配入口、业务和持久化方法，源码通过切点配置关联。'])
 
-  # Each projection answers a different question; the full plate retains all packages.
-  d=D('packages-'+mode,label+' 四层包依赖总览',920,1120,'UMLPackageDiagram')
-  api=pack(d,'api',40,130,380,['HTTP 资源输入与响应'],150)
-  port=pack(d,'service.port',500,130,380,['用例与存储接口 数据契约'],150)
-  business=pack(d,'service.'+mode,40,510,380,['事务脚本' if mode=='structured' else '应用服务与领域对象'],150)
-  infra=pack(d,'infrastructure',500,510,380,['持久化 安全 日志'],150)
-  dep(d,api,port,[(420,210),(500,210)])
-  dep(d,business,port,[(230,510),(230,385),(690,385),(690,280)])
-  dep(d,infra,port,[(690,510),(690,280)])
-  note(d,40,840,840,['Service Port 声明输入输出契约和存储端口；业务实现与基础设施均依赖它。','service.auth 和 service.security 的完整依赖见完整包图。'])
+  d=D('packages-'+mode,label+' 四层包依赖总览',1640,545,'UMLPackageDiagram')
+  api=pack(d,'api',45,195,265,['HTTP 入口、DTO 与 VO'])
+  port=pack(d,'service.port',420,195,315,['用例、共享数据及仓储端口'])
+  business=pack(d,layer,860,195,295,['用户和角色事务脚本' if mode=='structured' else '应用服务与领域对象'])
+  infra=pack(d,'infrastructure',1280,195,315,['安全、JPA 持久化与日志'])
+  d.edge(api,port,[(310,247),(420,247)],name='调用用例')
+  d.edge(business,port,[(860,247),(735,247)],name='实现用例')
+  d.edge(infra,port,[(1410,bottom(infra)),(1410,382),(635,382),(635,bottom(port))],
+         name='实现存储端口')
+  for x,y,label_text in [(365,233,'调用用例'),(797,233,'实现用例'),(1000,367,'实现存储端口')]:
+   d.text(x,y,label_text,17,True)
+  note(d,45,445,1550,['虚线开箭头指向被依赖的包。共享认证、目录和安全规则见完整包图。'])
 
   d=D('packages-'+mode+'-entry',label+' 输入与身份包依赖',920,1150,'UMLPackageDiagram')
   api=pack(d,'api',40,130,380,['auth identity shared','user role department system permission'],185)
@@ -211,13 +255,18 @@ def package_diagrams():
   security=pack(d,'service.security',500,490,380,['RBAC 操作许可与部门范围'],150)
   infra=pack(d,'infrastructure.security',40,490,380,['CurrentIdentity BearerFilter','SecurityConfiguration TokenConfiguration'],185)
   port=pack(d,'service.port',270,850,380,['Identity Page 数据及会话端口'],150)
-  dep(d,api,auth,[(420,225),(500,225)])
-  dep(d,api,infra,[(230,315),(230,490)])
-  dep(d,api,port,[(40,245),(15,245),(15,930),(270,930)])
-  dep(d,auth,security,[(690,315),(690,490)])
-  dep(d,auth,port,[(880,230),(905,230),(905,1040),(460,1040),(460,1000)])
-  dep(d,security,port,[(690,640),(690,770),(580,770),(580,850)])
-  dep(d,infra,port,[(230,675),(230,770),(340,770),(340,850)])
+  d.edge(api,auth,[(420,225),(500,225)],name='调用认证与目录')
+  d.edge(api,infra,[(230,315),(230,490)],name='读取当前身份')
+  d.edge(api,port,[(40,245),(15,245),(15,930),(270,930)],name='调用应用用例')
+  d.edge(auth,security,[(690,315),(690,490)],name='检查当前许可')
+  d.edge(auth,port,[(880,230),(905,230),(905,1040),(460,1040),(460,1000)],name='读取数据与会话')
+  d.edge(security,port,[(690,640),(690,770),(580,770),(580,850)],name='读取有效授权')
+  d.edge(infra,port,[(230,675),(230,770),(340,770),(340,850)],name='核验令牌会话')
+  for x,y,name in [(460,210,'调用认证与目录'),(155,388,'读取当前身份'),
+                   (135,915,'调用应用用例'),(760,385,'检查当前许可'),
+                   (690,1026,'读取数据与会话'),(752,756,'读取有效授权'),
+                   (268,755,'核验令牌会话')]:
+   d.text(x,y,name,15,True)
   note(d,40,1080,840,['图示包引用方向；输入类通过 CurrentIdentity 读取认证身份。'])
 
   d=D('packages-'+mode+'-implementation',label+' 业务与持久化包依赖',920,1280 if mode=='ddd' else 920,'UMLPackageDiagram')
@@ -225,14 +274,19 @@ def package_diagrams():
   security=pack(d,'service.security',500,130,380,['操作许可 部门边界'],150)
   port=pack(d,'service.port',500,530,380,['UseCase Data ManagementStore','EffectiveAccessStore SessionStore'],185)
   persistence=pack(d,'infrastructure.persistence.adapter',40,530,380,['JpaManagementStore','JpaEffectiveAccessStore','JpaSessionStore'],185)
-  dep(d,business,security,[(420,205),(500,205)])
-  dep(d,business,port,[(420,245),(460,245),(460,610),(500,610)])
-  dep(d,security,port,[(690,280),(690,530)])
-  dep(d,persistence,port,[(420,610),(500,610)])
+  d.edge(business,security,[(420,205),(500,205)],name='检查权限与部门')
+  d.edge(business,port,[(420,245),(460,245),(460,610),(500,610)],name='调用存储端口')
+  d.edge(security,port,[(690,280),(690,530)],name='读取有效权限')
+  d.edge(persistence,port,[(420,610),(500,610)],name='实现存储端口')
   if mode=='ddd':
    domain=pack(d,'service.ddd.domain',40,930,380,['User Role','角色分配与继承规则'],185)
-   dep(d,business,domain,[(40,230),(15,230),(15,1005),(40,1005)])
-   dep(d,domain,port,[(420,1005),(905,1005),(905,620),(880,620)])
+   d.edge(business,domain,[(40,230),(15,230),(15,1005),(40,1005)],name='委托领域规则')
+   d.edge(domain,port,[(420,1005),(905,1005),(905,620),(880,620)],name='使用共享数据')
+   d.text(132,904,'委托领域规则',16,True)
+   d.text(663,991,'使用共享数据',16,True)
+  for x,y,name in [(460,188,'检查权限与部门'),(370,464,'调用存储端口'),
+                   (755,406,'读取有效权限'),(460,594,'实现存储端口')]:
+   d.text(x,y,name,15,True)
   note(d,40,1180 if mode=='ddd' else 820,840,['基础设施实现存储端口；包图以依赖表达引用，实现关系在对应类图中展开。'])
 
 

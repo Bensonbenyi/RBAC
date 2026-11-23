@@ -19,8 +19,14 @@ public class PermissionEntity {
   String code;
   String name;
 
+  /** 供 Hibernate 加载持久化实体. */
   protected PermissionEntity() {}
 
+  /**
+   * 将实体转换为业务层使用的数据快照.
+   *
+   * @return 目标权限的数据
+   */
   public Data.Permission toData() {
     return new Data.Permission(id, systemId, code, name);
   }

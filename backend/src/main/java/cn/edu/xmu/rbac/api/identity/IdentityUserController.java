@@ -17,13 +17,23 @@ public class IdentityUserController {
   private final IdentityDirectoryService service;
   private final CurrentIdentity current;
 
-  /** 注入身份目录服务和当前操作者. */
+  /**
+   * 注入身份目录服务和当前操作者.
+   *
+   * @param service 处理当前资源用例的服务
+   * @param current 读取请求中已认证身份的组件
+   */
   public IdentityUserController(IdentityDirectoryService service, CurrentIdentity current) {
     this.service = service;
     this.current = current;
   }
 
-  /** 查询身份标识对应的姓名及工号. */
+  /**
+   * 查询与统一身份标识关联的工号和姓名.
+   *
+   * @param userId 用户的唯一编号
+   * @return 用于课程系统绑定的身份资料
+   */
   @GetMapping("/auth/users/{userId}")
   public UserVO get(@PathVariable @NotBlank String userId) {
     Data.User user = service.lookup(current.get(), userId);

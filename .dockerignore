@@ -3,6 +3,15 @@
 !.runtime/api-site/
 !.runtime/api-site/**
 docs
+!docs/
+docs/*
+!docs/redesign/
+docs/redesign/*
+!docs/redesign/assets/
+docs/redesign/assets/*
+!docs/redesign/assets/v33/
+docs/redesign/assets/v33/*
+!docs/redesign/assets/v33/packages-full-*.svg
 vendor
 frontend/node_modules
 **/.git

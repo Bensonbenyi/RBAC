@@ -11,10 +11,31 @@ import org.springframework.data.jpa.repository.Query;
 /** Spring Data JPA 的用户账号仓储. */
 public interface UserJpaRepository extends JpaRepository<UserEntity, Long> {
 
+  /**
+   * 按唯一用户名查找账号实体.
+   *
+   * @param username 唯一登录账号
+   * @return 存在时包含账号实体的可选值
+   */
   Optional<UserEntity> findByUsername(String username);
 
+  /**
+   * 按部门筛选持久化记录.
+   *
+   * @param departmentId 所属部门编号
+   * @param pageable JPA 分页及排序条件
+   * @return 包含当前页记录及总数的分页结果
+   */
   Page<UserEntity> findByDepartmentId(Long departmentId, Pageable pageable);
 
+  /**
+   * 按关键词分页查询统一身份目录.
+   *
+   * @param departmentId 所属部门编号
+   * @param keyword 目录搜索词，空串表示查询当前层全部记录
+   * @param pageable JPA 分页及排序条件
+   * @return 包含当前页记录及总数的分页结果
+   */
   @Query(
       value =
           """
