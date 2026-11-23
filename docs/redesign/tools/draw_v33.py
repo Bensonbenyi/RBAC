@@ -12,25 +12,35 @@ def box(d,x,y,w,h,title,body=()):
  for i,s in enumerate(body):d.text(x+w/2,y+63+28*i,s,18,True)
  d.view('RectangleView',left=x,top=y,width=w,height=h)
 def architecture():
- d=D('architecture','系统总体分层架构',900,1120)
- box(d,80,100,740,100,'浏览器展现层',['Vue 3  TypeScript   权限后台 / 课程演示入口'])
- box(d,80,240,740,120,'API 输入层',['Controller 输入校验与 CloneFactory','Bearer 认证、异常映射与请求日志'])
- box(d,80,400,740,90,'Service Port',['五个用例端口  数据契约  管理、授权及会话端口'])
- box(d,80,530,345,160,'结构化业务实现',['事务脚本 Service','校验、编排、调用存储'])
- box(d,475,530,345,160,'DDD 业务实现',['应用服务','领域实体与业务规则'])
- box(d,80,730,740,120,'共享 Infrastructure',['Spring Data JPA  MySQL   JWT 签名与校验','存储适配器  Logback 分层日志'])
- box(d,80,890,740,90,'MySQL 8.4',['八张业务表和一张技术会话表'])
- for a,b in [(200,240),(360,400),(850,890)]:d.line([(450,a+5),(450,b-10)],'dep')
- for x in [252,647]:d.line([(x,495),(x,520)],'dep');d.line([(x,695),(x,720)],'dep')
- d.note(80,1010,740,['app.backend-strategy 在启动时选择一套业务实现。','认证、目录、存储及外部契约共用。'])
- d=D('packages','系统 UML 包图与依赖',900,1120,'UMLPackageDiagram')
+ d=D('architecture','系统总体分层架构',900,874)
+ box(d,80,76,740,79,'浏览器展现层',['Vue 3  TypeScript   权限后台 / 课程演示入口'])
+ box(d,80,184,740,106,'API 输入层',['Controller 输入校验与 CloneFactory','Bearer 认证、异常映射与请求日志'])
+ box(d,80,319,740,78,'Service Port',['五个用例端口  数据契约  管理、授权及会话端口'])
+ box(d,80,426,345,104,'结构化业务实现',['事务脚本 Service','校验、编排、调用存储'])
+ box(d,475,426,345,104,'DDD 业务实现',['应用服务','领域实体与业务规则'])
+ box(d,80,559,740,106,'共享 Infrastructure',['Spring Data JPA  MySQL   JWT 签名与校验','存储适配器  Logback 分层日志'])
+ box(d,80,694,740,78,'MySQL 8.4',['八张业务表和一张技术会话表'])
+ for a,b in [(155,184),(290,319),(665,694)]:d.line([(450,a+5),(450,b-5)],'dep')
+ for x in [252,647]:
+  d.line([(x,402),(x,421)],'dep')
+  d.line([(x,535),(x,554)],'dep')
+ d.note(80,792,740,['启动时由 app.backend-strategy 选择业务实现。','两套实现共用认证、目录、存储和外部契约。'])
+
+ d=D('packages','系统 UML 包图与依赖',900,694,'UMLPackageDiagram')
  nodes={}
- for key,title,x,y,w,h,body in [('api','api',80,120,740,130,['auth  user  role  department  system  permission  identity']),('port','service.port',80,300,740,130,['五个 UseCase  Data  三个存储端口']),('structured','service.structured',80,500,345,150,['StructuredUserService  StructuredRoleService']),('ddd','service.ddd',475,500,345,150,['DddUserService  DddRoleService  domain']),('infra','infrastructure',80,770,740,140,['persistence  security  logging'])]:nodes[key]=d.node(title,x,y,w,h,'UMLPackage',body=body)
- d.edge(nodes['api'],nodes['port'],[(450,250),(450,290)])
- d.edge(nodes['structured'],nodes['port'],[(250,500),(250,440)])
- d.edge(nodes['ddd'],nodes['port'],[(650,500),(650,440)])
- d.edge(nodes['infra'],nodes['port'],[(825,825),(860,825),(860,365),(825,365)],real=False)
- d.note(80,960,740,['业务实现依赖存储端口；Infrastructure 实现该端口。','API 通过共享用例端口调用选中的业务实现。'])
+ for key,title,x,y,w,h,body in [
+  ('api','api',80,86,740,86,['auth  user  role  department  system  permission  identity']),
+  ('port','service.port',80,222,740,86,['五个 UseCase  Data  三个存储端口']),
+  ('structured','service.structured',80,358,345,86,['StructuredUserService  StructuredRoleService']),
+  ('ddd','service.ddd',475,358,345,86,['DddUserService  DddRoleService  domain']),
+  ('infra','infrastructure',80,500,740,90,['persistence  security  logging']),
+ ]:
+  nodes[key]=d.node(title,x,y,w,h,'UMLPackage',body=body)
+ d.edge(nodes['api'],nodes['port'],[(450,172),(450,217)])
+ d.edge(nodes['structured'],nodes['port'],[(250,340),(250,313)])
+ d.edge(nodes['ddd'],nodes['port'],[(650,340),(650,313)])
+ d.edge(nodes['infra'],nodes['port'],[(825,545),(857,545),(857,263),(825,263)])
+ d.note(80,610,740,['API 依赖用例端口，两套业务实现经存储端口调用底层。','Infrastructure 实现存储端口。'])
 
 def domain_relations():
  d=D('domain-relations','核心业务对象关系模型',900,1100)
@@ -91,20 +101,20 @@ def current_user_sequence(op):
  s=Sequence('auth-02-shared',f'{op.key} {op.title}',[
   ('client','Caller'),('api','AuthController'),('current','CurrentIdentity'),
   ('service','AuthService'),('store','ManagementStore'),('effective','EffectiveAccessStore'),
- ],height=944)
- s.msg(0,1,255,'GET /auth/me',end=824)
- s.msg(1,2,308,'get()',end=340)
- s.msg(2,1,344,'actor',reply=True)
- s.msg(1,3,394,'me(actor)',end=766)
- s.msg(3,4,452,'user(actor.userId())',end=484)
- s.msg(4,3,489,'Data.User',reply=True)
- s.msg(3,5,547,'rolesForUser(actor.userId())',end=580)
- s.msg(5,3,587,'角色名称',reply=True)
- s.msg(3,5,661,'permissionsForUser(user.id(), actor.systemKey())',end=693)
- s.msg(5,3,700,'有效权限码',reply=True)
- s.msg(3,1,767,'CurrentUserResult',reply=True)
- s.msg(1,0,825,'200 CurrentUserVO',reply=True)
- s.note(874,'课程端按契约转换角色，响应只带当前系统界面码。')
+ ],height=790)
+ s.msg(0,1,190,'GET /auth/me',end=705)
+ s.msg(1,2,247,'get()',end=277)
+ s.msg(2,1,282,'actor',reply=True)
+ s.msg(1,3,333,'me(actor)',end=659)
+ s.msg(3,4,385,'user(actor.userId())',end=415)
+ s.msg(4,3,420,'Data.User',reply=True)
+ s.msg(3,5,472,'rolesForUser(actor.userId())',end=502)
+ s.msg(5,3,507,'角色名称',reply=True)
+ s.msg(3,5,568,'permissionsForUser(user.id(), actor.systemKey())',end=598)
+ s.msg(5,3,603,'有效权限码',reply=True)
+ s.msg(3,1,660,'CurrentUserResult',reply=True)
+ s.msg(1,0,706,'200 CurrentUserVO',reply=True)
+ s.note(744,'课程端按契约转换角色，响应只带当前系统界面码。')
 
 def auth_sequence(op):
  calls={
@@ -115,63 +125,64 @@ def auth_sequence(op):
   'AUTH-06':[('access','AccessPolicy','[操作已知] allowed(userId, system, code)')],
  }[op.key]
  parts=[('obj','Caller'),('api','AuthController'),('service','AuthService')]+[(name,typ) for name,typ,_ in calls]
- s=Sequence(op.key.lower()+'-shared',f'{op.key} 共享 {op.title}',parts,height=1140)
+ return_y = 420 + 96 * len(calls)
+ s=Sequence(op.key.lower()+'-shared',f'{op.key} 共享 {op.title}',parts,height=return_y+152)
  fn={'AUTH-05':'uiAllowed','AUTH-06':'apiAllowed'}.get(op.key,op.function)
- s.msg(0,1,300,op.method+' '+op.route,end=940)
- s.msg(1,2,410,fn+'(输入 / 当前身份)',end=880)
+ s.msg(0,1,195,op.method+' '+op.route,end=return_y+52)
+ s.msg(1,2,286,fn+'(输入 / 当前身份)',end=return_y)
  for i,(_,_,call) in enumerate(calls):
-  y=560+155*i
-  s.msg(2,3+i,y,call,end=y+70)
- s.msg(2,1,900,'结果或业务错误',reply=True)
- s.msg(1,0,970,op.result,reply=True)
+  y=375+96*i
+  s.msg(2,3+i,y,call,end=y+46)
+ s.msg(2,1,return_y,'结果或业务错误',reply=True)
+ s.msg(1,0,return_y+54,op.result,reply=True)
  note={'AUTH-01':'验证后保存会话并签发 JWT，详见登录会话图。',
        'AUTH-03':'撤销当前会话，后续请求由 BearerFilter 拒绝。',
        'AUTH-06':'OperationPermissions 将 operationId 映射为权限码；未知操作返回 404。'
  }.get(op.key,'当前有效授权随请求读取。')
- s.note(1040,note)
+ s.note(return_y+91,note)
 
 def overview_sequences():
  for key,title,parts,messages,note in [
  ('security','S1 安全 撤权后的受控调用',[('client','CourseModule'),('identity','IdentityModule'),('rbac','AuthorizationModule'),('db','MySQL')],[(0,1,'携带既有 Bearer 请求身份及 API 许可'),(1,2,'查询当前用户角色和角色权限'),(2,3,'读取撤销操作已提交的授权关系'),(3,2,'返回当前权限集合'),(2,1,'目标权限不存在'),(1,0,'allowed=false；课程操作拒绝')],'效用树叶 U-S1，需求 REQ-N-01；撤权提交后的新请求拒绝率 100%。'),
  ('performance','S2 性能 并发鉴权',[('client','ClientModule'),('api','AuthModule'),('rbac','AuthorizationModule'),('db','MySQL')],[(0,1,'同一负载下提交并发权限查询'),(1,2,'校验身份并查询权限'),(2,3,'通过有界连接池和关联索引查询'),(3,2,'当前授权集合'),(2,1,'生成布尔许可结果'),(1,0,'返回结果并记录耗时')],'效用树叶 U-P1，需求 REQ-N-02；记录吞吐量、P95、错误率和内存。'),
  ('availability','S3 可用性 应用重启后的会话验证',[('client','ClientModule'),('auth','AuthModule'),('sessions','SessionModule'),('db','MySQL')],[(0,1,'应用恢复后携带原 Bearer 请求'),(1,2,'验签并读取对应会话'),(2,3,'查询会话、账号及目标系统权限'),(3,2,'有效且未撤销的会话'),(2,1,'返回认证身份'),(1,0,'请求继续；依赖故障时返回 503')],'效用树叶 U-A1，需求 REQ-N-03；记录恢复时长，并核对会话和数据完整性。')]:
-  s=Sequence('story-'+key,title,parts,height=1120)
-  for index,(a,b,msg) in enumerate(messages):s.msg(a,b,310+index*115,msg,reply=index>=3)
-  s.note(1020,note)
+  s=Sequence('story-'+key,title,parts,height=775)
+  for index,(a,b,msg) in enumerate(messages):s.msg(a,b,197+index*86,msg,reply=index>=3)
+  s.note(691,note)
 
 def lifecycle():
  machine=u.obj('UMLStateMachine',u.MODEL,name='登录会话生命周期',regions=[],ownedElements=[]);u.MODEL['ownedElements'].append(machine)
  region=u.obj('UMLRegion',machine,name='Session',vertices=[],transitions=[]);machine['regions'].append(region)
- d=D('session-state','登录会话状态设计',900,1050,'UMLStatechartDiagram',region)
+ d=D('session-state','登录会话状态设计',900,586,'UMLStatechartDiagram',region)
  initial=u.obj('UMLPseudostate',region,kind='initial');region['vertices'].append(initial)
- iv=d.view('UMLPseudostateView',initial,left=435,top=120,width=30,height=30)
- d.svg.append('<circle cx="450" cy="135" r="15" fill="black"/>')
+ iv=d.view('UMLPseudostateView',initial,left=435,top=74,width=30,height=30)
+ d.svg.append('<circle cx="450" cy="89" r="15" fill="black"/>')
  states={}
- for name,x,y,desc in [('有效',270,280,'未撤销且当前时间早于 expiresAt'),('已撤销',40,650,'revokedAt 非空'),('已过期',500,650,'当前时间达到 expiresAt')]:
+ for name,x,y,desc in [('有效',270,181,'未撤销且当前时间早于 expiresAt'),('已撤销',40,390,'revokedAt 非空'),('已过期',500,390,'当前时间达到 expiresAt')]:
   m=u.obj('UMLState',region,name=name,regions=[],entryActivities=[],exitActivities=[]);region['vertices'].append(m)
-  v=d.view('UMLStateView',m,left=x,top=y,width=360,height=130,subViews=[]);box(d,x,y,360,130,name,[desc]);states[name]=(m,v)
+  v=d.view('UMLStateView',m,left=x,top=y,width=360,height=90,subViews=[]);box(d,x,y,360,90,name,[desc]);states[name]=(m,v)
  def transition(a,b,pts,label):
   m=u.obj('UMLTransition',region,source=u.ref(a[0]),target=u.ref(b[0]),name=label);region['transitions'].append(m)
   d.line(pts,'dep');d.view('UMLTransitionView',m,tail=u.ref(a[1]),head=u.ref(b[1]),points=';'.join(f'{x}:{y}' for x,y in pts),name=label)
- transition((initial,iv),states['有效'],[(450,155),(450,270)],'登录校验通过 / 保存会话');d.text(475,220,'登录校验通过 / 保存会话',19)
- transition(states['有效'],states['已撤销'],[(350,415),(220,640)],'logout / 记录撤销时间');d.text(80,520,'logout / 记录撤销时间',20)
- transition(states['有效'],states['已过期'],[(550,415),(680,640)],'at(expiresAt)');d.text(610,520,'at(expiresAt)',20)
- d.note(60,850,780,['状态由撤销时间和过期时间推导；不增加业务用户状态。','已撤销和已过期均拒绝认证。'])
+ transition((initial,iv),states['有效'],[(450,109),(450,176)],'登录校验通过 / 保存会话');d.text(475,150,'登录校验通过 / 保存会话',19)
+ transition(states['有效'],states['已撤销'],[(350,276),(220,385)],'logout / 记录撤销时间');d.text(70,332,'logout / 记录撤销时间',20)
+ transition(states['有效'],states['已过期'],[(550,276),(680,385)],'at(expiresAt)');d.text(630,332,'at(expiresAt)',20)
+ d.note(60,495,780,['状态由撤销时间和过期时间推导；不增加业务用户状态。','已撤销和已过期均拒绝认证。'])
 
 def deployment():
- d=D('deployment','Docker Swarm 物理部署',900,1230,'UMLDeploymentDiagram')
+ d=D('deployment','Docker Swarm 物理部署',900,816,'UMLDeploymentDiagram')
  def node(title,x,y,w,h,body):
   m=d.model('UMLNode',name=title,ownedElements=[]);v=d.view('UMLNodeView',m,left=x,top=y,width=w,height=h,subViews=[])
   box(d,x,y,w,h,title,body);d.line([(x,y),(x+12,y-12),(x+w+12,y-12),(x+w,y)]);d.line([(x+w+12,y-12),(x+w+12,y+h-12),(x+w,y+h)])
   return m,v
- browser=node('演示浏览器',240,100,420,100,['IP 加 HTTP 访问两个前端入口'])
- manager=node('Swarm Manager  2 vCPU / 2 GB',60,290,780,220,['113.44.144.119  /  172.31.7.102','Nginx 静态前端与反向代理','RBAC JVM 384 MB  课程 JVM 512 MB'])
- db=node('Swarm Worker 1  2 vCPU / 2 GB',60,650,780,170,['119.3.221.88  /  172.31.12.231','MySQL 512 MB  两个独立库与数据库账号'])
- old=node('Swarm Worker 2  2 vCPU / 1 GB',60,880,360,160,['120.46.176.79','保留现有应用'])
- backup=node('辅助节点  2 vCPU / 1 GB',480,880,360,160,['1.92.106.198','备份与验收辅助'])
- d.line([(450,205),(450,280)],'dep');d.text(470,255,'HTTP :80',19)
- d.line([(450,515),(450,640)],'dep');d.text(475,590,'加密 Overlay  MySQL :3306',19)
- d.note(60,1090,780,['新服务使用独立网络与卷，数据库不发布公网端口。','现有容器保留；当前为单管理节点与单数据库实例。'])
+ browser=node('演示浏览器',240,81,420,79,['IP 加 HTTP 访问两个前端入口'])
+ manager=node('Swarm Manager  2 vCPU / 2 GB',60,217,780,140,['113.44.144.119  /  172.31.7.102','Nginx 静态前端与反向代理','RBAC JVM 384 MB  课程 JVM 512 MB'])
+ db=node('Swarm Worker 1  2 vCPU / 2 GB',60,429,780,100,['119.3.221.88  /  172.31.12.231','MySQL 512 MB  两个独立库与数据库账号'])
+ old=node('Swarm Worker 2  2 vCPU / 1 GB',60,575,360,110,['120.46.176.79','保留现有应用'])
+ backup=node('辅助节点  2 vCPU / 1 GB',480,575,360,110,['1.92.106.198','备份与验收辅助'])
+ d.line([(450,165),(450,200)],'dep');d.text(468,187,'HTTP :80',19)
+ d.line([(450,362),(450,412)],'dep');d.text(468,392,'加密 Overlay  MySQL :3306',19)
+ d.note(60,712,780,['新服务使用独立网络与卷，数据库不发布公网端口。','现有容器保留；当前为单管理节点与单数据库实例。'])
 
 def identity_directory_sequence(op):
  controller,action,query,http={
@@ -243,15 +254,16 @@ def files_and_integration():
  u.assoc(d,svc,effective,[(860,300),(880,300),(880,780),(670,780),(670,850)])
  d.note(40,1040,820,['会话保存在数据库中，JWT 记录身份和目标系统。有效授权在请求时查询。'])
  for key,method,route,operation,target in [('01','GET','/terms','listTerms','TermController'),('02','POST','/terms','createTerm','TermController'),('03','PATCH','/terms/{id}','updateTerm','TermController'),('04','DELETE','/terms/{id}','deleteTerm','TermController'),('05','GET','/admin/courses','listAdminCourses','CourseController'),('06','GET','/courses/{id}','getCourse','CourseController'),('07','POST','/courses/{id}/review','reviewCourse','CourseController')]:
-  q=Sequence('course-'+key,'COURSE-'+key+' '+operation,[('client','Browser'),('filter','RbacIntegrationFilter'),('identity','IdentityPlatform'),('business',target)],height=1140)
-  q.msg(0,1,290,method+' '+route+' + Bearer',end=970)
-  q.msg(1,2,410,'GET /auth/me；检查会话和目标系统',end=500)
-  q.msg(2,1,520,'身份与界面码；无效凭据 401',reply=True)
-  q.msg(1,2,620,'GET /auth/api-permissions/'+operation,end=710)
-  q.msg(2,1,730,'allowed；拒绝 403；依赖不可用 503',reply=True)
-  q.msg(1,3,830,'允许后执行 '+operation,end=900)
-  q.msg(3,0,990,'老师接口业务结果',reply=True)
-  q.note(1050,'课程服务保留上游的输入、对象和状态校验；平台权限在每次请求时读取。')
+  q=Sequence('course-'+key,'COURSE-'+key+' '+operation,[('client','Browser'),('filter','RbacIntegrationFilter'),('identity','IdentityPlatform'),('business',target)],height=705)
+  q.msg(0,1,190,method+' '+route+' + Bearer',end=590)
+  q.msg(1,2,253,'GET /auth/me',end=287)
+  q.msg(2,1,299,'身份与界面码；无效凭据 401',reply=True)
+  q.msg(1,2,376,'GET /auth/api-permissions/\n'+operation,end=411)
+  q.msg(2,1,425,'allowed；拒绝 403；依赖不可用 503',reply=True)
+  q.msg(1,3,486,'允许后执行 '+operation,end=531)
+  q.msg(3,1,538,'业务处理结果',reply=True)
+  q.msg(1,0,590,'返回 HTTP 响应',reply=True)
+  q.note(633,'课程服务保留上游的输入、对象和状态校验；平台权限在每次请求时读取。')
 
 def utility():
  d=D('utility','质量属性效用树',900,850)
@@ -261,46 +273,85 @@ def utility():
  d.note(40,790,820,['叶节点标记顺序为：重要性 / 实现难度。'])
 
 def dataflow():
- for level in [0,1]:
-  d=D('dfd-'+str(level),'系统级数据流图 '+('顶层' if level==0 else '第一层'),900,1190)
-  flows=[('管理用户','登录及本人资料请求','凭据及本人资料结果','P1','认证会话'),('管理用户','用户与目录请求','用户与目录结果','P2','目录维护'),('管理用户','角色授权请求','角色授权结果','P3','角色授权'),('课程管理系统','身份与鉴权请求','身份与鉴权结果','P4','身份鉴权')]
-  def flow(pts,text,x,y):d.line(pts,'flow');d.text(x,y,text,17,True,bg=True)
-  if level==0:
-   d.rect(530,100,310,1000,round=20);d.view('RoundRectView',left=530,top=100,width=310,height=1000)
-   d.text(685,550,'0',26,True);d.text(685,600,'统一权限管理平台',24,True)
-  for i,(actor,request,result,pid,title) in enumerate(flows):
-   y=120+i*260;box(d,30,y,180,110,actor)
-   if level==1:
-    d.svg.append(f'<circle cx="495" cy="{y+55}" r="85" fill="white" stroke="black" stroke-width="1.4"/>');d.view('EllipseView',left=410,top=y-30,width=170,height=170)
-    d.text(495,y+42,pid,22,True);d.text(495,y+78,title,22,True)
-   x=530 if level==0 else 410
-   flow([(215,y+28),(x-10,y+28)],request,(215+x-10)/2,y+8)
-   flow([(x-10,y+82),(215,y+82)],result,(215+x-10)/2,y+119)
-   if level==1:
-    names=[('D1 业务数据',y-5),('D2 登录会话',y+95)] if pid in ['P1','P4'] else [('D1 业务数据',y+35)]
-    for name,sy in names:
-     d.line([(725,sy),(870,sy)]);d.line([(725,sy+45),(870,sy+45)]);d.text(797,sy+28,name,17,True);d.view('RectangleView',left=725,top=sy,width=145,height=45)
-     flow([(715,sy+12),(590,sy+12)],'读取',650,sy-5)
-     if pid!='P4':flow([(590,sy+35),(715,sy+35)],'写入',650,sy+65)
-  d.note(30,1120,840,['外部实体同名表示同一实体；D1 为八张业务表，D2 为会话表。'])
+ flows = [
+  ('登录及本人资料请求', '凭据及本人资料结果', '1', '认证会话'),
+  ('用户与目录请求', '用户与目录结果', '2', '目录查询与维护'),
+  ('角色授权请求', '角色授权结果', '3', '角色授权'),
+  ('身份与鉴权请求', '身份与鉴权结果', '4', '接入身份鉴权'),
+ ]
+
+ def node(d, x, y, w, h, title, process=False):
+  d.rect(x, y, w, h, round=12 if process else 0)
+  d.view('RoundRectView' if process else 'RectangleView', left=x, top=y, width=w, height=h)
+  for index, label in enumerate(title):
+   baseline = y + h / 2 + 7 + (index - (len(title) - 1) / 2) * 29
+   d.text(x + w / 2, baseline, label, 20, True, True)
+
+ def free_line(d, points):
+  d.view('FreelineEdgeView', points=';'.join(f'{x}:{y}' for x, y in points), lineStyle=1)
+
+ def flow(d, start, end, y, label):
+  points = [(start, y), (end, y)]
+  d.line(points, 'flow')
+  free_line(d, points)
+  back = end + (-9 if end > start else 9)
+  free_line(d, [(back, y - 5), (end, y), (back, y + 5)])
+  d.text((start + end) / 2, y - 8, label, 17, True)
+
+ def exchange(d, left, right, y, request, result):
+  flow(d, left + 5, right - 5, y - 17, request)
+  flow(d, right - 5, left + 5, y + 18, result)
+
+ def store(d, x, y, title):
+  for line_y in (y - 20, y + 20):
+   points = [(x, line_y), (870, line_y)]
+   d.line(points)
+   free_line(d, points)
+  d.text((x + 870) / 2, y + 6, title, 17, True)
+
+ top = D('dfd-0', '系统级数据流图 顶层', 900, 338)
+ node(top, 27, 76, 126, 235, ['管理用户'])
+ node(top, 381, 76, 172, 235, ['0', '统一权限管理平台'], process=True)
+ node(top, 733, 149, 140, 90, ['课程管理系统'])
+ for (request, result, _, _), y in zip(flows[:3], (118, 193, 268)):
+  exchange(top, 153, 381, y, request, result)
+ request, result, _, _ = flows[3]
+ flow(top, 728, 558, 176, request)
+ flow(top, 558, 728, 211, result)
+
+ first = D('dfd-1', '系统级数据流图 第一层', 900, 632)
+ node(first, 27, 76, 126, 364, ['管理用户'])
+ node(first, 27, 478, 126, 79, ['课程管理系统'])
+ for (request, result, number, name), y in zip(flows, (122, 254, 386, 518)):
+  node(first, 344, y - 39, 153, 104, [number, name], process=True)
+  exchange(first, 153, 344, y, request, result)
+  store(first, 736, y - 8, 'D1 业务数据')
+  flow(first, 731, 502, y - 20, '账号与有效权限' if number in ('1', '4') else '用户与目录数据' if number == '2' else '角色及授权关系')
+  if number in ('1', '4'):
+   store(first, 736, y + 42, 'D2 登录会话')
+   flow(first, 731, 502, y + 33, '当前会话')
+   flow(first, 502, 731, y + 59, '会话记录或撤销时间')
+  else:
+   flow(first, 502, 731, y + 10, '目录变更' if number == '2' else '角色与授权变更')
+ first.text(450, 613, 'D1 为八张业务表，D2 为登录会话表。同编号表示同一数据存储。', 17, True)
 
 def analysis():
- d=D('usecases','系统用例图',900,1080,'UMLUseCaseDiagram')
+ d=D('usecases','系统用例图',900,668,'UMLUseCaseDiagram')
  # Native actors, use cases and associations retain their UML semantics.
  actors=[]
- for name,x,y in [('管理用户',80,340),('业务系统',740,700)]:
+ for name,x,y in [('管理用户',80,248),('业务系统',740,505)]:
   m=d.model('UMLActor',name=name);v=d.view('UMLActorView',m,left=x,top=y,width=80,height=110);actors.append((m,v))
   d.svg.append(f'<circle cx="{x+40}" cy="{y+15}" r="14" fill="white" stroke="black"/>');d.line([(x+40,y+29),(x+40,y+68)]);d.line([(x+15,y+40),(x+65,y+40)]);d.line([(x+40,y+68),(x+17,y+94)]);d.line([(x+40,y+68),(x+63,y+94)]);d.text(x+40,y+125,name,21,True)
  for i,title in enumerate(['登录、查看本人资料与退出','查询用户与分配角色','维护角色与授权','查看部门与维护系统权限目录','查询身份与权限']):
-  y=120+i*165;m=d.model('UMLUseCase',name=title);v=d.view('UMLUseCaseView',m,left=270,top=y,width=360,height=110)
-  d.svg.append(f'<ellipse cx="450" cy="{y+55}" rx="180" ry="55" fill="white" stroke="black"/>');d.text(450,y+62,title,22,True)
+  y=86+i*107;m=d.model('UMLUseCase',name=title);v=d.view('UMLUseCaseView',m,left=270,top=y,width=360,height=77)
+  d.svg.append(f'<ellipse cx="450" cy="{y+38}" rx="180" ry="38" fill="white" stroke="black"/>');d.text(450,y+46,title,22,True)
   actor=actors[1] if i==4 else actors[0];x0=actor[1]['left']+(0 if i==4 else 80);y0=actor[1]['top']+55;x1=630 if i==4 else 270
-  d.line([(x0,y0),(x1,y+55)])
+  d.line([(x0,y0),(x1,y+38)])
   rel=d.model('UMLAssociation',name='');rel['end1']=u.obj('UMLAssociationEnd',rel,reference=u.ref(actor[0]),multiplicity='');rel['end2']=u.obj('UMLAssociationEnd',rel,reference=u.ref(m),multiplicity='')
-  d.view('UMLAssociationView',rel,tail=u.ref(actor[1]),head=u.ref(v),points=f'{x0}:{y0};{x1}:{y+55}')
- d.note(80,990,740,['AN-UC-01：详细功能编号见需求表和各功能用例。'])
+  d.view('UMLAssociationView',rel,tail=u.ref(actor[1]),head=u.ref(v),points=f'{x0}:{y0};{x1}:{y+38}')
+ d.note(80,591,740,['AN-UC-01：详细功能编号见需求表和各功能用例。'])
  for key,title,steps in [('login','登录活动',['接收并校验登录输入','账号及目标系统许可有效？','保存会话并签发 JWT','返回 accessToken']),('assign','角色分配活动',['读取身份、用户和角色','具备操作权限且同部门？','同事务分配角色','返回分配结果'])]:
-  d=D('activity-'+key,title,900,1140,'UMLActivityDiagram')
+  d=D('activity-'+key,title,900,707,'UMLActivityDiagram')
   activity=d.model('UMLActivity',name=title,nodes=[],edges=[])
   def node(typ,name,x,y,w,h):
    m=u.obj(typ,activity,name=name);activity['nodes'].append(m)
@@ -309,23 +360,23 @@ def analysis():
   def flow(a,b,pts,guard=''):
    m=u.obj('UMLControlFlow',activity,source=u.ref(a[0]),target=u.ref(b[0]),guard=guard);activity['edges'].append(m)
    d.line(pts,'flow');d.view('UMLControlFlowView',m,tail=u.ref(a[1]),head=u.ref(b[1]),points=';'.join(f'{x}:{y}' for x,y in pts))
-  start=node('UMLInitialNode','',435,95,30,30);d.svg.append('<circle cx="450" cy="110" r="15" fill="black"/>')
-  first=node('UMLAction',steps[0],160,185,580,90);box(d,160,185,580,90,steps[0])
-  decision=node('UMLDecisionNode',steps[1],390,355,120,100)
-  d.svg.append('<polygon points="450,355 510,405 450,455 390,405" fill="white" stroke="black"/>');d.text(450,330,steps[1],21,True)
-  action=node('UMLAction',steps[2],160,550,580,90);box(d,160,550,580,90,steps[2])
-  result=node('UMLAction',steps[3],160,750,580,90);box(d,160,750,580,90,steps[3])
-  end=node('UMLActivityFinalNode','',435,960,30,30)
-  d.svg.append('<circle cx="450" cy="975" r="16" fill="white" stroke="black"/><circle cx="450" cy="975" r="10" fill="black"/>')
-  rejected=node('UMLAction','返回校验错误',650,360,210,90);box(d,650,360,210,90,'返回校验错误')
-  flow(start,first,[(450,130),(450,175)])
-  flow(first,decision,[(450,280),(450,345)])
-  flow(decision,action,[(450,460),(450,540)],'[是]');d.text(475,505,'[是]',19)
-  flow(decision,rejected,[(515,405),(640,405)],'[否]');d.text(575,390,'[否]',19)
-  flow(action,result,[(450,645),(450,740)])
-  flow(result,end,[(450,845),(450,950)])
-  flow(rejected,end,[(755,455),(810,455),(810,975),(470,975)])
-  d.note(100,1040,700,['写入失败时事务回滚，异常按统一错误契约返回。'])
+  start=node('UMLInitialNode','',435,67,30,30);d.svg.append('<circle cx="450" cy="82" r="15" fill="black"/>')
+  first=node('UMLAction',steps[0],188,125,524,64);box(d,188,125,524,64,steps[0])
+  decision=node('UMLDecisionNode',steps[1],390,249,120,80)
+  d.svg.append('<polygon points="450,249 510,289 450,329 390,289" fill="white" stroke="black"/>');d.text(450,235,steps[1],21,True)
+  action=node('UMLAction',steps[2],188,378,524,65);box(d,188,378,524,65,steps[2])
+  result=node('UMLAction',steps[3],188,491,524,65);box(d,188,491,524,65,steps[3])
+  end=node('UMLActivityFinalNode','',435,595,30,30)
+  d.svg.append('<circle cx="450" cy="610" r="16" fill="white" stroke="black"/><circle cx="450" cy="610" r="10" fill="black"/>')
+  rejected=node('UMLAction','返回校验错误',655,257,217,64);box(d,655,257,217,64,'返回校验错误')
+  flow(start,first,[(450,102),(450,120)])
+  flow(first,decision,[(450,194),(450,244)])
+  flow(decision,action,[(450,334),(450,373)],'[是]');d.text(466,359,'[是]',19)
+  flow(decision,rejected,[(515,289),(650,289)],'[否]');d.text(580,277,'[否]',19)
+  flow(action,result,[(450,448),(450,486)])
+  flow(result,end,[(450,561),(450,589)])
+  flow(rejected,end,[(763,326),(817,326),(817,610),(471,610)])
+  d.note(100,637,700,['写入失败时事务回滚，异常按统一错误契约返回。'])
 
 if __name__=='__main__':
  from draw_detail_v331 import classes as detailed_classes, supporting

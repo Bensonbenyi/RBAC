@@ -1,6 +1,6 @@
 = 统一权限管理系统需求与详细设计说明书
 OOAD 课程项目组
-v3.7.0, 2026-11-22
+v3.7.0, 2026-11-23
 :doctype: book
 :lang: zh-CN
 :toc:
@@ -2016,7 +2016,7 @@ image::v33/course-09.svg[老师原版前端与统一身份的登录交互,width=
 
 
 [.course-note]
-课程列表 page 从 1 开始，courseStatus 为 1 申请、2 待审核、3 已开课。审核输入 decision 为 approved 或 rejected，驳回必须填写 comment。菜单与 API 分别检查权限。接入补丁固定到 990cea2，保留 MIT 许可及老师原业务规则，演示路由按本版接入范围开放。
+课程列表 page 从 1 开始，courseStatus 为 1 申请、2 待审核、3 已开课。审核输入 decision 为 approved 或 rejected，驳回必须填写 comment。菜单与 API 分别检查权限。接入补丁固定到 990cea2，保留 MIT 许可及老师原业务规则，演示路由开放课程登录、当前用户、学期维护和课程查询与审核。统一身份用户查询、部门查询与部门成员查询由平台提供，已通过独立 HTTP 验证。
 
 
 === 接口与输入设计

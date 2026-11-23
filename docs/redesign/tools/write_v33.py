@@ -6,7 +6,7 @@ from v33_detail_content import FIELD_TABLES, CASES, case_table, calls_table, ope
 R=Path(__file__).resolve().parents[1];VERSION=(R/'VERSION').read_text().strip()
 HEADER='''= {title}
 OOAD 课程项目组
-v{version}, 2026-11-22
+v{version}, 2026-11-23
 :doctype: book
 :lang: zh-CN
 :toc:
@@ -178,7 +178,7 @@ Flyway 建表后，在空演示库手动导入 demo.sql。账号资料和部门�
  add('===== COURSE-09 课程登录\n\nPOST /course-api/login 接收 role、account、password，成功进入对应工作台。')
  add(fig('course-09','老师原版前端与统一身份的登录交互'))
  add('''[.course-note]
-课程列表 page 从 1 开始，courseStatus 为 1 申请、2 待审核、3 已开课。审核输入 decision 为 approved 或 rejected，驳回必须填写 comment。菜单与 API 分别检查权限。接入补丁固定到 990cea2，保留 MIT 许可及老师原业务规则，演示路由按本版接入范围开放。
+课程列表 page 从 1 开始，courseStatus 为 1 申请、2 待审核、3 已开课。审核输入 decision 为 approved 或 rejected，驳回必须填写 comment。菜单与 API 分别检查权限。接入补丁固定到 990cea2，保留 MIT 许可及老师原业务规则，演示路由开放课程登录、当前用户、学期维护和课程查询与审核。统一身份用户查询、部门查询与部门成员查询由平台提供，已通过独立 HTTP 验证。
 ''')
  add('''=== 接口与输入设计
 
@@ -335,8 +335,8 @@ RBAC 表达全部操作许可，部门限定账号、角色及管理范围。结
  add(grasp(table))
  add(fig('class-hierarchy-structured','RBAC1 结构化继承设计'))
  add(fig('class-hierarchy-ddd','RBAC1 DDD 继承设计'))
- add('=== 关键类状态设计\n\n登录会话具有有效、已撤销、已过期三种状态。有效状态要求当前时间早于到期且未记录撤销时间；退出触发撤销，达到到期时间触发过期。图 <<OV-STATE-01>> 转换自需求模型 AN-ST-01。\n'+fig('session-state','OV-STATE-01 登录会话状态','OV-STATE-01'))
- add('=== 系统级数据流图\n\n图 <<OV-DFD-00>> 与 <<OV-DFD-01>> 保持相同外部请求与结果名称。D1 代表八张业务表，D2 代表技术登录会话。\n'+fig('dfd-0','OV-DFD-00 顶层数据流','OV-DFD-00')+fig('dfd-1','OV-DFD-01 第一层数据流','OV-DFD-01'))
+ add('=== 关键类状态设计\n\n登录会话具有有效、已撤销、已过期三种状态。有效状态要求当前时间早于到期且未记录撤销时间；退出触发撤销，达到到期时间触发过期。<<OV-STATE-01>> 转换自需求模型 AN-ST-01。\n'+fig('session-state','OV-STATE-01 登录会话状态','OV-STATE-01'))
+ add('=== 系统级数据流图\n\n<<OV-DFD-00>> 给出管理用户、课程管理系统与平台之间的数据交换。<<OV-DFD-01>> 沿用这八条边界数据流，展开认证会话、目录维护、角色授权与接入鉴权。\n'+fig('dfd-0','OV-DFD-00 顶层数据流','OV-DFD-00')+fig('dfd-1','OV-DFD-01 第一层数据流','OV-DFD-01'))
  add(table(['加工','数据流到模块的映射','全局数据'],[('P1 认证会话','登录、退出、本人资料请求映射 AuthService','用户与授权关系、登录会话'),('P2 目录维护','目录请求映射用户、部门、系统、权限用例模块','用户、部门、系统和权限'),('P3 角色授权','授权请求映射角色用例和用户角色用例','角色及授权、继承关联'),('P4 身份鉴权','外部查询映射认证、AccessPolicy 与身份适配','用户、角色、权限、登录会话')],'2,5,4'))
  add('=== 关键运行时设计\n\n三张时序图使用模块为生命线，分别对应 S1/U-S1、S2/U-P1 和 S3/U-A1。图中展示跨模块消息及响应，详细功能交互见合订本对应功能。')
  for stem,title in [('security','S1 / U-S1 撤权后的调用'),('performance','S2 / U-P1 并发鉴权'),('availability','S3 / U-A1 应用恢复与会话')]:add(fig('story-'+stem,title))
@@ -346,7 +346,7 @@ RBAC 表达全部操作许可，部门限定账号、角色及管理范围。结
 
 用户界面为桌面浏览器 Web 页面，提供列表、表单及授权选择；两种后台策略使用同一套界面。浏览器使用鼠标、键盘和屏幕输入输出。
 
-硬件接口：本章节不适用，原因：当前系统通过浏览器与服务器网络通信，不接入专用硬件设备。
+客户端通过浏览器与服务器通信。
 
 第三方软件接口为老师课程管理系统，使用 HTTP/JSON 和 Authorization Bearer。课程前端请求课程后端登录，课程后端向平台申请目标系统令牌。后续业务请求由课程后端验签，并向平台查询当前身份和操作许可。对应 REQ-F-07、AD-07。
 ''')
@@ -397,7 +397,7 @@ MySQL InnoDB 保存业务数据和登录会话，利用事务、外键及唯一�
   rows.append((req,title,'AD-01、AD-02、AD-03；S1',module+' 用例、对应控制器','EXT-01 至 EXT-08' if module=='Auth' else {'User':'API-U','Role':'API-R','Department':'API-D','System':'API-S','Permission':'API-P'}[module]+'；INT-01、INT-02',data))
  rows += [('REQ-F-07','课程接入','AD-07；S1','课程适配模块','EXT-01 至 EXT-08；API-C；INT-04','用户、角色、权限及关联'),('REQ-N-01','安全','AD-03、AD-04、AD-07；S1','认证、AccessPolicy、课程适配','EXT-01 至 EXT-08；全部 API','用户、会话、两组授权关联'),('REQ-N-02','性能','AD-05；S2','授权查询、Spring Data JPA','INT-02；EXT-03、EXT-04','关联索引、业务数据'),('REQ-N-03','可用性','AD-04、AD-05、AD-06；S3','会话模块、部署和备份','INT-03；全部 API','会话、全部业务表及数据卷'),('REQ-N-04','可修改性','AD-01、AD-02；S4','两套业务实现、共享端口','INT-01、INT-02','共享表结构'),('REQ-N-05','可重复部署','AD-06、AD-07','配置、镜像及教师适配','INT-04；部署入口','独立数据库与迁移版本')]
  add(table(['需求编号','需求名称','故事 / 决策','模块 / 类','内部 / 外部接口','全局数据实体'],rows,'2,2,3,3,3,3'))
- add('=== 需求分析模型引用清单\n'+table(['图编号','模型','转换与使用'],[('AN-UC-01','系统用例图','第 3 章职责分配与功能追溯'),('AN-ACT-01','登录活动','认证模块和运行时消息'),('AN-ACT-02','角色分配活动','用户、角色及边界规则'),('AN-CC-01','概念实体关系','核心设计类图与全局 ER'),('AN-ST-01','会话状态','OV-STATE-01'),('AN-DFD-00 / AN-DFD-01','顶层与第一层分析数据流','OV-DFD-00 / OV-DFD-01，加入模块映射')],'3,4,5'))
+ add('=== 需求分析模型引用清单\n'+table(['图编号','模型','转换与使用'],[('AN-UC-01','系统用例图','第 3 章职责分配与功能追溯'),('AN-ACT-01','登录活动','认证模块和运行时消息'),('AN-ACT-02','角色分配活动','用户、角色及边界规则'),('AN-CC-01','概念实体关系','核心设计类图与全局 ER'),('AN-ST-01','会话状态','OV-STATE-01'),('AN-DFD-00 / AN-DFD-01','顶层与第一层分析数据流','OV-DFD-00 / OV-DFD-01，对照模块与存储映射表')],'3,4,5'))
  from v35_content import verification
  add(verification(table))
  (R/'统一权限管理系统概要设计说明书.adoc').write_text('\n'.join(p).rstrip()+'\n')

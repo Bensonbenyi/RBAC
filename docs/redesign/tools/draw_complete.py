@@ -29,18 +29,18 @@ class Sequence:
   self.parts=[];self.n=0;self.created=created or {};self.activations=[];self.execution_views=[];self.hw={5:75,6:64}.get(len(parts),95)
   xs={2:[220,680],3:[120,450,780],4:[105,335,565,795],5:[90,270,450,630,810],6:[76,226,376,526,676,826]}[len(parts)]
   for i,((name,typ),x) in enumerate(zip(parts,xs)):
-   u.classifier(typ);top=self.created.get(i,100)
+   u.classifier(typ);top=self.created.get(i,76)
    attr=obj('UMLAttribute',self.owner,name=name,type=ref(u.CLASSES[typ]));self.owner['ownedElements'].append(attr)
    m=obj('UMLLifeline',self.owner,name=name,represent=ref(attr));self.owner['participants'].append(m)
    v=self.d.view('UMLSeqLifelineView',m,left=x-self.hw,top=top,width=2*self.hw,height=height-top-35,subViews=[],stereotypeDisplay='label')
-   c=u.nc(v,m,x-self.hw,top,2*self.hw,125)
-   lp=obj('UMLLinePartView',v,model=ref(m),left=x,top=top+125,width=1,height=height-top-160,parentStyle=False,lineColor='#000000')
+   c=u.nc(v,m,x-self.hw,top,2*self.hw,96)
+   lp=obj('UMLLinePartView',v,model=ref(m),left=x,top=top+96,width=1,height=height-top-131,parentStyle=False,lineColor='#000000')
    v['subViews']=[c,lp];v['nameCompartment']=ref(c);v['linePart']=ref(lp)
-   self.d.rect(x-self.hw,top,2*self.hw,125)
+   self.d.rect(x-self.hw,top,2*self.hw,96)
    if compact_headers:
     label=f'{name}: {typ}'
     size=min(20,int((2*self.hw-12)/tw(label,1)))
-    self.d.text(x,top+65,label,size,True,native=False)
+    self.d.text(x,top+55,label,size,True,native=False)
    elif typ=='CloneFactory':
     m['stereotype']='MetaClass';self.d.text(x,top+22,'«MetaClass»',18,True,native=False)
    else:self.d.text(x,top+22,name+':',20,True,native=False)
@@ -51,8 +51,8 @@ class Sequence:
      if tw(s+word,20)>2*self.hw-15:header.append(s);s=word
      else:s+=word
     if s:header.append(s)
-    for j,t in enumerate(header):self.d.text(x,top+54+j*28,t,20,True,native=False)
-   self.d.line([(x,top+125),(x,height-35)],dash=True)
+    for j,t in enumerate(header):self.d.text(x,top+47+j*23,t,20,True,native=False)
+   self.d.line([(x,top+96),(x,height-35)],dash=True)
    self.parts.append((m,v,lp,x,typ))
  def msg(self,a,b,y,text,reply=False,end=None,create=False):
   y+=35

@@ -141,20 +141,21 @@ def classifier(name,methods=(),attributes=(),interface=False,stereo=''):
   m['operations'].append(op)
  return m
 
-def klass(d,name,x,y,w):
+def klass(d,name,x,y,w,compact=False):
  m=CLASSES[name];attrs=m['attributes'];ops=m['operations'];st=m.get('stereotype','')
  it=m['_type']=='UMLInterface';header=60 if it or st else 40
- h=header+max(16,len(attrs)*25+14)+max(16,len(ops)*28+14)
+ attribute_step,operation_step,padding,body_font=(21,23,10,19) if compact else (25,28,14,16)
+ h=header+max(16,len(attrs)*attribute_step+padding)+max(16,len(ops)*operation_step+padding)
  v=d.view('UMLInterfaceView' if it else 'UMLClassView',m,left=x,top=y,width=w,height=h,subViews=[],showType=True,showOperationSignature=True,showVisibility=True,stereotypeDisplay='label')
  c=nc(v,m,x,y,w,header);v['subViews'].append(c);v['nameCompartment']=ref(c)
  d.rect(x,y,w,h)
  if it or st:d.text(x+w/2,y+22,'«interface»' if it else f'«{st}»',16,True,native=False)
  d.text(x+w/2,y+header-13,name,18,True,True,False)
  at=y+header;d.line([(x,at),(x+w,at)])
- ac=obj('UMLAttributeCompartmentView',v,model=ref(m),left=x,top=at,width=w,height=max(16,len(attrs)*25+14),parentStyle=True,subViews=[])
+ ac=obj('UMLAttributeCompartmentView',v,model=ref(m),left=x,top=at,width=w,height=max(16,len(attrs)*attribute_step+padding),parentStyle=True,subViews=[])
  for i,a in enumerate(attrs):
-  tx=f'- {a["name"]}: {a["type"]}';d.text(x+10,at+24+i*25,tx,16,native=False)
-  ac['subViews'].append(label(ac,tx,x+8,at+5+i*25,w-16,typ='UMLAttributeView',model=ref(a),horizontalAlignment=0))
+  tx=f'- {a["name"]}: {a["type"]}';d.text(x+10,at+(21 if compact else 24)+i*attribute_step,tx,body_font,native=False)
+  ac['subViews'].append(label(ac,tx,x+8,at+5+i*attribute_step,w-16,typ='UMLAttributeView',model=ref(a),horizontalAlignment=0))
  v['subViews'].append(ac);v['attributeCompartment']=ref(ac)
  oy=at+ac['height'];d.line([(x,oy),(x+w,oy)])
  oc=obj('UMLOperationCompartmentView',v,model=ref(m),left=x,top=oy,width=w,height=h-(oy-y),parentStyle=True,subViews=[])
@@ -163,9 +164,9 @@ def klass(d,name,x,y,w):
   rt=next((a['type'] for a in o['parameters'] if a['direction']=='return'),'void')
   tx=f'{"-" if o.get("visibility")=="private" else "+"} {o["name"]}({", ".join(pars)}): {rt}'
   if o['name']==name:tx=tx.rsplit(': ',1)[0]
-  d.text(x+10,oy+25+i*28,tx,16,native=False)
-  if o.get('isStatic'):d.line([(x+10,oy+29+i*28),(x+min(w-10,len(tx)*8),oy+29+i*28)])
-  oc['subViews'].append(label(oc,tx,x+8,oy+6+i*28,w-16,typ='UMLOperationView',model=ref(o),horizontalAlignment=0))
+  d.text(x+10,oy+(22 if compact else 25)+i*operation_step,tx,body_font,native=False)
+  if o.get('isStatic'):d.line([(x+10,oy+29+i*operation_step),(x+min(w-10,len(tx)*8),oy+29+i*operation_step)])
+  oc['subViews'].append(label(oc,tx,x+8,oy+6+i*operation_step,w-16,typ='UMLOperationView',model=ref(o),horizontalAlignment=0))
  v['subViews'].append(oc);v['operationCompartment']=ref(oc)
  for field,ct in [('receptionCompartment','UMLReceptionCompartmentView'),('templateParameterCompartment','UMLTemplateParameterCompartmentView')]:
   c=obj(ct,v,model=ref(m),left=x,top=oy,width=w,height=0,visible=False,parentStyle=True);v['subViews'].append(c);v[field]=ref(c)

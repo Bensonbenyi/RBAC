@@ -140,30 +140,25 @@ table.use-case tr.scene-band td { background: #bfbfbf; color: #000; }
   h2, h3, h4, h5 { break-after: avoid; }
   p { orphans: 2; widows: 2; }
   .scenario { break-before: auto; }
-  table.use-case, tr, .imageblock, .listingblock { break-inside: avoid; }
+  tr, .imageblock, .listingblock { break-inside: avoid; }
   .scene-detail { break-inside: auto; }
   thead { display: table-header-group; }
   .imageblock img { max-height: 178mm; }
   .scene-detail .imageblock img { max-height: 128mm; }
-  .imageblock > .title { break-after: avoid; }
   a[href]::after { content: none !important; }
 }
 
 /* v3: every page uses the V2 A4 portrait text area. */
 @media print {
- .sect1 { break-before: page; }
- #content > .sect1:first-child { break-before: auto; }
- .diagram { break-inside: avoid; margin: 12pt 0; }
+ .diagram { break-inside: avoid; margin: 6pt 0; }
+ .sect4 > h5, .plate-intro > h5 { margin: 8pt 0 5pt; }
  .diagram .imageblock { margin: 0; }
- .diagram img { width: 100%; height: auto; max-height: 178mm; object-fit: contain; }
+ .diagram img { display: block; margin: 0 auto; width: auto; max-height: 178mm; }
  .diagram.portrait img { width: auto; max-height: 180mm; max-width: 100%; }
  .diagram .paragraph { margin-top: 8pt; }
  .diagram .paragraph p { font-size: 10.5pt; }
- .diagram .imageblock > .title { margin: 8pt 0; }
- .use-case-body { break-inside: avoid; }
- .use-case-body > h4 { margin-top: 12pt; }
+ .diagram .imageblock > .title { margin: 5pt 0; }
  .scene-detail { margin: 10pt 0 16pt; }
- .scene-detail table { break-inside: avoid; }
  .scene-detail .imageblock img { max-height: 178mm; }
  .scene-detail .title { margin-top: 8pt; }
  .scene-detail > .paragraph > p { text-indent: 2em; }
@@ -173,51 +168,12 @@ table.use-case tr.scene-band td { background: #bfbfbf; color: #000; }
  .api-path { overflow-wrap: anywhere; }
 }
 
+/* Keep figures intact and let tables paginate between rows. */
 @media print {
- .plate-intro, .keep-section, .keep-table { break-inside: avoid; }
- .plate-intro > h3:first-child, .plate-intro > h4:first-child { margin-top: 10pt; }
-}
-
-@media print {
- .sect3:has(> .plate-intro) { break-before: page; }
-}
-
-@media print {
- .sect4:has(> .plate-intro) { break-before: page; }
- .plate-intro > h5:first-child { margin-top: 8pt; }
-}
-
-@media print { .domain-state { break-before: page; } }
-
-/* Detailed class and package plates use the available portrait height. */
-@media print {
- .diagram img[src*="spec/class-"],
- .diagram img[src*="spec/domain-model"],
- .diagram img[src*="spec/packages-"] { max-height: 210mm; }
-}
-
-/* v3.3.1 retains the v3.2.2 typography and gives the new detailed plates
-   the same portrait height as the original class and package plates. */
-@media print {
- .page-section { break-before: page; }
  .outline #toctitle { margin-bottom: 6pt; }
+ .plate-intro, .keep-table { break-inside: avoid; }
  .diagram img[src*="v33/class-"],
  .diagram img[src*="v33/domain.svg"],
  .diagram img[src*="v33/packages-"],
  .diagram img[src*="v33/architecture-classes-"] { max-height: 210mm; }
- .use-case-body > h4 { margin-top: 0; }
- .sect3:has(> .use-case-body) { break-before: page; }
-}
-
-/* Long service interactions use the portrait plate height; core typography is retained. */
-@media print {
- .diagram img[src*="v33/"][src*="-ddd"],
- .diagram img[src*="v33/"][src*="-structured"] { max-height: 210mm; }
-}
-
-/* Keep the short course integration note on the final interaction plate. */
-@media print {
- .grasp-section { break-before: page; }
- .course-final-plate img { max-height: 172mm !important; }
- .course-final-plate + .course-note { break-before: avoid; }
 }

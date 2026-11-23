@@ -37,84 +37,8 @@ try{
  await page.evaluate(async(isOutline)=>{
   if(isOutline)document.body.classList.add('outline');
   await document.fonts.ready;await Promise.all([...document.images].map(i=>i.decode()));
-  if(isOutline) for(const section of document.querySelectorAll('.sect2')) {
-   const heading=section.querySelector(':scope > h3');
-   if(heading && /概要级表结构|拓扑与资源说明/.test(heading.textContent))section.classList.add('page-section');
-  }
-  const courseLast=document.querySelector('.diagram:has(img[src*="course-08.svg"])');
-  if(courseLast)courseLast.classList.add('course-final-plate');
-  // Keep section introductions with the first figure.
-  for(const section of document.querySelectorAll('.sect2,.sect3,.sect4')) {
-   const first=[...section.children].find(n=>n.classList.contains('diagram'));
-   if(!first || section.querySelector(':scope > table.use-case')) continue;
-   const group=document.createElement('div');group.className='plate-intro';
-   section.prepend(group);
-   for(const child of [...section.children]) {
-    if(child===group) continue;
-    group.append(child);
-    if(child===first) break;
-   }
-  }
-  for(const section of document.querySelectorAll('.sect2')) {
-   const h=section.querySelector(':scope > h3');
-   const first=section.querySelector(':scope > .sect3 > .plate-intro');
-   if(h && first) first.prepend(h);
-  }
-  for(const section of document.querySelectorAll('.sect2,.sect3,.sect4')) {
-   const h=section.querySelector(':scope > h3,:scope > h4');
-   if(h && /共同契约与配置装配|错误与异常映射|故障处理|对象拷贝与运行日志/.test(h.textContent)) section.classList.add('keep-section');
-  }
-  if(isOutline) for(const section of document.querySelectorAll('.sect3')) {
-   const heading=section.querySelector(':scope > h4');
-   if(heading && /S[1-4]/.test(heading.textContent))section.classList.add('keep-section');
-  }
-  for(const table of document.querySelectorAll('.sect3 > table')) {
-   if(table.rows[0]?.textContent.includes('字段') || table.rows[0]?.textContent.includes('输入对象')) table.classList.add('keep-table');
-  }
-  for(const table of document.querySelectorAll('table.use-case')) {
-   const section=table.parentElement;
-   const body=document.createElement('div');body.className='use-case-body';
-   section.prepend(body);
-   for(const child of [...section.children]) {
-    if(child===body) continue;
-    if(child.classList.contains('diagram') || child.classList.contains('scene-detail') || child.classList.contains('sect4')) break;
-    body.append(child);
-   }
-  }
   for(const row of document.querySelectorAll('table.use-case tr')) {
    if(/^(主成功场景|扩展场景)/.test(row.cells[0]?.textContent.trim())) row.classList.add('scene-band');
-  }
-  for(const table of document.querySelectorAll('table')) {
-   if(table.rows[0]?.textContent.includes('领域对象')) table.classList.add('domain-state');
-   if(table.offsetHeight<600)table.classList.add('keep-table');
-  }
-  // Keep the GRASP introduction with its first responsibility table.
-  for(const section of document.querySelectorAll('.sect2')) {
-   const heading=section.querySelector(':scope > h3');
-   if(!heading?.textContent.includes('GRASP'))continue;
-   section.classList.add('grasp-section');
-   const group=document.createElement('div');group.className='keep-section';
-   section.prepend(group);
-   for(const child of [...section.children]) {
-    if(child===group)continue;
-    group.append(child);if(child.matches('table'))break;
-   }
-  }
-  // Keep a short table with its own heading and introductory paragraphs.
-  for(const section of document.querySelectorAll('.sect2,.sect3,.sect4')) {
-   const children=[...section.children];
-   if(!children[0]?.matches('h3,h4,h5'))continue;
-   const firstTable=children.findIndex(n=>n.matches('table'));
-   if(firstTable<1 || children.slice(1,firstTable).some(n=>!n.matches('.paragraph')))continue;
-   const group=children.slice(0,firstTable+1);
-   if(group.reduce((sum,n)=>sum+n.offsetHeight,0)>600)continue;
-   const wrapper=document.createElement('div');wrapper.className='keep-section';
-   section.prepend(wrapper);for(const n of group)wrapper.append(n);
-  }
-  for(const section of document.querySelectorAll('.sect1')) {
-   const h=section.querySelector(':scope > h2');
-   const intro=section.querySelector(':scope > .sectionbody > .sect2:first-child .plate-intro');
-   if(h && intro)intro.prepend(h);
   }
   for(const a of document.querySelectorAll('#toc a')){
    const label=document.createElement('span');label.className='toc-label';label.textContent=a.textContent;
@@ -126,6 +50,44 @@ try{
  // Use the V2 text width and the print stylesheet's figure heights.
  await page.emulateMedia({media:'print'});
  await page.addStyleTag({content:'@media print { body { width:146.5mm; } }'});
+ await page.evaluate(()=>{
+  // Set physical sizes before Chromium fragments the page. The aspect ratio and text stay intact.
+  const mm = 96 / 25.4;
+  for(const img of document.querySelectorAll('.diagram img')) {
+   const file=img.getAttribute('src').split('/').pop();
+   const ratio=img.naturalWidth/img.naturalHeight;
+   const dense=/^(?:class-|domain\.svg|packages-|architecture-classes-)/.test(file);
+   const interaction=/^(?:auth-|user-|role-|dept-|sys-|perm-|course-|story-|adapter-|flow-)/.test(file);
+   let heightLimit=171;
+   if(dense) heightLimit=202;
+   if(interaction && img.naturalHeight<=855) heightLimit=106;
+   if(/^course-0[1-7]\.svg$/.test(file)) heightLimit=98;
+   const height=Math.min(heightLimit,146.5/ratio);
+   img.style.width=`${(height*ratio).toFixed(3)}mm`;
+   img.style.height=`${height.toFixed(3)}mm`;
+  }
+  for(const section of document.querySelectorAll('.sect2,.sect3,.sect4')) {
+   const children=[...section.children];
+   const firstFigure=children.findIndex(child=>child.classList.contains('diagram'));
+   if(firstFigure<1 || !children.slice(0,firstFigure).every(child=>child.matches('h3,h4,h5,.paragraph'))) continue;
+   const blocks=children.slice(0,firstFigure+1);
+   const introHeight=blocks.at(-1).getBoundingClientRect().bottom-blocks[0].getBoundingClientRect().top;
+   if(introHeight>196*mm) continue;
+   const intro=document.createElement('div');
+   intro.className='plate-intro';
+   section.prepend(intro);
+   intro.append(...blocks);
+  }
+  // A short call table and the first interaction form one reading unit.
+  for(const calls of document.querySelectorAll('.scene-detail')) {
+   const intro=calls.nextElementSibling?.querySelector(':scope > .plate-intro');
+   if(!intro || calls.offsetHeight+intro.offsetHeight>190*mm) continue;
+   intro.prepend(calls);
+  }
+  for(const table of document.querySelectorAll('table')) {
+   if(table.offsetHeight<175) table.classList.add('keep-table');
+  }
+ });
  const readPages='import json,sys\nfrom urllib.parse import unquote\nfrom pypdf import PdfReader\np=PdfReader(sys.argv[1])\nprint(json.dumps({unquote(n.lstrip("/")):p.get_destination_page_number(d)+1 for n,d in p.named_destinations.items()}))';
  let prev='',stable=false;
  for(let pass=0;pass<5;pass++){

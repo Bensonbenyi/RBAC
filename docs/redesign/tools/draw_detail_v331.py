@@ -5,7 +5,7 @@ from draw_complete import Sequence,wrap
 from v33_catalog import MODULES
 D=u.D
 
-def cls(d,name,x,y,w=340,methods=(),attrs=(),interface=False,stereo='',static_methods=()):
+def cls(d,name,x,y,w=340,methods=(),attrs=(),interface=False,stereo='',static_methods=(),compact=False):
  m=d.model('UMLInterface' if interface else 'UMLClass',name=name,attributes=[],operations=[],stereotype=stereo)
  for a,t in attrs:m['attributes'].append(u.obj('UMLAttribute',m,name=a,type=t,visibility='private'))
  for a in methods:
@@ -13,7 +13,7 @@ def cls(d,name,x,y,w=340,methods=(),attrs=(),interface=False,stereo='',static_me
   m['operations'].append(method)
  old=u.CLASSES.get(name);u.CLASSES[name]=m
  start=len(d.svg)
- result=u.klass(d,name,x,y,w)
+ result=u.klass(d,name,x,y,w,compact=compact)
  # As in v3.2.2, module plates project operation names; the detailed
  # function tables carry the inputs and results.
  result[1]['showOperationSignature']=False
@@ -78,7 +78,7 @@ def classes():
    b=cls(d,module+'UseCase',425,110,330,methods,interface=True)
    c=cls(d,prefix+module+'Service',820,110,330,methods)
    ref(d,a,b,[(360,190),(425,190)],'service')
-   dep(d,c,b,[(815,245),(765,245)],True)
+   dep(d,c,b,[(820,174),(755,174)],True)
    request=cls(d,REQUEST[module][0],30,500,330,attrs=REQUEST[module][1]) if module in REQUEST else None
    data=cls(d,'Data.'+module,425,500,330,attrs=FIELDS[module],stereo='record')
    store=cls(d,'ManagementStore',820,500,330,STORE[module],interface=True)
@@ -124,24 +124,30 @@ def domain():
 def overall_classes():
  for mode,prefix in [('structured','Structured'),('ddd','Ddd')]:
   label='结构化' if mode=='structured' else 'DDD'
-  d=D('architecture-classes-'+mode,'系统总体架构类图 '+label,1200,1670)
-  for x,t in [(210,'API 输入'),(600,'Service Port'),(990,'业务实现')]:d.text(x,95,t,24,True,True)
-  svcs=[]
-  for i,module in enumerate(['User','Role','Department','System','Permission']):
-   y=150+i*225
-   a=cls(d,module+'Controller',40,y,340,METHODS[module][:2])
-   b=cls(d,module+'UseCase',430,y,340,METHODS[module][:2],interface=True)
-   c=cls(d,(prefix if module in DOMAIN else '')+module+'Service',820,y,340,METHODS[module][:2])
-   ref(d,a,b,[(380,y+80),(430,y+80)],'service')
-   dep(d,c,b,[(815,y+120),(780,y+120)],True);svcs.append(c)
-  policy=cls(d,'AccessPolicy',40,1320,340,['require','scope','allowed'])
-  store=cls(d,'ManagementStore',430,1320,340,['users','roles','inheritRole'],interface=True)
-  adapter=cls(d,'JpaManagementStore',820,1320,340,['users','roles','inheritRole'])
-  dep(d,adapter,store,[(815,1400),(780,1400)],True)
-  # Shared dependencies are routed in the gutters, once for the service group.
-  for c in svcs:ref(d,c,store,[(1165,c[1]['top']+65),(1180,c[1]['top']+65),(1180,1260),(600,1260),(600,1320)],'store')
-  ref(d,svcs[-1],policy,[(990,bottom(svcs[-1])),(990,1215),(210,1215),(210,1320)],'access')
-  note(d,40,1540,1120,['按配置装配用户与角色用例；三类目录、认证、数据契约及存储适配器共用。',('DDD 应用服务依赖 User 与 Role 领域对象，详情见各模块类图。' if mode=='ddd' else '事务脚本通过 AccessPolicy 检查操作许可及部门范围，再调用 ManagementStore。')])
+  d=D('architecture-classes-'+mode,'系统总体架构类图 '+label,1200,1600)
+  for x,t in [(210,'API 输入'),(600,'Service Port'),(990,'业务实现')]:
+   d.text(x,84,t,24,True,True)
+  y=113
+  for module in ['User','Role','Department','System','Permission']:
+   methods=list(METHODS[module])
+   if module=='Role':methods+=['inheritedRoles','effectivePermissions','inherit','uninherit']
+   controller_methods=methods+['options'] if module in ['Role','System','Permission'] else methods
+   a=cls(d,module+'Controller',40,y,340,controller_methods,compact=True)
+   b=cls(d,module+'UseCase',430,y,340,methods,interface=True,compact=True)
+   service_type=(prefix if module in DOMAIN else '')+module+'Service'
+   c=cls(d,service_type,820,y,340,methods,[('store','ManagementStore'),('access','AccessPolicy')],compact=True)
+   ref(d,a,b,[(380,y+64),(430,y+64)])
+   dep(d,c,b,[(820,y+64),(770,y+64)],True)
+   y=max(bottom(a),bottom(b),bottom(c))+24
+  cls(d,'AccessPolicy',40,y,340,['require','scope','allowed'],compact=True)
+  store=cls(d,'ManagementStore',430,y,340,['users','roles','inheritRole'],interface=True,compact=True)
+  adapter=cls(d,'JpaManagementStore',820,y,340,['users','roles','inheritRole'],compact=True)
+  dep(d,adapter,store,[(820,y+64),(770,y+64)],True)
+  y=max(bottom(store),bottom(adapter))+20
+  caption='DDD 用户与角色服务使用领域对象校验规则。' if mode=='ddd' else '结构化用户与角色服务使用事务脚本编排规则。'
+  note(d,40,y,1120,['Controller 的 options 方法由独立 SelectionService 提供。',caption+'三类目录、认证和存储共用。'])
+  d.h=y+102
+  d.diagram['ownedViews'][0]['height']=d.h
 
 
 def package_diagrams():
@@ -289,11 +295,11 @@ def persistence():
  ('adapter-delete','JPA 角色适配器 删除顺序图',[
   (0,1,'deleteRole(id)'),(1,2,'deleteById(id)'),(2,1,'当前事务记录删除'),
   (1,0,'返回；提交时数据库校验引用')])]:
-  seq=Sequence(stem,title,[('service','RoleUseCase'),('adapter','JpaManagementStore'),('roles','RoleJpaRepository')],height=960)
+  seq=Sequence(stem,title,[('service','RoleUseCase'),('adapter','JpaManagementStore'),('roles','RoleJpaRepository')],height=195+(len(steps)-1)*81+138)
   for i,(a,b,text) in enumerate(steps):
-   y=285+i*105
-   seq.msg(a,b,y,text,end=285+(len(steps)-1)*105 if i==0 else y+80,reply=(a==2 or b==0))
-  seq.note(860,'写入在服务事务内执行。外键或唯一约束冲突返回 409。')
+   y=195+i*81
+   seq.msg(a,b,y,text,end=195+(len(steps)-1)*81 if i==0 else y+39,reply=(a==2 or b==0))
+  seq.note(y+58,'写入在服务事务内执行。外键或唯一约束冲突返回 409。')
 
 
 def relations():
@@ -317,27 +323,27 @@ def common_sequences():
  for stem,title,parts,messages,note in [
  ('flow-copy','API 边界对象拷贝 顺序图',[('api','RoleController'),('copy','CloneFactory'),('port','RoleUseCase')],[(0,1,'copy(new Data.Name(null), request)'),(1,0,'返回 Data.Name'),(0,2,'create(current.get(), command)'),(2,0,'Data.Role；201 Location')],'@Valid 已完成格式校验；生成的 copy 仅覆盖 @CopyTo 声明类型，拒绝未知输入字段。'),
  ('flow-adapter','持久化读取与数据映射 顺序图',[('service','UserUseCase'),('store','JpaManagementStore'),('users','UserJpaRepository')],[(0,1,'user(id)'),(1,2,'findById(id)'),(2,1,'返回 UserEntity 或空结果'),(1,0,'返回 Data.User 或对象缺失错误')],'JPA 负责实体和表的映射，适配器把持久化实体转换为共享 Data。')]:
-  seq=Sequence(stem,title,parts,height=1120)
-  for i,(a,b,text) in enumerate(messages):seq.msg(a,b,320+i*140,text,reply=(b==0 or (a==2 and b==1)))
-  seq.note(1000,note)
+  seq=Sequence(stem,title,parts,height=608)
+  for i,(a,b,text) in enumerate(messages):seq.msg(a,b,195+i*89,text,reply=(b==0 or (a==2 and b==1)))
+  seq.note(525,note)
 
- seq=Sequence('flow-preflight','受保护请求 校验顺序图',[('filter','BearerFilter'),('decoder','JwtDecoder'),('sessions','SessionStore'),('store','ManagementStore'),('effective','EffectiveAccessStore')],height=1400)
+ seq=Sequence('flow-preflight','受保护请求 校验顺序图',[('filter','BearerFilter'),('decoder','JwtDecoder'),('sessions','SessionStore'),('store','ManagementStore'),('effective','EffectiveAccessStore')],height=1018)
  for i,(a,b,text,reply) in enumerate([
   (0,1,'decode(Authorization 中的令牌)',False),(1,0,'验签后的 JWT；失败抛出异常',True),
   (0,2,'find(jti)；核验用户及有效期',False),(2,0,'Session 或认证失败',True),
   (0,3,'user(userId)',False),(3,0,'当前账号',True),
   (0,4,'permissionsForUser(userId, system)',False),(4,0,'当前 login 权限',True),
-  (0,0,'设置 Data.Identity；chain.doFilter',False)]):seq.msg(a,b,300+i*105,text,reply=reply)
- seq.note(1280,'认证失败终止请求并返回 401；login 撤销返回 403；数据库故障返回 503。业务 Service 另查操作许可及部门。')
+  (0,0,'设置 Data.Identity；chain.doFilter',False)]):seq.msg(a,b,195+i*82,text,reply=reply)
+ seq.note(927,'认证失败终止请求并返回 401；login 撤销返回 403；数据库故障返回 503。业务 Service 另查操作许可及部门。')
 
 def authentication():
- seq=Sequence('flow-login-session','建立登录会话与签发凭据',[('auth','AuthService'),('sessions','SessionStore'),('encoder','JwtEncoder')],height=1140)
- seq.msg(0,1,320,'save(UUID, userId, expiresAt)',end=440)
- seq.msg(1,0,460,'会话写入当前事务',reply=True)
- seq.msg(0,2,610,'encode(RS256, iss/sub/aud/jti/iat/exp)',end=760)
- seq.msg(2,0,790,'JWT accessToken',reply=True)
- seq.msg(0,0,900,'返回 LoginResult；事务提交')
- seq.note(1030,'账号及目标系统 login 权限先校验。签发失败时回滚会话写入；成功响应包含 accessToken、tokenType、expiresIn。')
+ seq=Sequence('flow-login-session','建立登录会话与签发凭据',[('auth','AuthService'),('sessions','SessionStore'),('encoder','JwtEncoder')],height=675)
+ seq.msg(0,1,195,'save(UUID, userId, expiresAt)',end=249)
+ seq.msg(1,0,251,'会话写入当前事务',reply=True)
+ seq.msg(0,2,329,'encode(RS256, iss/sub/aud/jti/iat/exp)',end=393)
+ seq.msg(2,0,398,'JWT accessToken',reply=True)
+ seq.msg(0,0,486,'返回 LoginResult；事务提交')
+ seq.note(581,'账号及目标系统 login 权限先校验。签发失败时回滚会话写入；成功响应包含 accessToken、tokenType、expiresIn。')
  d=D('class-auth-request','Bearer 认证与实时鉴权 类图',1120,1450)
  f=cls(d,'BearerFilter',30,120,470,['doFilterInternal'],[('decoder','JwtDecoder'),('sessions','SessionStore'),('store','ManagementStore'),('effectiveAccess','EffectiveAccessStore')])
  decoder=cls(d,'JwtDecoder',630,120,450,['decode'],interface=True)
