@@ -9,8 +9,7 @@ public final class ManagementVOs {
   private ManagementVOs() {}
 
   /** 用户账号资料. */
-  public record UserVO(
-      String id, String username, String name, String phone, String departmentId) {}
+  public record UserVO(String id, String username, String name, String departmentId) {}
 
   /** 部门及其上级编号. */
   public record DepartmentVO(String id, String name, String parentId) {}
@@ -30,11 +29,7 @@ public final class ManagementVOs {
   /** 转换用户资料的编号格式. */
   public static UserVO user(Data.User user) {
     return new UserVO(
-        user.id().toString(),
-        user.username(),
-        user.name(),
-        user.phone(),
-        user.departmentId().toString());
+        user.id().toString(), user.username(), user.name(), user.departmentId().toString());
   }
 
   /** 根部门的上级编号为空. */

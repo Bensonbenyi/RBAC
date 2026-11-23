@@ -112,8 +112,9 @@ abstract class IdentityContract extends ContractFixture {
                 "POST",
                 LOGIN,
                 """
-        {"username":"admin","password":"13800000000","systems":["rbac","course-project-management"]}
-        """,
+                {"username":"admin","password":"13800000000",
+                 "systems":["rbac","course-project-management"]}
+                """,
                 null)
             .path("accessToken")
             .asText();
@@ -129,6 +130,7 @@ abstract class IdentityContract extends ContractFixture {
     HttpResponse<String> decision =
         call("GET", API_PERMISSIONS + "createTerm", null, credential, "course-project-management");
     assertEquals(200, decision.statusCode());
+    assertEquals("createTerm", json.readTree(decision.body()).path("operationId").asText());
     assertTrue(json.readTree(decision.body()).path("allowed").asBoolean());
     assertEquals(403, call("GET", IDENTITY_ME, null, credential, "unregistered").statusCode());
     expect(204, "POST", "/auth/logout", null, credential);

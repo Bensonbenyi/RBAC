@@ -28,7 +28,7 @@ async function run(action: () => Promise<void>) {
   }
 }
 async function load() {
-  const data = await request<Page<User>>(`/api/users?page=${page.value}&size=20`);
+  const data = await request<Page<User>>(`/api/users?page=${page.value}`);
   users.value = data.items;
   total.value = data.total;
 }
@@ -70,7 +70,6 @@ onMounted(() => run(load));
       <tr>
         <th>用户名</th>
         <th>姓名</th>
-        <th>手机号</th>
         <th>操作</th>
       </tr>
     </thead>
@@ -78,7 +77,6 @@ onMounted(() => run(load));
       <tr v-for="user in users" :key="user.id">
         <td>{{ user.username }}</td>
         <td>{{ user.name }}</td>
-        <td>{{ user.phone }}</td>
         <td>
           <button :disabled="busy || !allowed('ui.user.roles')" @click="showRoles(user)">
             分配角色

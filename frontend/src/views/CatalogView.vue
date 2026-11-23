@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue';
-import { request, allowed, allPages, type Page, type Named, type System } from '../auth';
+import { request, allPages, type Page, type Named, type System } from '../auth';
 const props = defineProps<{ kind: 'systems' | 'permissions' }>();
 interface Entry extends Named {
   systemKey?: string;
@@ -12,14 +12,8 @@ const rows = ref<Entry[]>([]),
   total = ref(0),
   systems = ref<System[]>([]),
   systemId = ref(''),
-  name = ref(''),
-  code = ref(''),
-  editing = ref<Entry | null>(null),
   error = ref(''),
   busy = ref(false);
-function can(action: string) {
-  return allowed(`ui.${props.kind.slice(0, -1)}.${action}`);
-}
 function endpoint() {
   return props.kind === 'permissions'
     ? `/api/systems/${systemId.value}/permissions`
@@ -46,34 +40,6 @@ async function load() {
   rows.value = data.items;
   total.value = data.total;
 }
-function reset() {
-  editing.value = null;
-  name.value = '';
-  code.value = '';
-}
-async function save() {
-  await run(async () => {
-    const body = editing.value
-      ? { name: name.value }
-      : props.kind === 'systems'
-        ? { name: name.value, systemKey: code.value }
-        : { name: name.value, code: code.value };
-    await request(
-      editing.value ? `/api/${props.kind}/${editing.value.id}` : endpoint(),
-      editing.value ? 'PATCH' : 'POST',
-      body,
-    );
-    reset();
-    await load();
-  });
-}
-async function remove(row: Entry) {
-  if (confirm(`删除 ${row.name}？存在关联时需先处理关联。`))
-    await run(async () => {
-      await request(`/api/${props.kind}/${row.id}`, 'DELETE');
-      await load();
-    });
-}
 onMounted(() =>
   run(async () => {
     if (props.kind === 'permissions') {
@@ -93,7 +59,6 @@ onMounted(() =>
       :disabled="busy"
       @change="
         page = 0;
-        reset();
         run(load);
       "
     >
@@ -108,7 +73,6 @@ onMounted(() =>
         <th>编号</th>
         <th>名称</th>
         <th>标识或编码</th>
-        <th>操作</th>
       </tr>
     </thead>
     <tbody>
@@ -116,18 +80,6 @@ onMounted(() =>
         <td>{{ row.id }}</td>
         <td>{{ row.name }}</td>
         <td>{{ row.systemKey || row.code }}</td>
-        <td>
-          <button
-            v-if="kind === 'permissions'"
-            :disabled="busy || !can('edit')"
-            @click="
-              editing = row;
-              name = row.name;
-            "
-          >
-            重命名</button
-          ><button :disabled="busy || !can('delete')" @click="remove(row)">删除</button>
-        </td>
       </tr>
     </tbody>
   </table>
@@ -151,16 +103,4 @@ onMounted(() =>
       下一页
     </button>
   </div>
-  <h3>{{ editing ? '重命名' : '新建' }}</h3>
-  <form @submit.prevent="save">
-    <label>名称<input v-model.trim="name" required maxlength="100" /></label
-    ><label v-if="!editing"
-      >{{ kind === 'systems' ? '系统标识' : '权限编码'
-      }}<input v-model.trim="code" required :maxlength="kind === 'systems' ? 64 : 100" /></label
-    ><button
-      :disabled="busy || !can(editing ? 'edit' : 'create') || (kind === 'permissions' && !systemId)"
-    >
-      保存</button
-    ><button type="button" @click="reset">取消</button>
-  </form>
 </template>

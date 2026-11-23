@@ -6,6 +6,7 @@ import json
 import os
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 from pathlib import Path
 
@@ -52,7 +53,7 @@ def pages(path, token):
     raise AssertionError('Unexpected catalog size')
 
 
-admin = reviewer = viewer = None
+admin = course_admin = reviewer = viewer = None
 roles, links, grants, terms = [], [], [], []
 assigned = False
 stamp = str(int(time.time()))
@@ -63,13 +64,23 @@ try:
     viewer = call('/course-api/login', 'POST', {
         'role': 'teacher', 'account': 'viewer', 'password': phone})['accessToken']
     call('/course-api/teacher/courses', token=reviewer)
+    course_admin = login('admin', 'course-project-management')
+    query = urllib.parse.urlencode({'keyword': '规模演示组织'})
+    directory = call(f'/auth/departments?{query}', token=course_admin)
+    assert directory['total'] == 1 and directory['items'][0]['hasChildren']
+    call('/auth/departments', token=viewer, expected=403)
     assert call('/course-api/auth/permissions/MCO', token=viewer)['allowed']
     assert not call('/course-api/auth/permissions/MTR', token=viewer)['allowed']
     me = call('/course-api/me', token=viewer)
     assert 'MCO' in me['permissions'] and 'CV' not in me['permissions']
-    call('/api/users', token=admin)
     users = pages('/api/users', admin)
     viewer_id = next(u['id'] for u in users if u['username'] == 'viewer')
+    assert all('phone' not in user for user in users)
+    identity = call(f'/auth/users/{viewer_id}', token=course_admin)
+    assert identity['no'] == 'viewer'
+    department_id = call('/auth/me', token=course_admin)['departmentId']
+    members = call(f'/auth/departments/{department_id}/users?keyword=viewer', token=course_admin)
+    assert any(user['userId'] == viewer_id for user in members['items'])
     systems = pages('/api/systems', admin)
     course_id = next(s['id'] for s in systems if s['systemKey'] == 'course-project-management')
     permissions = pages('/api/systems/' + course_id + '/permissions', admin)
@@ -105,7 +116,8 @@ try:
     assigned = True
     refreshed = call('/course-api/me', token=viewer)
     assert {'MCO', 'MTR', 'MTRC'} <= set(refreshed['permissions'])
-    assert call('/auth/api-permissions/createTerm', token=viewer)['allowed']
+    assert call('/auth/api-permissions/createTerm', token=viewer) == {
+        'operationId': 'createTerm', 'allowed': True}
     assert not call('/auth/permissions/TC', token=viewer)['allowed']
     term = call('/course-api/terms', 'POST', term_input, viewer, 201)
     terms.append(str(term['id']))
@@ -135,7 +147,7 @@ finally:
         call(path, 'DELETE', token=admin, expected=204)
     for role_id in roles:
         call('/api/roles/' + role_id, 'DELETE', token=admin, expected=204)
-    for token in [reviewer, admin]:
+    for token in [course_admin, reviewer, admin]:
         if token:
             call('/auth/logout', 'POST', token=token, expected=204)
 report = {'version': args.version, 'date': date.today().isoformat(), 'strategy': args.strategy,

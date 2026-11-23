@@ -18,12 +18,7 @@ public final class UiPermissions {
           "ui.role.inheritance",
           "ui.departments",
           "ui.systems",
-          "ui.system.create",
-          "ui.system.delete",
-          "ui.permissions",
-          "ui.permission.create",
-          "ui.permission.edit",
-          "ui.permission.delete");
+          "ui.permissions");
   public static final Set<String> COURSE = Set.of("MCO", "MTR", "MCOR", "MTRC", "MTRE", "MTRD");
 
   /** 判断权限码是否属于指定系统登记的界面权限目录. */

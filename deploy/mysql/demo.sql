@@ -40,12 +40,7 @@ INSERT INTO permission(system_id, code, name) VALUES
     (@system, 'ui.role.inheritance', 'ui.role.inheritance'),
     (@system, 'ui.departments', 'ui.departments'),
     (@system, 'ui.systems', 'ui.systems'),
-    (@system, 'ui.system.create', 'ui.system.create'),
-    (@system, 'ui.system.delete', 'ui.system.delete'),
-    (@system, 'ui.permissions', 'ui.permissions'),
-    (@system, 'ui.permission.create', 'ui.permission.create'),
-    (@system, 'ui.permission.edit', 'ui.permission.edit'),
-    (@system, 'ui.permission.delete', 'ui.permission.delete');
+    (@system, 'ui.permissions', 'ui.permissions');
 INSERT INTO role_permission(role_id, permission_id)
 SELECT r.id, p.id FROM `role` r CROSS JOIN permission p
 WHERE r.department_id = @dept AND r.name = 'admin' AND p.system_id = @system;

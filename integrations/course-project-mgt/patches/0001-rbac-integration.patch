@@ -13,6 +13,94 @@ index dcc3376..751a598 100644
  		<dependency>
  			<groupId>org.springframework.boot</groupId>
  			<artifactId>spring-boot-starter-validation</artifactId>
+diff --git a/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/http/ExternalHttpLoggingInterceptor.java b/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/http/ExternalHttpLoggingInterceptor.java
+deleted file mode 100644
+index 3b70263..0000000
+--- a/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/http/ExternalHttpLoggingInterceptor.java
++++ /dev/null
+@@ -1,53 +0,0 @@
+-package cn.edu.xmu.projectmgt.infrastructure.http;
+-
+-import lombok.extern.slf4j.Slf4j;
+-import org.springframework.http.HttpRequest;
+-import org.springframework.http.client.ClientHttpRequestExecution;
+-import org.springframework.http.client.ClientHttpRequestInterceptor;
+-import org.springframework.http.client.ClientHttpResponse;
+-
+-import java.io.IOException;
+-
+-/**
+- * 外部 HTTP 请求日志拦截器，只记录方法、URI、状态码和耗时。
+- *
+- * <p>不记录 Authorization、请求体或响应体，避免泄漏令牌、密码和业务数据。</p>
+- */
+-@Slf4j
+-public class ExternalHttpLoggingInterceptor implements ClientHttpRequestInterceptor {
+-
+-    /**
+-     * 执行外部 HTTP 请求并记录请求结果。
+-     */
+-    @Override
+-    public ClientHttpResponse intercept(
+-            HttpRequest request,
+-            byte[] body,
+-            ClientHttpRequestExecution execution
+-    ) throws IOException {
+-        long startedAt = System.currentTimeMillis();
+-        String method = request.getMethod().name();
+-        String uri = request.getURI().toString();
+-        log.debug("外部 HTTP 请求开始，method={}, uri={}", method, uri);
+-        try {
+-            ClientHttpResponse response = execution.execute(request, body);
+-            log.debug(
+-                    "外部 HTTP 请求完成，method={}, uri={}, status={}, elapsed={}ms",
+-                    method,
+-                    uri,
+-                    response.getStatusCode().value(),
+-                    System.currentTimeMillis() - startedAt
+-            );
+-            return response;
+-        } catch (IOException exception) {
+-            log.debug(
+-                    "外部 HTTP 请求失败，method={}, uri={}, elapsed={}ms",
+-                    method,
+-                    uri,
+-                    System.currentTimeMillis() - startedAt,
+-                    exception
+-            );
+-            throw exception;
+-        }
+-    }
+-}
+\ No newline at end of file
+diff --git a/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/http/ExternalRestClientFactory.java b/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/http/ExternalRestClientFactory.java
+index 22f32e8..dbf50a2 100644
+--- a/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/http/ExternalRestClientFactory.java
++++ b/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/http/ExternalRestClientFactory.java
+@@ -51,7 +51,6 @@ public class ExternalRestClientFactory {
+         return RestClient.builder()
+                 .baseUrl(Objects.requireNonNull(baseUrl, "外部系统基础地址不能为空"))
+                 .requestFactory(requestFactory)
+-                .requestInterceptor(new ExternalHttpLoggingInterceptor())
+                 .build();
+     }
+ 
+diff --git a/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/identity/HttpExchangeUnifiedIdentityGateway.java b/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/identity/HttpExchangeUnifiedIdentityGateway.java
+index 4f16f43..991f245 100644
+--- a/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/identity/HttpExchangeUnifiedIdentityGateway.java
++++ b/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/identity/HttpExchangeUnifiedIdentityGateway.java
+@@ -43,6 +43,11 @@ public class HttpExchangeUnifiedIdentityGateway implements UnifiedIdentityGatewa
+      */
+     @Override
+     public CurrentIdentity currentIdentity() {
++        if (RequestContextHolder.getRequestAttributes() instanceof ServletRequestAttributes attributes
++                && attributes.getRequest().getAttribute(IdentityCurrentUserResponse.class.getName())
++                instanceof IdentityCurrentUserResponse response) {
++            return toCurrentIdentity(response);
++        }
+         return currentIdentity(currentAuthorization());
+     }
+ 
 diff --git a/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/identity/IdentityHttpClientConfiguration.java b/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/identity/IdentityHttpClientConfiguration.java
 index 6e94e4a..cff235c 100644
 --- a/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/identity/IdentityHttpClientConfiguration.java
@@ -73,28 +161,47 @@ index 0000000..60c38c9
 +    }
 +}
 diff --git a/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/identity/client/UnifiedIdentityClient.java b/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/identity/client/UnifiedIdentityClient.java
-index fc8c142..78a0d53 100644
+index fc8c142..8856904 100644
 --- a/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/identity/client/UnifiedIdentityClient.java
 +++ b/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/identity/client/UnifiedIdentityClient.java
-@@ -11,7 +11,7 @@ import org.springframework.web.service.annotation.PostExchange;
- /**
-  * 统一身份认证系统 HTTP 客户端。
-  */
--@HttpExchange
-+@HttpExchange(headers = "X-Target-System=course-project-management")
- public interface UnifiedIdentityClient {
+@@ -4,7 +4,6 @@ import org.springframework.http.HttpHeaders;
+ import org.springframework.web.bind.annotation.PathVariable;
+ import org.springframework.web.bind.annotation.RequestBody;
+ import org.springframework.web.bind.annotation.RequestHeader;
+-import org.springframework.web.service.annotation.GetExchange;
+ import org.springframework.web.service.annotation.HttpExchange;
+ import org.springframework.web.service.annotation.PostExchange;
  
+@@ -26,7 +25,7 @@ public interface UnifiedIdentityClient {
      /**
+      * 查询当前统一身份用户、角色和前端权限。
+      */
+-    @GetExchange("/auth/me")
++    @HttpExchange(method = "GET", url = "/auth/me", headers = "X-Target-System=course-project-management")
+     IdentityCurrentUserResponse currentUser(
+             @RequestHeader(HttpHeaders.AUTHORIZATION)
+             String authorization
+@@ -35,7 +34,7 @@ public interface UnifiedIdentityClient {
+     /**
+      * 按统一身份用户标识查询姓名和工号。
+      */
+-    @GetExchange("/auth/users/{userId}")
++    @HttpExchange(method = "GET", url = "/auth/users/{userId}", headers = "X-Target-System=course-project-management")
+     IdentityUserResponse lookupUser(
+             @RequestHeader(HttpHeaders.AUTHORIZATION)
+             String authorization,
 diff --git a/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/security/RbacIntegrationConfiguration.java b/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/security/RbacIntegrationConfiguration.java
 new file mode 100644
-index 0000000..355c9fb
+index 0000000..011417a
 --- /dev/null
 +++ b/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/security/RbacIntegrationConfiguration.java
-@@ -0,0 +1,48 @@
+@@ -0,0 +1,52 @@
 +package cn.edu.xmu.projectmgt.infrastructure.security;
 +
 +import cn.edu.xmu.projectmgt.infrastructure.identity.client.ApiAuthorityClient;
 +import cn.edu.xmu.projectmgt.infrastructure.identity.client.UnifiedIdentityClient;
++import java.io.InputStream;
++import java.security.interfaces.RSAPublicKey;
 +import org.springframework.beans.factory.annotation.Value;
 +import org.springframework.context.annotation.Bean;
 +import org.springframework.context.annotation.Configuration;
@@ -113,13 +220,15 @@ index 0000000..355c9fb
 +@Profile("rbac-integration")
 +public class RbacIntegrationConfiguration {
 +  @Bean
-+  JwtDecoder rbacJwtDecoder(@Value("${app.identity.public-key}") Resource resource)
++  JwtDecoder rbacJwtDecoder(
++      @Value("${app.identity.public-key}")
++      Resource resource)
 +      throws Exception {
-+    java.security.interfaces.RSAPublicKey key;
-+    try (var in = resource.getInputStream()) {
++    RSAPublicKey key;
++    try (InputStream in = resource.getInputStream()) {
 +      key = RsaKeyConverters.x509().convert(in);
 +    }
-+    var decoder = NimbusJwtDecoder.withPublicKey(key).build();
++    NimbusJwtDecoder decoder = NimbusJwtDecoder.withPublicKey(key).build();
 +    decoder.setJwtValidator(JwtValidators.createDefaultWithIssuer("rbac"));
 +    return decoder;
 +  }
@@ -141,13 +250,14 @@ index 0000000..355c9fb
 +}
 diff --git a/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/security/RbacIntegrationFilter.java b/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/security/RbacIntegrationFilter.java
 new file mode 100644
-index 0000000..6093ff4
+index 0000000..8a5a1e5
 --- /dev/null
 +++ b/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/security/RbacIntegrationFilter.java
-@@ -0,0 +1,158 @@
+@@ -0,0 +1,132 @@
 +package cn.edu.xmu.projectmgt.infrastructure.security;
 +
 +import cn.edu.xmu.projectmgt.infrastructure.identity.client.ApiAuthorityClient;
++import cn.edu.xmu.projectmgt.infrastructure.identity.client.IdentityCurrentUserResponse;
 +import cn.edu.xmu.projectmgt.infrastructure.identity.client.UnifiedIdentityClient;
 +import jakarta.servlet.FilterChain;
 +import jakarta.servlet.ServletException;
@@ -155,8 +265,8 @@ index 0000000..6093ff4
 +import jakarta.servlet.http.HttpServletResponse;
 +import java.io.IOException;
 +import java.time.Instant;
-+import org.slf4j.Logger;
-+import org.slf4j.LoggerFactory;
++import java.util.List;
++import java.util.regex.Pattern;
 +import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 +import org.springframework.security.core.authority.SimpleGrantedAuthority;
 +import org.springframework.security.core.context.SecurityContextHolder;
@@ -169,7 +279,28 @@ index 0000000..6093ff4
 +
 +/** 对接精简范围内的课程接口；API 许可与界面码分离，保留老师服务内的业务校验。 */
 +public class RbacIntegrationFilter extends OncePerRequestFilter {
-+  private static final Logger log = LoggerFactory.getLogger(RbacIntegrationFilter.class);
++  private static final List<Route> ROUTES =
++      List.of(
++          new Route("GET", "/me", "getCurrentUser", "login"),
++          new Route("GET", "/teacher/courses", "listTeacherCourses", "login"),
++          new Route("GET", "/terms", "listTerms", "login"),
++          new Route("POST", "/terms", "createTerm", "TC"),
++          new Route("PATCH", "/terms/[1-9][0-9]*", "updateTerm", "TE"),
++          new Route("DELETE", "/terms/[1-9][0-9]*", "deleteTerm", "TD"),
++          new Route("GET", "/admin/courses", "listAdminCourses", "CV"),
++          new Route("GET", "/courses/[1-9][0-9]*", "getCourse", "CV"),
++          new Route("POST", "/courses/[1-9][0-9]*/review", "reviewCourse", "CR"));
++
++  private record Route(String method, Pattern path, String operationId, String authority) {
++    Route(String method, String path, String operationId, String authority) {
++      this(method, Pattern.compile(path), operationId, authority);
++    }
++
++    boolean matches(HttpServletRequest request) {
++      return method.equals(request.getMethod()) && path.matcher(request.getRequestURI()).matches();
++    }
++  }
++
 +  private final JwtDecoder decoder;
 +  private final UnifiedIdentityClient identity;
 +  private final ApiAuthorityClient authorities;
@@ -184,7 +315,6 @@ index 0000000..6093ff4
 +  protected void doFilterInternal(
 +      HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 +      throws ServletException, IOException {
-+    long start = System.nanoTime();
 +    try {
 +      if (request.getRequestURI().equals("/actuator/health")
 +          || (request.getMethod().equals("POST") && request.getRequestURI().equals("/login"))) {
@@ -203,35 +333,27 @@ index 0000000..6093ff4
 +        error(response, 401, "UNAUTHENTICATED");
 +        return;
 +      }
-+      cn.edu.xmu.projectmgt.infrastructure.identity.client.IdentityCurrentUserResponse me = identity.currentUser(auth);
++      IdentityCurrentUserResponse me = identity.currentUser(auth);
 +      if (!jwt.getSubject().equals(me.subject())) {
 +        error(response, 401, "UNAUTHENTICATED");
 +        return;
 +      }
-+      String operation = operation(request.getMethod(), request.getRequestURI());
-+      if (operation == null) {
++      Route route = ROUTES.stream().filter(candidate -> candidate.matches(request))
++          .findFirst().orElse(null);
++      if (route == null) {
 +        error(response, 403, "FORBIDDEN");
 +        return;
 +      }
-+      ApiAuthorityClient.Decision decision = authorities.check(auth, operation);
++      ApiAuthorityClient.Decision decision = authorities.check(auth, route.operationId());
 +      if (decision == null || !decision.allowed()) {
 +        error(response, 403, "FORBIDDEN");
 +        return;
 +      }
-+      // 只把已通过 API 决策的后端权限交给业务授权适配器，界面码不转成 Authority。
-+      String code =
-+          switch (operation) {
-+            case "createTerm" -> "TC";
-+            case "updateTerm" -> "TE";
-+            case "deleteTerm" -> "TD";
-+            case "listAdminCourses", "getCourse" -> "CV";
-+            case "reviewCourse" -> "CR";
-+            default -> "login";
-+          };
-+      java.util.List<SimpleGrantedAuthority> granted = java.util.List.of(new SimpleGrantedAuthority(code));
++      // 复用已认证的资料，仅在这一次 HTTP 请求中生效。
++      request.setAttribute(IdentityCurrentUserResponse.class.getName(), me);
++      List<SimpleGrantedAuthority> granted = List.of(new SimpleGrantedAuthority(route.authority()));
 +      SecurityContextHolder.getContext()
-+          .setAuthentication(
-+              new UsernamePasswordAuthenticationToken(me.subject(), null, granted));
++          .setAuthentication(new UsernamePasswordAuthenticationToken(me.subject(), null, granted));
 +      chain.doFilter(request, response);
 +    } catch (JwtException e) {
 +      error(response, 401, "UNAUTHENTICATED");
@@ -247,46 +369,7 @@ index 0000000..6093ff4
 +      error(response, 503, "IDENTITY_SERVICE_UNAVAILABLE");
 +    } finally {
 +      SecurityContextHolder.clearContext();
-+      log.debug(
-+          "integration method={} path={} status={} elapsedMicros={}",
-+          request.getMethod(),
-+          request.getRequestURI(),
-+          response.getStatus(),
-+          (System.nanoTime() - start) / 1000);
 +    }
-+  }
-+
-+  static String operation(String method, String path) {
-+    if (path.equals("/me") && method.equals("GET")) {
-+      return "getCurrentUser";
-+    }
-+    if (path.equals("/teacher/courses") && method.equals("GET")) {
-+      return "listTeacherCourses";
-+    }
-+    if (path.equals("/terms")) {
-+      return switch (method) {
-+        case "GET" -> "listTerms";
-+        case "POST" -> "createTerm";
-+        default -> null;
-+      };
-+    }
-+    if (path.matches("/terms/[1-9][0-9]*")) {
-+      return switch (method) {
-+        case "PATCH" -> "updateTerm";
-+        case "DELETE" -> "deleteTerm";
-+        default -> null;
-+      };
-+    }
-+    if (path.equals("/admin/courses") && method.equals("GET")) {
-+      return "listAdminCourses";
-+    }
-+    if (path.matches("/courses/[1-9][0-9]*") && method.equals("GET")) {
-+      return "getCourse";
-+    }
-+    if (path.matches("/courses/[1-9][0-9]*/review") && method.equals("POST")) {
-+      return "reviewCourse";
-+    }
-+    return null;
 +  }
 +
 +  private static void error(HttpServletResponse response, int status, String code)
@@ -324,31 +407,151 @@ index c325028..6ac0842 100644
  @RequiredArgsConstructor
  public class SecurityConfiguration {
 diff --git a/backend/src/main/java/cn/edu/xmu/projectmgt/service/ddd/application/auth/DddLoginService.java b/backend/src/main/java/cn/edu/xmu/projectmgt/service/ddd/application/auth/DddLoginService.java
-index f967249..8c2fe20 100644
+index f967249..d855b32 100644
 --- a/backend/src/main/java/cn/edu/xmu/projectmgt/service/ddd/application/auth/DddLoginService.java
 +++ b/backend/src/main/java/cn/edu/xmu/projectmgt/service/ddd/application/auth/DddLoginService.java
-@@ -49,7 +49,7 @@ public class DddLoginService implements LoginUseCase {
+@@ -14,7 +14,6 @@ import cn.edu.xmu.projectmgt.service.port.common.UnifiedIdentityGateway;
+ import cn.edu.xmu.projectmgt.service.port.error.NotFoundException;
+ import cn.edu.xmu.projectmgt.service.port.error.UnauthorizedException;
+ import lombok.RequiredArgsConstructor;
+-import lombok.extern.slf4j.Slf4j;
+ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+ import org.springframework.stereotype.Service;
+ import org.springframework.transaction.annotation.Transactional;
+@@ -29,7 +28,6 @@ import java.util.Objects;
+ @RequiredArgsConstructor
+ @Transactional
+ @ConditionalOnProperty(name = "app.backend-strategy", havingValue = "ddd")
+-@Slf4j
+ public class DddLoginService implements LoginUseCase {
+ 
+     private static final String SYSTEM_ID = "course-project-management";
+@@ -49,7 +47,6 @@ public class DddLoginService implements LoginUseCase {
          } else {
              result = loginTeacher(command);
          }
 -        log.debug("login: result = {}",result);
-+        log.debug("login: role={}", command.role());
          return result;
      }
  
 diff --git a/backend/src/main/java/cn/edu/xmu/projectmgt/service/structured/auth/StructuredLoginService.java b/backend/src/main/java/cn/edu/xmu/projectmgt/service/structured/auth/StructuredLoginService.java
-index 32523ed..3030e9f 100644
+index 32523ed..5bcc7b3 100644
 --- a/backend/src/main/java/cn/edu/xmu/projectmgt/service/structured/auth/StructuredLoginService.java
 +++ b/backend/src/main/java/cn/edu/xmu/projectmgt/service/structured/auth/StructuredLoginService.java
-@@ -55,7 +55,7 @@ public class StructuredLoginService implements LoginUseCase {
+@@ -16,7 +16,6 @@ import cn.edu.xmu.projectmgt.service.port.common.UnifiedIdentityGateway;
+ import cn.edu.xmu.projectmgt.service.port.error.NotFoundException;
+ import cn.edu.xmu.projectmgt.service.port.error.UnauthorizedException;
+ import lombok.RequiredArgsConstructor;
+-import lombok.extern.slf4j.Slf4j;
+ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+ import org.springframework.stereotype.Service;
+ import org.springframework.transaction.annotation.Transactional;
+@@ -35,7 +34,6 @@ import java.util.Objects;
+         havingValue = "structured",
+         matchIfMissing = true
+ )
+-@Slf4j
+ public class StructuredLoginService implements LoginUseCase {
+ 
+     private static final String SYSTEM_ID = "course-project-management";
+@@ -55,7 +53,6 @@ public class StructuredLoginService implements LoginUseCase {
          } else {
              result = loginTeacher(command);
          }
 -        log.debug("login: result = {}",result);
-+        log.debug("login: role={}", command.role());
          return result;
      }
  
+diff --git a/backend/src/test/java/cn/edu/xmu/projectmgt/infrastructure/http/ExternalRestClientFactoryTest.java b/backend/src/test/java/cn/edu/xmu/projectmgt/infrastructure/http/ExternalRestClientFactoryTest.java
+index a6b4b4c..bfb4b26 100644
+--- a/backend/src/test/java/cn/edu/xmu/projectmgt/infrastructure/http/ExternalRestClientFactoryTest.java
++++ b/backend/src/test/java/cn/edu/xmu/projectmgt/infrastructure/http/ExternalRestClientFactoryTest.java
+@@ -1,13 +1,8 @@
+ package cn.edu.xmu.projectmgt.infrastructure.http;
+ 
+-import ch.qos.logback.classic.Level;
+-import ch.qos.logback.classic.Logger;
+-import ch.qos.logback.classic.spi.ILoggingEvent;
+-import ch.qos.logback.core.read.ListAppender;
+ import com.sun.net.httpserver.HttpServer;
+ import org.junit.jupiter.api.DisplayName;
+ import org.junit.jupiter.api.Test;
+-import org.slf4j.LoggerFactory;
+ import org.springframework.web.client.ResourceAccessException;
+ import org.springframework.web.client.RestClient;
+ 
+@@ -15,12 +10,10 @@ import java.net.InetSocketAddress;
+ import java.time.Duration;
+ import java.util.concurrent.Executors;
+ 
+-import static org.junit.jupiter.api.Assertions.assertFalse;
+ import static org.junit.jupiter.api.Assertions.assertThrows;
+-import static org.junit.jupiter.api.Assertions.assertTrue;
+ 
+ /**
+- * 外部 HTTP 客户端超时和请求日志行为测试。
++ * 外部 HTTP 客户端超时测试。
+  */
+ class ExternalRestClientFactoryTest {
+ 
+@@ -62,55 +55,4 @@ class ExternalRestClientFactoryTest {
+             server.stop(0);
+         }
+     }
+-
+-    /**
+-     * 拦截器应记录真实方法、URI 和响应状态，但不记录请求体。
+-     *
+-     * @throws Exception 创建本地测试服务失败
+-     */
+-    @Test
+-    @DisplayName("外部 HTTP 请求记录方法、URI、状态和耗时")
+-    void requestLoggingContainsMethodUriStatusAndElapsed() throws Exception {
+-        HttpServer server = HttpServer.create(new InetSocketAddress("127.0.0.1", 0), 0);
+-        server.createContext("/probe", exchange -> {
+-            exchange.getRequestBody().readAllBytes();
+-            exchange.sendResponseHeaders(204, -1);
+-            exchange.close();
+-        });
+-        server.setExecutor(Executors.newSingleThreadExecutor());
+-        server.start();
+-
+-        Logger logger = (Logger) LoggerFactory.getLogger(ExternalHttpLoggingInterceptor.class);
+-        ListAppender<ILoggingEvent> appender = new ListAppender<>();
+-        appender.start();
+-        logger.addAppender(appender);
+-        logger.setLevel(Level.DEBUG);
+-        try {
+-            ExternalRestClientFactory factory = new ExternalRestClientFactory(
+-                    Duration.ofSeconds(2),
+-                    Duration.ofSeconds(2)
+-            );
+-            RestClient client = factory.create(
+-                    "http://127.0.0.1:" + server.getAddress().getPort()
+-            );
+-
+-            client.post()
+-                    .uri("/probe")
+-                    .body("password=secret")
+-                    .retrieve()
+-                    .toBodilessEntity();
+-
+-            String messages = appender.list.stream()
+-                    .map(ILoggingEvent::getFormattedMessage)
+-                    .reduce("", (left, right) -> left + "\n" + right);
+-            assertTrue(messages.contains("method=POST"));
+-            assertTrue(messages.contains("/probe"));
+-            assertTrue(messages.contains("status=204"));
+-            assertTrue(messages.contains("elapsed="));
+-            assertFalse(messages.contains("password=secret"));
+-        } finally {
+-            logger.detachAppender(appender);
+-            server.stop(0);
+-        }
+-    }
+-}
+\ No newline at end of file
++}
 diff --git a/web/src/router.ts b/web/src/router.ts
 index 8a55ee0..143538d 100644
 --- a/web/src/router.ts

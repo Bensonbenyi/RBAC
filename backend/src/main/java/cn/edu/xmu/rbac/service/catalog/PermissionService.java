@@ -23,25 +23,4 @@ public class PermissionService implements PermissionUseCase {
     access.require(actor, "permission.manage");
     return store.permissions(systemId, page, size);
   }
-
-  /** 校验输入后创建对象. */
-  public Data.Permission create(Data.Identity actor, Long systemId, Data.CreatePermission command) {
-    access.require(actor, "permission.manage");
-    store.system(systemId);
-    return store.createPermission(systemId, command);
-  }
-
-  /** 修改白名单字段并保持归属不变. */
-  public void update(Data.Identity actor, Long id, Data.Name command) {
-    access.require(actor, "permission.manage");
-    store.permission(id);
-    store.renamePermission(id, command.name());
-  }
-
-  /** 检查引用关系后删除对象. */
-  public void delete(Data.Identity actor, Long id) {
-    access.require(actor, "permission.manage");
-    store.permission(id);
-    store.deletePermission(id);
-  }
 }

@@ -22,23 +22,11 @@ public interface ManagementStore {
   Data.Page<Data.DirectoryUser> directoryUsers(
       Long departmentId, String keyword, int page, int size);
 
-  Data.System system(Long id);
-
   Data.Page<Data.System> systems(int page, int size);
-
-  Data.System createSystem(Data.CreateSystem command);
-
-  void deleteSystem(Long id);
 
   Data.Permission permission(Long id);
 
   Data.Page<Data.Permission> permissions(Long systemId, int page, int size);
-
-  Data.Permission createPermission(Long systemId, Data.CreatePermission command);
-
-  void renamePermission(Long id, String name);
-
-  void deletePermission(Long id);
 
   Data.Role role(Long id);
 

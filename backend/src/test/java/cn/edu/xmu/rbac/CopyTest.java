@@ -11,9 +11,9 @@ import org.junit.jupiter.api.Test;
 class CopyTest {
   @Test
   void copiesImmutableRecord() {
-    var request = new ManagementDTOs.CreatePermissionDTO("CR", "课程审核");
-    var target = new Data.CreatePermission(null, null);
-    assertEquals(new Data.CreatePermission("CR", "课程审核"), CloneFactory.copy(target, request));
-    assertEquals(new Data.CreatePermission(null, null), target);
+    var request = new ManagementDTOs.NameDTO("课程审核");
+    var target = new Data.Name(null);
+    assertEquals(new Data.Name("课程审核"), CloneFactory.copy(target, request));
+    assertEquals(new Data.Name(null), target);
   }
 }

@@ -2,6 +2,7 @@ package cn.edu.xmu.rbac.api.auth;
 
 import cn.edu.xmu.rbac.api.auth.dto.LoginDTO;
 import cn.edu.xmu.rbac.api.auth.vo.IdentityVOs.AllowedVO;
+import cn.edu.xmu.rbac.api.auth.vo.IdentityVOs.ApiAuthorityVO;
 import cn.edu.xmu.rbac.api.auth.vo.IdentityVOs.CurrentUserVO;
 import cn.edu.xmu.rbac.api.auth.vo.IdentityVOs.LoginVO;
 import cn.edu.xmu.rbac.infrastructure.security.CurrentIdentity;
@@ -70,7 +71,7 @@ public class AuthController {
 
   /** 按 OpenAPI 的操作标识查询 API 权限. */
   @GetMapping("/api-permissions/{operationId}")
-  public AllowedVO api(@PathVariable @NotBlank @Size(max = 128) String operationId) {
-    return new AllowedVO(service.apiAllowed(current.get(), operationId));
+  public ApiAuthorityVO api(@PathVariable @NotBlank @Size(max = 128) String operationId) {
+    return new ApiAuthorityVO(operationId, service.apiAllowed(current.get(), operationId));
   }
 }

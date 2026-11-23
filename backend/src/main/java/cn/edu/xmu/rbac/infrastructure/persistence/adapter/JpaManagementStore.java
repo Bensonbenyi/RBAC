@@ -112,23 +112,8 @@ public class JpaManagementStore implements ManagementStore {
   }
 
   @Override
-  public Data.System system(Long id) {
-    return require(systems.findById(id)).toData();
-  }
-
-  @Override
   public Data.Page<Data.System> systems(int page, int size) {
     return page(systems.findAll(request(page, size)).map(SystemEntity::toData));
-  }
-
-  @Override
-  public Data.System createSystem(Data.CreateSystem c) {
-    return systems.save(new SystemEntity(c.systemKey(), c.name())).toData();
-  }
-
-  @Override
-  public void deleteSystem(Long id) {
-    systems.deleteById(id);
   }
 
   @Override
@@ -141,21 +126,6 @@ public class JpaManagementStore implements ManagementStore {
     require(systems.findById(systemId));
     return page(
         permissions.findBySystemId(systemId, request(page, size)).map(PermissionEntity::toData));
-  }
-
-  @Override
-  public Data.Permission createPermission(Long systemId, Data.CreatePermission c) {
-    return permissions.save(new PermissionEntity(systemId, c.code(), c.name())).toData();
-  }
-
-  @Override
-  public void renamePermission(Long id, String name) {
-    require(permissions.findById(id)).rename(name);
-  }
-
-  @Override
-  public void deletePermission(Long id) {
-    permissions.deleteById(id);
   }
 
   @Override

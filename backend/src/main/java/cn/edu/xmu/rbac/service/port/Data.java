@@ -32,12 +32,6 @@ public final class Data {
   /** Name 数据契约. */
   public record Name(String name) {}
 
-  /** CreateSystem 数据契约. */
-  public record CreateSystem(String systemKey, String name) {}
-
-  /** CreatePermission 数据契约. */
-  public record CreatePermission(String code, String name) {}
-
   /** Page 数据契约. */
   public record Page<T>(List<T> items, int page, int size, long total) {}
 

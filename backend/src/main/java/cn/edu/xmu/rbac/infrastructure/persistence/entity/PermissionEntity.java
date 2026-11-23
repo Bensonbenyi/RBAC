@@ -21,18 +21,6 @@ public class PermissionEntity {
 
   protected PermissionEntity() {}
 
-  /** 构造待插入的操作权限记录. */
-  public PermissionEntity(Long systemId, String code, String name) {
-    this.systemId = systemId;
-    this.code = code;
-    this.name = name;
-  }
-
-  /** 更新可编辑的显示名称. */
-  public void rename(String name) {
-    this.name = name;
-  }
-
   public Data.Permission toData() {
     return new Data.Permission(id, systemId, code, name);
   }

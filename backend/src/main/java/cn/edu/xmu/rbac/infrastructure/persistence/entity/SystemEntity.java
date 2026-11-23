@@ -20,12 +20,6 @@ public class SystemEntity {
 
   protected SystemEntity() {}
 
-  /** 构造待插入的业务系统记录. */
-  public SystemEntity(String systemKey, String name) {
-    this.systemKey = systemKey;
-    this.name = name;
-  }
-
   public Data.System toData() {
     return new Data.System(id, systemKey, name);
   }

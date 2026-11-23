@@ -60,7 +60,6 @@ export interface DepartmentNode extends Named {
 }
 export interface User extends Named {
   username: string;
-  phone: string;
   departmentId: string;
 }
 export interface Role extends Named {

@@ -47,7 +47,15 @@ docker exec -i "$db" sh -c 'MYSQL_PWD="$(cat /run/secrets/mysql_root_password)" 
 docker exec -i "$db" sh -c 'MYSQL_PWD="$(cat /run/secrets/mysql_root_password)" exec mysql -uroot --default-character-set=utf8mb4' < integrations/course-project-mgt/link-demo-teachers.sql
 ```
 
-Flyway V5 移除已停用的管理权限码和会话表的目标系统列。请求从已验签的 JWT 读取目标系统，沿用旧会话的 jti、账号、到期时间及撤销状态。
+Flyway V5 移除旧管理码和会话的目标系统列，V6 清理两类只读目录的五个旧按钮权限。请求从已验签的 JWT 读取目标系统，沿用旧会话的 jti、账号、到期时间及撤销状态。
+
+## 规模演示数据
+
+在构建机运行 `python3 tooling/build-demo-directory.py .runtime/demo-directory.sql`，再将生成的 SQL 送入 Worker 上的权限库。脚本从两份市政公司表格读取组织关系及员工归属，生成 10,000 个替代用户名、姓名和手机号。111 个来源组织节点挂在「规模演示组织」下，直属员工保留其来源节点归属。已有演示账号及角色继续照常使用。
+
+```sh
+docker exec -i "$db" sh -c 'MYSQL_PWD="$(cat /run/secrets/mysql_root_password)" exec mysql -uroot --default-character-set=utf8mb4 rbac' < .runtime/demo-directory.sql
+```
 
 ## 手动备份与恢复
 

@@ -1,6 +1,7 @@
 package cn.edu.xmu.rbac;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Test;
@@ -35,6 +36,7 @@ abstract class ManagementContract extends ContractFixture {
   void enforcesDirectDepartmentScope() {
     var list = expect(200, "GET", "/api/users", null, token);
     assertEquals(3, list.get("total").asInt());
+    assertFalse(list.path("items").get(0).has("phone"));
     expect(403, "GET", "/api/users/" + userId("other") + "/roles", null, token);
     long otherDept = store.userByUsername("other").departmentId();
     long otherRole = store.createRole(otherDept, "其他部门角色").id();
@@ -64,24 +66,18 @@ abstract class ManagementContract extends ContractFixture {
   }
 
   @Test
-  void directoryCrudHonoursReferencesAndCaseSensitiveCodes() {
-    expect(405, "POST", "/api/departments", "{\"name\":\"新部门\"}", token);
+  void readsCatalogsWithoutWriteEndpoints() {
+    expect(405, "POST", "/api/departments", "{}", token);
     expect(200, "GET", "/api/departments", null, token);
-    var sys =
-        expect(201, "POST", "/api/systems", "{\"systemKey\":\"test\",\"name\":\"测试\"}", token);
-    String sid = sys.get("id").asText();
-    expect(405, "PATCH", "/api/systems/" + sid, "{\"name\":\"新名称\"}", token);
-    var permission =
-        expect(
-            201,
-            "POST",
-            "/api/systems/" + sid + "/permissions",
-            "{\"code\":\"UPPER\",\"name\":\"测试权限\"}",
-            token);
-    String pid = permission.get("id").asText();
-    expect(409, "DELETE", "/api/systems/" + sid, null, token);
-    expect(204, "PATCH", "/api/permissions/" + pid, "{\"name\":\"重命名\"}", token);
-    expect(204, "DELETE", "/api/permissions/" + pid, null, token);
-    expect(204, "DELETE", "/api/systems/" + sid, null, token);
+    expect(405, "POST", "/api/systems", "{}", token);
+    assertEquals(2, expect(200, "GET", "/api/systems", null, token).path("total").asInt());
+    var system = expect(200, "GET", "/api/systems", null, token).path("items").get(0);
+    String sid = system.path("id").asText();
+    String permissions = "/api/systems/" + sid + "/permissions";
+    assertTrue(expect(200, "GET", permissions, null, token).path("total").asInt() > 0);
+    expect(405, "POST", permissions, "{}", token);
+    expect(404, "DELETE", "/api/systems/" + sid, null, token);
+    expect(404, "PATCH", "/api/permissions/1", "{}", token);
+    expect(404, "DELETE", "/api/permissions/1", null, token);
   }
 }

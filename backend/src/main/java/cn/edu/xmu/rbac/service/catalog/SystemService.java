@@ -23,17 +23,4 @@ public class SystemService implements SystemUseCase {
     access.require(actor, "system.manage");
     return store.systems(page, size);
   }
-
-  /** 校验输入后创建对象. */
-  public Data.System create(Data.Identity actor, Data.CreateSystem command) {
-    access.require(actor, "system.manage");
-    return store.createSystem(command);
-  }
-
-  /** 检查引用关系后删除对象. */
-  public void delete(Data.Identity actor, Long id) {
-    access.require(actor, "system.manage");
-    store.system(id);
-    store.deleteSystem(id);
-  }
 }

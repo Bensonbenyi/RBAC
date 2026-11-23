@@ -7,7 +7,7 @@ import java.util.Set;
 public final class OperationPermissions {
   private OperationPermissions() {}
 
-  // 来自课程 OpenAPI 19fbd1a 的全局操作许可。对象级规则由课程服务判断。
+  // 来自课程 OpenAPI 990cea2 的全局操作许可。对象级规则由课程服务判断。
   private static final Map<String, String> COURSE =
       Map.ofEntries(
           Map.entry("clearCurrentTerm", "TCM"),
@@ -103,10 +103,6 @@ public final class OperationPermissions {
 
   private static final Map<String, String> PLATFORM =
       Map.ofEntries(
-          Map.entry("auth.me", "login"),
-          Map.entry("auth.logout", "login"),
-          Map.entry("auth.check", "login"),
-          Map.entry("auth.api", "login"),
           Map.entry("getIdentityCurrentUser", "login"),
           Map.entry("logout", "login"),
           Map.entry("checkIdentityPermission", "login"),
@@ -133,12 +129,7 @@ public final class OperationPermissions {
           Map.entry("role.uninherit", "role.manage"),
           Map.entry("department.list", "department.manage"),
           Map.entry("system.list", "system.manage"),
-          Map.entry("system.create", "system.manage"),
-          Map.entry("system.delete", "system.manage"),
-          Map.entry("permission.list", "permission.manage"),
-          Map.entry("permission.create", "permission.manage"),
-          Map.entry("permission.update", "permission.manage"),
-          Map.entry("permission.delete", "permission.manage"));
+          Map.entry("permission.list", "permission.manage"));
 
   /** 按目标系统映射操作标识到 API 权限码，未知操作返回 null. */
   public static String code(String system, String operation) {

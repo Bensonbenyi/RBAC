@@ -34,4 +34,7 @@ public final class IdentityVOs {
 
   /** 权限决策仅返回是否获准. */
   public record AllowedVO(boolean allowed) {}
+
+  /** API 操作标识和对应的许可结果. */
+  public record ApiAuthorityVO(String operationId, boolean allowed) {}
 }

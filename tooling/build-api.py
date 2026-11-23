@@ -10,7 +10,7 @@ def obj(properties,required=()):return dict(type='object',properties=properties,
 def ref(name):return {'$ref':'#/components/schemas/'+name}
 def arr(name):return {'type':'array','items':ref(name)}
 string={'type':'string'};id_schema={'type':'string','pattern':'^[1-9][0-9]*$','description':'BIGINT 以字符串返回，避免前端精度丢失'}
-name={'type':'string','minLength':1,'maxLength':100,'pattern':r'.*\S.*'};phone={'type':'string','pattern':'^1[3-9][0-9]{9}$'}
+name={'type':'string','minLength':1,'maxLength':100,'pattern':r'.*\S.*'}
 integer_id={'type':'integer','format':'int64','minimum':1}
 identity_operations={
  'AUTH-01':'login','AUTH-02':'getIdentityCurrentUser','AUTH-03':'logout',
@@ -26,13 +26,12 @@ schemas={
  'IdentityDepartment':obj({'id':integer_id,'code':string,'name':string,'parentId':dict(integer_id,nullable=True),'hasChildren':{'type':'boolean'}},['id','code','name','hasChildren']),
  'IdentityDepartmentUser':obj({'userId':string,'no':string,'name':string,'departmentId':integer_id,'departmentName':string},['userId','no','name','departmentId','departmentName']),
  'Error':obj({'code':string,'message':string}),
+ 'ApiAuthority':obj({'operationId':string,'allowed':{'type':'boolean'}},['operationId','allowed']),
  'Name':obj({'name':name},['name']),
- 'CreateSystem':obj({'systemKey':{'type':'string','minLength':1,'maxLength':64,'pattern':'^[a-z0-9-]+$'},'name':name},['systemKey','name']),
- 'CreatePermission':obj({'code':{'type':'string','minLength':1,'maxLength':100,'pattern':'^[a-zA-Z0-9.:_-]+$'},'name':name},['code','name']),
  'AssignRole':obj({'roleId':{'type':'integer','format':'int64','minimum':1}},['roleId']),
  'GrantPermission':obj({'permissionId':integer_id},['permissionId']),
  'InheritRole':obj({'juniorId':integer_id},['juniorId'])}
-for entity,fields in {'User':['id','username','name','phone','departmentId'],'Role':['id','name','departmentId'],'Department':['id','name','parentId'],'System':['id','systemKey','name'],'Permission':['id','systemId','code','name']}.items():
+for entity,fields in {'User':['id','username','name','departmentId'],'Role':['id','name','departmentId'],'Department':['id','name','parentId'],'System':['id','systemKey','name'],'Permission':['id','systemId','code','name']}.items():
  schemas[entity]=obj({n:(dict(id_schema,nullable=True) if n=='parentId' else id_schema if n=='id' or n.endswith('Id') else string) for n in fields})
  schemas['Page'+entity]=obj({'items':arr(entity),'page':{'type':'integer'},'size':{'type':'integer'},'total':{'type':'integer','format':'int64'}})
 for entity in ['IdentityDepartment','IdentityDepartmentUser']:
@@ -61,10 +60,10 @@ for op in OPS:
  if op.function in ['list','options']:
   for n,default,minimum,maximum in [('page',0,0,1000000),('size',20,1,100)]:operation['parameters'].append({'name':n,'in':'query','schema':{'type':'integer','default':default,'minimum':minimum,'maximum':maximum}})
  if op.key=='PERM-05':operation['parameters'].append({'name':'systemId','in':'query','required':True,'schema':{'type':'integer','format':'int64','minimum':1}})
- body={'AUTH-01':'Login','USER-07':'AssignRole','ROLE-03':'Name','ROLE-04':'Name','ROLE-07':'GrantPermission','ROLE-11':'InheritRole','SYS-02':'CreateSystem','PERM-02':'CreatePermission','PERM-03':'Name'}.get(op.key)
+ body={'AUTH-01':'Login','USER-07':'AssignRole','ROLE-03':'Name','ROLE-04':'Name','ROLE-07':'GrantPermission','ROLE-11':'InheritRole'}.get(op.key)
  if body:operation['requestBody']={'required':True,'content':{'application/json':{'schema':ref(body)}}}
  status=op.result.split()[0]
- result={'AUTH-01':'LoginResult','AUTH-02':'Me','AUTH-05':'Allowed','AUTH-06':'Allowed','AUTH-07':'IdentityUser','AUTH-08':'IdentityDepartmentPage','AUTH-09':'IdentityDepartmentUserPage'}.get(op.key)
+ result={'AUTH-01':'LoginResult','AUTH-02':'Me','AUTH-05':'Allowed','AUTH-06':'ApiAuthority','AUTH-07':'IdentityUser','AUTH-08':'IdentityDepartmentPage','AUTH-09':'IdentityDepartmentUserPage'}.get(op.key)
  if op.module!='Auth':
   result=('Page'+op.module if op.function in ['list','options'] else op.module if op.function in ['get','create'] else None)
   if op.function in ['permissions','effectivePermissions']:result=arr('Permission')
@@ -75,6 +74,7 @@ for op in OPS:
  if status=='201':response['headers']={'Location':{'description':'新资源地址','schema':string}}
  operation['responses'][status]=response
  for code,description in [('400','输入校验失败'),('401','凭据或会话无效'),('403','无操作许可或越界'),('404','对象不存在'),('405','HTTP 方法不支持'),('409','重复、引用冲突或 ROLE_CYCLE'),('503','数据库不可用')]:operation['responses'][code]={'description':description,'content':{'application/json':{'schema':ref('Error')}}}
+ if op.method=='GET':operation['responses'].pop('409',None)
  if op.key in identity_operations:
   error_codes={'400':'BAD_REQUEST','401':'UNAUTHORIZED','403':'FORBIDDEN','503':'IDENTITY_SERVICE_UNAVAILABLE'}
   missing={'AUTH-06':'API_OPERATION_NOT_FOUND','AUTH-07':'IDENTITY_USER_NOT_FOUND','AUTH-09':'IDENTITY_DEPARTMENT_NOT_FOUND'}.get(op.key)
@@ -82,7 +82,7 @@ for op in OPS:
   for code,error in error_codes.items():
    operation['responses'][code]['content']['application/json']['example']={'code':error,'message':operation['responses'][code]['description']}
   if not missing:operation['responses'].pop('404')
-  operation['responses'].pop('409')
+  operation['responses'].pop('409',None)
  paths.setdefault(op.route,{})[op.method.lower()]=operation
 spec={'openapi':'3.0.3','info':{'title':'统一权限管理平台 API','version':version,'description':'RBAC1 双实现契约。高级角色继承基础角色；界面码与 API 码独立。切换策略保持 HTTP 行为一致。'},'servers':[{'url':'/'}],'paths':paths,'components':{'securitySchemes':{'Bearer':{'type':'http','scheme':'bearer','bearerFormat':'JWT'}},'schemas':schemas}}
 (R/'openapi.json').write_text(json.dumps(spec,ensure_ascii=False,indent=2)+'\n')
