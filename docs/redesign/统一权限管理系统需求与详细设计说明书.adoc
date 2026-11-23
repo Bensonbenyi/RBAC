@@ -1,6 +1,6 @@
 = 统一权限管理系统需求与详细设计说明书
 OOAD 课程项目组
-v3.8.0, 2026-11-23
+v3.9.0, 2026-11-23
 :doctype: book
 :lang: zh-CN
 :toc:
@@ -21,7 +21,7 @@ v3.8.0, 2026-11-23
 
 本文规定当前基线的需求、数据结构、各功能交互、HTTP 契约和双实现设计，供课程评审、开发与验收使用。独立《概要设计说明书》说明系统骨架及 ATAM 评估，本文保存字段字典和各功能详细设计。
 
-本次版本为 3.8.0，基于 v3.2.2 和 2026-11-17 确认决定修订。代码与文档共用功能编号和配置名称，验证结果见实施报告。
+本次版本为 3.9.0，基于 v3.2.2 和 2026-11-17 确认决定修订。代码与文档共用功能编号和配置名称，验证结果见实施报告。
 
 === 背景与术语
 
@@ -79,7 +79,7 @@ v3.8.0, 2026-11-23
 |REQ-F-04 |多级部门目录查询
 |REQ-F-05 |两个业务系统目录
 |REQ-F-06 |各系统权限目录查询
-|REQ-F-07 |课程系统学期维护与课程审核接入
+|REQ-F-07 |课程师生登录、我的课程、教师目录与管理操作
 |REQ-N-01 |安全与部门隔离
 |REQ-N-02 |性能可测量与有界查询
 |REQ-N-03 |应用可用性与手动数据恢复
@@ -1763,7 +1763,7 @@ image::v33/class-hierarchy-ddd.svg[RBAC1 DDD 角色继承类图,width=100%]
 
 需求 REQ-F-07。课程前端使用老师原版 web，调用 POST /course-api/login。老师后端先校验本地工号或学号，再用账号、手机号和目标系统调用平台 /auth/login。老师的业务规则保留，适配层完成验签、实时身份与 API 权限查询。
 
-登录成功后，前端通过 /course-api/me 取得本地资料和当前界面权限。课程 teacher.user_id 对应平台用户编号。演示工号与平台用户名一致，教师账号拥有 teacher 角色。演示部署使用 integrations/course-project-mgt/link-demo-teachers.sql 按实际账号编号关联教师，正式账号按真实教师资料关联。
+登录后，GET /course-api/me 返回本地师生资料和当前界面权限。课程库 teacher 和 student 的 user_id 对应平台用户编号，工号或学号沿用平台用户名。演示数据将总公司的 190 名账号分配为教师，其余 9,810 名账号分配为学生，角色均归属各自部门。导入按实际用户编号关联两个库，在独立演示班绑定样例教师和学生。
 
 
 [cols="1,1",frame=all,grid=all,role="use-case"]
@@ -1771,19 +1771,20 @@ image::v33/class-hierarchy-ddd.svg[RBAC1 DDD 角色继承类图,width=100%]
 |*用例编号：* UPMS-COURSE-001 |*用例名称：* 课程系统接入
 2+|*级别：* 用户目标
 2+|*包：* 课程管理系统
-2+|*参与者：* 具有对应课程权限的用户
-2+|*描述：* 通过统一登录执行学期维护和课程审核。
+2+|*参与者：* 教师、学生及课程管理员
+2+|*描述：* 使用统一身份进入对应工作台，查看自己的课程并按授权执行管理操作。
 2+|*触发事件：* 用户进入课程演示入口。
-2+|*前置条件：* 取得 course-project-management 的有效登录凭据。
+2+|*前置条件：* 课程名册存在对应工号或学号，平台授予目标系统 login 和入口所需角色。
 |*主成功场景：* |*信息*
-|1. 读取当前身份与实时 API 权限。 |未通过检查时课程后端拒绝执行。
-|2. 调用老师的学期或课程业务接口。 |保留上游输入、对象和课程状态规则。
-|3. 返回老师的业务结果。 |前端按独立 UI 码启用控件，缺少权限时使用 disabled。
+|1. 读取当前身份与实时 API 权限。 |课程后端按 operationId 调用平台。
+|2. 检查本地教师或学生的课程归属。 |平台授予全局许可，课程服务判断任课、选课和课程状态。
+|3. 返回老师的业务结果。 |前端按独立 UI 码启用管理菜单和按钮。
 |*扩展场景：* |*处理及信息*
 |无效登录或已退出 |401。
 |无本次操作权限 |403。
+|入口与课程名册不匹配 |本地名册无对应工号或学号时返回 404。
 |统一身份服务不可用 |503，停止业务操作。
-2+|*后置条件：* 课程操作按上游规则持久化，后续每次操作重新检查平台许可。
+2+|*后置条件：* 当前授权影响后续课程请求。
 |===
 
 对应需求 REQ-F-07。
@@ -1896,7 +1897,7 @@ image::v33/course-07.svg[reviewCourse 接入详细交互,width=100%]
 
 ===== COURSE-08 getCurrentUser 支撑接口
 
-调用 GET /me，operationId 为 getCurrentUser，平台映射到课程 login 权限。老师服务复用本次请求已核验的统一身份，并读取本地资料，返回 userId、teacherId、studentId、no、name、roles、permissions。permissions 保留当前系统界面码；该接口支撑页面初始化和权限刷新。
+调用 GET /me，operationId 为 getCurrentUser，平台映射到课程 login 权限。老师服务复用本次请求已核验的统一身份，并读取本地资料，返回 userId、teacherId、studentId、number、name、roles、permissions。permissions 保留当前系统界面码，供页面初始化和权限刷新。
 
 
 [.diagram.plate]
@@ -1920,8 +1921,59 @@ image::v33/course-09.svg[老师原版前端与统一身份的登录交互,width=
 --
 
 
+===== COURSE-10 课程网页直连统一身份
+
+构建时以 VITE_IDENTITY_BASE_URL 指定平台入口。管理菜单进入时调用 GET /auth/permissions/{permission}。教师目录中的新增表单调用 GET /auth/departments 和 GET /auth/departments/{departmentId}/users，平台检查 TEC。跨域时，Spring 先按配置来源处理 OPTIONS 预检，允许 Authorization、Content-Type 和 X-Target-System，随后的 GET 仍校验 JWT、会话和权限。
+
+
+[.diagram.plate]
+--
+[[fig-course-10]]
+.课程网页跨域查询权限和组织目录
+image::v33/course-10.svg[课程网页跨域查询权限和组织目录,width=100%]
+--
+
+
+
+[cols="4,5,5",options="header"]
+|===
+|课程系统调用 |调用说明 URL |功能
+|TeacherController +
+listTeachers |GET /course-api/teachers |按 TV 分页查询教师。
+|TeacherController +
+createTeacher |POST /course-api/teachers |按 TEC 从统一身份目录选人并在课程库创建教师记录。
+|===
+
+
+===== COURSE-11 师生查看我的课程
+
+教师的 GET /course-api/teacher/courses 按任课或负责关系查询。学生的 GET /course-api/me/courses 按 userId 定位课程库中的学生，再按学期查询已选且开放的课程。师生都可查看自己的演示课和里程碑。
+
+
+[.diagram.plate]
+--
+[[fig-course-11]]
+.学生课程查询时序
+image::v33/course-11.svg[学生课程查询时序,width=100%]
+--
+
+
+
+[cols="5,6,4",options="header"]
+|===
+|图中处理 / 实际方法 |调用说明 URL |功能
+|StudentCourseController +
+listStudentCourses |GET /course-api/me/courses |返回指定学期的已选开放课程。
+|TeacherCourseController +
+listTeacherCourses |GET /course-api/teacher/courses |返回所属教学课程。
+|CourseMilestoneController +
+listMilestones |GET /course-api +
+/courses/{courseId}/milestones |返回所属课程的里程碑，学生读取时还需课程已开放。
+|===
+
+
 [.course-note]
-课程列表 page 从 1 开始，courseStatus 为 1 申请、2 待审核、3 已开课。审核输入 decision 为 approved 或 rejected，驳回必须填写 comment。菜单与 API 分别检查权限。接入补丁固定到 990cea2，保留 MIT 许可及老师原业务规则，演示路由开放课程登录、当前用户、学期维护和课程查询与审核。统一身份用户查询、部门查询与部门成员查询由平台提供，已通过独立 HTTP 验证。
+课程列表 page 从 1 开始，courseStatus 为 1 申请、2 待审核、3 已开课。审核输入 decision 为 approved 或 rejected，驳回必须填写 comment。接入补丁固定到 990cea2，沿用老师的课程实体和业务规则。
 
 
 === 接口与输入设计
@@ -2089,7 +2141,7 @@ Flyway V2 在现有 permission 与 role_permission 中补齐旧版既有界面�
 旧版连接复用调整前，1,000 次请求出现 2 次 504（0.2%），网关记录上游连接超时。Nginx 启用 keepalive 后，表中全部请求成功；原始结果及配置见原实施报告。
 
 
-=== v3.8.0 现行部署复测
+=== v3.9.0 现行部署复测
 
 权限库含 10,004 个账号、114 个部门及两个业务系统。客户端通过公网 HTTP 查询当前界面许可及管理员本部门用户页，请求各占一半。每种实现预热 100 次，以 8 并发计时 1,000 次。用户页只命中本部门账号，因此本轮结果对应分页授权负载。
 
@@ -2098,8 +2150,8 @@ Flyway V2 在现有 permission 与 role_permission 中补齐旧版既有界面�
 [cols="3,2,2,2,1",options="header"]
 |===
 |业务实现 |计时请求 |吞吐 req/s |P95 ms |错误数
-|structured |1000 |66.27 |146.66 |0
-|ddd |1000 |70.86 |136.95 |0
+|structured |1000 |57.6 |165.16 |0
+|ddd |1000 |56.47 |168.53 |0
 |===
 
 
@@ -2167,7 +2219,8 @@ Flyway V2 在现有 permission 与 role_permission 中补齐旧版既有界面�
 |REQ-F-03 RBAC1 |inheritsAcrossMultiplePathsAndRevokesForExistingTokens；rejectsHierarchyCyclesScopeAndReferences。 |配置继承、有效权限并集、解除继承；自环和间接环 409，跨部门 403。
 |REQ-F-04 部门 |enforcesDirectDepartmentScope；readsCatalogsWithoutWriteEndpoints。 |部门树只表达组织；管理员管理本部门直接成员。
 |REQ-F-05 系统 / REQ-F-06 权限目录 |readsCatalogsWithoutWriteEndpoints；isolatesUiAndApiPermissionsAndSupportsNarrowSelections。 |系统与权限目录只读；授权下拉分页完整加载，不依赖无关目录管理权。
-|REQ-F-07 课程接入 |tooling/acceptance.py 对已部署的老师后端调用 /login、/me、学期维护、课程列表与详情、无权审核、撤权及退出。 |课程和学期菜单分别受 UI 码控制；API 许可独立检查。
+|REQ-F-07 课程接入 |tooling/acceptance.py 验证两种身份登录、课程归属、教师目录、学期维护与撤权。 |师生进入各自工作台，管理菜单和按钮依据界面码启用。
+|REQ-F-07 课程跨域 |authorizesCourseOriginBeforeBearerAuthentication；部署验收对三个身份接口分别验证 OPTIONS、授权后的 GET 和无凭据的 GET。 |课程网页读取当前菜单许可和新增教师的组织目录。
 |REQ-N-01 安全 |isolatesUiAndApiPermissionsAndSupportsNarrowSelections；upgradesExistingGrantsOnceAndKeepsUiRevocationIndependent；frontend/src/permissions.test.ts。 |无菜单码时禁用菜单，无按钮码时禁用按钮；仅有 API 码也不能启用控件。
 |REQ-N-02 性能 |tooling/benchmark.py；测量环境、样本量与结果见性能需求。 |用户列表限定本部门并分页返回。
 |REQ-N-03 可用性 |Swarm 健康检查和历史会话恢复记录。 |依赖故障拒绝业务；恢复后刷新页面与会话。
@@ -2177,7 +2230,7 @@ Flyway V2 在现有 permission 与 role_permission 中补齐旧版既有界面�
 
 === 本轮测试与交付入口
 
-v3.8.0 平台测试 37 项、老师 CloneFactory 测试 5 项和前端组件测试 3 项全部通过。JaCoCo 0.8.14 的平台行覆盖率 93.67%，分支覆盖率 70.34%；生成的 CloneFactory 工具类单独由拷贝测试与运行包检查验证，覆盖率排除该生成类。
+v3.9.0 平台后端测试 39 项、CloneFactory 测试 5 项、平台前端测试 3 项、课程后端测试 497 项、课程前端测试 56 项全部通过。JaCoCo 0.8.14 的平台行覆盖率为 93.73%，分支覆盖率为 70.34%。生成的 CloneFactory 工具类由拷贝测试与运行包检查单独验证，覆盖率按手写代码计算。
 
 
 [cols="3,7",options="header"]
@@ -2187,6 +2240,6 @@ v3.8.0 平台测试 37 项、老师 CloneFactory 测试 5 项和前端组件测�
 |老师原版课程前端 |/course/
 |平台 API 文档 |运行 npm ci --prefix docs/api 后执行 python3 tooling/build-api.py。
 |覆盖率报告 |执行 ./mvnw verify 生成 backend/target/site/jacoco/。
-|部署与验收证据 |本版 Swarm 部署及线上联调见 docs/implementation/deployment-v3.8.0.json。本版契约回归见 docs/implementation/test-summary-v3.8.0.json。结构化与 DDD 各通过 68 项线上 HTTP 检查。
+|部署与验收证据 |本版 Swarm 部署及线上联调见 docs/implementation/deployment-v3.9.0.json。本版契约回归见 docs/implementation/test-summary-v3.9.0.json。结构化与 DDD 各通过 100 项线上 HTTP 检查。
 |课程提交 |代码推送 GitHub，由已配置的自动同步更新 Gitee；课程网站提交与口试预约由组员完成。
 |===

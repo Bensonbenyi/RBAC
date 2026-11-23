@@ -2,8 +2,8 @@
   "openapi": "3.0.3",
   "info": {
     "title": "统一权限管理平台 API",
-    "version": "3.8.0",
-    "description": "RBAC1 双实现契约。高级角色继承基础角色；界面码与 API 码独立。切换策略保持 HTTP 行为一致。"
+    "version": "3.9.0",
+    "description": "RBAC1 双实现契约。课程前端通过统一身份接口实时读取界面权限和组织目录，师生使用课程名册中的工号或学号登录。"
   },
   "servers": [
     {
@@ -317,7 +317,7 @@
           "统一身份鉴权"
         ],
         "summary": "检查界面权限",
-        "description": "系统标识取自 audience；仅检查已登记界面码；API 码在此接口返回 false。\n\nAPI 许可：有效登录",
+        "description": "系统标识取自 audience；仅检查已登记界面码；API 码在此接口返回 false。\n\nAPI 许可：有效登录\n\n课程网页可通过 VITE_IDENTITY_BASE_URL 直连。允许已配置来源以 Bearer 访问。浏览器的 OPTIONS 预检不发送令牌。",
         "parameters": [
           {
             "name": "permission",
@@ -682,7 +682,7 @@
           "统一身份鉴权"
         ],
         "summary": "查询统一身份部门",
-        "description": "按 parentId 逐层展开，按名称或编码搜索，并返回 hasChildren。\n\nAPI 许可：department.manage 或 TEC",
+        "description": "按 parentId 逐层展开，按名称或编码搜索，并返回 hasChildren。\n\nAPI 许可：department.manage 或 TEC\n\n课程网页可通过 VITE_IDENTITY_BASE_URL 直连。允许已配置来源以 Bearer 访问。浏览器的 OPTIONS 预检不发送令牌。",
         "parameters": [
           {
             "name": "X-Target-System",
@@ -821,7 +821,7 @@
           "统一身份鉴权"
         ],
         "summary": "查询部门下的用户",
-        "description": "按姓名或账号分页查询部门直接成员。平台限定本部门，响应仅包含身份字段。\n\nAPI 许可：user.view 或 TEC",
+        "description": "按姓名或账号分页查询部门直接成员。平台限定本部门，响应仅包含身份字段。\n\nAPI 许可：user.view 或 TEC\n\n课程网页可通过 VITE_IDENTITY_BASE_URL 直连。允许已配置来源以 Bearer 访问。浏览器的 OPTIONS 预检不发送令牌。",
         "parameters": [
           {
             "name": "departmentId",

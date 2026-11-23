@@ -1,0 +1,35 @@
+{
+  "version": "3.9.0",
+  "pdfs": [
+    {
+      "name": "统一权限管理系统概要设计说明书-v3.9.0.pdf",
+      "pageSize": "A4 portrait",
+      "pages": 33,
+      "figurePages": {
+        "deployment": 28,
+        "databaseTables": 26
+      }
+    },
+    {
+      "name": "统一权限管理系统需求与详细设计说明书-v3.9.0.pdf",
+      "pageSize": "A4 portrait",
+      "pages": 124,
+      "figurePages": {
+        "cors": 112,
+        "studentCourses": 113,
+        "chenEr": 10,
+        "databaseTables": 11
+      }
+    }
+  ],
+  "starUmlModel": {
+    "diagrams": 109,
+    "elements": 10760,
+    "references": "resolved",
+    "operationSignatures": 488
+  },
+  "svgFiguresChecked": 111,
+  "zipFiles": 353,
+  "zipIntegrity": "passed",
+  "toc": "converged"
+}

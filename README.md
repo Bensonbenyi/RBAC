@@ -31,10 +31,10 @@ java -jar "backend/target/rbac-backend-$(cat docs/redesign/VERSION).jar"
 ./mvnw install -DskipTests
 mvn -f .integrations/course-project-mgt/backend/pom.xml -s .mvn/settings.xml package -DskipTests
 npm ci --prefix .integrations/course-project-mgt/web
-VITE_API_BASE_URL=/course-api VITE_IDENTITY_BASE_URL=/course-api npm run build --prefix .integrations/course-project-mgt/web -- --base=/course/
+VITE_API_BASE_URL=/course-api VITE_IDENTITY_BASE_URL=http://113.44.144.119 VITE_MOCK_ENABLED=false npm run build --prefix .integrations/course-project-mgt/web -- --base=/course/
 ```
 
-老师仓库版本和补丁位于 `integrations/course-project-mgt/`。该集成启用 `rbac-integration` profile，覆盖教师登录、学期维护和课程审核。老师前端调用课程后端的 `POST /login`。课程后端查询本地工号后，调用平台的 `POST /auth/login`。
+老师仓库版本和补丁位于 `integrations/course-project-mgt/`。`rbac-integration` profile 接入教师和学生登录、各自的课程、教师目录、学期维护和课程审核。课程后端按本地工号或学号调用平台的 `POST /auth/login`。课程前端按 `VITE_IDENTITY_BASE_URL` 直连平台查询菜单许可与部门目录。
 
 设计文档、图及导出工具见 `docs/redesign/`，实施与测试记录见 `docs/implementation/`。
 
@@ -42,7 +42,7 @@ VITE_API_BASE_URL=/course-api VITE_IDENTITY_BASE_URL=/course-api npm run build -
 
 `deploy/stack.yaml` 将入口及两套应用部署在现有 Swarm Manager，MySQL 放在 Worker 1。使用独立 Overlay、Secret 和数据卷。手动导入和恢复步骤见 [部署说明](deploy/README.md)。
 
-当前文档入口为 [设计交付目录](docs/redesign/README.md)，本轮改动和验证见 [v3.8.0 整改记录](docs/implementation/整改报告-v3.8.0.md)，原部署记录见 [实施报告](docs/implementation/实施报告.md)。`tooling/build-design.sh` 重建两份 PDF、AsciiDoc、黑白图稿及 StarUML 模型。
+`tooling/build-design.sh` 重建两份 PDF、AsciiDoc、黑白图稿及 StarUML 模型。 [设计交付目录](docs/redesign/README.md)、[v3.9.0 课程联调记录](docs/implementation/整改报告-v3.9.0.md)
 
 
 ## 第二轮验收

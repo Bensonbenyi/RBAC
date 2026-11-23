@@ -1,0 +1,1164 @@
+{
+  "version": "3.9.0",
+  "date": "2026-11-23",
+  "stack": "rbac_v33",
+  "defaultStrategy": "structured",
+  "courseUpstreamRevision": "990cea2",
+  "permissionContainerMemoryMiB": 512,
+  "database": {
+    "platformUsers": 10004,
+    "departments": 114,
+    "businessSystems": 2,
+    "coursePermissions": 34,
+    "teacherLogins": 190,
+    "studentLogins": 9810,
+    "boundTeachers": 190,
+    "boundStudents": 9810,
+    "demoEnrollments": 1
+  },
+  "demoData": {
+    "term": "2026 秋季课程演示",
+    "course": "统一身份联调演示课",
+    "class": "身份联调演示班",
+    "teacher": "ooad-load-2026-00001",
+    "student": "ooad-load-2026-00191"
+  },
+  "acceptance": {
+    "structured": {
+      "version": "3.9.0",
+      "date": "2026-11-23",
+      "strategy": "structured",
+      "base": "http://113.44.144.119",
+      "result": "passed",
+      "checks": [
+        {
+          "method": "POST",
+          "path": "/auth/login",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/course-api/login",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/course-api/login",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/course-api/teacher/courses",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/auth/login",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/auth/departments?keyword=%E8%A7%84%E6%A8%A1%E6%BC%94%E7%A4%BA%E7%BB%84%E7%BB%87",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/auth/departments",
+          "status": 403
+        },
+        {
+          "method": "GET",
+          "path": "/course-api/auth/permissions/MCO",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/course-api/auth/permissions/MTR",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/course-api/me",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/users?page=0&size=100",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/auth/users/3",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/auth/me",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/auth/departments/1/users?keyword=viewer",
+          "status": 200
+        },
+        {
+          "method": "OPTIONS",
+          "path": "/auth/permissions/MTE",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/auth/permissions/MTE",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/auth/permissions/MTE",
+          "status": 401
+        },
+        {
+          "method": "OPTIONS",
+          "path": "/auth/departments",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/auth/departments",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/auth/departments",
+          "status": 401
+        },
+        {
+          "method": "OPTIONS",
+          "path": "/auth/departments/1/users",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/auth/departments/1/users",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/auth/departments/1/users",
+          "status": 401
+        },
+        {
+          "method": "GET",
+          "path": "/auth/permissions/MTE",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/auth/permissions/MTEL",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/auth/permissions/MTE",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/auth/departments",
+          "status": 403
+        },
+        {
+          "method": "POST",
+          "path": "/course-api/login",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/course-api/me",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/course-api/terms",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/course-api/teacher/courses?termId=1",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/course-api/courses/4/milestones",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/course-api/teachers",
+          "status": 403
+        },
+        {
+          "method": "POST",
+          "path": "/course-api/login",
+          "status": 404
+        },
+        {
+          "method": "POST",
+          "path": "/course-api/login",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/course-api/me",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/course-api/terms",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/course-api/me/courses?termId=1",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/course-api/courses/4/milestones",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/course-api/me/courses/4/grades",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/course-api/teachers",
+          "status": 403
+        },
+        {
+          "method": "POST",
+          "path": "/course-api/login",
+          "status": 404
+        },
+        {
+          "method": "GET",
+          "path": "/course-api/teachers?keyword=ooad-load-2026-00001",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/systems?page=0&size=100",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/systems/2/permissions?page=0&size=100",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/course-api/admin/courses?page=1&pageSize=20",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/course-api/courses/1/milestones",
+          "status": 403
+        },
+        {
+          "method": "GET",
+          "path": "/course-api/courses/4",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/course-api/courses/4/review",
+          "status": 403
+        },
+        {
+          "method": "POST",
+          "path": "/course-api/terms",
+          "status": 403
+        },
+        {
+          "method": "POST",
+          "path": "/api/roles",
+          "status": 201
+        },
+        {
+          "method": "POST",
+          "path": "/api/roles",
+          "status": 201
+        },
+        {
+          "method": "POST",
+          "path": "/api/roles",
+          "status": 201
+        },
+        {
+          "method": "POST",
+          "path": "/api/roles/161/permissions",
+          "status": 201
+        },
+        {
+          "method": "POST",
+          "path": "/api/roles/161/permissions",
+          "status": 201
+        },
+        {
+          "method": "POST",
+          "path": "/api/roles/161/permissions",
+          "status": 201
+        },
+        {
+          "method": "POST",
+          "path": "/api/roles/161/permissions",
+          "status": 409
+        },
+        {
+          "method": "POST",
+          "path": "/api/roles/159/inherited-roles",
+          "status": 201
+        },
+        {
+          "method": "POST",
+          "path": "/api/roles/160/inherited-roles",
+          "status": 201
+        },
+        {
+          "method": "POST",
+          "path": "/api/roles/159/inherited-roles",
+          "status": 201
+        },
+        {
+          "method": "POST",
+          "path": "/api/roles/159/inherited-roles",
+          "status": 409
+        },
+        {
+          "method": "POST",
+          "path": "/api/roles/161/inherited-roles",
+          "status": 409
+        },
+        {
+          "method": "POST",
+          "path": "/api/roles/159/inherited-roles",
+          "status": 409
+        },
+        {
+          "method": "DELETE",
+          "path": "/api/roles/159",
+          "status": 409
+        },
+        {
+          "method": "GET",
+          "path": "/api/roles/159/effective-permissions",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/users/3/roles",
+          "status": 201
+        },
+        {
+          "method": "GET",
+          "path": "/course-api/me",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/auth/api-permissions/createTerm",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/auth/permissions/TC",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/course-api/terms",
+          "status": 201
+        },
+        {
+          "method": "PATCH",
+          "path": "/course-api/terms/12",
+          "status": 200
+        },
+        {
+          "method": "DELETE",
+          "path": "/api/roles/159/inherited-roles/161",
+          "status": 204
+        },
+        {
+          "method": "GET",
+          "path": "/auth/api-permissions/createTerm",
+          "status": 200
+        },
+        {
+          "method": "DELETE",
+          "path": "/api/roles/160/inherited-roles/161",
+          "status": 204
+        },
+        {
+          "method": "GET",
+          "path": "/auth/api-permissions/createTerm",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/course-api/terms",
+          "status": 403
+        },
+        {
+          "method": "GET",
+          "path": "/course-api/me",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/roles",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/departments",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/systems",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/systems/2/permissions",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/auth/me",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/auth/logout",
+          "status": 204
+        },
+        {
+          "method": "GET",
+          "path": "/course-api/terms",
+          "status": 401
+        },
+        {
+          "method": "DELETE",
+          "path": "/course-api/terms/12",
+          "status": 204
+        },
+        {
+          "method": "DELETE",
+          "path": "/api/users/3/roles/159",
+          "status": 204
+        },
+        {
+          "method": "DELETE",
+          "path": "/api/roles/159/inherited-roles/161",
+          "status": 204
+        },
+        {
+          "method": "DELETE",
+          "path": "/api/roles/160/inherited-roles/161",
+          "status": 204
+        },
+        {
+          "method": "DELETE",
+          "path": "/api/roles/159/inherited-roles/160",
+          "status": 204
+        },
+        {
+          "method": "DELETE",
+          "path": "/api/roles/161/permissions/12",
+          "status": 204
+        },
+        {
+          "method": "DELETE",
+          "path": "/api/roles/161/permissions/41",
+          "status": 204
+        },
+        {
+          "method": "DELETE",
+          "path": "/api/roles/161/permissions/43",
+          "status": 204
+        },
+        {
+          "method": "DELETE",
+          "path": "/api/roles/159",
+          "status": 204
+        },
+        {
+          "method": "DELETE",
+          "path": "/api/roles/160",
+          "status": 204
+        },
+        {
+          "method": "DELETE",
+          "path": "/api/roles/161",
+          "status": 204
+        },
+        {
+          "method": "POST",
+          "path": "/auth/logout",
+          "status": 204
+        },
+        {
+          "method": "POST",
+          "path": "/auth/logout",
+          "status": 204
+        },
+        {
+          "method": "POST",
+          "path": "/auth/logout",
+          "status": 204
+        },
+        {
+          "method": "POST",
+          "path": "/auth/logout",
+          "status": 204
+        },
+        {
+          "method": "POST",
+          "path": "/auth/logout",
+          "status": 204
+        }
+      ],
+      "fixturesCleaned": true
+    },
+    "ddd": {
+      "version": "3.9.0",
+      "date": "2026-11-23",
+      "strategy": "ddd",
+      "base": "http://113.44.144.119",
+      "result": "passed",
+      "checks": [
+        {
+          "method": "POST",
+          "path": "/auth/login",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/course-api/login",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/course-api/login",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/course-api/teacher/courses",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/auth/login",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/auth/departments?keyword=%E8%A7%84%E6%A8%A1%E6%BC%94%E7%A4%BA%E7%BB%84%E7%BB%87",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/auth/departments",
+          "status": 403
+        },
+        {
+          "method": "GET",
+          "path": "/course-api/auth/permissions/MCO",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/course-api/auth/permissions/MTR",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/course-api/me",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/users?page=0&size=100",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/auth/users/3",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/auth/me",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/auth/departments/1/users?keyword=viewer",
+          "status": 200
+        },
+        {
+          "method": "OPTIONS",
+          "path": "/auth/permissions/MTE",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/auth/permissions/MTE",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/auth/permissions/MTE",
+          "status": 401
+        },
+        {
+          "method": "OPTIONS",
+          "path": "/auth/departments",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/auth/departments",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/auth/departments",
+          "status": 401
+        },
+        {
+          "method": "OPTIONS",
+          "path": "/auth/departments/1/users",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/auth/departments/1/users",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/auth/departments/1/users",
+          "status": 401
+        },
+        {
+          "method": "GET",
+          "path": "/auth/permissions/MTE",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/auth/permissions/MTEL",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/auth/permissions/MTE",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/auth/departments",
+          "status": 403
+        },
+        {
+          "method": "POST",
+          "path": "/course-api/login",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/course-api/me",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/course-api/terms",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/course-api/teacher/courses?termId=1",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/course-api/courses/4/milestones",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/course-api/teachers",
+          "status": 403
+        },
+        {
+          "method": "POST",
+          "path": "/course-api/login",
+          "status": 404
+        },
+        {
+          "method": "POST",
+          "path": "/course-api/login",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/course-api/me",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/course-api/terms",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/course-api/me/courses?termId=1",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/course-api/courses/4/milestones",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/course-api/me/courses/4/grades",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/course-api/teachers",
+          "status": 403
+        },
+        {
+          "method": "POST",
+          "path": "/course-api/login",
+          "status": 404
+        },
+        {
+          "method": "GET",
+          "path": "/course-api/teachers?keyword=ooad-load-2026-00001",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/systems?page=0&size=100",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/systems/2/permissions?page=0&size=100",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/course-api/admin/courses?page=1&pageSize=20",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/course-api/courses/1/milestones",
+          "status": 403
+        },
+        {
+          "method": "GET",
+          "path": "/course-api/courses/4",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/course-api/courses/4/review",
+          "status": 403
+        },
+        {
+          "method": "POST",
+          "path": "/course-api/terms",
+          "status": 403
+        },
+        {
+          "method": "POST",
+          "path": "/api/roles",
+          "status": 201
+        },
+        {
+          "method": "POST",
+          "path": "/api/roles",
+          "status": 201
+        },
+        {
+          "method": "POST",
+          "path": "/api/roles",
+          "status": 201
+        },
+        {
+          "method": "POST",
+          "path": "/api/roles/164/permissions",
+          "status": 201
+        },
+        {
+          "method": "POST",
+          "path": "/api/roles/164/permissions",
+          "status": 201
+        },
+        {
+          "method": "POST",
+          "path": "/api/roles/164/permissions",
+          "status": 201
+        },
+        {
+          "method": "POST",
+          "path": "/api/roles/164/permissions",
+          "status": 409
+        },
+        {
+          "method": "POST",
+          "path": "/api/roles/162/inherited-roles",
+          "status": 201
+        },
+        {
+          "method": "POST",
+          "path": "/api/roles/163/inherited-roles",
+          "status": 201
+        },
+        {
+          "method": "POST",
+          "path": "/api/roles/162/inherited-roles",
+          "status": 201
+        },
+        {
+          "method": "POST",
+          "path": "/api/roles/162/inherited-roles",
+          "status": 409
+        },
+        {
+          "method": "POST",
+          "path": "/api/roles/164/inherited-roles",
+          "status": 409
+        },
+        {
+          "method": "POST",
+          "path": "/api/roles/162/inherited-roles",
+          "status": 409
+        },
+        {
+          "method": "DELETE",
+          "path": "/api/roles/162",
+          "status": 409
+        },
+        {
+          "method": "GET",
+          "path": "/api/roles/162/effective-permissions",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/api/users/3/roles",
+          "status": 201
+        },
+        {
+          "method": "GET",
+          "path": "/course-api/me",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/auth/api-permissions/createTerm",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/auth/permissions/TC",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/course-api/terms",
+          "status": 201
+        },
+        {
+          "method": "PATCH",
+          "path": "/course-api/terms/13",
+          "status": 200
+        },
+        {
+          "method": "DELETE",
+          "path": "/api/roles/162/inherited-roles/164",
+          "status": 204
+        },
+        {
+          "method": "GET",
+          "path": "/auth/api-permissions/createTerm",
+          "status": 200
+        },
+        {
+          "method": "DELETE",
+          "path": "/api/roles/163/inherited-roles/164",
+          "status": 204
+        },
+        {
+          "method": "GET",
+          "path": "/auth/api-permissions/createTerm",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/course-api/terms",
+          "status": 403
+        },
+        {
+          "method": "GET",
+          "path": "/course-api/me",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/roles",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/departments",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/systems",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/api/systems/2/permissions",
+          "status": 200
+        },
+        {
+          "method": "GET",
+          "path": "/auth/me",
+          "status": 200
+        },
+        {
+          "method": "POST",
+          "path": "/auth/logout",
+          "status": 204
+        },
+        {
+          "method": "GET",
+          "path": "/course-api/terms",
+          "status": 401
+        },
+        {
+          "method": "DELETE",
+          "path": "/course-api/terms/13",
+          "status": 204
+        },
+        {
+          "method": "DELETE",
+          "path": "/api/users/3/roles/162",
+          "status": 204
+        },
+        {
+          "method": "DELETE",
+          "path": "/api/roles/162/inherited-roles/164",
+          "status": 204
+        },
+        {
+          "method": "DELETE",
+          "path": "/api/roles/163/inherited-roles/164",
+          "status": 204
+        },
+        {
+          "method": "DELETE",
+          "path": "/api/roles/162/inherited-roles/163",
+          "status": 204
+        },
+        {
+          "method": "DELETE",
+          "path": "/api/roles/164/permissions/12",
+          "status": 204
+        },
+        {
+          "method": "DELETE",
+          "path": "/api/roles/164/permissions/41",
+          "status": 204
+        },
+        {
+          "method": "DELETE",
+          "path": "/api/roles/164/permissions/43",
+          "status": 204
+        },
+        {
+          "method": "DELETE",
+          "path": "/api/roles/162",
+          "status": 204
+        },
+        {
+          "method": "DELETE",
+          "path": "/api/roles/163",
+          "status": 204
+        },
+        {
+          "method": "DELETE",
+          "path": "/api/roles/164",
+          "status": 204
+        },
+        {
+          "method": "POST",
+          "path": "/auth/logout",
+          "status": 204
+        },
+        {
+          "method": "POST",
+          "path": "/auth/logout",
+          "status": 204
+        },
+        {
+          "method": "POST",
+          "path": "/auth/logout",
+          "status": 204
+        },
+        {
+          "method": "POST",
+          "path": "/auth/logout",
+          "status": 204
+        },
+        {
+          "method": "POST",
+          "path": "/auth/logout",
+          "status": 204
+        }
+      ],
+      "fixturesCleaned": true
+    }
+  },
+  "browser": [
+    "教师我的课程与教学班",
+    "学生我的课程与里程碑",
+    "教师目录菜单、部门、成员及统一身份选择",
+    "普通教师菜单禁用且直接进入显示无法访问"
+  ],
+  "performance": [
+    {
+      "strategy": "structured",
+      "target": "http://113.44.144.119",
+      "workload": [
+        "GET /auth/permissions/ui.users",
+        "GET /api/users?page=0&size=20"
+      ],
+      "requests": 1000,
+      "warmup": 100,
+      "concurrency": 8,
+      "elapsedSeconds": 17.362,
+      "requestsPerSecond": 57.6,
+      "p50Ms": 134.62,
+      "p95Ms": 165.16,
+      "maxMs": 284.78,
+      "statusCounts": {
+        "200": 1000
+      },
+      "errors": 0,
+      "errorRate": 0.0,
+      "date": "2026-11-23",
+      "client": "Python urllib, one connection per request"
+    },
+    {
+      "strategy": "ddd",
+      "target": "http://113.44.144.119",
+      "workload": [
+        "GET /auth/permissions/ui.users",
+        "GET /api/users?page=0&size=20"
+      ],
+      "requests": 1000,
+      "warmup": 100,
+      "concurrency": 8,
+      "elapsedSeconds": 17.708,
+      "requestsPerSecond": 56.47,
+      "p50Ms": 136.74,
+      "p95Ms": 168.53,
+      "maxMs": 294.78,
+      "statusCounts": {
+        "200": 1000
+      },
+      "errors": 0,
+      "errorRate": 0.0,
+      "date": "2026-11-23",
+      "client": "Python urllib, one connection per request"
+    }
+  ],
+  "initialPerformance": {
+    "permissionContainerMemoryMiB": 384,
+    "observedFailure": "权限容器 OOMKilled，Nginx 返回 502 或 504。",
+    "run": {
+      "strategy": "structured",
+      "target": "http://113.44.144.119",
+      "workload": [
+        "GET /auth/permissions/ui.users",
+        "GET /api/users?page=0&size=20"
+      ],
+      "requests": 1000,
+      "warmup": 100,
+      "concurrency": 8,
+      "elapsedSeconds": 55.388,
+      "requestsPerSecond": 18.05,
+      "p50Ms": 141.32,
+      "p95Ms": 3119.32,
+      "maxMs": 3193.62,
+      "statusCounts": {
+        "200": 900,
+        "502": 4,
+        "504": 96
+      },
+      "errors": 100,
+      "errorRate": 0.1,
+      "date": "2026-11-23",
+      "client": "Python urllib, one connection per request"
+    }
+  },
+  "cors": {
+    "allowedOrigin": "http://113.44.144.119",
+    "methods": [
+      "GET",
+      "POST",
+      "OPTIONS"
+    ],
+    "headers": [
+      "Authorization",
+      "Content-Type",
+      "X-Target-System"
+    ],
+    "browserCredentials": false
+  },
+  "apiDocumentation": {
+    "platformOperations": 29,
+    "identityOperations": 8,
+    "swaggerMatchesLocalOpenApi": true,
+    "apifoxMethodPathsMatchLocalOpenApi": true
+  },
+  "links": {
+    "course": "http://113.44.144.119/course/",
+    "platform": "http://113.44.144.119/platform/",
+    "identityBase": "http://113.44.144.119",
+    "swagger": "http://113.44.144.119/api-docs/",
+    "apifox": "https://3wq8lbigke.apifox.cn/"
+  },
+  "servicesHealthy": [
+    "web",
+    "rbac",
+    "course",
+    "db"
+  ]
+}

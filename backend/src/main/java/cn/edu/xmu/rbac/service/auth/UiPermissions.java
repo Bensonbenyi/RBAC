@@ -19,7 +19,10 @@ public final class UiPermissions {
           "ui.departments",
           "ui.systems",
           "ui.permissions");
-  public static final Set<String> COURSE = Set.of("MCO", "MTR", "MCOR", "MTRC", "MTRE", "MTRD");
+  public static final Set<String> COURSE =
+      Set.of(
+          "MCO", "MTR", "MTE", "MLG", "MCOR", "MCOE", "MCOD", "MCOT", "MTRC", "MTRE", "MTRD",
+          "MTRM", "MTEC", "MTEE", "MTED", "MTEL");
 
   /** 判断权限码是否属于指定系统登记的界面权限目录. */
   public static boolean contains(String system, String code) {

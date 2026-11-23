@@ -1,6 +1,6 @@
 = 统一权限管理系统概要设计说明书
 OOAD 课程项目组
-v3.8.0, 2026-11-23
+v3.9.0, 2026-11-23
 :doctype: book
 :lang: zh-CN
 :toc:
@@ -68,7 +68,7 @@ v3.8.0, 2026-11-23
 |REQ-F-04 |多级部门目录查询
 |REQ-F-05 |两个业务系统目录
 |REQ-F-06 |各系统权限目录查询
-|REQ-F-07 |课程系统学期维护与课程审核接入
+|REQ-F-07 |课程师生登录、我的课程、教师目录与管理操作
 |REQ-N-01 |安全与部门隔离
 |REQ-N-02 |性能可测量与有界查询
 |REQ-N-03 |应用可用性与手动数据恢复
@@ -451,7 +451,7 @@ image::v33/story-availability.svg[S3 / U-A1 应用恢复与会话,width=100%]
 第三方软件接口为老师课程管理系统，使用 HTTP/JSON 和 Authorization Bearer。课程前端请求课程后端登录，课程后端向平台申请目标系统令牌。后续业务请求由课程后端验签，并向平台查询当前身份和操作许可。对应 REQ-F-07、AD-07。
 
 
-界面权限与 API 权限共用 RBAC 关系并分别授权。界面使用独立菜单和按钮码，无权限控件 disabled；接口按 operationId 对应的 API 码及对象规则决定是否执行。授权表单使用三个只读候选查询，避免依赖无关目录管理权限。课程页面初始化还调用 GET /course-api/me，读取与平台 userId 关联的本地教师资料和当前界面权限；未关联时返回 403。
+界面权限与 API 权限共用 RBAC 关系并分别授权。界面使用独立菜单和按钮码，接口按 operationId 对应的 API 码及对象规则决定是否执行。课程页面初始化调用 GET /course-api/me，按平台 userId 读取本地教师或学生资料。课程前端通过 VITE_IDENTITY_BASE_URL 直连平台读取菜单许可和教师候选。跨域预检按配置来源放行，业务请求继续执行 JWT 与 RBAC 检查。
 
 
 [cols="2,5,3,3",options="header"]
@@ -481,7 +481,7 @@ image::v33/story-availability.svg[S3 / U-A1 应用恢复与会话,width=100%]
 |API-D |/api/departments |分页参数 / 部门树节点 |REQ-F-04
 |API-S |/api/systems |分页 / 系统目录 |REQ-F-05
 |API-P |/api/systems/{systemId}/permissions |系统编号 / 权限目录 |REQ-F-06
-|API-C |/course-api/terms、/course-api/admin/courses、/course-api/courses/{id}/review |学期资料、分页或审核决定 / 老师业务结果 |REQ-F-07
+|API-C |/course-api/login、/course-api/teacher/courses、/course-api/me/courses、/course-api/teachers 及其余接入业务路由 |课程工号、学号、查询条件或管理输入 / 师生工作台与管理结果 |REQ-F-07
 |===
 
 
@@ -528,6 +528,8 @@ image::v33/schema.svg[数据库表关系图,width=100%]
 === 存储与物理策略
 
 MySQL InnoDB 保存业务数据和登录会话，利用事务、外键及唯一约束维护关系一致性。平台与课程系统使用不同数据库和账号。当前采用单实例，不设置读写分离、分片或额外缓存；实体编号由数据库自增生成，登录会话使用随机 UUID。
+
+课程库师生名册以 user_id 引用平台用户编号，工号或学号对应平台用户名。演示导入在一个 MySQL 事务中写两库，以部门归属创建角色并绑定已有平台用户，课程库按名册唯一键核对。
 
 授权从数据库当前关系查询，避免缓存失效改变撤权语义。用户、角色列表按部门及分页读取；关联索引用于当前权限查询。数据库连接池有界，性能场景在相同数据与配置下测量。
 
@@ -647,7 +649,8 @@ image::v33/deployment.svg[OV-DEPLOY-01 Docker Swarm 部署,width=100%]
 |REQ-F-03 RBAC1 |inheritsAcrossMultiplePathsAndRevokesForExistingTokens；rejectsHierarchyCyclesScopeAndReferences。 |配置继承、有效权限并集、解除继承；自环和间接环 409，跨部门 403。
 |REQ-F-04 部门 |enforcesDirectDepartmentScope；readsCatalogsWithoutWriteEndpoints。 |部门树只表达组织；管理员管理本部门直接成员。
 |REQ-F-05 系统 / REQ-F-06 权限目录 |readsCatalogsWithoutWriteEndpoints；isolatesUiAndApiPermissionsAndSupportsNarrowSelections。 |系统与权限目录只读；授权下拉分页完整加载，不依赖无关目录管理权。
-|REQ-F-07 课程接入 |tooling/acceptance.py 对已部署的老师后端调用 /login、/me、学期维护、课程列表与详情、无权审核、撤权及退出。 |课程和学期菜单分别受 UI 码控制；API 许可独立检查。
+|REQ-F-07 课程接入 |tooling/acceptance.py 验证两种身份登录、课程归属、教师目录、学期维护与撤权。 |师生进入各自工作台，管理菜单和按钮依据界面码启用。
+|REQ-F-07 课程跨域 |authorizesCourseOriginBeforeBearerAuthentication；部署验收对三个身份接口分别验证 OPTIONS、授权后的 GET 和无凭据的 GET。 |课程网页读取当前菜单许可和新增教师的组织目录。
 |REQ-N-01 安全 |isolatesUiAndApiPermissionsAndSupportsNarrowSelections；upgradesExistingGrantsOnceAndKeepsUiRevocationIndependent；frontend/src/permissions.test.ts。 |无菜单码时禁用菜单，无按钮码时禁用按钮；仅有 API 码也不能启用控件。
 |REQ-N-02 性能 |tooling/benchmark.py；测量环境、样本量与结果见性能需求。 |用户列表限定本部门并分页返回。
 |REQ-N-03 可用性 |Swarm 健康检查和历史会话恢复记录。 |依赖故障拒绝业务；恢复后刷新页面与会话。
@@ -657,7 +660,7 @@ image::v33/deployment.svg[OV-DEPLOY-01 Docker Swarm 部署,width=100%]
 
 === 本轮测试与交付入口
 
-v3.8.0 平台测试 37 项、老师 CloneFactory 测试 5 项和前端组件测试 3 项全部通过。JaCoCo 0.8.14 的平台行覆盖率 93.67%，分支覆盖率 70.34%；生成的 CloneFactory 工具类单独由拷贝测试与运行包检查验证，覆盖率排除该生成类。
+v3.9.0 平台后端测试 39 项、CloneFactory 测试 5 项、平台前端测试 3 项、课程后端测试 497 项、课程前端测试 56 项全部通过。JaCoCo 0.8.14 的平台行覆盖率为 93.73%，分支覆盖率为 70.34%。生成的 CloneFactory 工具类由拷贝测试与运行包检查单独验证，覆盖率按手写代码计算。
 
 
 [cols="3,7",options="header"]
@@ -667,6 +670,6 @@ v3.8.0 平台测试 37 项、老师 CloneFactory 测试 5 项和前端组件测�
 |老师原版课程前端 |/course/
 |平台 API 文档 |运行 npm ci --prefix docs/api 后执行 python3 tooling/build-api.py。
 |覆盖率报告 |执行 ./mvnw verify 生成 backend/target/site/jacoco/。
-|部署与验收证据 |本版 Swarm 部署及线上联调见 docs/implementation/deployment-v3.8.0.json。本版契约回归见 docs/implementation/test-summary-v3.8.0.json。结构化与 DDD 各通过 68 项线上 HTTP 检查。
+|部署与验收证据 |本版 Swarm 部署及线上联调见 docs/implementation/deployment-v3.9.0.json。本版契约回归见 docs/implementation/test-summary-v3.9.0.json。结构化与 DDD 各通过 100 项线上 HTTP 检查。
 |课程提交 |代码推送 GitHub，由已配置的自动同步更新 Gitee；课程网站提交与口试预约由组员完成。
 |===

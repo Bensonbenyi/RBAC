@@ -55,7 +55,8 @@ def verification(table):
  ('REQ-F-03 RBAC1','inheritsAcrossMultiplePathsAndRevokesForExistingTokens；rejectsHierarchyCyclesScopeAndReferences。','配置继承、有效权限并集、解除继承；自环和间接环 409，跨部门 403。'),
  ('REQ-F-04 部门','enforcesDirectDepartmentScope；readsCatalogsWithoutWriteEndpoints。','部门树只表达组织；管理员管理本部门直接成员。'),
  ('REQ-F-05 系统 / REQ-F-06 权限目录','readsCatalogsWithoutWriteEndpoints；isolatesUiAndApiPermissionsAndSupportsNarrowSelections。','系统与权限目录只读；授权下拉分页完整加载，不依赖无关目录管理权。'),
- ('REQ-F-07 课程接入','tooling/acceptance.py 对已部署的老师后端调用 /login、/me、学期维护、课程列表与详情、无权审核、撤权及退出。','课程和学期菜单分别受 UI 码控制；API 许可独立检查。'),
+ ('REQ-F-07 课程接入','tooling/acceptance.py 验证两种身份登录、课程归属、教师目录、学期维护与撤权。','师生进入各自工作台，管理菜单和按钮依据界面码启用。'),
+ ('REQ-F-07 课程跨域','authorizesCourseOriginBeforeBearerAuthentication；部署验收对三个身份接口分别验证 OPTIONS、授权后的 GET 和无凭据的 GET。','课程网页读取当前菜单许可和新增教师的组织目录。'),
  ('REQ-N-01 安全','isolatesUiAndApiPermissionsAndSupportsNarrowSelections；upgradesExistingGrantsOnceAndKeepsUiRevocationIndependent；frontend/src/permissions.test.ts。','无菜单码时禁用菜单，无按钮码时禁用按钮；仅有 API 码也不能启用控件。'),
  ('REQ-N-02 性能','tooling/benchmark.py；测量环境、样本量与结果见性能需求。','用户列表限定本部门并分页返回。'),
  ('REQ-N-03 可用性','Swarm 健康检查和历史会话恢复记录。','依赖故障拒绝业务；恢复后刷新页面与会话。'),
@@ -63,7 +64,7 @@ def verification(table):
  ('REQ-N-05 交付与运行','Maven verify、tooling/check-copy-artifact.py、build-api.py、build-design.sh；Swarm 镜像与服务记录。','两个前端、API 文档、覆盖率报告可访问；菜单请求对应后端日志。')],'3,7,5')+f'''
 === 本轮测试与交付入口
 
-v{version} 平台测试 {data['platformTests']} 项、老师 CloneFactory 测试 {data['cloneFactoryTests']} 项和前端组件测试 {data['frontendTests']} 项全部通过。JaCoCo 0.8.14 的平台行覆盖率 {data['coverage']['LINE']['percent']}%，分支覆盖率 {data['coverage']['BRANCH']['percent']}%；生成的 CloneFactory 工具类单独由拷贝测试与运行包检查验证，覆盖率排除该生成类。
+v{version} 平台后端测试 {data['platformTests']} 项、CloneFactory 测试 {data['cloneFactoryTests']} 项、平台前端测试 {data['frontendTests']} 项、课程后端测试 {data['courseBackendTests']} 项、课程前端测试 {data['courseFrontendTests']} 项全部通过。JaCoCo 0.8.14 的平台行覆盖率为 {data['coverage']['LINE']['percent']}%，分支覆盖率为 {data['coverage']['BRANCH']['percent']}%。生成的 CloneFactory 工具类由拷贝测试与运行包检查单独验证，覆盖率按手写代码计算。
 
 '''+table(['产物','访问与复现'],[
  ('权限后台','/platform/'),

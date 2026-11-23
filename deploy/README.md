@@ -11,10 +11,10 @@
 ./tooling/test.sh
 ./mvnw install -DskipTests
 mvn -f .integrations/course-project-mgt/backend/pom.xml -s .mvn/settings.xml package -DskipTests
-./tooling/build-images.sh
+RBAC_PUBLIC_URL=http://113.44.144.119 ./tooling/build-images.sh
 ```
 
-构建工具将课程前端的业务和身份地址都设置为同源 `/course-api`，读取 `docs/redesign/VERSION`，用同一个版本标记 amd64 镜像 `rbac/backend`、`rbac/course` 和 `rbac/web`。MySQL 使用 `rbac/mysql:8.4.13-amd64`。将前三个镜像通过 `docker save`、文件传输及 `docker load` 载入 Manager，将 MySQL 镜像载入数据库 Worker。当前 Stack 使用本地镜像，更新前需在放置节点载入相同版本。
+构建工具将课程前端的业务地址设为 `/course-api`，身份地址通过 `RBAC_PUBLIC_URL` 传给 `VITE_IDENTITY_BASE_URL`。它按 `docs/redesign/VERSION` 标记 amd64 镜像 `rbac/backend`、`rbac/course` 和 `rbac/web`。MySQL 使用 `rbac/mysql:8.4.13-amd64`。将前三个镜像载入 Manager，将 MySQL 镜像载入数据库 Worker。当前 Stack 使用节点本地镜像。
 
 ## 初始化与部署
 
@@ -32,11 +32,16 @@ done
 
 ```sh
 docker node update --label-add rbac.db=true course-node1
-RBAC_VERSION="$(cat docs/redesign/VERSION)" docker stack deploy --resolve-image never -c deploy/stack.yaml rbac_v33
+RBAC_VERSION="$(cat docs/redesign/VERSION)" RBAC_ALLOWED_ORIGINS=http://113.44.144.119 \
+  docker stack deploy --resolve-image never -c deploy/stack.yaml rbac_v33
 docker stack services rbac_v33
 ```
 
 默认 `BACKEND_STRATEGY=structured`。设置为 `ddd` 后重部署，可同时选择平台与教师应用各自的 DDD 实现。两种实现使用相同接口和数据库。Stack 更新为 stop-first；等待新任务的环境与 health 都符合目标配置，再执行验收。入口 `/platform/`、`/course/`，反向代理将 `/course-api/auth/*` 转到平台认证接口，其余 `/course-api/*` 去掉前缀后交给教师后端。
+
+Manager 上两套后端容器的内存上限各为 512 MiB，权限后端的 Java 堆上限为 192 MiB。容器上限为堆、类元数据、JIT 和线程栈预留空间。
+
+`RBAC_ALLOWED_ORIGINS` 是逗号分隔的课程网页来源，填写协议、主机和端口。身份接口支持带 `Authorization` 的跨域 GET、POST 和对应的 OPTIONS 预检。正式请求按令牌和 RBAC 授权执行。老师仓库的前端和后端可分别使用同一个公布的权限平台基址配置 `VITE_IDENTITY_BASE_URL` 和 `IDENTITY_BASE_URL`。
 
 应用完成 Flyway 迁移后，在数据库 Worker 借助 MySQL 容器导入演示数据。空平台库先执行 `deploy/mysql/demo.sql`。课程库执行 `integrations/course-project-mgt/demo-data.sql`，再跨库执行 `integrations/course-project-mgt/link-demo-teachers.sql`。已有演示库升级时从课程数据和教师关联两步开始。关联脚本将演示工号与平台用户名对齐，确保课程的 `POST /login` 能找到本地教师。
 
@@ -57,7 +62,7 @@ Swarm 发布后，在 Apifox 的「统一权限管理系统」项目中，将 [�
 
 ## 规模演示数据
 
-在构建机运行 `python3 tooling/build-demo-directory.py .runtime/demo-directory.sql`，再将生成的 SQL 送入 Worker 上的权限库。脚本从两份市政公司表格读取组织关系及员工归属，生成 10,000 个替代用户名、姓名和手机号。111 个来源组织节点挂在「规模演示组织」下，直属员工保留其来源节点归属。已有演示账号及角色继续照常使用。
+完成前述三个种子 SQL 后，在构建机运行 `python3 tooling/build-demo-directory.py .runtime/demo-directory.sql`。生成的 SQL 从两份课程表格保留组织关系与员工归属，并生成 10,000 组合成账号和凭据。总公司 190 人分配本部门的 `teacher` 角色，其余 9,810 人分配 `student`。工号或学号沿用用户名，课程库 `user_id` 按实际平台主键绑定。脚本在同一事务写入两库，重复执行时保留已有匹配记录。
 
 ```sh
 docker exec -i "$db" sh -c 'MYSQL_PWD="$(cat /run/secrets/mysql_root_password)" exec mysql -uroot --default-character-set=utf8mb4 rbac' < .runtime/demo-directory.sql

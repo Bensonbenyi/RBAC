@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""从课程表格生成可重复执行的匿名部门与用户 SQL。"""
+"""从课程表格生成匿名组织、账号和两库课程名册 SQL。"""
 
 import argparse
 from collections import defaultdict
@@ -8,6 +8,7 @@ from xml.etree import ElementTree
 from zipfile import ZipFile
 
 DOCS = Path(__file__).resolve().parents[1] / 'docs'
+ROSTER_SQL = DOCS.parent / 'integrations/course-project-mgt/link-scale-roster.sql'
 XML = {'x': 'http://schemas.openxmlformats.org/spreadsheetml/2006/main'}
 ROOT = '规模演示组织'
 PREFIX = 'ooad-load-2026-'
@@ -44,16 +45,18 @@ def build(destination):
         children[parent].append(name)
 
     accounts = defaultdict(list)
+    roster = {'teacher': [], 'student': []}
     for number, (company, dept) in enumerate(rows('市政公司员工信息表.xlsx', 'CD'), 1):
         candidates = (f'{company}-{dept}', dept)
         target = next((name for name in candidates if name in hierarchy), None)
         if target is None:
             raise ValueError(f'无法匹配员工表第 {number + 1} 行的组织')
         accounts[target].append(number)
-    if len(hierarchy) != 111 or sum(map(len, accounts.values())) != 10_000:
-        raise ValueError('规模演示应包含 111 个组织节点和 10,000 名员工')
+        roster['teacher' if company == '总公司' else 'student'].append(number)
+    if len(hierarchy) != 111 or len(roster['teacher']) != 190 or len(roster['student']) != 9_810:
+        raise ValueError('规模演示应包含 111 个组织节点、190 名教师及 9,810 名学生')
 
-    statements = ['SET NAMES utf8mb4;', 'START TRANSACTION;']
+    statements = ['SET NAMES utf8mb4;', 'USE rbac;', 'START TRANSACTION;']
 
     def department(name, parent, variable):
         predicate = f'name = {literal(name)} AND parent_id <=> {parent}'
@@ -80,7 +83,14 @@ def build(destination):
             )
     if len(queue) != len(hierarchy):
         raise ValueError('部门表存在无法从根节点到达的记录')
-    statements.append('COMMIT;')
+    statements.append('''CREATE TEMPORARY TABLE demo_course_roster (
+  username VARCHAR(64) PRIMARY KEY,
+  role_name VARCHAR(10) NOT NULL
+) COLLATE utf8mb4_0900_as_cs;''')
+    for role, numbers in roster.items():
+        values = ',\n'.join(f"('{PREFIX}{n:05}', '{role}')" for n in numbers)
+        statements.append('INSERT INTO demo_course_roster (username, role_name) VALUES\n' + values + ';')
+    statements.extend([ROSTER_SQL.read_text(encoding='utf-8').rstrip(), 'COMMIT;'])
     destination.write_text('\n'.join(statements) + '\n', encoding='utf-8')
 
 

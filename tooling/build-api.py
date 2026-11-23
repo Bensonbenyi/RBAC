@@ -51,6 +51,8 @@ for op in OPS:
  for n in re.findall(r'\{([^}]+)\}',op.route):operation['parameters'].append({'name':n,'in':'path','required':True,'schema':{'type':'string','minLength':1,'maxLength':128} if n=='operationId' else {'type':'string','minLength':1} if n in ['permission','userId'] else integer_id})
  if op.key in identity_operations and op.key!='AUTH-01':
   operation['parameters'].append({'name':'X-Target-System','in':'header','description':'可选目标系统，必须在令牌 aud 中。默认使用 aud 首项。','schema':string})
+ if op.key in {'AUTH-05','AUTH-08','AUTH-09'}:
+  operation['description']+='\n\n课程网页可通过 VITE_IDENTITY_BASE_URL 直连。允许已配置来源以 Bearer 访问。浏览器的 OPTIONS 预检不发送令牌。'
  if op.key in {'AUTH-08','AUTH-09'}:
   operation['parameters'].extend([
    {'name':'keyword','in':'query','schema':dict(string,maxLength=100)},
@@ -84,7 +86,7 @@ for op in OPS:
   if not missing:operation['responses'].pop('404')
   operation['responses'].pop('409',None)
  paths.setdefault(op.route,{})[op.method.lower()]=operation
-spec={'openapi':'3.0.3','info':{'title':'统一权限管理平台 API','version':version,'description':'RBAC1 双实现契约。高级角色继承基础角色；界面码与 API 码独立。切换策略保持 HTTP 行为一致。'},'servers':[{'url':'/'}],'paths':paths,'components':{'securitySchemes':{'Bearer':{'type':'http','scheme':'bearer','bearerFormat':'JWT'}},'schemas':schemas}}
+spec={'openapi':'3.0.3','info':{'title':'统一权限管理平台 API','version':version,'description':'RBAC1 双实现契约。课程前端通过统一身份接口实时读取界面权限和组织目录，师生使用课程名册中的工号或学号登录。'},'servers':[{'url':'/'}],'paths':paths,'components':{'securitySchemes':{'Bearer':{'type':'http','scheme':'bearer','bearerFormat':'JWT'}},'schemas':schemas}}
 (R/'openapi.json').write_text(json.dumps(spec,ensure_ascii=False,indent=2)+'\n')
 # Swagger UI assets are assembled at build time from the pinned official npm package.
 assets=R/'node_modules/swagger-ui-dist'

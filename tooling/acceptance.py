@@ -15,13 +15,22 @@ parser.add_argument('--base', required=True)
 parser.add_argument('--version', required=True, help='被验收部署的版本')
 parser.add_argument('--strategy', choices=['structured', 'ddd'], required=True)
 parser.add_argument('--report', required=True)
+parser.add_argument('--origin', help='验证已部署的课程前端来源，默认使用部署入口')
 args = parser.parse_args()
 checks = []
 phone = os.environ['RBAC_DEMO_PHONE']
+direct_http = urllib.request.build_opener(urllib.request.ProxyHandler({}))
 
 
-def call(path, method='GET', body=None, token=None, expected=200):
-    headers = {'Content-Type': 'application/json'}
+def call(path, method='GET', body=None, token=None, expected=200, cross_origin=False):
+    headers = {'Content-Type': 'application/json'} if body is not None else {}
+    if cross_origin:
+        # 使用测试 Host 让同一公网入口能够按浏览器跨域规则响应预检。
+        origin = args.origin or args.base
+        headers.update({'Origin': origin, 'Host': 'rbac-cors-probe.test'})
+        if method == 'OPTIONS':
+            headers.update({'Access-Control-Request-Method': 'GET',
+                            'Access-Control-Request-Headers': 'authorization,x-target-system'})
     if token:
         headers['Authorization'] = 'Bearer ' + token
     request = urllib.request.Request(
@@ -29,11 +38,18 @@ def call(path, method='GET', body=None, token=None, expected=200):
         data=json.dumps(body).encode() if body is not None else None,
         method=method, headers=headers)
     try:
-        with urllib.request.urlopen(request, timeout=20) as response:
-            status, raw = response.status, response.read()
+        open_request = direct_http.open if cross_origin else urllib.request.urlopen
+        with open_request(request, timeout=20) as response:
+            status, raw, returned = response.status, response.read(), response.headers
     except urllib.error.HTTPError as error:
-        status, raw = error.code, error.read()
+        status, raw, returned = error.code, error.read(), error.headers
     assert status == expected, (path, status, raw.decode())
+    if cross_origin:
+        assert returned.get('Access-Control-Allow-Origin') == origin, (path, returned)
+        assert returned.get('Access-Control-Allow-Credentials') is None
+        if method == 'OPTIONS':
+            assert 'GET' in returned.get('Access-Control-Allow-Methods', '')
+            assert 'authorization' in returned.get('Access-Control-Allow-Headers', '').lower()
     checks.append({'method': method, 'path': path, 'status': status})
     return json.loads(raw) if raw else None
 
@@ -53,7 +69,7 @@ def pages(path, token):
     raise AssertionError('Unexpected catalog size')
 
 
-admin = course_admin = reviewer = viewer = None
+admin = course_admin = reviewer = viewer = scale_teacher = scale_student = None
 roles, links, grants, terms = [], [], [], []
 assigned = False
 stamp = str(int(time.time()))
@@ -81,6 +97,40 @@ try:
     department_id = call('/auth/me', token=course_admin)['departmentId']
     members = call(f'/auth/departments/{department_id}/users?keyword=viewer', token=course_admin)
     assert any(user['userId'] == viewer_id for user in members['items'])
+    for path in ['/auth/permissions/MTE', '/auth/departments',
+                 f'/auth/departments/{department_id}/users']:
+        call(path, 'OPTIONS', cross_origin=True)
+        call(path, token=reviewer, cross_origin=True)
+        call(path, expected=401, cross_origin=True)
+    assert call('/auth/permissions/MTE', token=reviewer, cross_origin=True)['allowed']
+    assert call('/auth/permissions/MTEL', token=reviewer)['allowed']
+    assert not call('/auth/permissions/MTE', token=viewer, cross_origin=True)['allowed']
+    call('/auth/departments', token=viewer, expected=403, cross_origin=True)
+    for role, number in [('teacher', 1), ('student', 191)]:
+        account = f'ooad-load-2026-{number:05}'
+        login_body = {'role': role, 'account': account, 'password': str(19900000000 + number)}
+        result = call('/course-api/login', 'POST', login_body)
+        credential = result['accessToken']
+        if role == 'teacher':
+            scale_teacher = credential
+        else:
+            scale_student = credential
+        profile = call('/course-api/me', token=credential)
+        assert profile['roles'] == [role] and profile['number'] == account
+        assert profile[f'{role}Id'] is not None
+        path = '/course-api/teacher/courses' if role == 'teacher' else '/course-api/me/courses'
+        terms_for_user = call('/course-api/terms', token=credential)['items']
+        demo_term = next(t for t in terms_for_user if t['name'] == '2026 秋季课程演示')
+        own_courses = call(f"{path}?termId={demo_term['id']}", token=credential)
+        demo_course = next(c for c in own_courses['items'] if c['code'] == 'RBAC-IDENTITY-DEMO')
+        call(f"/course-api/courses/{demo_course['id']}/milestones", token=credential)
+        if role == 'student':
+            call(f"/course-api/me/courses/{demo_course['id']}/grades", token=credential)
+        call('/course-api/teachers', token=credential, expected=403)
+        other_role = 'student' if role == 'teacher' else 'teacher'
+        call('/course-api/login', 'POST', {**login_body, 'role': other_role}, expected=404)
+    teachers = call('/course-api/teachers?keyword=ooad-load-2026-00001', token=reviewer)
+    assert teachers['total'] == 1
     systems = pages('/api/systems', admin)
     course_id = next(s['id'] for s in systems if s['systemKey'] == 'course-project-management')
     permissions = pages('/api/systems/' + course_id + '/permissions', admin)
@@ -88,6 +138,8 @@ try:
     courses = call('/course-api/admin/courses?page=1&pageSize=20', token=reviewer)
     assert courses['items'], 'The course demo needs one existing synthetic course'
     course = courses['items'][0]
+    unrelated = next(item for item in courses['items'] if item['code'] != 'RBAC-IDENTITY-DEMO')
+    call(f"/course-api/courses/{unrelated['id']}/milestones", token=scale_student, expected=403)
     call('/course-api/courses/' + str(course['id']), token=reviewer)
     call('/course-api/courses/' + str(course['id']) + '/review', 'POST',
          {'decision': 'approved', 'comment': None}, viewer, 403)
@@ -135,6 +187,7 @@ try:
         call(path, token=admin)
     call('/auth/logout', 'POST', token=viewer, expected=204)
     call('/course-api/terms', token=viewer, expected=401)
+    viewer = None
 finally:
     # Each cleanup operation remains visible in the report.
     for term_id in terms:
@@ -147,7 +200,7 @@ finally:
         call(path, 'DELETE', token=admin, expected=204)
     for role_id in roles:
         call('/api/roles/' + role_id, 'DELETE', token=admin, expected=204)
-    for token in [course_admin, reviewer, admin]:
+    for token in [scale_student, scale_teacher, course_admin, viewer, reviewer, admin]:
         if token:
             call('/auth/logout', 'POST', token=token, expected=204)
 report = {'version': args.version, 'date': date.today().isoformat(), 'strategy': args.strategy,

@@ -167,20 +167,31 @@ Flyway 建表后，在空演示库手动导入 demo.sql。账号资料和部门�
    modes=[('shared','共享')] if module in ['Department','System','Permission'] else [('structured','结构化'),('ddd','DDD')]
    for mode,label in modes:add(fig('class-'+mode+'-'+module.lower(),MODULES[module][0]+' '+label+' 模块类图'))
  add('==== 课程管理系统接入\n\n需求 REQ-F-07。课程前端使用老师原版 web，调用 POST /course-api/login。老师后端先校验本地工号或学号，再用账号、手机号和目标系统调用平台 /auth/login。老师的业务规则保留，适配层完成验签、实时身份与 API 权限查询。')
- add('登录成功后，前端通过 /course-api/me 取得本地资料和当前界面权限。课程 teacher.user_id 对应平台用户编号。演示工号与平台用户名一致，教师账号拥有 teacher 角色。演示部署使用 integrations/course-project-mgt/link-demo-teachers.sql 按实际账号编号关联教师，正式账号按真实教师资料关联。')
- add(case_table(('COURSE-001','课程系统接入','REQ-F-07',[],'课程管理系统','具有对应课程权限的用户','通过统一登录执行学期维护和课程审核。','用户进入课程演示入口。','取得 course-project-management 的有效登录凭据。',[
- ('读取当前身份与实时 API 权限。','未通过检查时课程后端拒绝执行。'),('调用老师的学期或课程业务接口。','保留上游输入、对象和课程状态规则。'),('返回老师的业务结果。','前端按独立 UI 码启用控件，缺少权限时使用 disabled。')],[('无效登录或已退出','401。'),('无本次操作权限','403。'),('统一身份服务不可用','503，停止业务操作。')],'课程操作按上游规则持久化，后续每次操作重新检查平台许可。',None,None)))
+ add('登录后，GET /course-api/me 返回本地师生资料和当前界面权限。课程库 teacher 和 student 的 user_id 对应平台用户编号，工号或学号沿用平台用户名。演示数据将总公司的 190 名账号分配为教师，其余 9,810 名账号分配为学生，角色均归属各自部门。导入按实际用户编号关联两个库，在独立演示班绑定样例教师和学生。')
+ add(case_table(('COURSE-001','课程系统接入','REQ-F-07',[],'课程管理系统','教师、学生及课程管理员','使用统一身份进入对应工作台，查看自己的课程并按授权执行管理操作。','用户进入课程演示入口。','课程名册存在对应工号或学号，平台授予目标系统 login 和入口所需角色。',[
+ ('读取当前身份与实时 API 权限。','课程后端按 operationId 调用平台。'),('检查本地教师或学生的课程归属。','平台授予全局许可，课程服务判断任课、选课和课程状态。'),('返回老师的业务结果。','前端按独立 UI 码启用管理菜单和按钮。')],[('无效登录或已退出','401。'),('无本次操作权限','403。'),('入口与课程名册不匹配','本地名册无对应工号或学号时返回 404。'),('统一身份服务不可用','503，停止业务操作。')],'当前授权影响后续课程请求。',None,None)))
  add(table(['图中处理 / 实际方法','调用说明 URL','功能'],[(operation,route,behavior+'；权限 '+permission) for operation,route,permission,behavior in COURSE],'3,5,5'))
  for i,(operation,route,permission,behavior) in enumerate(COURSE,1):
   add('===== COURSE-'+str(i).zfill(2)+' '+operation)
   add(behavior+'。调用 '+route+'，权限码 '+permission+'。')
   add(fig('course-'+str(i).zfill(2),operation+' 接入详细交互'))
- add('===== COURSE-08 getCurrentUser 支撑接口\n\n调用 GET /me，operationId 为 getCurrentUser，平台映射到课程 login 权限。老师服务复用本次请求已核验的统一身份，并读取本地资料，返回 userId、teacherId、studentId、no、name、roles、permissions。permissions 保留当前系统界面码；该接口支撑页面初始化和权限刷新。')
+ add('===== COURSE-08 getCurrentUser 支撑接口\n\n调用 GET /me，operationId 为 getCurrentUser，平台映射到课程 login 权限。老师服务复用本次请求已核验的统一身份，并读取本地资料，返回 userId、teacherId、studentId、number、name、roles、permissions。permissions 保留当前系统界面码，供页面初始化和权限刷新。')
  add(fig('course-08','getCurrentUser 本地资料与界面权限交互'))
  add('===== COURSE-09 课程登录\n\nPOST /course-api/login 接收 role、account、password，成功进入对应工作台。')
  add(fig('course-09','老师原版前端与统一身份的登录交互'))
+ add('===== COURSE-10 课程网页直连统一身份\n\n构建时以 VITE_IDENTITY_BASE_URL 指定平台入口。管理菜单进入时调用 GET /auth/permissions/{permission}。教师目录中的新增表单调用 GET /auth/departments 和 GET /auth/departments/{departmentId}/users，平台检查 TEC。跨域时，Spring 先按配置来源处理 OPTIONS 预检，允许 Authorization、Content-Type 和 X-Target-System，随后的 GET 仍校验 JWT、会话和权限。')
+ add(fig('course-10','课程网页跨域查询权限和组织目录'))
+ add(table(['课程系统调用','调用说明 URL','功能'],[
+  ('TeacherController +\nlistTeachers','GET /course-api/teachers','按 TV 分页查询教师。'),
+  ('TeacherController +\ncreateTeacher','POST /course-api/teachers','按 TEC 从统一身份目录选人并在课程库创建教师记录。')],'4,5,5'))
+ add('===== COURSE-11 师生查看我的课程\n\n教师的 GET /course-api/teacher/courses 按任课或负责关系查询。学生的 GET /course-api/me/courses 按 userId 定位课程库中的学生，再按学期查询已选且开放的课程。师生都可查看自己的演示课和里程碑。')
+ add(fig('course-11','学生课程查询时序'))
+ add(table(['图中处理 / 实际方法','调用说明 URL','功能'],[
+  ('StudentCourseController +\nlistStudentCourses','GET /course-api/me/courses','返回指定学期的已选开放课程。'),
+  ('TeacherCourseController +\nlistTeacherCourses','GET /course-api/teacher/courses','返回所属教学课程。'),
+  ('CourseMilestoneController +\nlistMilestones','GET /course-api +\n/courses/{courseId}/milestones','返回所属课程的里程碑，学生读取时还需课程已开放。')],'5,6,4'))
  add('''[.course-note]
-课程列表 page 从 1 开始，courseStatus 为 1 申请、2 待审核、3 已开课。审核输入 decision 为 approved 或 rejected，驳回必须填写 comment。菜单与 API 分别检查权限。接入补丁固定到 990cea2，保留 MIT 许可及老师原业务规则，演示路由开放课程登录、当前用户、学期维护和课程查询与审核。统一身份用户查询、部门查询与部门成员查询由平台提供，已通过独立 HTTP 验证。
+课程列表 page 从 1 开始，courseStatus 为 1 申请、2 待审核、3 已开课。审核输入 decision 为 approved 或 rejected，驳回必须填写 comment。接入补丁固定到 990cea2，沿用老师的课程实体和业务规则。
 ''')
  add('''=== 接口与输入设计
 
@@ -360,10 +371,10 @@ RBAC 表达全部操作许可，部门限定账号、角色及管理范围。结
 
 第三方软件接口为老师课程管理系统，使用 HTTP/JSON 和 Authorization Bearer。课程前端请求课程后端登录，课程后端向平台申请目标系统令牌。后续业务请求由课程后端验签，并向平台查询当前身份和操作许可。对应 REQ-F-07、AD-07。
 ''')
- add('界面权限与 API 权限共用 RBAC 关系并分别授权。界面使用独立菜单和按钮码，无权限控件 disabled；接口按 operationId 对应的 API 码及对象规则决定是否执行。授权表单使用三个只读候选查询，避免依赖无关目录管理权限。课程页面初始化还调用 GET /course-api/me，读取与平台 userId 关联的本地教师资料和当前界面权限；未关联时返回 403。')
+ add('界面权限与 API 权限共用 RBAC 关系并分别授权。界面使用独立菜单和按钮码，接口按 operationId 对应的 API 码及对象规则决定是否执行。课程页面初始化调用 GET /course-api/me，按平台 userId 读取本地教师或学生资料。课程前端通过 VITE_IDENTITY_BASE_URL 直连平台读取菜单许可和教师候选。跨域预检按配置来源放行，业务请求继续执行 JWT 与 RBAC 检查。')
  add(table(['外部接口编号','路径','核心输入','核心输出'],[('EXT-01','POST /auth/login','用户名、手机号和目标系统','Bearer 凭据及有效期'),('EXT-02','GET /auth/me','Bearer','当前身份、角色、当前系统界面码'),('EXT-03','GET /auth/permissions/{permission}','Bearer 与独立界面码','allowed'),('EXT-04','GET /auth/api-permissions/{operationId}','Bearer 与操作编号','operationId、allowed'),('EXT-05','GET /auth/users/{userId}','Bearer 与用户标识','用户标识、工号和姓名'),('EXT-06','POST /auth/logout','Bearer','撤销结果'),('EXT-07','GET /auth/departments','Bearer、parentId、keyword、分页','部门及展开提示'),('EXT-08','GET /auth/departments/{departmentId}/users','Bearer、departmentId、keyword、分页','身份候选人')],'2,5,3,3'))
  add('=== 内部系统级接口\n\n前后端使用 HTTP/JSON；平台管理请求要求 rbac audience 与相应操作权限。以下按模块列出路由和数据类别，具体字段见详细设计文档。')
- add(table(['接口编号','路由范围','核心输入 / 输出','需求'],[('API-U','/api/users 及用户角色子资源','用户和角色编号 / 用户分页及已分配角色','REQ-F-02'),('API-R','/api/roles 及角色权限子资源','角色名称与权限标识 / 角色、权限或分页结果','REQ-F-03'),('API-D','/api/departments','分页参数 / 部门树节点','REQ-F-04'),('API-S','/api/systems','分页 / 系统目录','REQ-F-05'),('API-P','/api/systems/{systemId}/permissions','系统编号 / 权限目录','REQ-F-06'),('API-C','/course-api/terms、/course-api/admin/courses、/course-api/courses/{id}/review','学期资料、分页或审核决定 / 老师业务结果','REQ-F-07')],'2,5,4,2'))
+ add(table(['接口编号','路由范围','核心输入 / 输出','需求'],[('API-U','/api/users 及用户角色子资源','用户和角色编号 / 用户分页及已分配角色','REQ-F-02'),('API-R','/api/roles 及角色权限子资源','角色名称与权限标识 / 角色、权限或分页结果','REQ-F-03'),('API-D','/api/departments','分页参数 / 部门树节点','REQ-F-04'),('API-S','/api/systems','分页 / 系统目录','REQ-F-05'),('API-P','/api/systems/{systemId}/permissions','系统编号 / 权限目录','REQ-F-06'),('API-C','/course-api/login、/course-api/teacher/courses、/course-api/me/courses、/course-api/teachers 及其余接入业务路由','课程工号、学号、查询条件或管理输入 / 师生工作台与管理结果','REQ-F-07')],'2,5,4,2'))
  add('''== 数据设计与存储策略
 
 === 全局逻辑结构
@@ -375,6 +386,8 @@ RBAC 表达全部操作许可，部门限定账号、角色及管理范围。结
  add('''=== 存储与物理策略
 
 MySQL InnoDB 保存业务数据和登录会话，利用事务、外键及唯一约束维护关系一致性。平台与课程系统使用不同数据库和账号。当前采用单实例，不设置读写分离、分片或额外缓存；实体编号由数据库自增生成，登录会话使用随机 UUID。
+
+课程库师生名册以 user_id 引用平台用户编号，工号或学号对应平台用户名。演示导入在一个 MySQL 事务中写两库，以部门归属创建角色并绑定已有平台用户，课程库按名册唯一键核对。
 
 授权从数据库当前关系查询，避免缓存失效改变撤权语义。用户、角色列表按部门及分页读取；关联索引用于当前权限查询。数据库连接池有界，性能场景在相同数据与配置下测量。
 

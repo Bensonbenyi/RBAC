@@ -250,10 +250,10 @@ index 0000000..011417a
 +}
 diff --git a/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/security/RbacIntegrationFilter.java b/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/security/RbacIntegrationFilter.java
 new file mode 100644
-index 0000000..8a5a1e5
+index 0000000..09dde25
 --- /dev/null
 +++ b/backend/src/main/java/cn/edu/xmu/projectmgt/infrastructure/security/RbacIntegrationFilter.java
-@@ -0,0 +1,132 @@
+@@ -0,0 +1,140 @@
 +package cn.edu.xmu.projectmgt.infrastructure.security;
 +
 +import cn.edu.xmu.projectmgt.infrastructure.identity.client.ApiAuthorityClient;
@@ -279,17 +279,25 @@ index 0000000..8a5a1e5
 +
 +/** 对接精简范围内的课程接口；API 许可与界面码分离，保留老师服务内的业务校验。 */
 +public class RbacIntegrationFilter extends OncePerRequestFilter {
++  private static final String ID = "/[1-9][0-9]*";
 +  private static final List<Route> ROUTES =
 +      List.of(
 +          new Route("GET", "/me", "getCurrentUser", "login"),
++          new Route("GET", "/me/courses", "listStudentCourses", "login"),
++          new Route("GET", "/me/courses" + ID + "/grades", "getMyGrades", "login"),
 +          new Route("GET", "/teacher/courses", "listTeacherCourses", "login"),
++          new Route("GET", "/courses" + ID + "/classes", "listClasses", "login"),
++          new Route("GET", "/courses" + ID + "/milestones", "listMilestones", "login"),
++          new Route("GET", "/classes" + ID + "/students", "listClassStudents", "login"),
++          new Route("GET", "/teachers", "listTeachers", "TV"),
++          new Route("POST", "/teachers", "createTeacher", "TEC"),
 +          new Route("GET", "/terms", "listTerms", "login"),
 +          new Route("POST", "/terms", "createTerm", "TC"),
-+          new Route("PATCH", "/terms/[1-9][0-9]*", "updateTerm", "TE"),
-+          new Route("DELETE", "/terms/[1-9][0-9]*", "deleteTerm", "TD"),
++          new Route("PATCH", "/terms" + ID, "updateTerm", "TE"),
++          new Route("DELETE", "/terms" + ID, "deleteTerm", "TD"),
 +          new Route("GET", "/admin/courses", "listAdminCourses", "CV"),
-+          new Route("GET", "/courses/[1-9][0-9]*", "getCourse", "CV"),
-+          new Route("POST", "/courses/[1-9][0-9]*/review", "reviewCourse", "CR"));
++          new Route("GET", "/courses" + ID, "getCourse", "CV"),
++          new Route("POST", "/courses" + ID + "/review", "reviewCourse", "CR"));
 +
 +  private record Route(String method, Pattern path, String operationId, String authority) {
 +    Route(String method, String path, String operationId, String authority) {
@@ -434,6 +442,52 @@ index f967249..d855b32 100644
          return result;
      }
  
+diff --git a/backend/src/main/java/cn/edu/xmu/projectmgt/service/ddd/application/milestone/DddMilestoneService.java b/backend/src/main/java/cn/edu/xmu/projectmgt/service/ddd/application/milestone/DddMilestoneService.java
+index 9ca1b98..7b476a6 100644
+--- a/backend/src/main/java/cn/edu/xmu/projectmgt/service/ddd/application/milestone/DddMilestoneService.java
++++ b/backend/src/main/java/cn/edu/xmu/projectmgt/service/ddd/application/milestone/DddMilestoneService.java
+@@ -2,12 +2,15 @@ package cn.edu.xmu.projectmgt.service.ddd.application.milestone;
+ 
+ import cn.edu.xmu.projectmgt.service.ddd.domain.model.Course;
+ import cn.edu.xmu.projectmgt.service.ddd.domain.model.Milestone;
++import cn.edu.xmu.projectmgt.service.ddd.domain.model.Student;
+ import cn.edu.xmu.projectmgt.service.ddd.domain.repository.CourseRepository;
+ import cn.edu.xmu.projectmgt.service.ddd.domain.repository.MilestoneRepository;
++import cn.edu.xmu.projectmgt.service.ddd.domain.repository.StudentRosterRepository;
+ import cn.edu.xmu.projectmgt.service.common.audit.MilestoneAuditRecorder;
+ import cn.edu.xmu.projectmgt.service.ddd.domain.repository.TeachingClassRepository;
+ import cn.edu.xmu.projectmgt.service.port.common.CurrentTeacherProvider;
+ import cn.edu.xmu.projectmgt.service.port.common.CurrentTeacherResult;
++import cn.edu.xmu.projectmgt.service.port.common.UnifiedIdentityGateway;
+ import cn.edu.xmu.projectmgt.service.port.error.ConflictException;
+ import cn.edu.xmu.projectmgt.service.port.error.ForbiddenException;
+ import cn.edu.xmu.projectmgt.service.port.error.NotFoundException;
+@@ -38,6 +41,8 @@ public class DddMilestoneService implements MilestoneUseCase {
+     private final TeachingClassRepository teachingClassRepository;
+     private final MilestoneRepository milestoneRepository;
+     private final CurrentTeacherProvider currentTeacherProvider;
++    private final UnifiedIdentityGateway identityGateway;
++    private final StudentRosterRepository studentRoster;
+     private final MilestoneAuditRecorder milestoneAuditRecorder;
+ 
+     /**
+@@ -47,8 +52,14 @@ public class DddMilestoneService implements MilestoneUseCase {
+     @Transactional(readOnly = true)
+     public MilestoneListResult listMilestones(Long courseId) {
+         Course course = requireCourse(courseId);
+-        CurrentTeacherResult teacher = currentTeacherProvider.currentTeacher();
+-        if (!isLeader(course, teacher) && !teachesCourse(courseId, teacher)) {
++        boolean canRead = currentTeacherProvider.findCurrentTeacher()
++                .map(teacher -> isLeader(course, teacher) || teachesCourse(courseId, teacher))
++                .orElseGet(() -> course.getCourseStatus() == Course.OPEN
++                        && studentRoster.findByUserId(identityGateway.currentIdentity().userId())
++                                .map(Student::getId)
++                                .filter(studentId -> studentRoster.existsInCourse(courseId, studentId))
++                                .isPresent());
++        if (!canRead) {
+             throw new ForbiddenException("只有本课程的教学组长、任课教师和该课程学生可以查看。");
+         }
+         int weightSum = milestoneRepository.sumWeight(courseId);
 diff --git a/backend/src/main/java/cn/edu/xmu/projectmgt/service/structured/auth/StructuredLoginService.java b/backend/src/main/java/cn/edu/xmu/projectmgt/service/structured/auth/StructuredLoginService.java
 index 32523ed..5bcc7b3 100644
 --- a/backend/src/main/java/cn/edu/xmu/projectmgt/service/structured/auth/StructuredLoginService.java
@@ -462,6 +516,58 @@ index 32523ed..5bcc7b3 100644
          return result;
      }
  
+diff --git a/backend/src/main/java/cn/edu/xmu/projectmgt/service/structured/milestone/StructuredMilestoneService.java b/backend/src/main/java/cn/edu/xmu/projectmgt/service/structured/milestone/StructuredMilestoneService.java
+index 67caa0e..a8d0b52 100644
+--- a/backend/src/main/java/cn/edu/xmu/projectmgt/service/structured/milestone/StructuredMilestoneService.java
++++ b/backend/src/main/java/cn/edu/xmu/projectmgt/service/structured/milestone/StructuredMilestoneService.java
+@@ -6,15 +6,20 @@ import cn.edu.xmu.projectmgt.infrastructure.persistence.entity.ClassTeacherAssig
+ import cn.edu.xmu.projectmgt.infrastructure.persistence.entity.CourseEntity;
+ import cn.edu.xmu.projectmgt.infrastructure.persistence.entity.CourseLeaderAssignmentEntity;
+ import cn.edu.xmu.projectmgt.infrastructure.persistence.entity.MilestoneEntity;
++import cn.edu.xmu.projectmgt.infrastructure.persistence.entity.StudentEntity;
+ import cn.edu.xmu.projectmgt.infrastructure.persistence.entity.TeachingClassEntity;
+ import cn.edu.xmu.projectmgt.infrastructure.persistence.repository.ClassTeacherAssignmentJpaRepository;
+ import cn.edu.xmu.projectmgt.infrastructure.persistence.repository.CourseJpaRepository;
+ import cn.edu.xmu.projectmgt.infrastructure.persistence.repository.CourseLeaderAssignmentJpaRepository;
++import cn.edu.xmu.projectmgt.infrastructure.persistence.repository.EnrollmentJpaRepository;
+ import cn.edu.xmu.projectmgt.infrastructure.persistence.repository.MilestoneJpaRepository;
++import cn.edu.xmu.projectmgt.infrastructure.persistence.repository.StudentJpaRepository;
+ import cn.edu.xmu.projectmgt.infrastructure.persistence.repository.TeachingClassJpaRepository;
+ import cn.edu.xmu.projectmgt.service.common.audit.MilestoneAuditRecorder;
++import cn.edu.xmu.projectmgt.service.common.course.CourseStatus;
+ import cn.edu.xmu.projectmgt.service.port.common.CurrentTeacherProvider;
+ import cn.edu.xmu.projectmgt.service.port.common.CurrentTeacherResult;
++import cn.edu.xmu.projectmgt.service.port.common.UnifiedIdentityGateway;
+ import cn.edu.xmu.projectmgt.service.port.error.ConflictException;
+ import cn.edu.xmu.projectmgt.service.port.error.ForbiddenException;
+ import cn.edu.xmu.projectmgt.service.port.error.NotFoundException;
+@@ -51,6 +56,9 @@ public class StructuredMilestoneService implements MilestoneUseCase {
+     private final ClassTeacherAssignmentJpaRepository classTeacherRepository;
+     private final MilestoneJpaRepository milestoneRepository;
+     private final CurrentTeacherProvider currentTeacherProvider;
++    private final UnifiedIdentityGateway identityGateway;
++    private final StudentJpaRepository studentRepository;
++    private final EnrollmentJpaRepository enrollmentRepository;
+     private final MilestoneAuditRecorder milestoneAuditRecorder;
+ 
+     /**
+@@ -60,8 +68,14 @@ public class StructuredMilestoneService implements MilestoneUseCase {
+     @Transactional(readOnly = true)
+     public MilestoneListResult listMilestones(Long courseId) {
+         CourseEntity course = requireCourse(courseId);
+-        CurrentTeacherResult teacher = currentTeacherProvider.currentTeacher();
+-        if (!isLeader(courseId, teacher) && !teachesCourse(courseId, teacher)) {
++        boolean canRead = currentTeacherProvider.findCurrentTeacher()
++                .map(teacher -> isLeader(courseId, teacher) || teachesCourse(courseId, teacher))
++                .orElseGet(() -> course.getCourseStatus() == CourseStatus.OPEN
++                        && studentRepository.findByUserId(identityGateway.currentIdentity().userId())
++                                .map(StudentEntity::getId)
++                                .filter(studentId -> enrollmentRepository.existsByCourseIdAndStudentId(courseId, studentId))
++                                .isPresent());
++        if (!canRead) {
+             throw new ForbiddenException("只有本课程的教学组长、任课教师和该课程学生可以查看。");
+         }
+         int weightSum = milestoneRepository.sumWeightByCourseId(courseId);
 diff --git a/backend/src/test/java/cn/edu/xmu/projectmgt/infrastructure/http/ExternalRestClientFactoryTest.java b/backend/src/test/java/cn/edu/xmu/projectmgt/infrastructure/http/ExternalRestClientFactoryTest.java
 index a6b4b4c..bfb4b26 100644
 --- a/backend/src/test/java/cn/edu/xmu/projectmgt/infrastructure/http/ExternalRestClientFactoryTest.java

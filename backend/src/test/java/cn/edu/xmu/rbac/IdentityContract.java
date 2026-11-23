@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.net.URI;
+import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Instant;
 import java.util.Base64;
@@ -15,6 +17,44 @@ import org.springframework.transaction.support.TransactionTemplate;
 import tools.jackson.databind.JsonNode;
 
 abstract class IdentityContract extends ContractFixture {
+  @Test
+  @DisplayName("课程网页跨域预检通过后仍需身份和权限")
+  void authorizesCourseOriginBeforeBearerAuthentication() throws Exception {
+    var url = URI.create("http://localhost:" + port + "/auth/permissions/MCO");
+    String origin = "https://course.example.test";
+    var preflight =
+        HttpRequest.newBuilder(url)
+            .header("Origin", origin)
+            .header("Access-Control-Request-Method", "GET")
+            .header("Access-Control-Request-Headers", "authorization,x-target-system")
+            .method("OPTIONS", HttpRequest.BodyPublishers.noBody())
+            .build();
+    var response = client.send(preflight, HttpResponse.BodyHandlers.ofString());
+    assertEquals(200, response.statusCode());
+    assertEquals(origin, response.headers().firstValue("Access-Control-Allow-Origin").orElse(""));
+    assertTrue(response.headers().firstValue("Access-Control-Allow-Credentials").isEmpty());
+
+    var request = HttpRequest.newBuilder(url).header("Origin", origin);
+    assertEquals(
+        401, client.send(request.build(), HttpResponse.BodyHandlers.ofString()).statusCode());
+    String course = login("viewer", "course-project-management");
+    var authorized =
+        client.send(
+            request.header("Authorization", "Bearer " + course).build(),
+            HttpResponse.BodyHandlers.ofString());
+    assertEquals(200, authorized.statusCode());
+    assertEquals(origin, authorized.headers().firstValue("Access-Control-Allow-Origin").orElse(""));
+    assertTrue(json.readTree(authorized.body()).path("allowed").asBoolean());
+
+    var rejected =
+        HttpRequest.newBuilder(url)
+            .header("Origin", "https://other.example.test")
+            .header("Access-Control-Request-Method", "GET")
+            .method("OPTIONS", HttpRequest.BodyPublishers.noBody())
+            .build();
+    assertEquals(403, client.send(rejected, HttpResponse.BodyHandlers.ofString()).statusCode());
+  }
+
   @Test
   @DisplayName("REQ-F-01 统一身份按层级和关键词分页查询部门")
   void listsIdentityDepartmentsByLevelAndKeyword() {

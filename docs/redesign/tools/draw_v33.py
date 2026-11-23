@@ -175,14 +175,14 @@ def deployment():
   m=d.model('UMLNode',name=title,ownedElements=[]);v=d.view('UMLNodeView',m,left=x,top=y,width=w,height=h,subViews=[])
   box(d,x,y,w,h,title,body);d.line([(x,y),(x+12,y-12),(x+w+12,y-12),(x+w,y)]);d.line([(x+w+12,y-12),(x+w+12,y+h-12),(x+w,y+h)])
   return m,v
- browser=node('演示浏览器',240,81,420,79,['IP 加 HTTP 访问两个前端入口'])
- manager=node('Swarm Manager  2 vCPU / 2 GB',60,217,780,140,['113.44.144.119  /  172.31.7.102','Nginx 静态前端与反向代理','RBAC JVM 384 MB  课程 JVM 512 MB'])
+ browser=node('演示浏览器',240,81,420,79,['访问两个 Web 入口，课程前端直连 /auth'])
+ manager=node('Swarm Manager  2 vCPU / 2 GB',60,217,780,140,['113.44.144.119  /  172.31.7.102','Nginx 静态前端与反向代理','RBAC 容器 512 MiB  课程容器 512 MiB'])
  db=node('Swarm Worker 1  2 vCPU / 2 GB',60,429,780,100,['119.3.221.88  /  172.31.12.231','MySQL 512 MB  两个独立库与数据库账号'])
  old=node('Swarm Worker 2  2 vCPU / 1 GB',60,575,360,110,['120.46.176.79','保留现有应用'])
  backup=node('辅助节点  2 vCPU / 1 GB',480,575,360,110,['1.92.106.198','备份与验收辅助'])
  d.line([(450,165),(450,200)],'dep');d.text(468,187,'HTTP :80',19)
  d.line([(450,362),(450,412)],'dep');d.text(468,392,'加密 Overlay  MySQL :3306',19)
- d.note(60,712,780,['新服务使用独立网络与卷，数据库不发布公网端口。','现有容器保留；当前为单管理节点与单数据库实例。'])
+ d.note(60,712,780,['课程网页的 CORS 来源由权限后端配置，正式请求仍校验令牌。','MySQL 使用独立库和卷，只在 Swarm 内网提供服务。'])
 
 def identity_directory_sequence(op):
  controller,action,query,http={

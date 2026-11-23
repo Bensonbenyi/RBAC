@@ -72,6 +72,7 @@ abstract class ContractFixture {
     p.add("spring.datasource.password", MYSQL::getPassword);
     p.add("app.jwt.private-key", () -> KEYS.resolve("private.pem").toUri().toString());
     p.add("app.jwt.public-key", () -> KEYS.resolve("public.pem").toUri().toString());
+    p.add("app.cors.allowed-origins", () -> "https://course.example.test");
   }
 
   @LocalServerPort int port;
