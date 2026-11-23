@@ -5,6 +5,7 @@ from zipfile import ZipFile,ZIP_DEFLATED
 p=argparse.ArgumentParser();p.add_argument('--group');a=p.parse_args()
 R=Path(__file__).resolve().parents[1];version=(R/'VERSION').read_text().strip()
 files=[R/n for n in ['README.md','VERSION','CHANGELOG.md','.gitignore','课件图例与绘图验收.md','课件图稿对应清单.md','绘图规范与参考.md','与v3.2.2对照修订.md','流程配图覆盖清单.md']]
+files.append(R.parent/'OOAD_Grading_2026_V4.pdf')
 for title in ['统一权限管理系统需求与详细设计说明书','统一权限管理系统概要设计说明书']:
  files += [R/(title+'.adoc'),R/(title+'-v'+version+'.pdf')]
 for folder in ['assets/v33','sql','tools']:

@@ -275,7 +275,7 @@ def utility():
 def dataflow():
  flows = [
   ('登录及本人资料请求', '凭据及本人资料结果', '1', '认证会话'),
-  ('用户与目录请求', '用户与目录结果', '2', '目录查询与维护'),
+  ('用户与目录请求', '用户与目录结果', '2', '目录查询'),
   ('角色授权请求', '角色授权结果', '3', '角色授权'),
   ('身份与鉴权请求', '身份与鉴权结果', '4', '接入身份鉴权'),
  ]
@@ -331,8 +331,8 @@ def dataflow():
    store(first, 736, y + 42, 'D2 登录会话')
    flow(first, 731, 502, y + 33, '当前会话')
    flow(first, 502, 731, y + 59, '会话记录或撤销时间')
-  else:
-   flow(first, 502, 731, y + 10, '目录变更' if number == '2' else '角色与授权变更')
+  elif number == '3':
+   flow(first, 502, 731, y + 10, '角色与授权变更')
  first.text(450, 613, 'D1 为八张业务表，D2 为登录会话表。同编号表示同一数据存储。', 17, True)
 
 def analysis():
@@ -342,7 +342,7 @@ def analysis():
  for name,x,y in [('管理用户',80,248),('业务系统',740,505)]:
   m=d.model('UMLActor',name=name);v=d.view('UMLActorView',m,left=x,top=y,width=80,height=110);actors.append((m,v))
   d.svg.append(f'<circle cx="{x+40}" cy="{y+15}" r="14" fill="white" stroke="black"/>');d.line([(x+40,y+29),(x+40,y+68)]);d.line([(x+15,y+40),(x+65,y+40)]);d.line([(x+40,y+68),(x+17,y+94)]);d.line([(x+40,y+68),(x+63,y+94)]);d.text(x+40,y+125,name,21,True)
- for i,title in enumerate(['登录、查看本人资料与退出','查询用户与分配角色','维护角色与授权','查看部门与维护系统权限目录','查询身份与权限']):
+ for i,title in enumerate(['登录、查看本人资料与退出','查询用户与分配角色','维护角色与授权','查看部门、系统与权限目录','查询身份与权限']):
   y=86+i*107;m=d.model('UMLUseCase',name=title);v=d.view('UMLUseCaseView',m,left=270,top=y,width=360,height=77)
   d.svg.append(f'<ellipse cx="450" cy="{y+38}" rx="180" ry="38" fill="white" stroke="black"/>');d.text(450,y+46,title,22,True)
   actor=actors[1] if i==4 else actors[0];x0=actor[1]['left']+(0 if i==4 else 80);y0=actor[1]['top']+55;x1=630 if i==4 else 270

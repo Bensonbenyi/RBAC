@@ -92,12 +92,12 @@ def selection_sequence(op):
 def ui_sequences():
  seq=Sequence('course-08','COURSE-08 getCurrentUser 支撑接口',[('obj','Caller'),('service','CurrentUserService'),('identity','UnifiedIdentityGateway'),('profile','CurrentUserProfileGateway')],height=1250)
  seq.msg(0,1,300,'getCurrentUser()',end=1030)
- seq.msg(1,2,440,'identity = currentIdentity()',end=490)
+ seq.msg(1,2,440,'读取当前请求中的已验证身份',end=490)
  seq.msg(1,3,620,'profile = findByUserId(identity.userId)',end=680)
  seq.frame(730,95,'opt','平台账号尚未关联本地教师或学生')
  seq.msg(1,0,795,'«exception» ForbiddenException',reply=True)
  seq.msg(1,0,1040,'CurrentUserResult（本地资料、角色、界面码）',reply=True)
- seq.note(1140,'入口沿用课程适配器的 Bearer、会话及 API 检查；两种 CurrentUserService 实现共用端口和本地资料网关。')
+ seq.note(1140,'课程过滤器先向平台查本人身份，业务服务在同一请求中复用结果，随后读取课程库资料。')
  seq=Sequence('course-09','COURSE-09 课程登录',[
   ('web','CourseWeb'),('api','LoginController'),('svc','LoginUseCase'),
   ('db','CourseRepository'),('auth','UnifiedIdentityClient')],height=1230)

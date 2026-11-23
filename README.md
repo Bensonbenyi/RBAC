@@ -22,7 +22,7 @@
 java -jar "backend/target/rbac-backend-$(cat docs/redesign/VERSION).jar"
 ```
 
-密钥参数使用 Spring Resource 路径，例如 `file:/绝对路径/private.pem`。默认令牌有效期为 30 分钟。Flyway 完成建表后，在空演示库手动导入 [演示 SQL](deploy/mysql/demo.sql)。用户资料和部门由 SQL 维护，角色与授权由平台维护。
+密钥参数使用 Spring Resource 路径，例如 `file:/绝对路径/private.pem`。默认令牌有效期为 30 分钟。Flyway 完成建表后，在空演示库手动导入 [演示 SQL](deploy/mysql/demo.sql)。用户、部门、系统和权限定义由 SQL 维护。后台提供目录查询和完整角色授权。
 
 ## 老师系统
 
@@ -42,7 +42,7 @@ VITE_API_BASE_URL=/course-api VITE_IDENTITY_BASE_URL=/course-api npm run build -
 
 `deploy/stack.yaml` 将入口及两套应用部署在现有 Swarm Manager，MySQL 放在 Worker 1。使用独立 Overlay、Secret 和数据卷。手动导入和恢复步骤见 [部署说明](deploy/README.md)。
 
-当前文档入口为 [设计交付目录](docs/redesign/README.md)，本轮改动和验证见 [v3.7.0 整改记录](docs/implementation/整改报告-v3.7.0.md)，原部署记录见 [实施报告](docs/implementation/实施报告.md)。`tooling/build-design.sh` 重建两份 PDF、AsciiDoc、黑白图稿及 StarUML 模型。
+当前文档入口为 [设计交付目录](docs/redesign/README.md)，本轮改动和验证见 [v3.8.0 整改记录](docs/implementation/整改报告-v3.8.0.md)，原部署记录见 [实施报告](docs/implementation/实施报告.md)。`tooling/build-design.sh` 重建两份 PDF、AsciiDoc、黑白图稿及 StarUML 模型。
 
 
 ## 第二轮验收
@@ -51,6 +51,6 @@ VITE_API_BASE_URL=/course-api VITE_IDENTITY_BASE_URL=/course-api npm run build -
 
 - [权限后台](http://113.44.144.119/platform/) 与 [老师课程入口](http://113.44.144.119/course/)
 - [平台 API 文档](http://113.44.144.119/api-docs/) 与 [JaCoCo 报告](http://113.44.144.119/coverage/)
-- [第二轮演示脚本](docs/implementation/第二轮演示脚本.md)
+- [第二轮演示脚本](docs/implementation/第二轮演示脚本.md) 与 [课程评分办法 V4](docs/OOAD_Grading_2026_V4.pdf)
 
-API 文档由 `python3 tooling/build-api.py` 构建，并核对全部 34 个 Controller 操作。覆盖率由 `./mvnw verify` 生成。真实部署测试使用 `tooling/acceptance.py`，通过环境变量读取演示手机号，使用 `--version` 记录被验收部署的版本，结束时清理合成角色、关联及学期。
+API 文档由 `python3 tooling/build-api.py` 构建，并核对全部 29 个 Controller 操作。覆盖率由 `./mvnw verify` 生成。真实部署测试使用 `tooling/acceptance.py`，通过环境变量读取演示手机号，使用 `--version` 记录被验收部署的版本，结束时清理合成角色、关联及学期。

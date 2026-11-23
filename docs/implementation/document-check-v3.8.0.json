@@ -1,0 +1,57 @@
+{
+  "version": "3.8.0",
+  "layoutRevision": "2026-11-23",
+  "pdfs": [
+    {
+      "name": "统一权限管理系统概要设计说明书-v3.8.0.pdf",
+      "pages": 33,
+      "previousPages": 33,
+      "pageSize": "A4 portrait",
+      "linkTargets": 57,
+      "figurePages": {
+        "chenEr": 25,
+        "databaseTables": 26,
+        "contextDataFlow": 19,
+        "levelOneDataFlow": 20
+      }
+    },
+    {
+      "name": "统一权限管理系统需求与详细设计说明书-v3.8.0.pdf",
+      "pages": 121,
+      "previousPages": 127,
+      "pageSize": "A4 portrait",
+      "linkTargets": 77,
+      "figurePages": {
+        "chenEr": 10,
+        "databaseTables": 11,
+        "contextDataFlow": 9,
+        "levelOneDataFlow": 9,
+        "dataDictionary": 12,
+        "systemUseCases": 14,
+        "currentIdentity": 42,
+        "structuredArchitecture": 20,
+        "dddArchitecture": 21,
+        "dddPackages": 29
+      }
+    }
+  ],
+  "figures": 109,
+  "openApiOperations": 29,
+  "starUmlModels": [
+    {
+      "name": "chen.mdj",
+      "elements": 107
+    },
+    {
+      "name": "rbac-spec.mdj",
+      "elements": 10574
+    },
+    {
+      "name": "schema.mdj",
+      "elements": 250
+    }
+  ],
+  "svgBounds": "passed",
+  "imageReferences": "passed",
+  "toc": "converged"
+}

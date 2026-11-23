@@ -1,6 +1,6 @@
 = 统一权限管理系统需求与详细设计说明书
 OOAD 课程项目组
-v3.7.0, 2026-11-23
+v3.8.0, 2026-11-23
 :doctype: book
 :lang: zh-CN
 :toc:
@@ -21,7 +21,7 @@ v3.7.0, 2026-11-23
 
 本文规定当前基线的需求、数据结构、各功能交互、HTTP 契约和双实现设计，供课程评审、开发与验收使用。独立《概要设计说明书》说明系统骨架及 ATAM 评估，本文保存字段字典和各功能详细设计。
 
-本次版本为 3.7.0，基于 v3.2.2 和 2026-11-17 确认决定修订。代码与文档共用功能编号和配置名称，验证结果见实施报告。
+本次版本为 3.8.0，基于 v3.2.2 和 2026-11-17 确认决定修订。代码与文档共用功能编号和配置名称，验证结果见实施报告。
 
 === 背景与术语
 
@@ -54,6 +54,7 @@ v3.7.0, 2026-11-23
 |https://docs.staruml.io/[StarUML 官方文档] |模型元素和可编辑图稿。
 |https://www.csc.lsu.edu/~chen/pdf/erd-5-pages.pdf[Chen ER 建模论文] |实体、联系、属性、键和参与约束。
 |《5. 面向对象设计》课程课件 |按用户提供的 144 页课件核对类图、分层与 DDD 职责。
+|《面向对象分析与设计课程成绩计算办法》V4 |第二轮验收的 RBAC1、双实现、Swarm 部署和日志要求。
 |需求与详细设计说明书 v2 |字体、字号、用例表配色、接口调用说明和分页形式。
 |https://gitee.com/mingqcn/course-project-mgt[课程管理系统] 990cea2 |四层组织、双实现、统一身份接口和权限码。
 |https://gitee.com/mingqcn/spring-fundamentals[Spring 教学示例] 38fd817 |CloneFactory 0.0.2 编译期拷贝工具。
@@ -65,7 +66,7 @@ v3.7.0, 2026-11-23
 
 === 功能与非功能需求
 
-平台提供登录和鉴权、本部门用户查询与角色分配、部门树查询、角色与授权管理、业务系统登记与删除、权限目录维护，并接入课程系统的学期维护与课程审核。
+平台提供登录和鉴权、本部门用户查询与角色分配、部门树查询、角色与授权管理、业务系统与权限目录查询，并接入课程系统的学期维护与课程审核。
 
 
 
@@ -76,8 +77,8 @@ v3.7.0, 2026-11-23
 |REQ-F-02 |本部门用户查询和用户角色分配
 |REQ-F-03 |本部门角色维护和角色权限配置
 |REQ-F-04 |多级部门目录查询
-|REQ-F-05 |两个业务系统登记
-|REQ-F-06 |各系统权限目录维护
+|REQ-F-05 |两个业务系统目录
+|REQ-F-06 |各系统权限目录查询
 |REQ-F-07 |课程系统学期维护与课程审核接入
 |REQ-N-01 |安全与部门隔离
 |REQ-N-02 |性能可测量与有界查询
@@ -101,7 +102,7 @@ v3.7.0, 2026-11-23
 |BR-07 |登录使用用户名和手机号，password 字段承载手机号；systems 接受一组不重复的目标系统。
 |BR-08 |访问目标系统须有有效会话和该系统的 login 权限。退出只需有效会话及令牌所含的目标系统。
 |BR-09 |JWT 保存身份和目标系统，会话保存在 MySQL；权限按当前授权关系读取。
-|BR-10 |用户和部门通过 SQL 维护。删除角色、权限或业务系统前先处理引用。
+|BR-10 |用户、部门、业务系统和权限定义通过 SQL 维护。删除角色前先处理关联。
 |BR-11 |结构化与 DDD 共用输入输出、存储端口和数据库约束；切换配置保持外部行为一致。
 |BR-13 |界面码与 API 码分别授予；界面展示和接口执行分别检查，统一复用 RBAC 表。
 |BR-14 |RBAC1 角色继承限同部门，支持多级多路径，禁止环；权限按可达角色去重取并集。
@@ -113,7 +114,7 @@ v3.7.0, 2026-11-23
 
 初次部署在空库中显式初始化两个业务系统及其 login 权限。演示数据建立教学部与教务部、admin、reviewer、viewer 及 other 四个合成账号；管理员与普通用户使用相同实体，通过角色权限区分。
 
-Flyway 建表后，在空演示库手动导入 demo.sql。账号资料和部门变更通过 SQL 维护。课程库完成迁移后执行教师资料关联脚本。
+Flyway 建表后，在空演示库手动导入 demo.sql。账号资料和部门变更通过 SQL 维护。课程库完成迁移后执行教师资料关联脚本。规模演示另行导入 10,000 个匿名账号及 111 个来源组织节点，统一挂到独立根部门下。
 
 === 需求分析模型
 
@@ -199,7 +200,7 @@ image::v33/schema.svg[数据库表关系图,width=100%]
 
 数据库采用 MySQL 8.4 InnoDB，文本使用区分大小写的排序规则。用户名和系统标识建立唯一索引，角色名及权限编码采用所属范围内的联合唯一索引。两组授权和角色继承关联表使用联合主键，并为反向关联列建立索引。
 
-写用例在 Service 事务边界内执行。角色、权限和业务系统存在引用时返回冲突。账号与部门通过 SQL 维护，外键约束仍生效。
+写用例在 Service 事务边界内执行。角色存在引用时返回冲突。账号、部门、业务系统和权限定义通过 SQL 维护，外键约束仍生效。
 
 关联查询从用户直接角色出发，递归展开 role_inheritance，再通过角色权限读取去重并集。每个鉴权请求检查已提交的授权关系；已进入事务的请求按数据库事务可见性完成。新增授权及继承用 POST，组合主键拒绝重复关系并返回 409。删除关联重复调用仍返回 204。课程演示按单人操作安排。
 
@@ -546,7 +547,7 @@ image::v33/flow-adapter.svg[持久化读取与数据映射 顺序图,width=100%]
 
 ==== 对象拷贝与运行日志
 
-老师的 CloneFactory 0.0.2 作为编译期注解处理器使用。名称、业务系统登记和权限登记三个 DTO 通过 @CopyTo 声明目标命令。生成的 copy 返回目标 record。教师仓库提交 38fd817 的工具版本为 0.0.2。JPA 将数据库记录映射为持久化实体，适配器将实体转换为 Data，领域对象由应用服务构造。
+老师的 CloneFactory 0.0.2 作为编译期注解处理器使用。角色名称 DTO 通过 @CopyTo 声明目标命令。生成的 copy 返回目标 record。教师仓库提交 38fd817 的工具版本为 0.0.2。JPA 将数据库记录映射为持久化实体，适配器将实体转换为 Data，领域对象由应用服务构造。
 
 [cols="2,5,2",options="header"]
 |===
@@ -565,7 +566,7 @@ image::v33/flow-adapter.svg[持久化读取与数据映射 顺序图,width=100%]
 
 === 功能描述
 
-以下每项列出需求、调用说明与详细交互。写请求先校验输入并使用 CloneFactory 转为用例输入；操作者身份由 BearerFilter 和 CurrentIdentity 提供。DDD 的 User 校验可分配角色的部门，Role 校验基础角色与继承环路。应用服务保存授权关系。
+以下每项列出需求、调用说明与详细交互。写请求先校验输入，角色名称 DTO 通过 CloneFactory 转为用例输入；操作者身份由 BearerFilter 和 CurrentIdentity 提供。DDD 的 User 校验可分配角色的部门，Role 校验基础角色与继承环路。应用服务保存授权关系。
 
 
 ==== 登录
@@ -727,7 +728,7 @@ image::v33/auth-03-shared.svg[AUTH-03 详细交互,width=100%]
 2+|*前置条件：* 已登录 rbac，具有用户查询权限。
 |*主成功场景：* |*信息*
 |1. 校验 user.view。 |部门从当前操作者身份取得。
-|2. 分页返回本部门用户。 |记录包含账号、姓名和部门编号。
+|2. 分页返回本部门用户。 |记录包含用户编号、账号、姓名和部门编号。
 |*扩展场景：* |*处理及信息*
 |无查询许可 |403。
 |分页参数无效 |400。
@@ -824,14 +825,14 @@ image::v33/class-ddd-user.svg[用户管理 DDD 模块类图,width=100%]
 [cols="3,4,3",options="header",frame=all,grid=all]
 |===
 |图中处理／实际方法 |调用说明 URL |功能
-|`DepartmentController.list` |`GET /api/departments` |有界分页读取目录。
+|`DepartmentController.list` |`GET /api/departments` |有界分页读取部门。
 |===
 --
 
 
 ===== DEPT-01 查询部门
 
-有界分页读取目录。
+有界分页读取部门。
 
 输入：page 从 0 开始，size 默认为 20、最大 100。
 
@@ -857,27 +858,24 @@ image::v33/class-shared-department.svg[部门目录 共享 模块类图,width=10
 --
 
 
-==== 业务系统维护
+==== 查看业务系统
 
 
 [cols="1,1",frame=all,grid=all,role="use-case"]
 |===
-|*用例编号：* UPMS-SYS-001 |*用例名称：* 业务系统维护
+|*用例编号：* UPMS-SYS-001 |*用例名称：* 查看业务系统
 2+|*级别：* 用户目标
 2+|*包：* 系统目录
 2+|*参与者：* 持有 system.manage 的管理用户
-2+|*描述：* 登记和维护平台自身及课程系统的标识与名称。
-2+|*触发事件：* 管理员进入系统目录并选择维护操作。
-2+|*前置条件：* 已登录 rbac 并通过系统管理权限检查。
+2+|*描述：* 查看权限后台与课程系统的系统目录。
+2+|*触发事件：* 管理员打开业务系统页面。
+2+|*前置条件：* 已登录 rbac，具有系统目录许可。
 |*主成功场景：* |*信息*
-|1. 读取系统列表或提交 systemKey 与 name。 |系统标识全局唯一。
-|2. 新建系统。 |系统标识固定，登记后的名称通过 SQL 维护。
-|3. 检查权限引用后删除系统。 |先处理所属权限，数据库限制被引用系统删除。
+|1. 分页读取系统编号、标识与名称。 |系统标识全局唯一，目录通过 SQL 维护。
 |*扩展场景：* |*处理及信息*
-|系统标识重复 |409。
-|目标不存在 |404。
-|系统仍有权限定义 |409。
-2+|*后置条件：* 系统目录更新，权限仍由角色权限关系授予。
+|无目录许可 |403。
+|分页参数无效 |400。
+2+|*后置条件：* 页面展示系统目录。
 |===
 
 对应需求 REQ-F-05。
@@ -889,16 +887,14 @@ image::v33/class-shared-department.svg[部门目录 共享 模块类图,width=10
 [cols="3,4,3",options="header",frame=all,grid=all]
 |===
 |图中处理／实际方法 |调用说明 URL |功能
-|`SystemController.list` |`GET /api/systems` |有界分页读取目录。
-|`SystemController.create` |`POST /api/systems` |系统标识全局唯一，创建后固定。
-|`SystemController.delete` |`DELETE /api/systems/{id}` |有引用时返回 409；不存在返回 404。
+|`SystemController.list` |`GET /api/systems` |有界分页读取系统目录。
 |===
 --
 
 
 ===== SYS-01 查询业务系统
 
-有界分页读取目录。
+有界分页读取系统目录。
 
 输入：page 从 0 开始，size 默认为 20、最大 100。
 
@@ -913,40 +909,6 @@ image::v33/sys-01-shared.svg[SYS-01 详细交互,width=100%]
 --
 
 
-===== SYS-02 新建业务系统
-
-系统标识全局唯一，创建后固定。
-
-输入：ManagementDTOs.CreateSystemDTO：systemKey、name。
-
-成功结果：201。权限：system.manage。
-
-
-[.diagram.plate]
---
-[[fig-sys-02-shared]]
-.SYS-02 详细交互
-image::v33/sys-02-shared.svg[SYS-02 详细交互,width=100%]
---
-
-
-===== SYS-04 删除业务系统
-
-有引用时返回 409；不存在返回 404。
-
-输入：路径 id。无请求体。
-
-成功结果：204。权限：system.manage。
-
-
-[.diagram.plate]
---
-[[fig-sys-04-shared]]
-.SYS-04 详细交互
-image::v33/sys-04-shared.svg[SYS-04 详细交互,width=100%]
---
-
-
 ===== 系统目录模块类图
 
 
@@ -958,28 +920,25 @@ image::v33/class-shared-system.svg[系统目录 共享 模块类图,width=100%]
 --
 
 
-==== 操作权限维护
+==== 查看权限目录
 
 
 [cols="1,1",frame=all,grid=all,role="use-case"]
 |===
-|*用例编号：* UPMS-PERM-001 |*用例名称：* 操作权限维护
+|*用例编号：* UPMS-PERM-001 |*用例名称：* 查看权限目录
 2+|*级别：* 用户目标
 2+|*包：* 权限目录
 2+|*参与者：* 持有 permission.manage 的管理用户
-2+|*描述：* 在所属业务系统内查询、新建、改名及删除权限。
-2+|*触发事件：* 管理员选择一个系统的权限目录。
-2+|*前置条件：* 已登录 rbac，具有权限管理许可。
+2+|*描述：* 查看指定系统的权限编码及名称。
+2+|*触发事件：* 管理员选择一个业务系统。
+2+|*前置条件：* 已登录 rbac，具有权限目录许可。
 |*主成功场景：* |*信息*
-|1. 验证所属业务系统，分页查询权限。 |systemId 来自路径。
-|2. 新建 code、name 或修改展示名称。 |systemId、code 创建后固定。
-|3. 检查角色权限引用后删除。 |权限码在所属系统内唯一。
+|1. 验证所属系统后分页查询权限。 |systemId 来自路径；权限编码在系统内唯一。
 |*扩展场景：* |*处理及信息*
-|系统或目标权限不存在 |404。
-|权限码重复 |409。
-|仍被角色引用 |409。
-|编码或名称无效 |400。
-2+|*后置条件：* 目录更新；后续角色配置引用现有权限编号。
+|系统不存在 |404。
+|无目录许可 |403。
+|分页参数无效 |400。
+2+|*后置条件：* 授权仍在角色页面办理，权限定义通过 SQL 维护。
 |===
 
 对应需求 REQ-F-06。
@@ -991,17 +950,14 @@ image::v33/class-shared-system.svg[系统目录 共享 模块类图,width=100%]
 [cols="3,4,3",options="header",frame=all,grid=all]
 |===
 |图中处理／实际方法 |调用说明 URL |功能
-|`PermissionController.list` |`GET /api/systems/{systemId}/permissions` |有界分页；权限按所属系统查询。
-|`PermissionController.create` |`POST /api/systems/{systemId}/permissions` |校验所属系统存在，权限码在系统内唯一。
-|`PermissionController.update` |`PATCH /api/permissions/{id}` |仅修改名称，所属系统及权限码创建后固定。
-|`PermissionController.delete` |`DELETE /api/permissions/{id}` |有引用时返回 409；不存在返回 404。
+|`PermissionController.list` |`GET /api/systems/{systemId}/permissions` |按所属系统分页读取权限。
 |===
 --
 
 
 ===== PERM-01 查询权限
 
-有界分页；权限按所属系统查询。
+按所属系统分页读取权限。
 
 输入：路径 systemId；page 从 0 开始，size 默认为 20、最大 100。
 
@@ -1013,57 +969,6 @@ image::v33/class-shared-system.svg[系统目录 共享 模块类图,width=100%]
 [[fig-perm-01-shared]]
 .PERM-01 详细交互
 image::v33/perm-01-shared.svg[PERM-01 详细交互,width=100%]
---
-
-
-===== PERM-02 新建权限
-
-校验所属系统存在，权限码在系统内唯一。
-
-输入：ManagementDTOs.CreatePermissionDTO：code、name；systemId 来自路径。
-
-成功结果：201。权限：permission.manage。
-
-
-[.diagram.plate]
---
-[[fig-perm-02-shared]]
-.PERM-02 详细交互
-image::v33/perm-02-shared.svg[PERM-02 详细交互,width=100%]
---
-
-
-===== PERM-03 重命名权限
-
-仅修改名称，所属系统及权限码创建后固定。
-
-输入：ManagementDTOs.NameDTO：name。
-
-成功结果：204。权限：permission.manage。
-
-
-[.diagram.plate]
---
-[[fig-perm-03-shared]]
-.PERM-03 详细交互
-image::v33/perm-03-shared.svg[PERM-03 详细交互,width=100%]
---
-
-
-===== PERM-04 删除权限
-
-有引用时返回 409；不存在返回 404。
-
-输入：路径 id。无请求体。
-
-成功结果：204。权限：permission.manage。
-
-
-[.diagram.plate]
---
-[[fig-perm-04-shared]]
-.PERM-04 详细交互
-image::v33/perm-04-shared.svg[PERM-04 详细交互,width=100%]
 --
 
 
@@ -1117,7 +1022,7 @@ image::v33/class-shared-permission.svg[权限目录 共享 模块类图,width=10
 |`RoleController.permissions` |`GET /api/roles/{id}/permissions` |角色限定本部门；权限可来自两个接入系统。
 |`RoleController.grant` |`POST /api/roles/{id}/permissions` |通过 permissionId 新建直接授权；重复提交返回 409。
 |`RoleController.revoke` |`DELETE /api/roles/{id}/permissions/{permissionId}` |同事务移除关联，提交后新鉴权请求读取新权限。
-|`SystemController.options` |`GET /api/systems/options` |仅开放授权任务所需的系统只读目录，不授予系统写权限。
+|`SystemController.options` |`GET /api/systems/options` |仅开放授权任务所需的系统只读目录，按授权任务放行。
 |`PermissionController.options` |`GET /api/permissions/options` |查询参数 systemId；返回该系统权限，分页上限 100。
 |===
 --
@@ -1307,7 +1212,7 @@ image::v33/role-08-ddd.svg[ROLE-08 DDD 详细交互,width=100%]
 
 ===== SYS-05 查询授权系统候选
 
-仅开放授权任务所需的系统只读目录，不授予系统写权限。
+仅开放授权任务所需的系统只读目录，按授权任务放行。
 
 输入：page 从 0 开始，size 默认为 20、最大 100；前端遍历分页。
 
@@ -1378,7 +1283,7 @@ image::v33/class-ddd-role.svg[角色授权 DDD 模块类图,width=100%]
 |*扩展场景：* |*处理及信息*
 |无操作许可或跨部门 |403，不写入关系。
 |用户或角色不存在 |404。
-|已分配或并发重复插入 |409，事务回滚。
+|重复分配 |409，事务回滚。
 2+|*后置条件：* 新增关系持久化；用户下一次鉴权合并新角色的权限。
 |===
 
@@ -1580,7 +1485,7 @@ image::v33/user-08-ddd.svg[USER-08 DDD 详细交互,width=100%]
 |===
 |图中处理／实际方法 |调用说明 URL |功能
 |`AuthController.check` |`GET /auth/permissions/{permission}` |系统标识取自 audience；仅检查已登记界面码；API 码在此接口返回 false。
-|`AuthController.api` |`GET /auth/api-permissions/{operationId}` |AuthService 将两系统 operationId 映射到 API 权限；未知操作返回 404 API_OPERATION_NOT_FOUND。
+|`AuthController.api` |`GET /auth/api-permissions/{operationId}` |返回 operationId 和 allowed。AuthService 将两系统 operationId 映射到 API 权限；未知操作返回 404 API_OPERATION_NOT_FOUND。
 |`IdentityUserController.get` |`GET /auth/users/{userId}` |返回 userId、no、name。平台限定本部门，课程端要求 TEC，不存在返回 IDENTITY_USER_NOT_FOUND。
 |`IdentityDepartmentController.list` |`GET /auth/departments` |按 parentId 逐层展开，按名称或编码搜索，并返回 hasChildren。
 |`IdentityDepartmentController.users` |`GET /auth/departments/{departmentId}/users` |按姓名或账号分页查询部门直接成员。平台限定本部门，响应仅包含身份字段。
@@ -1607,11 +1512,11 @@ image::v33/auth-05-shared.svg[AUTH-05 详细交互,width=100%]
 
 ===== AUTH-06 检查接入 API 权限
 
-AuthService 将两系统 operationId 映射到 API 权限；未知操作返回 404 API_OPERATION_NOT_FOUND。
+返回 operationId 和 allowed。AuthService 将两系统 operationId 映射到 API 权限；未知操作返回 404 API_OPERATION_NOT_FOUND。
 
 输入：路径 operationId；由映射表定位权限码。
 
-成功结果：200 allowed。权限：有效登录。
+成功结果：200 ApiAuthority。权限：有效登录。
 
 
 [.diagram.plate]
@@ -1991,7 +1896,7 @@ image::v33/course-07.svg[reviewCourse 接入详细交互,width=100%]
 
 ===== COURSE-08 getCurrentUser 支撑接口
 
-调用 GET /me，operationId 为 getCurrentUser，平台映射到课程 login 权限。老师服务读取当前统一身份与本地资料，返回 userId、teacherId、studentId、no、name、roles、permissions。permissions 保留当前系统界面码；该接口支撑页面初始化和权限刷新。
+调用 GET /me，operationId 为 getCurrentUser，平台映射到课程 login 权限。老师服务复用本次请求已核验的统一身份，并读取本地资料，返回 userId、teacherId、studentId、no、name、roles、permissions。permissions 保留当前系统界面码；该接口支撑页面初始化和权限刷新。
 
 
 [.diagram.plate]
@@ -2027,13 +1932,13 @@ image::v33/course-09.svg[老师原版前端与统一身份的登录交互,width=
 
 路径编号要求正整数。登录参数 username 和 password 非空，长度上限分别为 128 和 256。平台账号的用户名最多 64 个字符，演示账号以 11 位手机号作为密码。管理接口的名称长度为 1 至 100。系统标识使用小写字母、数字和连字符，权限码支持大小写字母、数字、点、冒号、下划线和连字符。
 
-新建资源、改名和新增关联使用专用 DTO。未声明字段返回 400。授予权限提交 permissionId，继承角色提交 juniorId。
+角色新建、改名和新增关联使用专用 DTO。未声明字段返回 400。授予权限提交 permissionId，继承角色提交 juniorId。
 
 ==== 认证与异常
 
 JWT 使用 RS256，携带 iss、sub、aud、jti、iat 和 exp，默认有效期 30 分钟。BearerFilter 校验签名、到期时间、aud、数据库会话、当前账号及 login 权限。默认使用 aud 首项。X-Target-System 可选择 aud 中另一个已获准系统。
 
-/auth/me 返回 subject、no、name、departmentId、roles、permissions，permissions 只含当前系统的界面码；/auth/users/{userId} 返回 userId、no、name。角色名称用于显示，管理资格由权限集合确定。权限检查返回 allowed 布尔值。统一身份目录按层级和关键词分页查询。部门编码由 D 加现有部门编号组成。课程目录通过 TEC 授权。
+/auth/me 返回 subject、no、name、departmentId、roles、permissions，permissions 只含当前系统的界面码；/auth/users/{userId} 返回 userId、no、name。角色名称用于显示，管理资格由权限集合确定。界面权限检查返回 allowed，API 许可检查返回 operationId 和 allowed。统一身份目录按层级和关键词分页查询。部门编码由 D 加现有部门编号组成。课程目录通过 TEC 授权。
 
 
 
@@ -2064,8 +1969,8 @@ JWT 使用 RS256，携带 iss、sub、aud、jti、iat 和 exp，默认有效期 
 |用户 |ui.users |ui.user.roles |user.view / user.role.assign
 |角色 |ui.roles |ui.role.create/edit/delete/permissions/inheritance |role.manage
 |部门 |ui.departments |目录只读 |department.manage
-|业务系统 |ui.systems |ui.system.create / ui.system.delete |system.manage
-|权限目录 |ui.permissions |ui.permission.create/edit/delete |permission.manage
+|业务系统 |ui.systems |目录只读 |system.manage
+|权限目录 |ui.permissions |目录只读 |permission.manage
 |===
 
 
@@ -2095,7 +2000,7 @@ image::v33/flow-ui-api.svg[界面码与 API 码独立检查 交互图,width=100%
 
 ===== 数据库升级
 
-Flyway V2 在现有 permission 与 role_permission 中补齐旧版既有界面的独立码和对应演示授权，不增表。迁移只执行一次；之后撤销 UI 码与 API 码各自生效。Flyway V5 移除停用的管理操作权限码和会话里的 system_key。空演示库手动导入 demo.sql。
+Flyway V2 在现有 permission 与 role_permission 中补齐旧版既有界面的独立码和对应演示授权，不增表。迁移只执行一次；之后撤销 UI 码与 API 码各自生效。Flyway V5 移除旧管理码及会话的 system_key。V6 清理系统和权限目录的五个停用按钮权限。空演示库手动导入 demo.sql。
 
 ==== 输入对象与字段白名单
 
@@ -2103,9 +2008,7 @@ Flyway V2 在现有 permission 与 role_permission 中补齐旧版既有界面�
 |===
 |输入对象 |接收字段 |固定或推导字段
 |LoginDTO |username、password、systems |逐一检查各目标系统的登录许可。
-|ManagementDTOs.CreateSystemDTO |systemKey、name |systemKey 创建后固定。
-|ManagementDTOs.CreatePermissionDTO |code、name |systemId 来自路径；code 固定。
-|ManagementDTOs.NameDTO |name |用于角色新建、角色改名及权限改名。
+|ManagementDTOs.NameDTO |name |用于新建角色及重命名角色。
 |ManagementDTOs.AssignRoleDTO |roleId |目标用户来自路径，操作者来自认证上下文。
 |ManagementDTOs.GrantPermissionDTO |permissionId |目标角色来自路径。
 |ManagementDTOs.InheritRoleDTO |juniorId |高级角色来自路径。
@@ -2121,7 +2024,7 @@ Flyway V2 在现有 permission 与 role_permission 中补齐旧版既有界面�
 |AUTH-02 |GET /auth/me |目标系统 login |200 CurrentUserVO
 |AUTH-03 |POST /auth/logout |有效登录 |204
 |AUTH-05 |GET /auth/permissions/{permission} |有效登录 |200 allowed
-|AUTH-06 |GET /auth/api-permissions/{operationId} |有效登录 |200 allowed
+|AUTH-06 |GET /auth/api-permissions/{operationId} |有效登录 |200 ApiAuthority
 |AUTH-07 |GET /auth/users/{userId} |user.view 或 TEC |200 IdentityUser
 |AUTH-08 |GET /auth/departments |department.manage 或 TEC |200 IdentityDepartmentPage
 |AUTH-09 |GET /auth/departments/{departmentId}/users |user.view 或 TEC |200 IdentityDepartmentUserPage
@@ -2138,12 +2041,7 @@ Flyway V2 在现有 permission 与 role_permission 中补齐旧版既有界面�
 |ROLE-08 |DELETE /api/roles/{id}/permissions/{permissionId} |role.manage |204
 |DEPT-01 |GET /api/departments |department.manage |200 Page
 |SYS-01 |GET /api/systems |system.manage |200 Page
-|SYS-02 |POST /api/systems |system.manage |201
-|SYS-04 |DELETE /api/systems/{id} |system.manage |204
 |PERM-01 |GET /api/systems/{systemId}/permissions |permission.manage |200 Page
-|PERM-02 |POST /api/systems/{systemId}/permissions |permission.manage |201
-|PERM-03 |PATCH /api/permissions/{id} |permission.manage |204
-|PERM-04 |DELETE /api/permissions/{id} |permission.manage |204
 |ROLE-09 |GET /api/roles/options |user.role.assign |200 Page<Role>
 |SYS-05 |GET /api/systems/options |role.manage 或 permission.manage |200 Page<System>
 |PERM-05 |GET /api/permissions/options |role.manage |200 Page<Permission>
@@ -2166,7 +2064,7 @@ Flyway V2 在现有 permission 与 role_permission 中补齐旧版既有界面�
 
 手机号与系统标识按字符串处理，权限比较区分大小写。角色权限按集合取并集。JWT 不缓存权限；撤销提交后的新请求读取当前关系。写失败回滚，重复分配由数据库联合主键裁决。
 
-=== 实测结果
+=== v3.3.0 历史基线
 
 
 
@@ -2189,6 +2087,21 @@ Flyway V2 在现有 permission 与 role_permission 中补齐旧版既有界面�
 两套实现共完成 10,000 次计时请求，全部返回 200，错误率为 0。8 并发三轮 P95 为结构化 36.67 至 52.61 ms、DDD 36.90 至 55.83 ms。结果受 JVM 预热、共享节点和网络波动影响，作为上述数据规模与部署环境的回归基线。
 
 旧版连接复用调整前，1,000 次请求出现 2 次 504（0.2%），网关记录上游连接超时。Nginx 启用 keepalive 后，表中全部请求成功；原始结果及配置见原实施报告。
+
+
+=== v3.8.0 现行部署复测
+
+权限库含 10,004 个账号、114 个部门及两个业务系统。客户端通过公网 HTTP 查询当前界面许可及管理员本部门用户页，请求各占一半。每种实现预热 100 次，以 8 并发计时 1,000 次。用户页只命中本部门账号，因此本轮结果对应分页授权负载。
+
+
+
+[cols="3,2,2,2,1",options="header"]
+|===
+|业务实现 |计时请求 |吞吐 req/s |P95 ms |错误数
+|structured |1000 |66.27 |146.66 |0
+|ddd |1000 |70.86 |136.95 |0
+|===
+
 
 == 运行需求
 
@@ -2250,13 +2163,13 @@ Flyway V2 在现有 permission 与 role_permission 中补齐旧版既有界面�
 |REQ-F-01 认证与鉴权 |authenticatesAndRejectsBadCredentials；tokensContainIdentityAndAudienceWithoutPermissions；logoutAndExpiryInvalidateSession。 |用户名手机号登录；错误凭据提示；退出后受保护页面拒绝访问。
 |REQ-F-01 身份目录 |listsIdentityDepartmentsByLevelAndKeyword、listsOnlyIdentityFieldsForDepartmentUsers、looksUpIdentityUserUnderTeacherCreationPermission、authenticatesEachRequestedAudienceAndRevokesWholeToken。 |逐层查询部门及所属候选人，按目标系统判权。
 |REQ-F-02 用户 |assignsAndRevokesRoleWithConflictAndIdempotence；validatesInputAndRemovedEndpoints。 |分页查看本部门账号，分配或撤销本部门角色。
-|REQ-F-03 角色与权限 |directoryCrudHonoursReferencesAndCaseSensitiveCodes；revocationIsVisibleToExistingTokenAndSystemsAreIsolated。 |角色权限配置、引用冲突提示；旧令牌按当前许可执行。
+|REQ-F-03 角色与权限 |readsCatalogsWithoutWriteEndpoints；revocationIsVisibleToExistingTokenAndSystemsAreIsolated。 |角色权限配置、引用冲突提示；旧令牌按当前许可执行。
 |REQ-F-03 RBAC1 |inheritsAcrossMultiplePathsAndRevokesForExistingTokens；rejectsHierarchyCyclesScopeAndReferences。 |配置继承、有效权限并集、解除继承；自环和间接环 409，跨部门 403。
-|REQ-F-04 部门 |enforcesDirectDepartmentScope；directoryCrudHonoursReferencesAndCaseSensitiveCodes。 |部门树只表达组织；管理员管理本部门直接成员。
-|REQ-F-05 系统 / REQ-F-06 权限目录 |directoryCrudHonoursReferencesAndCaseSensitiveCodes；isolatesUiAndApiPermissionsAndSupportsNarrowSelections。 |系统与权限目录维护；授权下拉分页完整加载，不依赖无关目录管理权。
+|REQ-F-04 部门 |enforcesDirectDepartmentScope；readsCatalogsWithoutWriteEndpoints。 |部门树只表达组织；管理员管理本部门直接成员。
+|REQ-F-05 系统 / REQ-F-06 权限目录 |readsCatalogsWithoutWriteEndpoints；isolatesUiAndApiPermissionsAndSupportsNarrowSelections。 |系统与权限目录只读；授权下拉分页完整加载，不依赖无关目录管理权。
 |REQ-F-07 课程接入 |tooling/acceptance.py 对已部署的老师后端调用 /login、/me、学期维护、课程列表与详情、无权审核、撤权及退出。 |课程和学期菜单分别受 UI 码控制；API 许可独立检查。
 |REQ-N-01 安全 |isolatesUiAndApiPermissionsAndSupportsNarrowSelections；upgradesExistingGrantsOnceAndKeepsUiRevocationIndependent；frontend/src/permissions.test.ts。 |无菜单码时禁用菜单，无按钮码时禁用按钮；仅有 API 码也不能启用控件。
-|REQ-N-02 性能 |tooling/benchmark.py；assets/v33/performance-baseline.json 为 v3.3.0 历史测量。 |分页有界；当前版本性能需按相同数据与负载重新测量后比较。
+|REQ-N-02 性能 |tooling/benchmark.py；测量环境、样本量与结果见性能需求。 |用户列表限定本部门并分页返回。
 |REQ-N-03 可用性 |Swarm 健康检查和历史会话恢复记录。 |依赖故障拒绝业务；恢复后刷新页面与会话。
 |REQ-N-04 可修改性 |Structured 与 Ddd 的六个契约测试类；tooling/check-architecture.py；Swarm 同镜像切换业务策略。 |切换后同一套页面和 HTTP 请求继续工作。
 |REQ-N-05 交付与运行 |Maven verify、tooling/check-copy-artifact.py、build-api.py、build-design.sh；Swarm 镜像与服务记录。 |两个前端、API 文档、覆盖率报告可访问；菜单请求对应后端日志。
@@ -2264,7 +2177,7 @@ Flyway V2 在现有 permission 与 role_permission 中补齐旧版既有界面�
 
 === 本轮测试与交付入口
 
-v3.7.0 平台测试 37 项、老师 CloneFactory 测试 5 项和前端组件测试 3 项全部通过。JaCoCo 0.8.14 的平台行覆盖率 93.48%，分支覆盖率 70.34%；生成的 CloneFactory 工具类单独由拷贝测试与运行包检查验证，覆盖率排除该生成类。
+v3.8.0 平台测试 37 项、老师 CloneFactory 测试 5 项和前端组件测试 3 项全部通过。JaCoCo 0.8.14 的平台行覆盖率 93.67%，分支覆盖率 70.34%；生成的 CloneFactory 工具类单独由拷贝测试与运行包检查验证，覆盖率排除该生成类。
 
 
 [cols="3,7",options="header"]
@@ -2274,6 +2187,6 @@ v3.7.0 平台测试 37 项、老师 CloneFactory 测试 5 项和前端组件测�
 |老师原版课程前端 |/course/
 |平台 API 文档 |运行 npm ci --prefix docs/api 后执行 python3 tooling/build-api.py。
 |覆盖率报告 |执行 ./mvnw verify 生成 backend/target/site/jacoco/。
-|部署与验收证据 |本版 Swarm 部署及线上联调见 docs/implementation/deployment-v3.7.0.json。本版契约回归见 docs/implementation/test-summary-v3.7.0.json。
+|部署与验收证据 |本版 Swarm 部署及线上联调见 docs/implementation/deployment-v3.8.0.json。本版契约回归见 docs/implementation/test-summary-v3.8.0.json。结构化与 DDD 各通过 68 项线上 HTTP 检查。
 |课程提交 |代码推送 GitHub，由已配置的自动同步更新 Gitee；课程网站提交与口试预约由组员完成。
 |===

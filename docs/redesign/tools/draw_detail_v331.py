@@ -50,19 +50,17 @@ FIELDS={
 METHODS = {
  'User':['list','roles','assign','revoke'],
  'Role':['list','create','update','delete','permissions','grant','revoke'],
- 'Department':['list'], 'System':['list','create','delete'],
- 'Permission':['list','create','update','delete']}
+ 'Department':['list'], 'System':['list'],
+ 'Permission':['list']}
 STORE={
  'User':['users','user','userRoles','assignRole','revokeRole'],
  'Role':['roles','role','createRole','renameRole','deleteRole','rolePermissions','grantPermission','revokePermission'],
  'Department':['departments','department'],
- 'System':['systems','system','createSystem','deleteSystem'],
- 'Permission':['permissions','permission','createPermission','renamePermission','deletePermission']}
+ 'System':['systems'],
+ 'Permission':['permissions']}
 REQUEST={
  'User':('ManagementDTOs.AssignRoleDTO',[('roleId','Long')]),
- 'Role':('ManagementDTOs.NameDTO',[('name','String')]),
- 'System':('ManagementDTOs.CreateSystemDTO',[('systemKey','String'),('name','String')]),
- 'Permission':('ManagementDTOs.CreatePermissionDTO',[('code','String'),('name','String')])}
+ 'Role':('ManagementDTOs.NameDTO',[('name','String')])}
 DOMAIN={
  'User':([('data','Data.User')],['requireRoleInDepartment']),
  'Role':([('data','Data.Role')],['requireBaseRole'])}
@@ -84,7 +82,7 @@ def classes():
    store=cls(d,'ManagementStore',820,500,330,STORE[module],interface=True)
    dep(d,c,data,[(850,bottom(c)+5),(850,440),(590,440),(590,490)])
    ref(d,c,store,[(985,bottom(c)+5),(985,490)],'store')
-   command_name={'Role':'Data.Name','System':'Data.CreateSystem','Permission':'Data.CreatePermission'}.get(module)
+   command_name='Data.Name' if module == 'Role' else None
    if command_name:
     command=cls(d,command_name,30,730,330,attrs=REQUEST[module][1],stereo='record')
     copy=cls(d,'CloneFactory',30,1010,330,['copy'],stereo='utility')

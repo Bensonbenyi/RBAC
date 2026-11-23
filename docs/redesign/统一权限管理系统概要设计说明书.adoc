@@ -1,6 +1,6 @@
 = 统一权限管理系统概要设计说明书
 OOAD 课程项目组
-v3.7.0, 2026-11-23
+v3.8.0, 2026-11-23
 :doctype: book
 :lang: zh-CN
 :toc:
@@ -37,6 +37,7 @@ v3.7.0, 2026-11-23
 |https://docs.staruml.io/[StarUML 官方文档] |模型元素和可编辑图稿。
 |https://www.csc.lsu.edu/~chen/pdf/erd-5-pages.pdf[Chen ER 建模论文] |实体、联系、属性、键和参与约束。
 |《5. 面向对象设计》课程课件 |按用户提供的 144 页课件核对类图、分层与 DDD 职责。
+|《面向对象分析与设计课程成绩计算办法》V4 |第二轮验收的 RBAC1、双实现、Swarm 部署和日志要求。
 |需求与详细设计说明书 v2 |字体、字号、用例表配色、接口调用说明和分页形式。
 |https://gitee.com/mingqcn/course-project-mgt[课程管理系统] 990cea2 |四层组织、双实现、统一身份接口和权限码。
 |https://gitee.com/mingqcn/spring-fundamentals[Spring 教学示例] 38fd817 |CloneFactory 0.0.2 编译期拷贝工具。
@@ -65,8 +66,8 @@ v3.7.0, 2026-11-23
 |REQ-F-02 |本部门用户查询和用户角色分配
 |REQ-F-03 |本部门角色维护和角色权限配置
 |REQ-F-04 |多级部门目录查询
-|REQ-F-05 |两个业务系统登记
-|REQ-F-06 |各系统权限目录维护
+|REQ-F-05 |两个业务系统目录
+|REQ-F-06 |各系统权限目录查询
 |REQ-F-07 |课程系统学期维护与课程审核接入
 |REQ-N-01 |安全与部门隔离
 |REQ-N-02 |性能可测量与有界查询
@@ -261,7 +262,7 @@ image::v33/packages.svg[OV-PKG-01 系统包依赖,width=100%]
 |认证与身份 |验证用户名手机号、管理技术会话、返回身份及许可 |REQ-F-01；REQ-N-01
 |用户管理 |接收操作者、用户及角色编号，查询本部门账号及维护其角色 |REQ-F-02
 |角色授权 |接收角色和权限标识，维护本部门角色、权限及无环继承 |REQ-F-03
-|目录管理 |查询部门树，维护业务系统及权限目录 |REQ-F-04 至 REQ-F-06
+|目录管理 |查询部门树、业务系统及权限目录 |REQ-F-04 至 REQ-F-06
 |Service Port |为两套业务实现定义相同用例及数据类别 |REQ-N-04
 |Infrastructure |持久化、签名与验签、分层日志和环境装配 |REQ-N-01 至 REQ-N-05
 |课程适配 |读取统一身份、查询 API 许可、保留课程业务检查 |REQ-F-07
@@ -380,7 +381,7 @@ image::v33/session-state.svg[OV-STATE-01 登录会话状态,width=100%]
 
 === 系统级数据流图
 
-<<OV-DFD-00>> 给出管理用户、课程管理系统与平台之间的数据交换。<<OV-DFD-01>> 沿用这八条边界数据流，展开认证会话、目录维护、角色授权与接入鉴权。
+<<OV-DFD-00>> 给出管理用户、课程管理系统与平台之间的数据交换。<<OV-DFD-01>> 沿用这八条边界数据流，展开认证会话、目录查询、角色授权与接入鉴权。
 
 [.diagram.plate]
 --
@@ -402,7 +403,7 @@ image::v33/dfd-1.svg[OV-DFD-01 第一层数据流,width=100%]
 |===
 |加工 |数据流到模块的映射 |全局数据
 |P1 认证会话 |登录、退出、本人资料请求映射 AuthService |用户与授权关系、登录会话
-|P2 目录维护 |目录请求映射用户、部门、系统、权限用例模块 |用户、部门、系统和权限
+|P2 目录查询 |目录请求映射用户、部门、系统、权限用例模块 |用户、部门、系统和权限
 |P3 角色授权 |授权请求映射角色用例和用户角色用例 |角色及授权、继承关联
 |P4 身份鉴权 |外部查询映射认证、AccessPolicy 与身份适配 |用户、角色、权限、登录会话
 |===
@@ -459,7 +460,7 @@ image::v33/story-availability.svg[S3 / U-A1 应用恢复与会话,width=100%]
 |EXT-01 |POST /auth/login |用户名、手机号和目标系统 |Bearer 凭据及有效期
 |EXT-02 |GET /auth/me |Bearer |当前身份、角色、当前系统界面码
 |EXT-03 |GET /auth/permissions/{permission} |Bearer 与独立界面码 |allowed
-|EXT-04 |GET /auth/api-permissions/{operationId} |Bearer 与操作编号 |allowed
+|EXT-04 |GET /auth/api-permissions/{operationId} |Bearer 与操作编号 |operationId、allowed
 |EXT-05 |GET /auth/users/{userId} |Bearer 与用户标识 |用户标识、工号和姓名
 |EXT-06 |POST /auth/logout |Bearer |撤销结果
 |EXT-07 |GET /auth/departments |Bearer、parentId、keyword、分页 |部门及展开提示
@@ -478,8 +479,8 @@ image::v33/story-availability.svg[S3 / U-A1 应用恢复与会话,width=100%]
 |API-U |/api/users 及用户角色子资源 |用户和角色编号 / 用户分页及已分配角色 |REQ-F-02
 |API-R |/api/roles 及角色权限子资源 |角色名称与权限标识 / 角色、权限或分页结果 |REQ-F-03
 |API-D |/api/departments |分页参数 / 部门树节点 |REQ-F-04
-|API-S |/api/systems |系统标识和名称 / 系统目录 |REQ-F-05
-|API-P |/api/systems/{id}/permissions 与 /api/permissions/{id} |编码、名称或权限标识 / 权限目录 |REQ-F-06
+|API-S |/api/systems |分页 / 系统目录 |REQ-F-05
+|API-P |/api/systems/{systemId}/permissions |系统编号 / 权限目录 |REQ-F-06
 |API-C |/course-api/terms、/course-api/admin/courses、/course-api/courses/{id}/review |学期资料、分页或审核决定 / 老师业务结果 |REQ-F-07
 |===
 
@@ -642,13 +643,13 @@ image::v33/deployment.svg[OV-DEPLOY-01 Docker Swarm 部署,width=100%]
 |REQ-F-01 认证与鉴权 |authenticatesAndRejectsBadCredentials；tokensContainIdentityAndAudienceWithoutPermissions；logoutAndExpiryInvalidateSession。 |用户名手机号登录；错误凭据提示；退出后受保护页面拒绝访问。
 |REQ-F-01 身份目录 |listsIdentityDepartmentsByLevelAndKeyword、listsOnlyIdentityFieldsForDepartmentUsers、looksUpIdentityUserUnderTeacherCreationPermission、authenticatesEachRequestedAudienceAndRevokesWholeToken。 |逐层查询部门及所属候选人，按目标系统判权。
 |REQ-F-02 用户 |assignsAndRevokesRoleWithConflictAndIdempotence；validatesInputAndRemovedEndpoints。 |分页查看本部门账号，分配或撤销本部门角色。
-|REQ-F-03 角色与权限 |directoryCrudHonoursReferencesAndCaseSensitiveCodes；revocationIsVisibleToExistingTokenAndSystemsAreIsolated。 |角色权限配置、引用冲突提示；旧令牌按当前许可执行。
+|REQ-F-03 角色与权限 |readsCatalogsWithoutWriteEndpoints；revocationIsVisibleToExistingTokenAndSystemsAreIsolated。 |角色权限配置、引用冲突提示；旧令牌按当前许可执行。
 |REQ-F-03 RBAC1 |inheritsAcrossMultiplePathsAndRevokesForExistingTokens；rejectsHierarchyCyclesScopeAndReferences。 |配置继承、有效权限并集、解除继承；自环和间接环 409，跨部门 403。
-|REQ-F-04 部门 |enforcesDirectDepartmentScope；directoryCrudHonoursReferencesAndCaseSensitiveCodes。 |部门树只表达组织；管理员管理本部门直接成员。
-|REQ-F-05 系统 / REQ-F-06 权限目录 |directoryCrudHonoursReferencesAndCaseSensitiveCodes；isolatesUiAndApiPermissionsAndSupportsNarrowSelections。 |系统与权限目录维护；授权下拉分页完整加载，不依赖无关目录管理权。
+|REQ-F-04 部门 |enforcesDirectDepartmentScope；readsCatalogsWithoutWriteEndpoints。 |部门树只表达组织；管理员管理本部门直接成员。
+|REQ-F-05 系统 / REQ-F-06 权限目录 |readsCatalogsWithoutWriteEndpoints；isolatesUiAndApiPermissionsAndSupportsNarrowSelections。 |系统与权限目录只读；授权下拉分页完整加载，不依赖无关目录管理权。
 |REQ-F-07 课程接入 |tooling/acceptance.py 对已部署的老师后端调用 /login、/me、学期维护、课程列表与详情、无权审核、撤权及退出。 |课程和学期菜单分别受 UI 码控制；API 许可独立检查。
 |REQ-N-01 安全 |isolatesUiAndApiPermissionsAndSupportsNarrowSelections；upgradesExistingGrantsOnceAndKeepsUiRevocationIndependent；frontend/src/permissions.test.ts。 |无菜单码时禁用菜单，无按钮码时禁用按钮；仅有 API 码也不能启用控件。
-|REQ-N-02 性能 |tooling/benchmark.py；assets/v33/performance-baseline.json 为 v3.3.0 历史测量。 |分页有界；当前版本性能需按相同数据与负载重新测量后比较。
+|REQ-N-02 性能 |tooling/benchmark.py；测量环境、样本量与结果见性能需求。 |用户列表限定本部门并分页返回。
 |REQ-N-03 可用性 |Swarm 健康检查和历史会话恢复记录。 |依赖故障拒绝业务；恢复后刷新页面与会话。
 |REQ-N-04 可修改性 |Structured 与 Ddd 的六个契约测试类；tooling/check-architecture.py；Swarm 同镜像切换业务策略。 |切换后同一套页面和 HTTP 请求继续工作。
 |REQ-N-05 交付与运行 |Maven verify、tooling/check-copy-artifact.py、build-api.py、build-design.sh；Swarm 镜像与服务记录。 |两个前端、API 文档、覆盖率报告可访问；菜单请求对应后端日志。
@@ -656,7 +657,7 @@ image::v33/deployment.svg[OV-DEPLOY-01 Docker Swarm 部署,width=100%]
 
 === 本轮测试与交付入口
 
-v3.7.0 平台测试 37 项、老师 CloneFactory 测试 5 项和前端组件测试 3 项全部通过。JaCoCo 0.8.14 的平台行覆盖率 93.48%，分支覆盖率 70.34%；生成的 CloneFactory 工具类单独由拷贝测试与运行包检查验证，覆盖率排除该生成类。
+v3.8.0 平台测试 37 项、老师 CloneFactory 测试 5 项和前端组件测试 3 项全部通过。JaCoCo 0.8.14 的平台行覆盖率 93.67%，分支覆盖率 70.34%；生成的 CloneFactory 工具类单独由拷贝测试与运行包检查验证，覆盖率排除该生成类。
 
 
 [cols="3,7",options="header"]
@@ -666,6 +667,6 @@ v3.7.0 平台测试 37 项、老师 CloneFactory 测试 5 项和前端组件测�
 |老师原版课程前端 |/course/
 |平台 API 文档 |运行 npm ci --prefix docs/api 后执行 python3 tooling/build-api.py。
 |覆盖率报告 |执行 ./mvnw verify 生成 backend/target/site/jacoco/。
-|部署与验收证据 |本版 Swarm 部署及线上联调见 docs/implementation/deployment-v3.7.0.json。本版契约回归见 docs/implementation/test-summary-v3.7.0.json。
+|部署与验收证据 |本版 Swarm 部署及线上联调见 docs/implementation/deployment-v3.8.0.json。本版契约回归见 docs/implementation/test-summary-v3.8.0.json。结构化与 DDD 各通过 68 项线上 HTTP 检查。
 |课程提交 |代码推送 GitHub，由已配置的自动同步更新 Gitee；课程网站提交与口试预约由组员完成。
 |===

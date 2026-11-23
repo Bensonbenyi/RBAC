@@ -3,6 +3,7 @@ from pathlib import Path
 import re,json
 from v33_catalog import OPS,MODULES,REQS
 from v33_detail_content import FIELD_TABLES, CASES, case_table, calls_table, operation_input, architecture_details
+from v35_content import deployment_results, verification
 R=Path(__file__).resolve().parents[1];VERSION=(R/'VERSION').read_text().strip()
 HEADER='''= {title}
 OOAD 课程项目组
@@ -35,6 +36,7 @@ def refs():return table(['参考资料','使用范围'],[
  ('https://docs.staruml.io/[StarUML 官方文档]','模型元素和可编辑图稿。'),
  ('https://www.csc.lsu.edu/~chen/pdf/erd-5-pages.pdf[Chen ER 建模论文]','实体、联系、属性、键和参与约束。'),
  ('《5. 面向对象设计》课程课件','按用户提供的 144 页课件核对类图、分层与 DDD 职责。'),
+ ('《面向对象分析与设计课程成绩计算办法》V4','第二轮验收的 RBAC1、双实现、Swarm 部署和日志要求。'),
  ('需求与详细设计说明书 v2','字体、字号、用例表配色、接口调用说明和分页形式。'),
  ('https://gitee.com/mingqcn/course-project-mgt[课程管理系统] 990cea2','四层组织、双实现、统一身份接口和权限码。'),
  ('https://gitee.com/mingqcn/spring-fundamentals[Spring 教学示例] 38fd817','CloneFactory 0.0.2 编译期拷贝工具。'),
@@ -49,7 +51,7 @@ CONSTRAINTS=[
  ('BR-07','登录使用用户名和手机号，password 字段承载手机号；systems 接受一组不重复的目标系统。'),
  ('BR-08','访问目标系统须有有效会话和该系统的 login 权限。退出只需有效会话及令牌所含的目标系统。'),
  ('BR-09','JWT 保存身份和目标系统，会话保存在 MySQL；权限按当前授权关系读取。'),
- ('BR-10','用户和部门通过 SQL 维护。删除角色、权限或业务系统前先处理引用。'),
+ ('BR-10','用户、部门、业务系统和权限定义通过 SQL 维护。删除角色前先处理关联。'),
  ('BR-11','结构化与 DDD 共用输入输出、存储端口和数据库约束；切换配置保持外部行为一致。'),
  ('BR-13','界面码与 API 码分别授予；界面展示和接口执行分别检查，统一复用 RBAC 表。'),
  ('BR-14','RBAC1 角色继承限同部门，支持多级多路径，禁止环；权限按可达角色去重取并集。'),
@@ -85,7 +87,7 @@ def detail():
 
 === 功能与非功能需求
 
-平台提供登录和鉴权、本部门用户查询与角色分配、部门树查询、角色与授权管理、业务系统登记与删除、权限目录维护，并接入课程系统的学期维护与课程审核。
+平台提供登录和鉴权、本部门用户查询与角色分配、部门树查询、角色与授权管理、业务系统与权限目录查询，并接入课程系统的学期维护与课程审核。
 ''')
  add(table(['需求编号','需求名称'],REQS,'2,6'))
  add('=== 业务约束\n'+table(['编号','约束'],CONSTRAINTS,'1,7'))
@@ -93,7 +95,7 @@ def detail():
 
 初次部署在空库中显式初始化两个业务系统及其 login 权限。演示数据建立教学部与教务部、admin、reviewer、viewer 及 other 四个合成账号；管理员与普通用户使用相同实体，通过角色权限区分。
 
-Flyway 建表后，在空演示库手动导入 demo.sql。账号资料和部门变更通过 SQL 维护。课程库完成迁移后执行教师资料关联脚本。
+Flyway 建表后，在空演示库手动导入 demo.sql。账号资料和部门变更通过 SQL 维护。课程库完成迁移后执行教师资料关联脚本。规模演示另行导入 10,000 个匿名账号及 111 个来源组织节点，统一挂到独立根部门下。
 
 === 需求分析模型
 
@@ -113,7 +115,7 @@ Flyway 建表后，在空演示库手动导入 demo.sql。账号资料和部门�
 
 数据库采用 MySQL 8.4 InnoDB，文本使用区分大小写的排序规则。用户名和系统标识建立唯一索引，角色名及权限编码采用所属范围内的联合唯一索引。两组授权和角色继承关联表使用联合主键，并为反向关联列建立索引。
 
-写用例在 Service 事务边界内执行。角色、权限和业务系统存在引用时返回冲突。账号与部门通过 SQL 维护，外键约束仍生效。
+写用例在 Service 事务边界内执行。角色存在引用时返回冲突。账号、部门、业务系统和权限定义通过 SQL 维护，外键约束仍生效。
 
 关联查询从用户直接角色出发，递归展开 role_inheritance，再通过角色权限读取去重并集。每个鉴权请求检查已提交的授权关系；已进入事务的请求按数据库事务可见性完成。新增授权及继承用 POST，组合主键拒绝重复关系并返回 409。删除关联重复调用仍返回 204。课程演示按单人操作安排。
 
@@ -135,7 +137,7 @@ Flyway 建表后，在空演示库手动导入 demo.sql。账号资料和部门�
 
 === 功能描述
 
-以下每项列出需求、调用说明与详细交互。写请求先校验输入并使用 CloneFactory 转为用例输入；操作者身份由 BearerFilter 和 CurrentIdentity 提供。DDD 的 User 校验可分配角色的部门，Role 校验基础角色与继承环路。应用服务保存授权关系。
+以下每项列出需求、调用说明与详细交互。写请求先校验输入，角色名称 DTO 通过 CloneFactory 转为用例输入；操作者身份由 BearerFilter 和 CurrentIdentity 提供。DDD 的 User 校验可分配角色的部门，Role 校验基础角色与继承环路。应用服务保存授权关系。
 ''')
  for case in CASES:
   key,title,req,keys,package,actor,description,trigger,pre,steps,errors,post,activity,module=case
@@ -173,7 +175,7 @@ Flyway 建表后，在空演示库手动导入 demo.sql。账号资料和部门�
   add('===== COURSE-'+str(i).zfill(2)+' '+operation)
   add(behavior+'。调用 '+route+'，权限码 '+permission+'。')
   add(fig('course-'+str(i).zfill(2),operation+' 接入详细交互'))
- add('===== COURSE-08 getCurrentUser 支撑接口\n\n调用 GET /me，operationId 为 getCurrentUser，平台映射到课程 login 权限。老师服务读取当前统一身份与本地资料，返回 userId、teacherId、studentId、no、name、roles、permissions。permissions 保留当前系统界面码；该接口支撑页面初始化和权限刷新。')
+ add('===== COURSE-08 getCurrentUser 支撑接口\n\n调用 GET /me，operationId 为 getCurrentUser，平台映射到课程 login 权限。老师服务复用本次请求已核验的统一身份，并读取本地资料，返回 userId、teacherId、studentId、no、name、roles、permissions。permissions 保留当前系统界面码；该接口支撑页面初始化和权限刷新。')
  add(fig('course-08','getCurrentUser 本地资料与界面权限交互'))
  add('===== COURSE-09 课程登录\n\nPOST /course-api/login 接收 role、account、password，成功进入对应工作台。')
  add(fig('course-09','老师原版前端与统一身份的登录交互'))
@@ -188,13 +190,13 @@ Flyway 建表后，在空演示库手动导入 demo.sql。账号资料和部门�
 
 路径编号要求正整数。登录参数 username 和 password 非空，长度上限分别为 128 和 256。平台账号的用户名最多 64 个字符，演示账号以 11 位手机号作为密码。管理接口的名称长度为 1 至 100。系统标识使用小写字母、数字和连字符，权限码支持大小写字母、数字、点、冒号、下划线和连字符。
 
-新建资源、改名和新增关联使用专用 DTO。未声明字段返回 400。授予权限提交 permissionId，继承角色提交 juniorId。
+角色新建、改名和新增关联使用专用 DTO。未声明字段返回 400。授予权限提交 permissionId，继承角色提交 juniorId。
 
 ==== 认证与异常
 
 JWT 使用 RS256，携带 iss、sub、aud、jti、iat 和 exp，默认有效期 30 分钟。BearerFilter 校验签名、到期时间、aud、数据库会话、当前账号及 login 权限。默认使用 aud 首项。X-Target-System 可选择 aud 中另一个已获准系统。
 
-/auth/me 返回 subject、no、name、departmentId、roles、permissions，permissions 只含当前系统的界面码；/auth/users/{userId} 返回 userId、no、name。角色名称用于显示，管理资格由权限集合确定。权限检查返回 allowed 布尔值。统一身份目录按层级和关键词分页查询。部门编码由 D 加现有部门编号组成。课程目录通过 TEC 授权。
+/auth/me 返回 subject、no、name、departmentId、roles、permissions，permissions 只含当前系统的界面码；/auth/users/{userId} 返回 userId、no、name。角色名称用于显示，管理资格由权限集合确定。界面权限检查返回 allowed，API 许可检查返回 operationId 和 allowed。统一身份目录按层级和关键词分页查询。部门编码由 D 加现有部门编号组成。课程目录通过 TEC 授权。
 ''')
  add(table(['HTTP','业务码','含义'],ERRORS,'1,3,6'))
  add('==== 独立界面权限与禁用规则\n\n权限实体同时保存界面码和 API 码，两者经同一用户角色、角色权限关系分别授予。数据库沿用八张业务表。GET /auth/me 的 permissions 及 GET /auth/permissions/{permission} 仅返回或判断已登记的界面码。GET /auth/api-permissions/{operationId} 在 AuthService 中映射到 API 码；平台使用 user.list、role.grant 等资源加操作编号，课程保留老师的 operationId。未知操作返回 404 API_OPERATION_NOT_FOUND。')
@@ -204,18 +206,16 @@ JWT 使用 RS256，携带 iss、sub、aud、jti、iat 和 exp，默认有效期 
  ('用户','ui.users','ui.user.roles','user.view / user.role.assign'),
  ('角色','ui.roles','ui.role.create/edit/delete/permissions/inheritance','role.manage'),
  ('部门','ui.departments','目录只读','department.manage'),
- ('业务系统','ui.systems','ui.system.create / ui.system.delete','system.manage'),
- ('权限目录','ui.permissions','ui.permission.create/edit/delete','permission.manage')],'2,2,5,4'))
+ ('业务系统','ui.systems','目录只读','system.manage'),
+ ('权限目录','ui.permissions','目录只读','permission.manage')],'2,2,5,4'))
  add('同一管理分组中，拥有任一菜单码时显示全部菜单项；无对应码的菜单使用原生 button disabled。没有管理菜单码时收起管理分组。业务条件满足的操作按钮持续显示，无对应按钮码时 disabled，保存、授予和撤销同样检查。查询与翻页属于菜单基础能力。桌面与移动端共用组件。界面码有效且 API 码缺失时，控件可用，后端返回 403；只有 API 码时控件禁用。窗口重新获得焦点、手动刷新及 403 后重新读取界面码，路由检查菜单权限。')
  add('===== 授权表单候选项\n\nGET /api/roles/options 由 user.role.assign 授权并限定本部门；GET /api/systems/options 允许 role.manage 或 permission.manage；GET /api/permissions/options?systemId=... 要求 role.manage。三个接口共用 SelectionService，只读分页，不扩大目录写权限。前端逐页读取，避免目录超过 100 项时遗漏。')
  add(fig('class-selection','共享授权候选查询 类图'))
  add(fig('flow-ui-api','界面码与 API 码独立检查 交互图'))
- add('===== 数据库升级\n\nFlyway V2 在现有 permission 与 role_permission 中补齐旧版既有界面的独立码和对应演示授权，不增表。迁移只执行一次；之后撤销 UI 码与 API 码各自生效。Flyway V5 移除停用的管理操作权限码和会话里的 system_key。空演示库手动导入 demo.sql。')
+ add('===== 数据库升级\n\nFlyway V2 在现有 permission 与 role_permission 中补齐旧版既有界面的独立码和对应演示授权，不增表。迁移只执行一次；之后撤销 UI 码与 API 码各自生效。Flyway V5 移除旧管理码及会话的 system_key。V6 清理系统和权限目录的五个停用按钮权限。空演示库手动导入 demo.sql。')
  add('==== 输入对象与字段白名单\n'+table(['输入对象','接收字段','固定或推导字段'],[
  ('LoginDTO','username、password、systems','逐一检查各目标系统的登录许可。'),
- ('ManagementDTOs.CreateSystemDTO','systemKey、name','systemKey 创建后固定。'),
- ('ManagementDTOs.CreatePermissionDTO','code、name','systemId 来自路径；code 固定。'),
- ('ManagementDTOs.NameDTO','name','用于角色新建、角色改名及权限改名。'),
+ ('ManagementDTOs.NameDTO','name','用于新建角色及重命名角色。'),
  ('ManagementDTOs.AssignRoleDTO','roleId','目标用户来自路径，操作者来自认证上下文。'),
  ('ManagementDTOs.GrantPermissionDTO','permissionId','目标角色来自路径。'),
  ('ManagementDTOs.InheritRoleDTO','juniorId','高级角色来自路径。')],'3,4,4'))
@@ -233,14 +233,25 @@ JWT 使用 RS256，携带 iss、sub、aud、jti、iat 和 exp，默认有效期 
 
 手机号与系统标识按字符串处理，权限比较区分大小写。角色权限按集合取并集。JWT 不缓存权限；撤销提交后的新请求读取当前关系。写失败回滚，重复分配由数据库联合主键裁决。
 
-=== 实测结果
+=== v3.3.0 历史基线
 ''')
  add(table(['业务实现','并发','轮次','吞吐 req/s','P95 ms','错误数'],measured_rows(),'3,1,1,2,2,1'))
  add('''两套实现共完成 10,000 次计时请求，全部返回 200，错误率为 0。8 并发三轮 P95 为结构化 36.67 至 52.61 ms、DDD 36.90 至 55.83 ms。结果受 JVM 预热、共享节点和网络波动影响，作为上述数据规模与部署环境的回归基线。
 
 旧版连接复用调整前，1,000 次请求出现 2 次 504（0.2%），网关记录上游连接超时。Nginx 启用 keepalive 后，表中全部请求成功；原始结果及配置见原实施报告。
+''')
+ deployment=deployment_results()
+ if deployment:
+  count=deployment['database']
+  add(f'''=== v{VERSION} 现行部署复测
 
-== 运行需求
+权限库含 {count['platformUsers']:,} 个账号、{count['departments']} 个部门及两个业务系统。客户端通过公网 HTTP 查询当前界面许可及管理员本部门用户页，请求各占一半。每种实现预热 100 次，以 8 并发计时 1,000 次。用户页只命中本部门账号，因此本轮结果对应分页授权负载。
+''')
+  add(table(['业务实现','计时请求','吞吐 req/s','P95 ms','错误数'],[
+   (run['strategy'],run['requests'],run['requestsPerSecond'],run['p95Ms'],run['errors'])
+   for run in deployment['performance']],'3,2,2,2,1'))
+
+ add('''== 运行需求
 
 === 配置与启动
 ''')
@@ -262,7 +273,6 @@ JWT 使用 RS256，携带 iss、sub、aud、jti、iat 和 exp，默认有效期 
 === 验收场景
 ''')
  add(table(['编号','场景','通过条件'],[('ACC-01','两种业务策略','同一契约套件在 structured、ddd 下通过。'),('ACC-02','RBAC1 与部门边界','多级、多路径继承去重；跨部门返回 403，成环返回 409；重复继承返回 409。'),('ACC-03','输入与数据库','非法、未知字段拒绝；唯一和引用冲突返回 409。'),('ACC-04','会话及撤权','退出、到期和权限撤销对后续请求生效。'),('ACC-05','课程接入','真实学期 CRUD、课程列表和审核；撤权后原令牌被拒绝。'),('ACC-06','日志','浏览器功能请求可对应 API、Service 和存储层日志，凭据不进入日志。'),('ACC-07','恢复和性能','记录实际恢复时长及两种配置的相同负载结果。'),('ACC-08','文档与图','两份 PDF 均为统一 A4 纵向，源文件可编辑，编号和接口对应。')],'2,3,5'))
- from v35_content import verification
  add(verification(table))
  (R/'统一权限管理系统需求与详细设计说明书.adoc').write_text('\n'.join(p).rstrip()+'\n')
 
@@ -322,7 +332,7 @@ RBAC 表达全部操作许可，部门限定账号、角色及管理范围。结
 
 逻辑划分见 <<OV-PKG-01>>。本图到包和组件粒度，模块内部类见第 4 章与详细设计文档。
 '''+fig('packages','OV-PKG-01 系统包依赖','OV-PKG-01'))
- add('=== 模块职责与功能分配\n'+table(['模块','职责和核心输入输出','需求'],[('API 输入层','接收 HTTP 路径与请求数据，校验输入，返回结果或统一错误','REQ-F-01 至 REQ-F-07'),('认证与身份','验证用户名手机号、管理技术会话、返回身份及许可','REQ-F-01；REQ-N-01'),('用户管理','接收操作者、用户及角色编号，查询本部门账号及维护其角色','REQ-F-02'),('角色授权','接收角色和权限标识，维护本部门角色、权限及无环继承','REQ-F-03'),('目录管理','查询部门树，维护业务系统及权限目录','REQ-F-04 至 REQ-F-06'),('Service Port','为两套业务实现定义相同用例及数据类别','REQ-N-04'),('Infrastructure','持久化、签名与验签、分层日志和环境装配','REQ-N-01 至 REQ-N-05'),('课程适配','读取统一身份、查询 API 许可、保留课程业务检查','REQ-F-07')],'2,5,3'))
+ add('=== 模块职责与功能分配\n'+table(['模块','职责和核心输入输出','需求'],[('API 输入层','接收 HTTP 路径与请求数据，校验输入，返回结果或统一错误','REQ-F-01 至 REQ-F-07'),('认证与身份','验证用户名手机号、管理技术会话、返回身份及许可','REQ-F-01；REQ-N-01'),('用户管理','接收操作者、用户及角色编号，查询本部门账号及维护其角色','REQ-F-02'),('角色授权','接收角色和权限标识，维护本部门角色、权限及无环继承','REQ-F-03'),('目录管理','查询部门树、业务系统及权限目录','REQ-F-04 至 REQ-F-06'),('Service Port','为两套业务实现定义相同用例及数据类别','REQ-N-04'),('Infrastructure','持久化、签名与验签、分层日志和环境装配','REQ-N-01 至 REQ-N-05'),('课程适配','读取统一身份、查询 API 许可、保留课程业务检查','REQ-F-07')],'2,5,3'))
  add('=== 模块间接口契约\n'+table(['接口编号','接口名称与职责','输入 / 输出大类','协议'],[('INT-01','API 到用例端口','操作者、命令或查询 / 资源结果、分页或错误','进程内 Java 调用'),('INT-02','业务到 ManagementStore','对象与关联标识 / 当前数据或持久化结果','进程内存储端口'),('INT-03','认证到 SessionStore','会话身份和有效期 / 当前会话或撤销结果','进程内存储端口'),('INT-04','课程到身份平台','Bearer、operationId 或用户标识 / 身份或 allowed','HTTP/JSON')],'2,4,5,2'))
  add('''== 设计模型
 
@@ -336,8 +346,8 @@ RBAC 表达全部操作许可，部门限定账号、角色及管理范围。结
  add(fig('class-hierarchy-structured','RBAC1 结构化继承设计'))
  add(fig('class-hierarchy-ddd','RBAC1 DDD 继承设计'))
  add('=== 关键类状态设计\n\n登录会话具有有效、已撤销、已过期三种状态。有效状态要求当前时间早于到期且未记录撤销时间；退出触发撤销，达到到期时间触发过期。<<OV-STATE-01>> 转换自需求模型 AN-ST-01。\n'+fig('session-state','OV-STATE-01 登录会话状态','OV-STATE-01'))
- add('=== 系统级数据流图\n\n<<OV-DFD-00>> 给出管理用户、课程管理系统与平台之间的数据交换。<<OV-DFD-01>> 沿用这八条边界数据流，展开认证会话、目录维护、角色授权与接入鉴权。\n'+fig('dfd-0','OV-DFD-00 顶层数据流','OV-DFD-00')+fig('dfd-1','OV-DFD-01 第一层数据流','OV-DFD-01'))
- add(table(['加工','数据流到模块的映射','全局数据'],[('P1 认证会话','登录、退出、本人资料请求映射 AuthService','用户与授权关系、登录会话'),('P2 目录维护','目录请求映射用户、部门、系统、权限用例模块','用户、部门、系统和权限'),('P3 角色授权','授权请求映射角色用例和用户角色用例','角色及授权、继承关联'),('P4 身份鉴权','外部查询映射认证、AccessPolicy 与身份适配','用户、角色、权限、登录会话')],'2,5,4'))
+ add('=== 系统级数据流图\n\n<<OV-DFD-00>> 给出管理用户、课程管理系统与平台之间的数据交换。<<OV-DFD-01>> 沿用这八条边界数据流，展开认证会话、目录查询、角色授权与接入鉴权。\n'+fig('dfd-0','OV-DFD-00 顶层数据流','OV-DFD-00')+fig('dfd-1','OV-DFD-01 第一层数据流','OV-DFD-01'))
+ add(table(['加工','数据流到模块的映射','全局数据'],[('P1 认证会话','登录、退出、本人资料请求映射 AuthService','用户与授权关系、登录会话'),('P2 目录查询','目录请求映射用户、部门、系统、权限用例模块','用户、部门、系统和权限'),('P3 角色授权','授权请求映射角色用例和用户角色用例','角色及授权、继承关联'),('P4 身份鉴权','外部查询映射认证、AccessPolicy 与身份适配','用户、角色、权限、登录会话')],'2,5,4'))
  add('=== 关键运行时设计\n\n三张时序图使用模块为生命线，分别对应 S1/U-S1、S2/U-P1 和 S3/U-A1。图中展示跨模块消息及响应，详细功能交互见合订本对应功能。')
  for stem,title in [('security','S1 / U-S1 撤权后的调用'),('performance','S2 / U-P1 并发鉴权'),('availability','S3 / U-A1 应用恢复与会话')]:add(fig('story-'+stem,title))
  add('''== 接口设计
@@ -351,9 +361,9 @@ RBAC 表达全部操作许可，部门限定账号、角色及管理范围。结
 第三方软件接口为老师课程管理系统，使用 HTTP/JSON 和 Authorization Bearer。课程前端请求课程后端登录，课程后端向平台申请目标系统令牌。后续业务请求由课程后端验签，并向平台查询当前身份和操作许可。对应 REQ-F-07、AD-07。
 ''')
  add('界面权限与 API 权限共用 RBAC 关系并分别授权。界面使用独立菜单和按钮码，无权限控件 disabled；接口按 operationId 对应的 API 码及对象规则决定是否执行。授权表单使用三个只读候选查询，避免依赖无关目录管理权限。课程页面初始化还调用 GET /course-api/me，读取与平台 userId 关联的本地教师资料和当前界面权限；未关联时返回 403。')
- add(table(['外部接口编号','路径','核心输入','核心输出'],[('EXT-01','POST /auth/login','用户名、手机号和目标系统','Bearer 凭据及有效期'),('EXT-02','GET /auth/me','Bearer','当前身份、角色、当前系统界面码'),('EXT-03','GET /auth/permissions/{permission}','Bearer 与独立界面码','allowed'),('EXT-04','GET /auth/api-permissions/{operationId}','Bearer 与操作编号','allowed'),('EXT-05','GET /auth/users/{userId}','Bearer 与用户标识','用户标识、工号和姓名'),('EXT-06','POST /auth/logout','Bearer','撤销结果'),('EXT-07','GET /auth/departments','Bearer、parentId、keyword、分页','部门及展开提示'),('EXT-08','GET /auth/departments/{departmentId}/users','Bearer、departmentId、keyword、分页','身份候选人')],'2,5,3,3'))
+ add(table(['外部接口编号','路径','核心输入','核心输出'],[('EXT-01','POST /auth/login','用户名、手机号和目标系统','Bearer 凭据及有效期'),('EXT-02','GET /auth/me','Bearer','当前身份、角色、当前系统界面码'),('EXT-03','GET /auth/permissions/{permission}','Bearer 与独立界面码','allowed'),('EXT-04','GET /auth/api-permissions/{operationId}','Bearer 与操作编号','operationId、allowed'),('EXT-05','GET /auth/users/{userId}','Bearer 与用户标识','用户标识、工号和姓名'),('EXT-06','POST /auth/logout','Bearer','撤销结果'),('EXT-07','GET /auth/departments','Bearer、parentId、keyword、分页','部门及展开提示'),('EXT-08','GET /auth/departments/{departmentId}/users','Bearer、departmentId、keyword、分页','身份候选人')],'2,5,3,3'))
  add('=== 内部系统级接口\n\n前后端使用 HTTP/JSON；平台管理请求要求 rbac audience 与相应操作权限。以下按模块列出路由和数据类别，具体字段见详细设计文档。')
- add(table(['接口编号','路由范围','核心输入 / 输出','需求'],[('API-U','/api/users 及用户角色子资源','用户和角色编号 / 用户分页及已分配角色','REQ-F-02'),('API-R','/api/roles 及角色权限子资源','角色名称与权限标识 / 角色、权限或分页结果','REQ-F-03'),('API-D','/api/departments','分页参数 / 部门树节点','REQ-F-04'),('API-S','/api/systems','系统标识和名称 / 系统目录','REQ-F-05'),('API-P','/api/systems/{id}/permissions 与 /api/permissions/{id}','编码、名称或权限标识 / 权限目录','REQ-F-06'),('API-C','/course-api/terms、/course-api/admin/courses、/course-api/courses/{id}/review','学期资料、分页或审核决定 / 老师业务结果','REQ-F-07')],'2,5,4,2'))
+ add(table(['接口编号','路由范围','核心输入 / 输出','需求'],[('API-U','/api/users 及用户角色子资源','用户和角色编号 / 用户分页及已分配角色','REQ-F-02'),('API-R','/api/roles 及角色权限子资源','角色名称与权限标识 / 角色、权限或分页结果','REQ-F-03'),('API-D','/api/departments','分页参数 / 部门树节点','REQ-F-04'),('API-S','/api/systems','分页 / 系统目录','REQ-F-05'),('API-P','/api/systems/{systemId}/permissions','系统编号 / 权限目录','REQ-F-06'),('API-C','/course-api/terms、/course-api/admin/courses、/course-api/courses/{id}/review','学期资料、分页或审核决定 / 老师业务结果','REQ-F-07')],'2,5,4,2'))
  add('''== 数据设计与存储策略
 
 === 全局逻辑结构
@@ -398,7 +408,6 @@ MySQL InnoDB 保存业务数据和登录会话，利用事务、外键及唯一�
  rows += [('REQ-F-07','课程接入','AD-07；S1','课程适配模块','EXT-01 至 EXT-08；API-C；INT-04','用户、角色、权限及关联'),('REQ-N-01','安全','AD-03、AD-04、AD-07；S1','认证、AccessPolicy、课程适配','EXT-01 至 EXT-08；全部 API','用户、会话、两组授权关联'),('REQ-N-02','性能','AD-05；S2','授权查询、Spring Data JPA','INT-02；EXT-03、EXT-04','关联索引、业务数据'),('REQ-N-03','可用性','AD-04、AD-05、AD-06；S3','会话模块、部署和备份','INT-03；全部 API','会话、全部业务表及数据卷'),('REQ-N-04','可修改性','AD-01、AD-02；S4','两套业务实现、共享端口','INT-01、INT-02','共享表结构'),('REQ-N-05','可重复部署','AD-06、AD-07','配置、镜像及教师适配','INT-04；部署入口','独立数据库与迁移版本')]
  add(table(['需求编号','需求名称','故事 / 决策','模块 / 类','内部 / 外部接口','全局数据实体'],rows,'2,2,3,3,3,3'))
  add('=== 需求分析模型引用清单\n'+table(['图编号','模型','转换与使用'],[('AN-UC-01','系统用例图','第 3 章职责分配与功能追溯'),('AN-ACT-01','登录活动','认证模块和运行时消息'),('AN-ACT-02','角色分配活动','用户、角色及边界规则'),('AN-CC-01','概念实体关系','核心设计类图与全局 ER'),('AN-ST-01','会话状态','OV-STATE-01'),('AN-DFD-00 / AN-DFD-01','顶层与第一层分析数据流','OV-DFD-00 / OV-DFD-01，对照模块与存储映射表')],'3,4,5'))
- from v35_content import verification
  add(verification(table))
  (R/'统一权限管理系统概要设计说明书.adoc').write_text('\n'.join(p).rstrip()+'\n')
 if __name__=='__main__':detail();outline()

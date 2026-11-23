@@ -1,6 +1,6 @@
 {
-  "operations": 34,
-  "diagrams": 112,
+  "operations": 29,
+  "diagrams": 107,
   "operationKeys": [
     "AUTH-01",
     "AUTH-02",
@@ -23,12 +23,7 @@
     "ROLE-08",
     "DEPT-01",
     "SYS-01",
-    "SYS-02",
-    "SYS-04",
     "PERM-01",
-    "PERM-02",
-    "PERM-03",
-    "PERM-04",
     "ROLE-09",
     "SYS-05",
     "PERM-05",
