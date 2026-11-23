@@ -49,6 +49,12 @@ docker exec -i "$db" sh -c 'MYSQL_PWD="$(cat /run/secrets/mysql_root_password)" 
 
 Flyway V5 移除旧管理码和会话的目标系统列，V6 清理两类只读目录的五个旧按钮权限。请求从已验签的 JWT 读取目标系统，沿用旧会话的 jti、账号、到期时间及撤销状态。
 
+## API 文档同步
+
+Swarm 发布后，在 Apifox 的「统一权限管理系统」项目中，将 [线上 OpenAPI](http://113.44.144.119/api-docs/openapi.json) 导入当前 RBAC 模块。按请求方法和路径覆盖已有接口，沿用原模块和分享链接。将本版已下线的接口及专用模型移入回收站。
+
+更新模块名称和 OpenAPI 版本号。匿名打开公开文档，逐项与 `docs/api/openapi.json` 核对方法和路径，并抽查本版变更的请求或响应。 [Apifox 公开 API 文档](https://3wq8lbigke.apifox.cn/)
+
 ## 规模演示数据
 
 在构建机运行 `python3 tooling/build-demo-directory.py .runtime/demo-directory.sql`，再将生成的 SQL 送入 Worker 上的权限库。脚本从两份市政公司表格读取组织关系及员工归属，生成 10,000 个替代用户名、姓名和手机号。111 个来源组织节点挂在「规模演示组织」下，直属员工保留其来源节点归属。已有演示账号及角色继续照常使用。

@@ -50,7 +50,7 @@ VITE_API_BASE_URL=/course-api VITE_IDENTITY_BASE_URL=/course-api npm run build -
 本版实现 RBAC1 同部门角色继承，支持多级、多路径及防环，已有令牌实时读取有效权限。数据库为八张业务表和一张技术会话表。
 
 - [权限后台](http://113.44.144.119/platform/) 与 [老师课程入口](http://113.44.144.119/course/)
-- [平台 API 文档](http://113.44.144.119/api-docs/) 与 [JaCoCo 报告](http://113.44.144.119/coverage/)
+- [Apifox 公开 API 文档](https://3wq8lbigke.apifox.cn/)、[线上 Swagger](http://113.44.144.119/api-docs/) 与 [JaCoCo 报告](http://113.44.144.119/coverage/)
 - [第二轮演示脚本](docs/implementation/第二轮演示脚本.md) 与 [课程评分办法 V4](docs/OOAD_Grading_2026_V4.pdf)
 
 API 文档由 `python3 tooling/build-api.py` 构建，并核对全部 29 个 Controller 操作。覆盖率由 `./mvnw verify` 生成。真实部署测试使用 `tooling/acceptance.py`，通过环境变量读取演示手机号，使用 `--version` 记录被验收部署的版本，结束时清理合成角色、关联及学期。
